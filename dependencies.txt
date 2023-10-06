@@ -1,0 +1,2 @@
+npm i bcryptjs colors dotenv express express-async-handler jsonwebtoken mongoose
+npm i -D nodemon
