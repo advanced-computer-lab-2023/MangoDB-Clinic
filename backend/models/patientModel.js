@@ -10,55 +10,86 @@ const phoneNumberValidator = function (phoneNumber) {
     return numberRegex.test(phoneNumber)
 }
 
-const emergencyContactSchema = mongoose.Schema({
-    name: {
-            type: String,
-            required: [true, "Please Enter The Name of your Emergency Contact"]
-        },
-    mobileNumber: {
-        type: String,
-        validate: [phoneNumberValidator, 'Please Enter A Correct Mobile Number'],
-        required: [true, "Please Enter Your Emergency Contacts Mobile Number"],
-        unique: true
-    }
-})
-
 const patientSchema = mongoose.Schema({
     username: {
         type: String,
-        required: [true, 'Please Enter a Username'],
+        required: true,
         unique: true
     },
     name: {
         type: String,
-        required: [true, 'Please Enter Your Full Name']
+        required: true
     },
     email: {
         type: String,
-        required: [true, "Please Enter Your Email Address"],
+        required: true,
         unique: true,
-        validate: [emailValidator, 'Invalid email address format'],
+        //validate: emailValidator
     },
     password: {
         type: String,
-        required: [true, "Please Enter a Password"]
+        required: true
     },
     dob: {
         type: Date,
-        required: [true, "Please Enter Your Date of Birth"]
+        required: true
     },
     gender: {
         type: String,
-        enum: ['Male', 'Female'],
-        required: [true, "Please Enter Your Gender"]
+        required: true,
+        enum: ['male', 'female']
     },
-    mobileNumber: {
+    mobile: {
         type: String,
-        validate: [phoneNumberValidator, 'Please Enter A Correct Mobile Number'],
-        required: [true, "Please Enter Your Mobile Number"],
-        unique: true
+        required: true,
+        unique: true,
+        //validate: phoneNumberValidator
     },
-    emergencyContact: [emergencyContactSchema]
+    emergency: {
+        type:
+          {
+             name: {
+                type: String,
+                required: true
+            },
+            mobile: {
+                type: String,
+                required: true,
+                unique: true,
+                //validate: phoneNumberValidator
+            }
+          }
+    },
+    family: {
+        type: [
+            {
+                name: {
+                    type: String,
+                    required: true
+                },
+                nationalID: {
+                    type: String,
+                    required: true,
+                    unique: true
+                },
+                age: {
+                    type: Number,
+                    required: true
+                },
+                gender: {
+                    type: String,
+                    required: true
+                },
+                relation: {
+                    type: String,
+                    required: true,
+                    enum: ['wife', 'husband', 'child']
+                }
+            }
+        ],
+        default: []
+    }
+
 },
 {
     timestamps: true
