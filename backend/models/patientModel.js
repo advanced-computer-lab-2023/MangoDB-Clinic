@@ -16,10 +16,10 @@ const emergencyContactSchema = mongoose.Schema({
             required: [true, "Please Enter The Name of your Emergency Contact"]
         },
     mobileNumber: {
-    type: String,
-    validate: [phoneNumberValidator, 'Please Enter A Correct Mobile Number'],
-    required: [true, "Please Enter Your Emergency Contacts Mobile Number"],
-    unique: true
+        type: String,
+        validate: [phoneNumberValidator, 'Please Enter A Correct Mobile Number'],
+        required: [true, "Please Enter Your Emergency Contacts Mobile Number"],
+        unique: true
     }
 })
 
