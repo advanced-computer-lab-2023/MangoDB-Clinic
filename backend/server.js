@@ -1,7 +1,8 @@
 const express = require('express')
 const colors = require('colors')
-const dotenv = require('dotenv').config()
+require('dotenv').config()
 const {errorHandler} = require('./middleware/errorMiddleware')
+const guestRoutes = require('./routes/guestRoutes')
 const connectDB = require('./config/db')
 const port = process.env.PORT
 
@@ -11,6 +12,8 @@ const app = express()
 
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
+
+app.use('/', guestRoutes)
 
 app.use(errorHandler)
 
