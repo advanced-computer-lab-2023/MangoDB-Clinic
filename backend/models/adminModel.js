@@ -32,12 +32,7 @@ const adminSchema = mongoose.Schema({
     role: {
         type: String,
         default: "admin"
-    },
-    permissions: [{
-        type: String,
-        enum: ['superadmin', 'manager', 'basic'],
-        default: 'basic'
-    }]
+    }
 },
 {
     timestamps: true
