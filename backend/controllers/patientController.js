@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler')
 const Patient = require('../models/patientModel')
+const Doctor = require('../models/doctorModel')
 const mongoose = require('mongoose')
 
 //Get all patients
@@ -22,7 +23,7 @@ const getPatient = async (req, res) => {
         return res.status(404).json({error: 'No such patient found'})
     }
 
-    res.status(200).json(workout)
+    res.status(200).json(patient)
 }
 
 //Create a patient
@@ -104,6 +105,22 @@ const getFamilyMembers = asyncHandler(async (req, res) => {
         return res.status(500).json({ error: 'Something went wrong'})
     }
 })
+
+const getSelectedDoctor = async (req, res) => {
+    const {doctor_id} = req.params
+    
+    if(!mongoose.Types.ObjectId.isValid(doctor_id)) {
+        return res.status(404).json({error: 'Doctor Not Found'})
+    }
+
+    const doctor = await Doctor.findById(doctor_id)
+
+    if(!doctor){
+        return res.status(404).json({error: 'Doctor Not Found'})
+    }
+
+    res.status(200).json(doctor)
+}
 
 
 module.exports = {
