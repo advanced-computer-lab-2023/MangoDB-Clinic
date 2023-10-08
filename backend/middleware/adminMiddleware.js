@@ -41,12 +41,4 @@ const protectAdmin = asyncHandler( async (req,res, next) => {
     }
 })
 
-const checkAdminPermission = (req, res, next) => {
-    if (req.user && req.user.role == 'admin'){
-        next()
-    } else {
-        res.status(403).json({message: 'Permission Denied'})
-    }
-}
-
 module.exports = {checkAdminPermission, protectAdmin}
