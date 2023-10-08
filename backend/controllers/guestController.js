@@ -23,7 +23,8 @@ const registerUser = async (req, res, model, userType, fields) => {
     const user = await User.create({
         username: data.username,
         password: hashedPassword,
-        userType: userType
+        userType: userType,
+        accountStatus: userType === 'patient' ? 'active' : 'inactive'
     })
 
     if (user) {
