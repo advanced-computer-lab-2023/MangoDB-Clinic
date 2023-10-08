@@ -3,9 +3,10 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const Patient = require('../models/patientModel')
 const Doctor = require('../models/doctorModel')
+const User = require('../models/userModel')
 
 
-const registerUser = async (req, res, model, fields) => {
+const registerUser = async (req, res, model, userType, fields) => {
     const data = req.body;
     for (const field of fields) {
         if (!data[field]) {
@@ -13,22 +14,24 @@ const registerUser = async (req, res, model, fields) => {
         }
     }
 
-    const userExists = await model.findOne({ username: data.username });
+    const userExists = await User.findOne({ username: data.username });
     if (userExists)
         return res.status(400).json({ error: 'User already exists' });
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    const user = await model.create({
-        ...data,
+    const user = await User.create({
+        username: data.username,
         password: hashedPassword,
-    });
+        userType: userType
+    })
 
     if (user) {
+        const user2 = await model.create({...data, user: user._id})
         return res.status(201).json({
             _id: user._id,
             username: user.username,
-            name: user.name,
+            name: user2.name,
             token: genToken(user._id),
         });
     } else {
@@ -37,11 +40,11 @@ const registerUser = async (req, res, model, fields) => {
 };
 
 const registerAsPatient = asyncHandler(async (req, res) => {
-    await registerUser(req, res, Patient, ['username', 'name', 'email', 'password', 'dob', 'mobile', 'emergency']);
+    await registerUser(req, res, Patient, 'patient', ['name', 'email', 'dob', 'mobile', 'emergency', 'family']);
 });
 
 const registerAsDoctor = asyncHandler(async (req, res) => {
-    await registerUser(req, res, Doctor, ['username', 'name', 'email', 'password', 'dob', 'rate', 'affiliation', 'education']);
+    await registerUser(req, res, Doctor, 'doctor', ['name', 'email', 'dob', 'rate', 'affiliation', 'education']);
 });
 
 const login = asyncHandler(async (req, res) => {

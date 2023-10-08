@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const User = require('../models/userModel')
 
 const emailValidator = function (email) {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
@@ -11,11 +12,6 @@ const phoneNumberValidator = function (phoneNumber) {
 }
 
 const patientSchema = mongoose.Schema({
-    username: {
-        type: String,
-        required: true,
-        unique: true
-    },
     name: {
         type: String,
         required: true
@@ -25,10 +21,6 @@ const patientSchema = mongoose.Schema({
         required: true,
         unique: true,
         //validate: emailValidator
-    },
-    password: {
-        type: String,
-        required: true
     },
     dob: {
         type: Date,
@@ -89,6 +81,11 @@ const patientSchema = mongoose.Schema({
             }
         ],
         default: []
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
 
 },
