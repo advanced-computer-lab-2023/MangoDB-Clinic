@@ -45,6 +45,22 @@ const registerAsDoctor = asyncHandler(async (req, res) => {
 });
 
 const login = asyncHandler(async (req, res) => {
+    const { username, password } = req.body
+
+    const user = await Patient.findOne({username})
+    if(!user)
+        res.status(404).json({ message: 'User not found'})
+
+
+    const correctPassword = await bcrypt.compare(password, user.password)
+    if(!correctPassword)
+        res.status(400).json({ message: 'Password is incorrect' })
+
+    res.status(200).json({
+        _id: user.id,
+        username: user.username,
+        token: genToken(user._id),
+    })
 })
 
 const genToken = (id) => {

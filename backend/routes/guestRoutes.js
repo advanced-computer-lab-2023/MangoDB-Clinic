@@ -7,7 +7,7 @@ const authenticate = require('../middleware/authMiddleware.js')
 
 router.post('/patientRegistration', registerAsPatient)
 router.post('/doctorRegistration', registerAsDoctor)
-router.post('/login', authenticate, login)
+router.post('/login', login)
 
 
 module.exports = router
