@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const {protect} = require('../middleware/authMiddleware')
+const authenticate = require('../middleware/authMiddleware.js')
 
 const {
     getAllPatients,
@@ -9,7 +9,8 @@ const {
     addPatient,
     updatePatient,
     deletePatient,
-    addFamilyMember
+    addFamilyMember,
+    getFamilyMembers
 } = require('../controllers/patientController')
 
 //GET all patients
@@ -28,5 +29,8 @@ router.get('/deletePatient/:id', deletePatient)
 router.get('/updatePatient/:id', updatePatient)
 
 router.put('/addFamilyMember/:id', addFamilyMember)
+
+router.get('/getFamilyMembers', authenticate, getFamilyMembers)
+
 
 module.exports = router

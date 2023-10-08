@@ -47,7 +47,7 @@ const updatePatient = async (req, res) => {
         return res.status(404).json({error: 'No such patient found'})
     }
 
-    const patient = await patient.findOneAndUpdate({_id: id}, { ...req.body })
+    const patient = await Patient.findOneAndUpdate({_id: id}, { ...req.body })
 
     if(!patient){
         return res.status(404).json({error: 'No such patient found'})
@@ -64,7 +64,7 @@ const deletePatient = async (req, res) => {
         return res.status(404).json({error: 'No such patient found'})
     }
 
-    const patient = await patient.findOneAndDelete({_id: id})
+    const patient = await Patient.findOneAndDelete({_id: id})
 
     if(!patient){
         return res.status(404).json({error: 'No such patient found'})
@@ -74,22 +74,37 @@ const deletePatient = async (req, res) => {
 }
 
 //Add family member
-const addFamilyMember = async (req, res) => {
+const addFamilyMember = asyncHandler(async (req, res) => {
     const id = req.params.id
 
     try {
         const patient = await Patient.findById(id)
         if (!patient)
-            return res.status(404).json({ message: 'Patient not found' });
+            return res.status(404).json({ message: 'Patient not found' })
 
         patient.family.push(...req.body.family)
         await patient.save()
         res.status(200).json(patient)
 
     } catch (error) {
-        return res.status(500).json({ error: 'Something went wrong' });
+        return res.status(500).json({ error: 'Something went wrong' })
     }
-}
+})
+
+const getFamilyMembers = asyncHandler(async (req, res) => {
+    const id = req.user._id
+
+    try {
+        const patient = await Patient.findById(id)
+        if(!patient)
+            return res.status(404).json({ message: 'Patient not found'})
+
+        res.status(200).json(patient.family)
+    } catch (error) {
+        return res.status(500).json({ error: 'Something went wrong'})
+    }
+})
+
 
 module.exports = {
     getAllPatients,
@@ -97,5 +112,6 @@ module.exports = {
     addPatient,
     updatePatient,
     deletePatient,
-    addFamilyMember
+    addFamilyMember,
+    getFamilyMembers
 }

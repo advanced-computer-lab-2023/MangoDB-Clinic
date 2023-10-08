@@ -6,7 +6,8 @@ const Doctor = require('../models/doctorModel')
 const authenticate = asyncHandler( async (req, res, next) => {
 
     const header = req.headers.authorization
-
+    let token
+    
     if(header && header.startsWith('Bearer')){
         try {
             token = header.split(' ')[1]
