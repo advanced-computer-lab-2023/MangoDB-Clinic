@@ -73,10 +73,29 @@ const deletPatient = async (req, res) => {
     res.status(200).json(patient)
 }
 
+//Add family member
+const addFamilyMember = async (req, res) => {
+    const id = req.params.id
+
+    try {
+        const patient = await Patient.findById(id)
+        if (!patient)
+            return res.status(404).json({ message: 'Patient not found' });
+
+        patient.family.push(...req.body.family)
+        await patient.save()
+        res.status(200).json(patient)
+
+    } catch (error) {
+        return res.status(500).json({ error: 'Something went wrong' });
+    }
+}
+
 module.exports = {
     getAllPatients,
     getPatient,
     addPatient,
     updatePatient,
-    deletPatient
+    deletePatient,
+    addFamilyMember
 }

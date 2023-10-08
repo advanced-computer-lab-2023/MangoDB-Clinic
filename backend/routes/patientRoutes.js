@@ -8,7 +8,8 @@ const {
     getPatient,
     addPatient,
     updatePatient,
-    deletPatient
+    deletPatient,
+    addFamilyMember
 } = require('../controllers/patientController')
 
 //GET all patients
@@ -21,9 +22,11 @@ router.get('/getPatient/:id', getPatient)
 router.get('/addPatient', addPatient)
 
 //DELETE a single patient
-router.get('/deletePatient/:id', deletPatient)
+router.get('/deletePatient/:id', deletePatient)
 
 //UPDATE a single patient
 router.get('/updatePatient/:id', updatePatient)
+
+router.put('/addFamilyMember/:id', addFamilyMember)
 
 module.exports = router

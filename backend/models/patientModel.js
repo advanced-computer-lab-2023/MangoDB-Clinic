@@ -70,6 +70,7 @@ const patientSchema = mongoose.Schema({
                 nationalID: {
                     type: String,
                     required: true,
+                    sparse: true,
                     unique: true
                 },
                 age: {
