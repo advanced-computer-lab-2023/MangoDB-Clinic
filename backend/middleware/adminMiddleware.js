@@ -41,4 +41,4 @@ const protectAdmin = asyncHandler( async (req,res, next) => {
     }
 })
 
-module.exports = {checkAdminPermission, protectAdmin}
+module.exports = {protectAdmin}
