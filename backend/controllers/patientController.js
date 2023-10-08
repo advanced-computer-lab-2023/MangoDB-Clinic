@@ -96,7 +96,7 @@ const getFamilyMembers = asyncHandler(async (req, res) => {
     const id = req.user._id
 
     try {
-        const patient = await Patient.findById(id)
+        const patient = await Patient.findOne({user: id})
         if(!patient)
             return res.status(404).json({ message: 'Patient not found'})
 
