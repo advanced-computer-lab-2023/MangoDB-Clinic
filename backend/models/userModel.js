@@ -12,7 +12,13 @@ const userSchema = mongoose.Schema({
     },
     userType: {
         type: String,
-        enum: ['patient', 'doctor', 'admin']
+        enum: ['patient', 'doctor', 'admin'],
+        required: true
+    },
+    accountStatus: {
+        type: String,
+        enum: ['active', 'inactive'],
+        required: true
     }
 },
 {
