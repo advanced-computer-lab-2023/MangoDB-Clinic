@@ -8,7 +8,7 @@ const {
     getPatient,
     addPatient,
     updatePatient,
-    deletPatient,
+    deletePatient,
     addFamilyMember
 } = require('../controllers/patientController')
 
