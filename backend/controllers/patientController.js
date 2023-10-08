@@ -57,7 +57,7 @@ const updatePatient = async (req, res) => {
 }
 
 //Delete a patient
-const deletPatient = async (req, res) => {
+const deletePatient = async (req, res) => {
     const {id} = req.params
 
     if(!mongoose.Types.ObjectId.isValid(id)) {
