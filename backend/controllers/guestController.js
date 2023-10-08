@@ -51,7 +51,7 @@ const registerAsDoctor = asyncHandler(async (req, res) => {
 const login = asyncHandler(async (req, res) => {
     const { username, password } = req.body
 
-    const user = await Patient.findOne({username})
+    const user = await User.findOne({username})
     if(!user)
         res.status(404).json({ message: 'User not found'})
 
