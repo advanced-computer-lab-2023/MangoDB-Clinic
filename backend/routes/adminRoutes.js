@@ -9,15 +9,15 @@ const {
     getMyInfo
 } = require('../controllers/adminController')
 
-const {checkAdminPermission, protectAdmin} = require('../middleware/adminMiddleware')
+const {protectAdmin} = require('../middleware/adminMiddleware')
 
 router.get('/my-info', protectAdmin, getMyInfo)
 
-router.post('/create-admin', createAdmin)
+router.post('/create-admin', protectAdmin, createAdmin)
 router.post('/login', loginAdmin)
 
-router.delete('/remove-doctor/:id', checkAdminPermission, removeDoctor)
-router.delete('/remove-patient/:id', checkAdminPermission, removePatient)
-router.delete('/remove-admin/:id', removeAdmin)
+router.delete('/remove-doctor/:id', protectAdmin, removeDoctor)
+router.delete('/remove-patient/:id', protectAdmin, removePatient)
+router.delete('/remove-admin/:id', protectAdmin, removeAdmin)
 
 module.exports = router

@@ -13,8 +13,19 @@ const protectAdmin = asyncHandler( async (req,res, next) => {
             // Verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
-            // Get admin from token without password
-            req.user = await Admin.findById(decoded.id).select('-password')
+            const admin = await Admin.findById(decoded.id)
+
+            if(!admin){
+                res.status(401)
+                throw new Error('Unauthorized')
+            }
+            
+            if(admin.role !== 'admin'){
+                res.status(403)
+                throw new Error('Permission Denied')
+            }
+
+            req.user = admin
 
             next()
         } catch (error) {
