@@ -12,20 +12,6 @@ const User = require('../models/userModel')
 // }
 
 const patientSchema = mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        //validate: emailValidator
-    },
-    dob: {
-        type: Date,
-        required: true
-    },
     gender: {
         type: String,
         required: true,
@@ -39,8 +25,8 @@ const patientSchema = mongoose.Schema({
     },
     emergency: {
         type:
-          {
-             name: {
+        {
+            name: {
                 type: String,
                 required: true
             },
@@ -50,7 +36,7 @@ const patientSchema = mongoose.Schema({
                 unique: true,
                 //validate: phoneNumberValidator
             }
-          }
+        }
     },
     family: {
         type: [
@@ -81,34 +67,11 @@ const patientSchema = mongoose.Schema({
             }
         ],
         default: []
-    },
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    prescription: {
-        type: [
-            {
-                medicationName: {
-                    type: String,
-                    required: true
-                },
-                frequency: {
-                    type: String,
-                    required: true
-                },
-                doctor: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'Doctor'
-                }
-            }
-        ]
     }
-
 },
-{
-    timestamps: true
-})
+    {
+        timestamps: true
+    })
 
-module.exports = mongoose.model('Patient', patientSchema)
+const Patient = User.discriminator('Patient', patientSchema)
+module.exports = Patient
