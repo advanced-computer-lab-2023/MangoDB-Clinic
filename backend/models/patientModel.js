@@ -82,30 +82,19 @@ const patientSchema = mongoose.Schema({
         ],
         default: []
     },
+    prescriptions: [
+        {
+          prescription: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Prescription'
+          }
+        }
+    ],
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
-    },
-    prescription: {
-        type: [
-            {
-                medicationName: {
-                    type: String,
-                    required: true
-                },
-                frequency: {
-                    type: String,
-                    required: true
-                },
-                doctor: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'Doctor'
-                }
-            }
-        ]
     }
-
 },
 {
     timestamps: true

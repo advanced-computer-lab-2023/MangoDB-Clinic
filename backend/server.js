@@ -7,7 +7,7 @@ const patientRoutes = require('./routes/patientRoutes')
 const connectDB = require('./config/db')
 const port = process.env.PORT
 
-connectDB()
+// connectDB()
 
 const app = express()
 
@@ -16,6 +16,17 @@ app.use(express.urlencoded({extended: false}))
 
 app.use('/', guestRoutes)
 app.use('/patient/', patientRoutes)
+
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => {
+        //listen for requests
+        app.listen(process.env.PORT, () => {
+            console.log('Connected to db and listening on port', process.env.PORT)
+        })
+    })
+    .catch((error) => {
+        console.log(error);
+    })
 
 app.use(errorHandler)
 

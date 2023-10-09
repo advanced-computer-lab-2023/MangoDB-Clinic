@@ -130,20 +130,14 @@ const getAllPrescriptions = async (req, res) => {
     }
   
     try {
-      // populating the 'prescription.doctor' field with the doctor's data
-      const patient = await Patient.findById(id).populate('prescription.doctor');
+      const patient = await Patient.findById(id);
   
       if (!patient) {
         return res.status(404).json({ error: 'Patient Not Found' });
       }
-
-      const prescriptionsWithDoctorNames = patient.prescription.map((prescription) => ({
-        medicationName: prescription.medicationName,
-        frequency: prescription.frequency,
-        doctorName: prescription.doctor.name, // Access the doctor's name
-      }));
   
-      res.status(200).json(prescriptionsWithDoctorNames);
+      res.status(200).json(patient.prescriptions);
+
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
