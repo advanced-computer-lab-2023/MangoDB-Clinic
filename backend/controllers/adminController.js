@@ -317,15 +317,13 @@ const doctorRejection = asyncHandler(async (req, res) => {
         if (error){
             res.status(500)
             throw new Error("Something Went Wrong")
-        } else {
-            res.status(200).json({ message: 'Doctor Has Been Approved And Email Has Been Sent!'})
         }
       })
 
         await Doctor.findByIdAndDelete(req.params.id)
 
         res.status(200).json({
-            message: "Doctor Has Been Rejected, Deleted, and Has Been Informed via Email"
+            message: "Doctor Has Been Rejected, Deleted, and Informed via Email"
         })
     } catch (error) {
         res.status(500)
