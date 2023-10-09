@@ -1,4 +1,5 @@
 const express = require('express')
+const mongoose = require ('mongoose')
 // const colors = require('colors')
 require('dotenv').config()
 const {errorHandler} = require('./middleware/errorMiddleware')

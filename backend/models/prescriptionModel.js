@@ -11,17 +11,17 @@ const prescriptionSchema = mongoose.Schema({
             frequency: {
                 type: String,
                 required: true
-            },
-            filled: {
-                type: Boolean,
-                default: false,
-            },
-            date: {
-                type: Date,
-                required: true
             }
         }
     ],
+    date: {
+        type: Date,
+        required: true
+    },
+    filled: {
+        type: Boolean,
+        default: false,
+    },
     doctor: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Doctor'

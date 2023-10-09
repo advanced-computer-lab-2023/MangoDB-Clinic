@@ -144,6 +144,8 @@ const getAllPrescriptions = async (req, res) => {
     }
 };
 
+
+
 const getPrescription = async (req, res) => {
     
 }
