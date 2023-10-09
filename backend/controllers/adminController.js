@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+const nodemailer = require('nodemailer')
 const Admin = require('../models/adminModel')
 const Doctor = require('../models/doctorModel')
 const Patient = require('../models/patientModel')
@@ -221,6 +222,20 @@ const viewDoctorRequest = asyncHandler( async (req, res) => {
     }
 })
 
+// @desc View all the information of doctors requesting to join
+// @route GET /admin/view-requested-doctors
+// @access Private
+const viewAllDoctorRequests = asyncHandler( async(req, res) => {
+    const doctors = await Doctor.find({state: 'inactive'})
+
+    if (!doctors){
+        res.status(400)
+        throw new Error("No Doctors Found!")
+    } else {
+        res.status(200).json(doctors)
+    }
+})
+
 // @desc Approve doctor registration
 // @route PUT /admin/doctor-approval/:id
 // @access Private
@@ -237,7 +252,33 @@ const doctorApproval = asyncHandler(async (req, res) => {
       doctor.state = 'active'
       await doctor.save()
 
-      res.status(200).json({ message: 'Doctor Has Been Approved!', doctor: doctor.state })
+    const transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'omarelzaher93@gmail.com',
+            pass: ''
+        }
+    })
+
+      const mailOptions = {
+        from: 'omarelzaher93@gmail.com',
+        to: doctor.email,
+        subject: '[NO REPLY] Congratulations! You Have Been Approved To Use El7any!',
+        html: `<h1> Congratulations Dr. ${doctor.lastName}<h1>
+                <p>Everything looks good on your part and we have decided to accept you to use our service! <p>
+                <p>You can now login with your username and password as you like. <p>
+                <p>We wish you a fruitful experience using El7any!<p>
+                <p>This Is An Automated Message, Please Do Not Reply.<p>`
+      }
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error){
+            res.status(500)
+            throw new Error("Something Went Wrong")
+        } else {
+            res.status(200).json({ message: 'Doctor Has Been Approved And Email Has Been Sent!'})
+        }
+      })
     } else {
       res.status(400).json({ message: 'Doctor Is Already Active!' })
     }
@@ -252,10 +293,39 @@ const doctorApproval = asyncHandler(async (req, res) => {
 // @access Private
 const doctorRejection = asyncHandler(async (req, res) => {
     try {
+    const doctor = await Doctor.findById(req.params.id)
+
+    const transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'omarelzaher93@gmail.com',
+            pass: ''
+        }
+    })
+
+    const mailOptions = {
+        from: 'omarelzaher93@gmail.com',
+        to: doctor.email,
+        subject: '[NO REPLY] Update On Your El7any Request To Join',
+        html: `<h1> Dear Dr. ${doctor.lastName}<h1>
+                <p>We regret to inform you that after extensive research, we have come to the conclusion of rejecting your doctor request<p>
+                <p>We hope this rejection will not alter your perception of our service.<p>
+                <p>This Is An Automated Message, Please Do Not Reply.<p>`
+      }
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error){
+            res.status(500)
+            throw new Error("Something Went Wrong")
+        } else {
+            res.status(200).json({ message: 'Doctor Has Been Approved And Email Has Been Sent!'})
+        }
+      })
+
         await Doctor.findByIdAndDelete(req.params.id)
 
         res.status(200).json({
-            message: "Doctor Has Been Rejected And Deleted"
+            message: "Doctor Has Been Rejected, Deleted, and Has Been Informed via Email"
         })
     } catch (error) {
         res.status(500)
@@ -280,5 +350,6 @@ module.exports = {
     getMyInfo,
     doctorApproval,
     doctorRejection,
-    viewDoctorRequest
+    viewDoctorRequest,
+    viewAllDoctorRequests
 }

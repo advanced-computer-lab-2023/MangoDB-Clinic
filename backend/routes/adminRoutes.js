@@ -9,13 +9,15 @@ const {
     getMyInfo,
     viewDoctorRequest,
     doctorApproval,
-    doctorRejection
+    doctorRejection,
+    viewAllDoctorRequests
 } = require('../controllers/adminController')
 
 const {protectAdmin} = require('../middleware/adminMiddleware')
 
 router.get('/my-info', protectAdmin, getMyInfo)
 router.get('/view-doctor/:id', viewDoctorRequest)
+router.get('/view-requested-doctors', viewAllDoctorRequests)
 
 router.post('/create-admin', protectAdmin, createAdmin)
 router.post('/login', loginAdmin)
