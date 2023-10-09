@@ -34,7 +34,7 @@ router.put('/add_family_member/:id', addFamilyMember)
 
 router.get('/get_family_members', authenticate, getFamilyMembers)
 
-router.get('/get_selected_doctor', getSelectedDoctor)
+router.get('/get_selected_doctor/:id', getSelectedDoctor)
 
 router.get('/get_all_prescriptions', authenticate, getAllPrescriptions)
 

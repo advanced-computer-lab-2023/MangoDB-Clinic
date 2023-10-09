@@ -70,12 +70,10 @@ const patientSchema = mongoose.Schema({
     },
     prescriptions: [
         {
-            prescription: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Prescription'
-            }
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Prescription'
         }
-    ],
+    ]
 },
     {
         timestamps: true

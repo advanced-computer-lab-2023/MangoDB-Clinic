@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Doctor = require('../models/doctorModel')
 
 const prescriptionSchema = mongoose.Schema({
-    type: [ 
+    medications: [
         {
             medicationName: {
                 type: String,
@@ -24,7 +24,8 @@ const prescriptionSchema = mongoose.Schema({
     },
     doctor: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Doctor'
+        ref: 'Doctor',
+        required: true
     }
 })
 
