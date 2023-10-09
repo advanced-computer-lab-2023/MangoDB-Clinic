@@ -207,6 +207,62 @@ const getMyInfo = asyncHandler( async (req, res) => {
     })
 })
 
+// @desc View all the information of doctor requesting to join
+// @route GET /admin/view-doctor/:id
+// @access Private
+const viewDoctorRequest = asyncHandler( async (req, res) => {
+    const doctor = await Doctor.findById(req.params.id)
+
+    if (!doctor){
+        res.status(400)
+        throw new Error("Not Found!")
+    } else {
+        res.status(200).json(doctor)
+    }
+})
+
+// @desc Approve doctor registration
+// @route PUT /admin/doctor-approval/:id
+// @access Private
+const doctorApproval = asyncHandler(async (req, res) => {
+  try {
+    const doctor = await Doctor.findById(req.params.id)
+
+    if (!doctor) {
+      res.status(400)
+      throw new Error('Doctor not found')
+    }
+
+    if (doctor.state === 'inactive') {
+      doctor.state = 'active'
+      await doctor.save()
+
+      res.status(200).json({ message: 'Doctor Has Been Approved!', doctor: doctor.state })
+    } else {
+      res.status(400).json({ message: 'Doctor Is Already Active!' })
+    }
+  } catch (error) {
+    res.status(500)
+    throw new Error("Doctor Approval Failed")
+  }
+})
+
+// @desc Reject doctor registration
+// @route GET /admin/doctor-rejection/:id
+// @access Private
+const doctorRejection = asyncHandler(async (req, res) => {
+    try {
+        await Doctor.findByIdAndDelete(req.params.id)
+
+        res.status(200).json({
+            message: "Doctor Has Been Rejected And Deleted"
+        })
+    } catch (error) {
+        res.status(500)
+        throw new Error("Doctor Rejection Failed")
+    }
+})
+
 
 // Generate Token
 const generateToken = (id) => {
@@ -221,5 +277,8 @@ module.exports = {
     removeDoctor,
     removePatient,
     removeAdmin,
-    getMyInfo
+    getMyInfo,
+    doctorApproval,
+    doctorRejection,
+    viewDoctorRequest
 }
