@@ -122,6 +122,35 @@ const getSelectedDoctor = async (req, res) => {
     res.status(200).json(doctor)
 }
 
+const getAllPrescriptions = async (req, res) => {
+    const { id } = req.params;
+  
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ error: 'Id Not Found' });
+    }
+  
+    try {
+      const patient = await Patient.findById(id);
+  
+      if (!patient) {
+        return res.status(404).json({ error: 'Patient Not Found' });
+      }
+  
+      res.status(200).json(patient.prescriptions);
+
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+
+const getPrescription = async (req, res) => {
+    
+}
+  
+
 
 module.exports = {
     getAllPatients,
@@ -130,5 +159,7 @@ module.exports = {
     updatePatient,
     deletePatient,
     addFamilyMember,
-    getFamilyMembers
+    getFamilyMembers,
+    getSelectedDoctor,
+    getAllPrescriptions
 }
