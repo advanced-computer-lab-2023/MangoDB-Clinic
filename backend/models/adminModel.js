@@ -4,7 +4,6 @@ const adminSchema = mongoose.Schema({
     username: {
         type: String,
         unique: true
-        unique: true
     },
     email: {
         type: String,
