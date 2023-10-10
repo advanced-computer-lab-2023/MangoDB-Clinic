@@ -135,7 +135,7 @@ const getAllPrescriptions = async (req, res) => {
     }
 
     try {
-      const patient = await Patient.findById(patientId);
+      const patient = await Patient.findById(patientId).populate('prescriptions');
   
       if (!patient) {
         return res.status(404).json({ error: 'Patient Not Found' });
@@ -151,33 +151,82 @@ const getAllPrescriptions = async (req, res) => {
 
 
 
-const filterPrescription = async (req, res) => {
-    const { patientId } = req.params
+// const filterPrescription = async (req, res) => {
+//     const { patientId } = req.params
+//     // const doctorName = req.query.doctor
+//     // const date = req.query.date
+//     // const isFilled = req.query.filled
 
-    console.log(req.query);
+//     console.log(req.query);
+
+//     if (!mongoose.Types.ObjectId.isValid(patientId)) {
+//         return res.status(404).json({ error: 'Id Not Found' });
+//     }
+
+//     const patient = await Patient.findById(patientId).populate('prescriptions');
+
+//     try{
+//         if (!patient) {
+//             return res.status(404).json({ error: 'Patient Not Found' });
+//         }
+
+//         const filteredPrescriptions = patient.prescriptions.find(req.query)
+
+//         res.status(200).json(filteredPrescriptions)
+
+//     } catch(error){
+//         console.error(error);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// }
+
+
+const filterPrescription = async (req, res) => {
+    const { patientId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(patientId)) {
-        return res.status(404).json({ error: 'Id Not Found' });
+        return res.status(404).json({ error: 'Patient Id Not Found' });
     }
 
-    const patient = await Patient.findById(patientId).populate('prescriptions');
+    try {
+        const patient = await Patient.findById(patientId).populate('prescriptions');
 
-    try{
         if (!patient) {
             return res.status(404).json({ error: 'Patient Not Found' });
         }
-        const filteredPrescriptions = await patient.prescriptions.find(req.query)
 
-        res.status(200).json(filteredPrescriptions)
+        let filteredPrescriptions = patient.prescriptions;
 
-    } catch(error){
+        // Check if the "doctor" query parameter is provided
+        if (req.query.doctor) {
+            const doctorName = req.query.doctor;
+            filteredPrescriptions = filteredPrescriptions.filter((prescription) => {
+                filterPrescription = prescription.doctor.name === doctorName;
+            });
+        }
+
+        // Check if the "date" query parameter is provided
+        if (req.query.date) {
+            const date = req.query.date;
+            filteredPrescriptions = filteredPrescriptions.filter((prescription) => {
+                filteredPrescriptions = prescription.date.toISOString().split('T')[0] === date;
+            });
+        }
+
+        // Check if the "filled" query parameter is provided
+        if (req.query.filled) {
+            const isFilled = req.query.filled === 'true';
+            filteredPrescriptions = filteredPrescriptions.filter((prescription) => {
+                filteredPrescriptions = prescription.filled === isFilled;
+            });
+        }
+
+        res.status(200).json(filteredPrescriptions);
+    } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
-
-    
-
-}
+};
 
 
 
@@ -190,5 +239,6 @@ module.exports = {
     addFamilyMember,
     getFamilyMembers,
     getSelectedDoctor,
-    getAllPrescriptions
+    getAllPrescriptions,
+    filterPrescription
 }

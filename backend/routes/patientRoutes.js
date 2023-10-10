@@ -12,7 +12,8 @@ const {
     addFamilyMember,
     getFamilyMembers,
     getSelectedDoctor,
-    getAllPrescriptions
+    getAllPrescriptions,
+    filterPrescription
 } = require('../controllers/patientController')
 
 //GET all patients
@@ -39,7 +40,8 @@ router.get('/get_selected_doctor/:id', getSelectedDoctor)
 //GET all prescriptions of a single patient
 router.get('/get_prescriptions_of_patient/:patientId', getAllPrescriptions)
 
-
+//filter prescriptions
+router.get('/filter_prescription/:patientid/prescriptions', filterPrescription)
 
 
 module.exports = router
