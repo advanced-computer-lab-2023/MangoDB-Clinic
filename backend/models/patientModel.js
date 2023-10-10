@@ -1,16 +1,6 @@
 const mongoose = require('mongoose')
 const User = require('../models/userModel')
 
-// const emailValidator = function (email) {
-//     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-//     return emailRegex.test(email)
-// }
-
-const phoneNumberValidator = function (phoneNumber) {
-    const numberRegex = /^(\+20|0020)?(10|11|12|15)[0-9]{8}$/
-    return numberRegex.test(phoneNumber)
-}
-
 const patientSchema = mongoose.Schema({
     gender: {
         type: String,
@@ -20,8 +10,7 @@ const patientSchema = mongoose.Schema({
     mobile: {
         type: String,
         required: true,
-        unique: true,
-        //validate: phoneNumberValidator
+        unique: true
     },
     emergencyContact: {
         type:
@@ -33,8 +22,7 @@ const patientSchema = mongoose.Schema({
             mobile: {
                 type: String,
                 required: true,
-                unique: true,
-                //validate: phoneNumberValidator
+                unique: true
             }
         }
     },

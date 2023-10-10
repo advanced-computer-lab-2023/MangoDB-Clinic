@@ -19,10 +19,6 @@ const doctorSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  // appointments: [{
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'Appointment'
-  // }]
   appointments: [{
     date: {
       type: Date,
