@@ -27,6 +27,19 @@ const userSchema = mongoose.Schema({
         type: Date,
         required: true
     },
-})
+    userType: {
+        type: String,
+        enum: ['patient', 'doctor'],
+        required: true
+    },
+    accountStatus: {
+        type: String,
+        enum: ['active', 'inactive'],
+        required: true
+    }
+},
+    {
+        timestamps: true
+    })
 
 module.exports = mongoose.model('User', userSchema)
