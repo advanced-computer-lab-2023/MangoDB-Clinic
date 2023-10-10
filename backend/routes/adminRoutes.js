@@ -10,23 +10,29 @@ const {
     viewDoctorRequest,
     doctorApproval,
     doctorRejection,
-    viewAllDoctorRequests
+    viewAllDoctorRequests,
+    addPackages,
+    deletePackages,
+    updatePackages
 } = require('../controllers/adminController')
 
 const {protectAdmin} = require('../middleware/adminMiddleware')
 
-router.get('/my-info', protectAdmin, getMyInfo)
+router.get('/my-info', getMyInfo)
 router.get('/view-doctor/:id', viewDoctorRequest)
 router.get('/view-requested-doctors', viewAllDoctorRequests)
 
-router.post('/create-admin', protectAdmin, createAdmin)
+router.post('/create-admin', createAdmin)
 router.post('/login', loginAdmin)
+router.post('/add-packages', addPackages)
 
 router.delete('/remove-doctor/:id', removeDoctor)
-router.delete('/remove-patient/:id', protectAdmin, removePatient)
-router.delete('/remove-admin/:id', protectAdmin, removeAdmin)
+router.delete('/remove-patient/:id', removePatient)
+router.delete('/remove-admin/:id', removeAdmin)
+router.delete('/remove-package/:id', deletePackages)
 
 router.put('/doctor-approval/:id', doctorApproval)
 router.put('/doctor-rejection/:id', doctorRejection)
+router.put('/update-package/:id', updatePackages)
 
 module.exports = router

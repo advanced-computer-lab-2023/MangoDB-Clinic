@@ -5,6 +5,7 @@ const nodemailer = require('nodemailer')
 const Admin = require('../models/adminModel')
 const Doctor = require('../models/doctorModel')
 const Patient = require('../models/patientModel')
+const Packages = require('../models/packagesModel')
 
 const generateRandomUsername = (maxLength = 10) => {
     const prefix = 'admin-'
@@ -153,7 +154,7 @@ const removeDoctor = asyncHandler( async (req, res) => {
 
     await Doctor.findByIdAndDelete(req.params.id)
 
-    res.status(200).json({message: "Successfuly deleted"})
+    res.status(200).json({message: "Successfully deleted"})
 })
 
 // @desc Remove patient from system
@@ -169,7 +170,7 @@ const removePatient = asyncHandler( async (req, res) => {
 
     await Patient.findByIdAndDelete(req.params.id)
 
-    res.status(200).json({message: "Successfuly deleted"})
+    res.status(200).json({message: "Successfully deleted"})
 })
 
 // @desc Remove admin from system
@@ -185,7 +186,7 @@ const removeAdmin = asyncHandler( async (req, res) => {
 
     await Admin.findByIdAndDelete(req.params.id)
 
-    res.status(200).json({message: "Successfuly deleted"})
+    res.status(200).json({message: "Successfully deleted"})
 })
 
 // @desc Get my (admin) info
@@ -331,6 +332,83 @@ const doctorRejection = asyncHandler(async (req, res) => {
     }
 })
 
+// @desc Add new packages
+// @route POST /admin/add-packages
+// @access Private
+const addPackages = asyncHandler( async(req, res) => {
+    const {name, description, price, doctorSessionDiscount, medicineDiscount, familyDiscount} = req.body
+
+    if (!name ||
+        !description ||
+        !price ||
+        !doctorSessionDiscount ||
+        !medicineDiscount ||
+        !familyDiscount)
+        {
+            res.status(400)
+            throw new Error("Please Enter All Fields")
+        }
+
+    if (await Packages.findOne({name})){
+        res.status(400)
+        throw new Error("Package With This Name Already Exists")
+    }
+
+    const package = await Packages.create({
+        name,
+        description,
+        price,
+        doctorSessionDiscount,
+        medicineDiscount,
+        familyDiscount
+    })
+
+    if (package){
+        res.status(201).json({
+            message: "Package Added Successfully"
+        })
+    } else {
+        res.status(400)
+        throw new Error("Something Went Wrong, Please Try Again")
+    }
+})
+
+// @desc Update packages
+// @route PUT /admin/update-package/:id
+// @access Private
+const updatePackages = asyncHandler( async(req, res) => {
+    const package = await Packages.findById(req.params.id)
+
+    if (!package){
+        res.status(400)
+        throw new Error("Not Found!")
+    } else {
+        const updatedPackageInfo = await Packages.findByIdAndUpdate(req.params.id, req.body, {new: true})
+        if (updatedPackageInfo){
+            res.status(200).json({message: "Successfully Updated"})
+        } else {
+            res.status(400)
+            throw new Error("Something Went Wrong")
+        }
+    }
+})
+
+// @desc Delete packages
+// @route DELETE /admin/remove-package/:id
+// @access Private
+const deletePackages = asyncHandler( async(req, res) => {
+    const package = await Packages.findById(req.params.id)
+
+    if (!package){
+        res.status(400)
+        throw new Error("Not Found!")
+    } else {
+        await Packages.findByIdAndDelete(req.params.id)
+        res.status(200).json({
+            message: "Deleted Successfully"
+        })
+    }
+})
 
 // Generate Token
 const generateToken = (id) => {
@@ -349,5 +427,8 @@ module.exports = {
     doctorApproval,
     doctorRejection,
     viewDoctorRequest,
-    viewAllDoctorRequests
+    viewAllDoctorRequests,
+    addPackages,
+    updatePackages,
+    deletePackages
 }
