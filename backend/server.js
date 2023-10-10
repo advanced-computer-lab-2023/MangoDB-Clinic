@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 
 //routes
 app.use('/', guestRoutes)
-app.use('/patient/', patientRoutes)
+app.use('/patient', patientRoutes)
 
 //connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)

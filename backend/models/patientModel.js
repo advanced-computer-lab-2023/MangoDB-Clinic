@@ -37,7 +37,7 @@ const patientSchema = mongoose.Schema({
         unique: true,
         //validate: phoneNumberValidator
     },
-    emergency: {
+    emergencyContact: {
         type:
           {
              name: {

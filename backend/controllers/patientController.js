@@ -1,7 +1,9 @@
+const mongoose = require('mongoose')
 const asyncHandler = require('express-async-handler')
+
 const Patient = require('../models/patientModel')
 const Doctor = require('../models/doctorModel')
-const mongoose = require('mongoose')
+const Prescription = require('../models/prescriptionModel')
 
 //Get all patients
 const getAllPatients = async (req, res) => {
@@ -27,13 +29,14 @@ const getPatient = async (req, res) => {
 }
 
 //Create a patient
+//
 const addPatient = async (req, res) => {
     const {
-        username, name, email, password, dob, gender, mobileNumber, emergencyContact
+        name, email, password, dob, gender, mobile, emergencyContact, family, prescriptions
     } = req.body
 
     try{
-        const patient = await Patient.create({username, name, email, password, dob, gender, mobileNumber, emergencyContact})
+        const patient = await Patient.create({name, email, password, dob, gender, mobile, emergencyContact, family, prescriptions})
         res.status(201).json(patient)
     } catch (error) {
         res.status(404).json({error: error.message})
@@ -123,14 +126,14 @@ const getSelectedDoctor = async (req, res) => {
 }
 
 const getAllPrescriptions = async (req, res) => {
-    const { id } = req.params;
+    const {patientId } = req.params;
   
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(patientId)) {
       return res.status(404).json({ error: 'Id Not Found' });
     }
   
     try {
-      const patient = await Patient.findById(id);
+      const patient = await Patient.findById(patientId);
   
       if (!patient) {
         return res.status(404).json({ error: 'Patient Not Found' });
@@ -146,8 +149,19 @@ const getAllPrescriptions = async (req, res) => {
 
 
 
-const getPrescription = async (req, res) => {
-    
+const filterPrescription = async (req, res) => {
+    const { patientId } = req.params
+    const patient = getPatient()
+    const { date, doctor, filled} = req.params
+
+    try{
+        console.log(req.query)
+        const prescriptions = await Prescription.find({})
+
+    } catch(err){
+
+    }
+
 }
   
 
