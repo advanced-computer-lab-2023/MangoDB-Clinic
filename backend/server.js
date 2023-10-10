@@ -9,8 +9,12 @@ connectDB()
 
 const app = express()
 
-app.use(express.json())
+
 app.use(express.urlencoded({extended: false}))
+app.use(express.json())
+
+app.use('/doctor', require('./routes/doctorRoutes'))
+
 
 app.use(errorHandler)
 

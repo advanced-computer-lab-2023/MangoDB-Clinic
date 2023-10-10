@@ -1,67 +1,79 @@
-const mongoose = require('mongoose')
-const patientdb = require('./patientSchema')
+const mongoose = require('mongoose');
+
 const doctorSchema = mongoose.Schema({
-
-    First_Name: {
+    firstName: {
         type: String,
-        required: true,
-      },
-      Last_Name: {
-        type: String,
-        required: true,
-      },
-      Email: {
-        type: String,
-        required: true,
-        unique: true
-      },
-      Age: {
-        type: Number,
-        required: true,
-      },
-      Username: {
-        type: String,
-        required: true,
-        unique: true
-      },
-      Password: {
-        type: String,
-        required: true,
-      },
-      Affiliation: {
-        type: String,
-        required: true,
-      },
-      Hourly_rate: {
-        type: Number,
-      },
-    Wallet_amount: {
-        type : Number,
-        
+        required: true, 
     },
-      Avialable_time_slots: {
-        type: timestamps,
-        
+    lastName: {
+        type: String,
+        required: true,
+    },
+    email: {
+        type: String,
+        required: true, 
+        unique: true, 
+    },
+    dob: {
+        type: Date,
+        required: true, 
+    },
+    username: {
+        type: String,
+        required: true, 
+        unique: true, 
+    },
+    password: {
+        type: String,
+        required: true,
+    },
+    hourlyRate: {
+      type : Number,
+    },
+    affiliation: {
+      type: String
+    },
+    walletAmount: {
+      type: Number
+    },
+    specialty: {
+      type: String,
+    },
+    educationalBackground: {
+      type: String,
+      required: true
+    },
+    status: {
+      type: String,
+      enum: ['active', 'inactive']
+    },
+    appointments: [{
+      date: {
+          type: Date ,
+          required: true,
       },
-    Appoitments: [{
-        date: {
-            type:Date ,
-            required: true,
-        },
-        status:{
-            type:String,
-            required: true,
+      status:{
+          type:String,
+          required: true,
+      },
+      patient: {
+          id: {
+              type: mongoose.Schema.Types.ObjectId,
+              required: true,
+              ref: 'Patient'
+          },
+          name: {
+              type: String,
+              required: true,
+          },
+      },
+  }]
 
-        },
-        pateint_id :{
-            type :Number,
-            required:true
-        }
-
-    }]
 },
-{
-    timestamps: true
-})
+ {
+    timestamps: true,
+});
 
-module.exports = mongoose.model('Doctor', doctorSchema)
+const Doctor = User.discriminator('Doctor', doctorSchema)
+
+module.exports = Doctor
