@@ -1,37 +1,50 @@
 const mongoose = require('mongoose')
 const User = require('./userModel')
+const Appointment = require('./appointmentModel')
 
 const doctorSchema = mongoose.Schema({
-    affiliation: {
-        type: String,
-        required: true
+  affiliation: {
+    type: String,
+    required: true
+  },
+  hourlyRate: {
+    type: Number,
+    required: true
+  },
+  speciality: {
+    type: String,
+    required: true
+  },
+  educationalBackground: {
+    type: String,
+    required: true
+  },
+  appointments: [{
+    date: {
+      type: Date,
+      required: true,
     },
-    hourlyRate: {
-        type: Number,
-        required: true
+    status: {
+      type: String,
+      required: true,
     },
-    speciality: {
-        type: String,
-        required: true
-    },
-    educationalBackground: {
-        type: String,
-        required: true
-    },
-    role: {
-        type: String,
-        default: 'doctor'
-    },
-    state: {
-        type: String,
-        enum: ['active', 'inactive']
-    },
-    appointments: [{
+    patient: {
+      id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Appointment'
-    }]
+        required: true,
+        ref: 'Patient'
+      },
+      name: {
+        type: String,
+        required: true,
+      }
+    }
+  }]
 
-},)
+},
+  {
+    timestamps: true
+  })
 
 const Doctor = User.discriminator('Doctor', doctorSchema)
 
