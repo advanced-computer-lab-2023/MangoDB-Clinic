@@ -12,6 +12,9 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
+app.use('/', require('./routes/guestRoutes'))
+app.use('/admin', require('./routes/adminRoutes'))
+
 app.use(errorHandler)
 
 app.listen(port, () => console.log(`Server Started On Port ${port}...`.green.bold))
