@@ -1,19 +1,15 @@
 const express = require('express')
-const mongoose = require ('mongoose')
-// const colors = require('colors')
-require('dotenv').config()
+const colors = require('colors')
+const dotenv = require('dotenv').config()
 const {errorHandler} = require('./middleware/errorMiddleware')
-const guestRoutes = require('./routes/guestRoutes')
-const patientRoutes = require('./routes/patientRoutes')
-// const connectDB = require('./config/db')
-// const port = process.env.PORT
+const connectDB = require('./config/db')
+const port = process.env.PORT
 
-// connectDB()
+connectDB()
 
-//express App
 const app = express()
 
-//middleware
+//Middleware
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
@@ -22,22 +18,11 @@ app.use((req, res, next) => {
     next()
 })
 
-//routes
-app.use('/', guestRoutes)
-app.use('/patient', patientRoutes)
+//Routes
+app.use('/', require('./routes/guestRoutes'))
+app.use('/admin', require('./routes/adminRoutes'))
+app.use('/patient',require('./routes/patientRoutes'))
 
-//connect to MongoDB
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => {
-        //listen for requests
-        app.listen(process.env.PORT, () => {
-            console.log('Connected to db and listening on port', process.env.PORT)
-        })
-    })
-    .catch((error) => {
-        console.log( "error in connection", error);
-    })
+app.use(errorHandler)
 
-
-
-// app.listen(port, () => console.log(`Server Started On Port ${port}...`.green.bold))
+app.listen(port, () => console.log(`Server Started On Port ${port}...`.green.bold))
