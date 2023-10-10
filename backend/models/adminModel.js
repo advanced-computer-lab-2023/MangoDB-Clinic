@@ -12,7 +12,6 @@ const adminSchema = mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
     },
     firstName: {
         type: String,
@@ -21,10 +20,14 @@ const adminSchema = mongoose.Schema({
     lastName: {
         type: String,
         required: [true, "Please Enter Your Last Name"]
+    },
+    role: {
+        type: String,
+        default: "admin"
     }
 },
-    {
-        timestamps: true
-    })
+{
+    timestamps: true
+})
 
 module.exports = mongoose.model('Admin', adminSchema)
