@@ -9,7 +9,7 @@ const {
     createPatient,
     createAppointment,
     searchPatientByName,
-    viewAllPatients,getDoctors,filterStatus,upcoming
+    viewAllPatients,getDoctors,filterStatus,upcoming,selectPatient,getPatients,viewHealthRecords
 } = require('../controllers/doctorController');
 
 
@@ -19,6 +19,8 @@ router.post('/CreateAppointment', createAppointment);
 router.get('/getdoctors',getDoctors)
 router.get('/filterapp/:id',filterStatus)
 router.get('/upcoming/:id',upcoming)
+router.get('/selectPatient/:id',selectPatient)
+router.get('/getPatients',getPatients)
 
 
 
@@ -33,4 +35,5 @@ router.get('/viewAllPatients/:id', viewAllPatients);
 
 
 router.post('/searchPatientByName/:id', searchPatientByName);
+router.post('/viewHealthRecords/:id', viewHealthRecords);
 module.exports = router;

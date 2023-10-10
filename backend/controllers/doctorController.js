@@ -4,6 +4,8 @@ const doctorModel = require('../models/doctorModel.js');
 const Patient = require('../models/patientModel.js');
 const AppointmentModel = require('../models/appointmentModel');
 const Appointment = require('../models/appointmentModel');
+const Prescription = require('../models/prescriptionModel');
+const prescriptionModel = require('../models/prescriptionModel');
 
 
 const filterStatus = async(req, res) => {
@@ -204,6 +206,30 @@ const searchPatientByName = async (req, res) => {
 
 
 
+// const viewAllPatients = async (req, res) => {
+//     try {
+//       const docId = req.params.id;
+//       const appointments = await Appointment.find({ doctorId: docId });
+  
+//       if (!appointments || appointments.length === 0) {
+//         return res.status(404).json({ message: 'No appointments found for this doctor.' });
+//       }
+  
+//       const patientIds = appointments.map((appointment) => appointment.patientId);
+      
+//       const patients = await Patient.find({ _id: { $in: patientIds } });
+  
+//       if (!patients || patients.length === 0) {
+//         return res.status(404).json({ message: 'No patients found for this doctor.' });
+//       }
+  
+//       res.status(200).json(patients);
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).json({ message: 'Error retrieving patients' });
+//     }
+//   };
+
 const viewAllPatients = async (req, res) => {
     try {
       const docId = req.params.id;
@@ -214,8 +240,9 @@ const viewAllPatients = async (req, res) => {
       }
   
       const patientIds = appointments.map((appointment) => appointment.patientId);
-      
-      const patients = await Patient.find({ _id: { $in: patientIds } });
+  
+      const patients = await Patient.find({ _id: { $in: patientIds } })
+        .select('firstName lastName _id email'); // Specify the fields you want to select
   
       if (!patients || patients.length === 0) {
         return res.status(404).json({ message: 'No patients found for this doctor.' });
@@ -318,6 +345,58 @@ const createAppointment = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-module.exports ={
-    createDoctor,updateEmail,updateHourlyRate,updateAffiliation,createPatient,createAppointment,searchPatientByName,viewAllPatients,getDoctors,filterStatus,upcoming
+
+const selectPatient = async (req, res) => {
+    try {
+      const patientId = req.params.id;
+  
+      const patient = await Patient.findById(patientId).select('firstName lastName email username dob gender accountStatus userType mobile emergency family prescriptions');
+  
+      if (!patient) {
+        return res.status(404).json({ message: 'Patient not found' });
+      }
+  
+      res.status(200).json(patient);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error retrieving patient information' });
+    }
+  };
+
+  const getPatients = async (req, res) => {
+    
+    const patients = await Patient.find({});
+    res.status(200).json(patients);
+   
+
+  }
+  const viewHealthRecords = async (req, res) => {
+    try {
+      const doctorId = req.params.id;
+  
+      const { patientId } = req.body;
+  
+      const appointments = await Appointment.find({
+        doctorId: doctorId,
+        patientId: patientId,
+      });
+  
+      if (appointments.length === 0) {
+        return res.status(404).json({ message: 'No appointments found for this patient.' });
+      }
+      const patient = await Patient.findById(patientId).populate('prescriptions');
+  
+      if (!patient) {
+        return res.status(404).json({ message: 'Patient not found.' });
+      }
+  
+      res.status(200).json({ appointments, prescriptions: patient.prescriptions });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error retrieving appointments and prescriptions' });
+    }
+  };
+
+  module.exports ={
+    createDoctor,updateEmail,updateHourlyRate,updateAffiliation,createPatient,createAppointment,searchPatientByName,viewAllPatients,getDoctors,filterStatus,upcoming,selectPatient,getPatients,viewHealthRecords
 }
