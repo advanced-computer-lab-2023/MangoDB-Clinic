@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 const User = require('./userModel')
-const Appointment = require('./appointmentModel')
 
 const doctorSchema = mongoose.Schema({
     affiliation: {

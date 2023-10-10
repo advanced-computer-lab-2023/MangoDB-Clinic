@@ -1,6 +1,5 @@
 const asyncHandler = require('express-async-handler')
 const Doctor = require('../models/doctorModel')
-const User = require('../models/userModel')
 const bcrypt = require('bcryptjs')
 
 const emailValidator = function (email) {

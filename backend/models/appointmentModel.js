@@ -1,6 +1,4 @@
 const mongoose = require('mongoose')
-const Patient = require('./patientModel')
-const Doctor = require('./doctorModel')
 
 const appointmentSchema = mongoose.Schema({
     date: {
