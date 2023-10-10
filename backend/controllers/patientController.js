@@ -240,5 +240,6 @@ module.exports = {
     getFamilyMembers,
     getSelectedDoctor,
     getAllPrescriptions,
-    filterPrescription
+    filterPrescription,
+    selectPrescription
 }
