@@ -5,7 +5,7 @@ const Patient = require('../models/patientModel.js');
 const AppointmentModel = require('../models/appointmentModel');
 const Appointment = require('../models/appointmentModel');
 
-// filter appoitments according to status 
+
 const filterStatus = async(req, res) => {
     const{status,date_1,date_2}= req.body;
     
@@ -133,32 +133,67 @@ const updateEmail = async (req, res) => {
    }
 
 
+// const searchPatientByName = async (req, res) => {
+//     try {
+//         const doctorId = req.params.id;
+//         const { patientName } = req.body;
+
+//         console.log('Doctor ID:', doctorId);
+//         console.log('Patient Name:', patientName);
+
+//         const appointments = await Appointment.find({
+//             doctorId: doctorId,
+//             patientName: patientName,
+//         });
+
+//         const patientIds = [];
+
+//         for (const appointment of appointments) {
+//             patientIds.push(appointment.patientId);
+//         }
+
+//         const patients = await Patient.find({ _id: { $in: patientIds } });
+
+//         if (patients.length > 0) {
+
+//             res.json(patients);
+//         } else {
+     
+//             res.status(404).json({ error: 'No matching patients found' });
+//         }
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'Something went wrong' });
+//     }
+// };
+
 const searchPatientByName = async (req, res) => {
     try {
         const doctorId = req.params.id;
-        const { patientName } = req.body;
+        const { firstName } = req.body;
 
         console.log('Doctor ID:', doctorId);
-        console.log('Patient Name:', patientName);
+        console.log('Patient Name:', firstName);
 
-        const appointments = await Appointment.find({
-            doctorId: doctorId,
-            patientName: patientName,
-        });
+        
+        const appointments = await Appointment.find({ doctorId: doctorId });
 
-        const patientIds = [];
+        const patientIds = new Set();
 
+   
         for (const appointment of appointments) {
-            patientIds.push(appointment.patientId);
+            patientIds.add(appointment.patientId.toString());
         }
 
-        const patients = await Patient.find({ _id: { $in: patientIds } });
+       
+        const patients = await Patient.find({
+            _id: { $in: Array.from(patientIds) },
+            firstName: firstName
+        });
 
         if (patients.length > 0) {
-
             res.json(patients);
         } else {
-     
             res.status(404).json({ error: 'No matching patients found' });
         }
     } catch (error) {
@@ -197,11 +232,12 @@ const viewAllPatients = async (req, res) => {
    const createDoctor = async (req, res) => {
 
     const {
-        firstName, lastName, email, dob, username, password, hourlyRate, affiliation
+        firstName, lastName, email, dob, username, password, hourlyRate, affiliation,  speciality, educationalBackground, userType,accountStatus
     } = req.body;
 
     try {
-        console.log('Creating doctor with data:', firstName, lastName, email, dob, username, password, hourlyRate, affiliation);
+        console.log('Creating doctor with data:', firstName, lastName, email, dob, username, password, hourlyRate, affiliation, speciality,accountStatus,
+        educationalBackground, userType,);
 
         const doctor = await Doctor.create({
             firstName, 
@@ -211,7 +247,11 @@ const viewAllPatients = async (req, res) => {
             username, 
             password, 
             hourlyRate, 
-            affiliation
+            affiliation,
+            speciality,
+            educationalBackground,
+            userType,
+            accountStatus
         });
         if (!doctor) {
             return res.status(500).json({ error: 'Doctor creation failed' });
@@ -224,25 +264,26 @@ const viewAllPatients = async (req, res) => {
     }
 };
 
-   const createPatient = async (req, res) => {
+const createPatient = async (req, res) => {
 
     const {
-        name, email, username, password, mobile,dob,gender,emergency, family
+        firstName,lastName, email, username, password, mobile,dob,gender,emergency, family,userType,accountStatus
     } = req.body;
 
     try {
-        console.log('Creating patient with data:', name, email, username, password,mobile,dob,gender,emergency, family);
+        console.log('Creating patient with data:', firstName,lastName, email, username, password, mobile,dob,gender,emergency, family,userType,accountStatus);
 
         const patient = await Patient.create({
-             name,
-             email, 
-             username,
-             password,
-             mobile,
-             dob,
-             gender,
-             emergency, 
-             family
+            firstName,
+            lastName, 
+            email, 
+            username, 
+            password, 
+            mobile,
+            dob,
+            gender,
+            emergency, 
+            family,userType,accountStatus
         });
         if (!patient) {
             return res.status(500).json({ error: 'patient creation failed' });
@@ -256,16 +297,14 @@ const viewAllPatients = async (req, res) => {
 };
 
 const createAppointment = async (req, res) => {
-    const { doctorId, patientId, doctorName, patientName,date,status } = req.body;
+    const { doctorId, patientId,date,status } = req.body;
 
     try {
-        console.log('Creating appointment with data:', doctorId, patientId, doctorName, patientName,date,status);
+        console.log('Creating appointment with data:', doctorId, patientId,date,status);
 
         const appointment = await Appointment.create({
             doctorId,
             patientId, 
-            doctorName, 
-            patientName,
             date,
             status
         });
