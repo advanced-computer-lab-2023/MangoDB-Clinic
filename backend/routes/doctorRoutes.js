@@ -9,13 +9,17 @@ const {
     createPatient,
     createAppointment,
     searchPatientByName,
-    viewAllPatients
+    viewAllPatients,getDoctors,filterStatus,upcoming
 } = require('../controllers/doctorController');
 
 
 router.post('/CreateDoctor', createDoctor);
 router.post('/CreatePatient', createPatient);
 router.post('/CreateAppointment', createAppointment);
+router.get('/getdoctors',getDoctors)
+router.get('/filterapp/:id',filterStatus)
+router.get('/upcoming/:id',upcoming)
+
 
 
 
