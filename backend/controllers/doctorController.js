@@ -256,16 +256,18 @@ const viewAllPatients = async (req, res) => {
 };
 
 const createAppointment = async (req, res) => {
-    const { doctorId, patientId, doctorName, patientName } = req.body;
+    const { doctorId, patientId, doctorName, patientName,date,status } = req.body;
 
     try {
-        console.log('Creating appointment with data:', doctorId, patientId, doctorName, patientName);
+        console.log('Creating appointment with data:', doctorId, patientId, doctorName, patientName,date,status);
 
         const appointment = await Appointment.create({
             doctorId,
             patientId, 
             doctorName, 
-            patientName
+            patientName,
+            date,
+            status
         });
         if (!appointment) {
             return res.status(500).json({ error: 'Appointment creation failed' });
