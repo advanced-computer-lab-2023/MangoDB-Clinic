@@ -12,6 +12,24 @@ const User = require('../models/userModel')
 // }
 
 const patientSchema = mongoose.Schema({
+    username: {
+        type: String,
+        required: true
+    },
+    name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        //validate: emailValidator
+    },
+    dob: {
+        type: Date,
+        required: true
+    },
     gender: {
         type: String,
         required: true,
