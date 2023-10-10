@@ -149,36 +149,36 @@ const getAllPrescriptions = async (req, res) => {
     }
 };
 
+const selectPrescription = async (req, res) => {
+    const {patientId } = req.params;
+    const { prescriptionId } = req.params
+  
+    if (!mongoose.Types.ObjectId.isValid(patientId)) {
+      return res.status(404).json({ error: 'Id Not Found' });
+    }
 
+    try {
+        const patient = await Patient.findById(patientId).populate('prescriptions');
 
-// const filterPrescription = async (req, res) => {
-//     const { patientId } = req.params
-//     // const doctorName = req.query.doctor
-//     // const date = req.query.date
-//     // const isFilled = req.query.filled
+        if (!patient) {
+            return res.status(404).json({ error: 'Patient Not Found' });
+        }
 
-//     console.log(req.query);
+        const singlePrescription = patient.prescriptions.find((prescription) =>
+            prescription._id.equals(prescriptionId)
+        );
 
-//     if (!mongoose.Types.ObjectId.isValid(patientId)) {
-//         return res.status(404).json({ error: 'Id Not Found' });
-//     }
+        if (!singlePrescription) {
+            return res.status(404).json({ error: 'Prescription Not Found' });
+        }
+  
+        res.status(200).json(singlePrescription);
 
-//     const patient = await Patient.findById(patientId).populate('prescriptions');
-
-//     try{
-//         if (!patient) {
-//             return res.status(404).json({ error: 'Patient Not Found' });
-//         }
-
-//         const filteredPrescriptions = patient.prescriptions.find(req.query)
-
-//         res.status(200).json(filteredPrescriptions)
-
-//     } catch(error){
-//         console.error(error);
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
 
 
 const filterPrescription = async (req, res) => {
@@ -206,15 +206,15 @@ const filterPrescription = async (req, res) => {
         }
 
         // Check if the "date" query parameter is provided
-        if (req.query.date) {
+        else if (req.query.date) {
             const date = req.query.date;
             filteredPrescriptions = filteredPrescriptions.filter((prescription) => {
                 filteredPrescriptions = prescription.date.toISOString().split('T')[0] === date;
             });
         }
-
+        
         // Check if the "filled" query parameter is provided
-        if (req.query.filled) {
+        else if (req.query.filled) {
             const isFilled = req.query.filled === 'true';
             filteredPrescriptions = filteredPrescriptions.filter((prescription) => {
                 filteredPrescriptions = prescription.filled === isFilled;
