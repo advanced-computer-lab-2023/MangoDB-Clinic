@@ -1,7 +1,8 @@
 const express = require('express')
 const colors = require('colors')
-const dotenv = require('dotenv').config()
-const {errorHandler} = require('./middleware/errorMiddleware')
+require('dotenv').config()
+const { errorHandler } = require('./middleware/errorMiddleware')
+const guestRoutes = require('./routes/guestRoutes')
 const connectDB = require('./config/db')
 const port = process.env.PORT
 
@@ -11,7 +12,7 @@ const app = express()
 
 //Middleware
 app.use(express.json())
-app.use(express.urlencoded({extended: false}))
+app.use(express.urlencoded({ extended: false }))
 
 app.use((req, res, next) => {
     console.log(req.path, res.method);
@@ -21,7 +22,7 @@ app.use((req, res, next) => {
 //Routes
 app.use('/', require('./routes/guestRoutes'))
 app.use('/admin', require('./routes/adminRoutes'))
-app.use('/patient',require('./routes/patientRoutes'))
+app.use('/patient', require('./routes/patientRoutes'))
 
 app.use(errorHandler)
 
