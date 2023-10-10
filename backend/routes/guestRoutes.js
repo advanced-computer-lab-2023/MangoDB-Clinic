@@ -1,7 +1,13 @@
 const express = require('express')
 const router = express.Router()
-const {registerDoctor} = require('../controllers/guestController')
+const {registerAsPatient, registerAsDoctor, login} = require('../controllers/guestController.js')
 
-router.post('/register-doctor', registerDoctor)
+const authenticate = require('../middleware/authMiddleware.js')
+
+
+router.post('/patientRegistration', registerAsPatient)
+router.post('/doctorRegistration', registerAsDoctor)
+router.post('/login', login)
+
 
 module.exports = router

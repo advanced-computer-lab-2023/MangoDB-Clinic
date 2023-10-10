@@ -1,75 +1,85 @@
 const asyncHandler = require('express-async-handler')
-const Doctor = require('../models/doctorModel')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const Patient = require('../models/patientModel')
+const Doctor = require('../models/doctorModel')
+const User = require('../models/userModel')
 
-const emailValidator = function (email) {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-    return emailRegex.test(email)
-}
 
-// @desc Register doctor
-// @route POST /register-doctor
-// @access Public
-const registerDoctor = asyncHandler( async (req, res) => {
-    const {
-        username,
-        email,
-        password,
-        firstName,
-        lastName,
-        dob,
-        affiliation,
-        hourlyRate,
-        speciality,
-        educationalBackground
-    } = req.body
-
-    if (!username ||
-        !email ||
-        !password ||
-        !firstName ||
-        !lastName ||
-        !dob ||
-        !affiliation ||
-        !hourlyRate ||
-        !speciality ||
-        !educationalBackground
-    ) {
-        res.status(400)
-        throw new Error("Please Enter All Fields")
+const registerUser = async (req, res, model, userType, fields) => {
+    const data = req.body;
+    for (const field of fields) {
+        if (!data[field]) {
+            return res.status(400).json({ message: 'Fill all fields' });
+        }
     }
 
-    if (!emailValidator(email)){
-        res.status(400)
-        throw new Error("Invalid Email Format")
+    try {
+        const usernameExists = await User.findOne({ username: data.username });
+        if (usernameExists)
+            return res.status(400).json({ error: 'Username already exists' });
+
+        const emailExists = await User.findOne({ email: data.email });
+        if (emailExists)
+            return res.status(400).json({ error: 'Email already exists' });
+
+        const hashedPassword = await bcrypt.hash(data.password, 10);
+
+        const user = await model.create({ ...data, password: hashedPassword, userType: userType, accountStatus: userType === 'patient' ? 'active' : 'inactive' })
+
+        return res.status(201).json({
+            _id: user._id,
+            username: user.username,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            token: genToken(user._id),
+        });
+
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
     }
+};
 
-    const salt = await bcrypt.genSalt(10)
-    hashedPassword = await bcrypt.hash(password, salt)
 
-    const doctor = await Doctor.create({
-        username,
-        email,
-        password: hashedPassword,
-        firstName,
-        lastName,
-        dob,
-        state: 'inactive',
-        affiliation,
-        hourlyRate,
-        speciality,
-        educationalBackground
+
+const registerAsPatient = asyncHandler(async (req, res) => {
+    await registerUser(req, res, Patient, 'patient', ['mobile', 'emergency']);
+});
+
+const registerAsDoctor = asyncHandler(async (req, res) => {
+    await registerUser(req, res, Doctor, 'doctor', ['affiliation', 'hourlyRate', 'speciality', 'educationalBackground']);
+});
+
+const login = asyncHandler(async (req, res) => {
+    const { username, password } = req.body
+
+    const user = await User.findOne({ username })
+    if (!user)
+        res.status(404).json({ message: 'User not found' })
+
+    const correctPassword = await bcrypt.compare(password, user.password)
+    if (!correctPassword)
+        res.status(400).json({ message: 'Password is incorrect' })
+
+    res.status(200).json({
+        _id: user.id,
+        username: user.username,
+        token: genToken(user._id),
     })
-
-    if (doctor){
-        res.status(200).json({message: "Request Submitted Successfuly! Pending Approval..."})
-    } else {
-        res.status(400)
-        throw new Error("Something Went Wrong, Please Try Again")
-    }
-
 })
 
-module.exports = {
-    registerDoctor
+const genToken = (id) => {
+    return jwt.sign({ id }, process.env.SECRET)
 }
+
+
+module.exports = {
+    registerAsPatient,
+    registerAsDoctor,
+    login
+}
+
+
+
+
