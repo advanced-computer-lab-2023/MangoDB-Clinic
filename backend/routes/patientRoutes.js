@@ -41,7 +41,7 @@ router.get('/get_selected_doctor/:id', getSelectedDoctor)
 router.get('/get_prescriptions_of_patient/:patientId', getAllPrescriptions)
 
 //filter prescriptions
-router.get('/filter_prescription/:patientid/prescriptions', filterPrescription)
+router.get('/filter_prescription/:patientId', filterPrescription)
 
 //select a prescription from my list of prescriptions
 router.get('/select_prscription/:patientid/:prescriptionid')
