@@ -1,6 +1,5 @@
 const asyncHandler = require('express-async-handler');
 const Doctor = require('../models/doctorModel.js');
-const Doctor = require('../models/doctorModel.js');
 const Patient = require('../models/patientModel.js');
 const Appointment = require('../models/appointmentModel');
 const Prescription = require('../models/prescriptionModel');

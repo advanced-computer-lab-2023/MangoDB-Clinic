@@ -1,5 +1,4 @@
 const express = require('express');
-const Doctor = require('../models/doctorModel');
 const router = express.Router();
 const {
     createDoctor,
