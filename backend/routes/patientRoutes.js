@@ -1,8 +1,6 @@
 const express = require('express')
 const router = express.Router()
 
-const authenticate = require('../middleware/authMiddleware.js')
-
 const {
     getAllPatients,
     getPatient,
@@ -13,7 +11,14 @@ const {
     getFamilyMembers,
     getSelectedDoctor,
     getAllPrescriptions,
-    filterPrescription
+    filterPrescription,
+    selectPrescription,
+    filterDoctors,
+    searchDoctor,
+    viewAllDoctors,
+    filterAppointments,
+    addAppointment,
+    addPrescription
 } = require('../controllers/patientController')
 
 //GET all patients
@@ -29,11 +34,11 @@ router.post('/add_patient', addPatient)
 router.delete('/delet_patient/:id', deletePatient)
 
 //UPDATE a single patient
-router.put('/update_patient/:id', authenticate, updatePatient)
+router.put('/update_patient/:id', updatePatient)
 
 router.put('/add_family_member/:id', addFamilyMember)
 
-router.get('/get_family_members', authenticate, getFamilyMembers)
+router.get('/get_family_members/:id', getFamilyMembers)
 
 router.get('/get_selected_doctor/:id', getSelectedDoctor)
 
@@ -41,10 +46,23 @@ router.get('/get_selected_doctor/:id', getSelectedDoctor)
 router.get('/get_prescriptions_of_patient/:patientId', getAllPrescriptions)
 
 //filter prescriptions
-router.get('/filter_prescription/:patientid/prescriptions', filterPrescription)
+router.get('/filter_prescription/:patientId', filterPrescription)
 
 //select a prescription from my list of prescriptions
-router.get('/select_prscription/:patientid/:prescriptionid')
+router.get('/select_prescription/:patientId/:prescriptionId', selectPrescription)
+
+router.get('/get_all_doctors', viewAllDoctors)
+
+router.get('/filter_doctors', filterDoctors)
+
+router.get('/filter_appointments/:id', filterAppointments)
+
+router.get('/search_doctor', searchDoctor)
+
+// utils
+router.post('/add_prescription/:id', addPrescription)
+router.post('/add_appointment/:doctorId/:patientId', addAppointment)
+
 
 
 module.exports = router

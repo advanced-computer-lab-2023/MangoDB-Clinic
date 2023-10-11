@@ -3,7 +3,8 @@ const asyncHandler = require('express-async-handler')
 
 const Patient = require('../models/patientModel')
 const Doctor = require('../models/doctorModel')
-
+const Appointment = require('../models/appointmentModel')
+const Prescription = require('../models/prescriptionModel')
 //Get all patients
 const getAllPatients = async (req, res) => {
   const patients = await Patient.find({}).sort({ createdAt: -1 })
@@ -95,7 +96,7 @@ const addFamilyMember = asyncHandler(async (req, res) => {
 })
 
 const getFamilyMembers = asyncHandler(async (req, res) => {
-  const id = req.user._id
+  const id = req.params.id
 
   try {
 
@@ -149,8 +150,7 @@ const getAllPrescriptions = async (req, res) => {
 };
 
 const selectPrescription = async (req, res) => {
-  const { patientId } = req.params;
-  const { prescriptionId } = req.params
+  const { patientId, prescriptionId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(patientId)) {
     return res.status(404).json({ error: 'Id Not Found' });
@@ -181,46 +181,37 @@ const selectPrescription = async (req, res) => {
 
 
 const filterPrescription = async (req, res) => {
-  const { patientId } = req.params;
+  const patient = await Patient.findById(req.params.patientId).populate('prescriptions')
 
-  if (!mongoose.Types.ObjectId.isValid(patientId)) {
+  if (!patient) {
     return res.status(404).json({ error: 'Patient Id Not Found' });
   }
 
   try {
-    const patient = await Patient.findById(patientId).populate('prescriptions');
+    const { doctor, filled, date } = req.query
+    const query = {}
 
-    if (!patient) {
-      return res.status(404).json({ error: 'Patient Not Found' });
+    if (doctor) {
+      query['doctor'] = doctor;
     }
 
-    let filteredPrescriptions = patient.prescriptions;
-
-    // Check if the "doctor" query parameter is provided
-    if (req.query.doctor) {
-      const doctorName = req.query.doctor;
-      filteredPrescriptions = filteredPrescriptions.filter((prescription) => {
-        filterPrescription = prescription.doctor.name === doctorName;
-      });
+    if (filled) {
+      if (filled === 'true') {
+        query['filled'] = true;
+      } else if (filled === 'false') {
+        query['filled'] = false;
+      }
+    }
+    if (date) {
+      query.date = new Date(date);
     }
 
-    // Check if the "date" query parameter is provided
-    else if (req.query.date) {
-      const date = req.query.date;
-      filteredPrescriptions = filteredPrescriptions.filter((prescription) => {
-        filteredPrescriptions = prescription.date.toISOString().split('T')[0] === date;
-      });
-    }
+    const filteredPrescriptions = await Prescription.find({
+      _id: { $in: patient.prescriptions },
+      ...query
+    }).populate('doctor')
 
-    // Check if the "filled" query parameter is provided
-    else if (req.query.filled) {
-      const isFilled = req.query.filled === 'true';
-      filteredPrescriptions = filteredPrescriptions.filter((prescription) => {
-        filteredPrescriptions = prescription.filled === isFilled;
-      });
-    }
-
-    res.status(200).json(filteredPrescriptions);
+    res.status(200).json(filteredPrescriptions)
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -228,53 +219,61 @@ const filterPrescription = async (req, res) => {
 };
 
 //Filter appointments by Date/Status
-const filterAppointments = asyncHandler(async (req, res) => {
-  const { status, date_1, date_2 } = req.body;
+const filterAppointments = async (req, res) => {
+  let { status, date_1, date_2 } = req.query;
 
-  const doctor = await Doctor.findById(req.params.id);
-  if (doctor) {
-    const filteredAppointments = doctor.appointments.filter((appointment) => {
-      if (status != "All") {
+  const patient = await Patient.findById(req.params.id);
+  const appoint = await Appointment.find({ patientId: req.params.id })
+
+  if (patient) {
+    if (!status && !date_1 && !date_2)
+      return res.status(200).json(appoint)
+    if (!status)
+      status = 'All'
+    const filteredAppointments = appoint.filter(appointment => {
+      if (status !== 'All') {
         const Date1 = new Date(date_1);
         const Date2 = new Date(date_2);
-        if (Date1 && Date2 && typeof date_2 !== "undefined") {
-          const WithinRange =
-            appointment.date >= Date1 &&
-            appointment.date <= Date2 &&
-            appointment.status == status;
+
+        if (Date1 && Date2 && typeof date_2 !== 'undefined') {
+          const WithinRange = appointment.date >= Date1 && appointment.date <= Date2 && appointment.status == status;
           return WithinRange;
         }
-        if (Date1 && typeof date_2 === "undefined") {
-          const ondate = appointment.date.toString() == Date1;
+
+        if (Date1 && typeof date_1 !== 'undefined' && typeof date_2 === 'undefined') {
+          const ondate = appointment.date.toISOString().split('T')[0] === Date1.toISOString().split('T')[0];
           return ondate;
         }
-        if (typeof Date1 === "undefined" && typeof Date2 === "undefined")
+
+        if (typeof date_1 === 'undefined' && typeof date_2 === 'undefined')
           return appointment.status == status;
       }
-      if (status == "All") {
+      else if (status === 'All') {
         const Date_1 = new Date(date_1);
         const Date_2 = new Date(date_2);
 
-        if (Date_1 && Date_2 && typeof date_2 !== "undefined")
-          return appointment.date >= Date_1 && appointment.date <= Date_2;
+        if (Date_1 && Date_2 && typeof date_2 !== 'undefined')
+          return (appointment.date >= Date_1 && appointment.date <= Date_2);
 
-        if (Date_1 && typeof date_2 === "undefined") {
-          return appointment.date.toString() == Date_1;
-        }
+        if (Date_1 && typeof date_1 !== 'undefined' && typeof date_2 === 'undefined')
+          return (appointment.date.toISOString().split('T')[0] === Date_1.toISOString().split('T')[0]);
+
+        if (typeof date_1 === 'undefined' && typeof date_2 === 'undefined')
+          return (appointment);
       }
     });
     res.status(200).json({ filteredAppointments });
-  } else {
-    res.status(404).json({ message: "Appointment not found" });
   }
-});
+  else
+    res.status(404).json({ message: 'Doctor not found' });
+}
+
 
 //View a list of all doctors along with their specialty, session price(based on subscribed health package if any)
 const viewAllDoctors = asyncHandler(async (req, res) => {
   try {
     const doctors = await Doctor.find({})
       .sort({ createdAt: -1 })
-      .select("specialty hourlyRate");
     if (!doctors) {
       res.status(400).json({ error: "No Doctors Found" });
     } else {
@@ -290,69 +289,80 @@ const viewAllDoctors = asyncHandler(async (req, res) => {
 //Search for a doctor by Name/Specialty
 const searchDoctor = asyncHandler(async (req, res) => {
   try {
-    const { name, specialty } = req.query;
+    const { name, speciality } = req.query;
     const query = {};
     if (name) {
-      query.name = { $regex: search, $options: "i" };
+      firstName = name.split(' ')[0]
+      query.firstName = { $regex: firstName, $options: "i" };
+      lastName = name.split(' ')[1]//.trim()
+      if (typeof lastName === "string" && lastName.length > 0)
+        query.lastName = { $regex: lastName, $options: "i" };
     }
-    if (specialty) {
-      query.use = { $regex: use, $options: "i" };
-    }
+    if (speciality)
+      query.speciality = { $regex: speciality, $options: "i" };
 
     const doctor = await Doctor.find(query);
-
-    res.json(doctor);
+    res.status(200).json(doctor);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Error while searching for Doctor" });
   }
 });
 
-//Filter a doctor by specialty and/or availability on a certain date and at a specific time.
-const filterDoctor = asyncHandler(async (req, res) => {
-  const { status, date_1, date_2 } = req.body;
 
-  const doctor = await Doctor.findById(req.params.id);
-  if (doctor) {
-    const filteredAppointments = doctor.appointments.filter((appointment) => {
-      if (status != "All") {
-        const Date1 = new Date(date_1);
-        const Date2 = new Date(date_2);
-        if (Date1 && Date2 && typeof date_2 !== "undefined") {
-          const WithinRange =
-            appointment.date >= Date1 &&
-            appointment.date <= Date2 &&
-            appointment.status == status;
-          return WithinRange;
-        }
+const filterDoctors = async (req, res) => {
+  const { datetime, speciality } = req.query;
 
-        if (Date1 && typeof date_2 === "undefined") {
-          const ondate = appointment.date.toString() == Date1;
-          return ondate;
-        }
+  try {
+    const query = {}
 
-        if (typeof Date1 === "undefined" && typeof Date2 === "undefined")
-          return appointment.status == status;
-      }
-      if (status == "All") {
-        const Date_1 = new Date(date_1);
-        const Date_2 = new Date(date_2);
+    if (speciality)
+      query.speciality = speciality
 
-        if (Date_1 && Date_2 && typeof date_2 !== "undefined")
-          return appointment.date >= Date_1 && appointment.date <= Date_2;
+    if (datetime) {
+      const appointmentsForDate = await Appointment.find({ date: new Date(datetime) })
+      const doctorIdsWithAppointments = appointmentsForDate.map(appointment => appointment.doctorId)
+      query._id = { $nin: doctorIdsWithAppointments }
+    }
+    const filteredDoctors = await Doctor.find(query)
 
-        if (Date_1 && typeof date_2 === "undefined") {
-          return appointment.date.toString() == Date_1;
-        }
-      }
-    });
-    const filteredDoctors = filteredAppointments.select("doctorName");
-    res.status(200).json({ filteredDoctors });
-  } else {
-    res.status(404).json({ message: "No Doctor found" });
+    res.status(200).json(filteredDoctors)
+  } catch (err) {
+    res.status(400).json({ error: err.message })
   }
-});
+};
 
+
+
+
+
+/////////////////////////////////
+
+// UTILS
+
+const addAppointment = async (req, res) => {
+  const docid = req.params.doctorId
+  const patid = req.params.patientId
+
+  const data = req.body
+  try {
+    const app = await Appointment.create({ doctorId: docid, patientId: patid, ...data })
+    res.status(200).json(app);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+}
+
+const addPrescription = async (req, res) => {
+  const docid = req.params.id
+  const data = req.body
+
+  try {
+    const pres = await Prescription.create({ doctor: docid, ...data })
+    res.status(200).json(pres)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+}
 
 
 module.exports = {
@@ -370,5 +380,7 @@ module.exports = {
   filterAppointments,
   viewAllDoctors,
   searchDoctor,
-  filterDoctor
+  filterDoctors,
+  addAppointment,
+  addPrescription
 }
