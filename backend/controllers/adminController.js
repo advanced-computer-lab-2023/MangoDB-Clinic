@@ -227,9 +227,9 @@ const viewDoctorRequest = asyncHandler( async (req, res) => {
 // @route GET /admin/view-requested-doctors
 // @access Private
 const viewAllDoctorRequests = asyncHandler( async(req, res) => {
-    const doctors = await Doctor.find({state: 'inactive'})
+    const doctors = await Doctor.find({accountStatus: 'inactive'})
 
-    if (!doctors){
+    if (doctors.length === 0){
         res.status(400)
         throw new Error("No Doctors Found!")
     } else {
@@ -249,15 +249,15 @@ const doctorApproval = asyncHandler(async (req, res) => {
       throw new Error('Doctor not found')
     }
 
-    if (doctor.state === 'inactive') {
-      doctor.state = 'active'
+    if (doctor.accountStatus === 'inactive') {
+      doctor.accountStatus = 'active'
       await doctor.save()
 
     const transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
             user: 'omarelzaher93@gmail.com',
-            pass: ''
+            pass: 'vtzilhuubkdtphww'
         }
     })
 
@@ -300,7 +300,7 @@ const doctorRejection = asyncHandler(async (req, res) => {
         service: 'Gmail',
         auth: {
             user: 'omarelzaher93@gmail.com',
-            pass: ''
+            pass: 'vtzilhuubkdtphww'
         }
     })
 

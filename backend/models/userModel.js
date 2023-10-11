@@ -29,13 +29,12 @@ const userSchema = mongoose.Schema({
     },
     userType: {
         type: String,
-        enum: ['patient', 'doctor'],
-        required: true
+        enum: ['patient', 'doctor']
     },
     accountStatus: {
         type: String,
         enum: ['active', 'inactive'],
-        required: true
+        default: 'inactive'
     }
 },
     {

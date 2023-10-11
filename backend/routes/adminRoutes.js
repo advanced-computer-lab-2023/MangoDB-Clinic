@@ -18,21 +18,21 @@ const {
 
 const {protectAdmin} = require('../middleware/adminMiddleware')
 
-router.get('/my-info', protectAdmin, getMyInfo)
-router.get('/view-doctor/:id', protectAdmin, viewDoctorRequest)
-router.get('/view-requested-doctors', protectAdmin, viewAllDoctorRequests)
+router.get('/my-info', getMyInfo)
+router.get('/view-doctor/:id', viewDoctorRequest)
+router.get('/view-requested-doctors', viewAllDoctorRequests)
 
 router.post('/create-admin', createAdmin)
 router.post('/login', loginAdmin)
-router.post('/add-packages', protectAdmin, addPackages)
+router.post('/add-packages', addPackages)
 
-router.delete('/remove-doctor/:id', protectAdmin, removeDoctor)
-router.delete('/remove-patient/:id', protectAdmin, removePatient)
-router.delete('/remove-admin/:id', protectAdmin, removeAdmin)
-router.delete('/remove-package/:id', protectAdmin, deletePackages)
+router.delete('/remove-doctor/:id', removeDoctor)
+router.delete('/remove-patient/:id', removePatient)
+router.delete('/remove-admin/:id', removeAdmin)
+router.delete('/remove-package/:id', deletePackages)
 
-router.put('/doctor-approval/:id', protectAdmin, doctorApproval)
-router.put('/doctor-rejection/:id', protectAdmin, doctorRejection)
-router.put('/update-package/:id', protectAdmin, updatePackages)
+router.put('/doctor-approval/:id', doctorApproval)
+router.put('/doctor-rejection/:id', doctorRejection)
+router.put('/update-package/:id', updatePackages)
 
 module.exports = router
