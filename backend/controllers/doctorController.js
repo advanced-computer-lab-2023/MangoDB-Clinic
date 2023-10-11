@@ -1,11 +1,9 @@
 const asyncHandler = require('express-async-handler');
 const Doctor = require('../models/doctorModel.js');
-const doctorModel = require('../models/doctorModel.js');
+const Doctor = require('../models/doctorModel.js');
 const Patient = require('../models/patientModel.js');
-const AppointmentModel = require('../models/appointmentModel');
 const Appointment = require('../models/appointmentModel');
 const Prescription = require('../models/prescriptionModel');
-const prescriptionModel = require('../models/prescriptionModel');
 
 
 const filterStatus = async(req, res) => {
@@ -13,7 +11,7 @@ const filterStatus = async(req, res) => {
     
     const doctor = await Doctor.findById(req.params.id); 
     if (doctor){
-        const filteredAppointments = doctor.appointments.filter(appointment =>{
+        const filteredAppointments = Doctor.appointments.filter(appointment =>{
            
              if( status!='All'){
                 const Date1 = new Date(date_1);
@@ -67,7 +65,7 @@ const filterStatus = async(req, res) => {
 
       const currentDate = new Date();
 
-      const upcomingApp = doctor.appointments.filter(appointment => appointment.date > currentDate);
+      const upcomingApp = Doctor.appointments.filter(appointment => appointment.date > currentDate);
       upcomingApp.sort((a, b) => new Date(a.date) - new Date(b.date));
 
 
@@ -96,7 +94,7 @@ const updateEmail = async (req, res) => {
     const doctorId = req.params.id; 
 
     try {
-        const doctor = await doctorModel.findByIdAndUpdate(doctorId, { email }, { new: true });
+        const doctor = await Doctor.findByIdAndUpdate(doctorId, { email }, { new: true });
         res.status(200).json(doctor);
     } catch (error) {
         console.error(error);
@@ -110,7 +108,7 @@ const updateEmail = async (req, res) => {
         const doctorId = req.params.id;
     
         try{
-            const doctor = await doctorModel.findByIdAndUpdate(doctorId,{hourlyRate},{new: true});
+            const doctor = await Doctor.findByIdAndUpdate(doctorId,{hourlyRate},{new: true});
             res.status(200).json(doctor);
         }
         catch (error){
@@ -125,7 +123,7 @@ const updateEmail = async (req, res) => {
         const doctorId = req.params.id;
     
         try{
-            const doctor = await doctorModel.findByIdAndUpdate(doctorId,{affiliation}, {new: true});
+            const doctor = await Doctor.findByIdAndUpdate(doctorId,{affiliation}, {new: true});
             res.status(200).json(doctor);
         }
         catch (error){
@@ -398,5 +396,18 @@ const selectPatient = async (req, res) => {
   };
 
   module.exports ={
-    createDoctor,updateEmail,updateHourlyRate,updateAffiliation,createPatient,createAppointment,searchPatientByName,viewAllPatients,getDoctors,filterStatus,upcoming,selectPatient,getPatients,viewHealthRecords
+    createDoctor,
+    updateEmail,
+    updateHourlyRate,
+    updateAffiliation,
+    createPatient,
+    createAppointment,
+    searchPatientByName,
+    viewAllPatients,
+    getDoctors,
+    filterStatus,
+    upcoming,
+    selectPatient,
+    getPatients,
+    viewHealthRecords
 }
