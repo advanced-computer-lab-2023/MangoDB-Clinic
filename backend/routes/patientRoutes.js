@@ -10,27 +10,38 @@ const {
     updatePatient,
     deletePatient,
     addFamilyMember,
-    getFamilyMembers
+    getFamilyMembers,
+    getSelectedDoctor,
+    getAllPrescriptions,
+    filterPrescription
 } = require('../controllers/patientController')
 
 //GET all patients
-router.get('/getAllPatients', getAllPatients)
+router.get('/get_all_patients', getAllPatients)
 
 //GET a single patient
-router.get('/getPatient/:id', getPatient)
+router.get('/get_patient/:id', getPatient)
 
 //POST a single patient
-router.get('/addPatient', addPatient)
+router.post('/add_patient', addPatient)
 
 //DELETE a single patient
-router.get('/deletePatient/:id', deletePatient)
+router.delete('/delet_patient/:id', deletePatient)
 
 //UPDATE a single patient
-router.get('/updatePatient/:id', updatePatient)
+router.put('/update_patient/:id', authenticate, updatePatient)
 
-router.put('/addFamilyMember/:id', addFamilyMember)
+router.put('/add_family_member/:id', addFamilyMember)
 
-router.get('/getFamilyMembers', authenticate, getFamilyMembers)
+router.get('/get_family_members', authenticate, getFamilyMembers)
+
+router.get('/get_selected_doctor/:id', getSelectedDoctor)
+
+//GET all prescriptions of a single patient
+router.get('/get_prescriptions_of_patient/:patientId', getAllPrescriptions)
+
+//filter prescriptions
+router.get('/filter_prescription/:patientid/prescriptions', filterPrescription)
 
 
 module.exports = router

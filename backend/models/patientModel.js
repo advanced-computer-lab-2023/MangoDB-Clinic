@@ -1,20 +1,20 @@
 const mongoose = require('mongoose')
+const User = require('../models/userModel')
 
-const emailValidator = function (email) {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-    return emailRegex.test(email)
-}
+// const emailValidator = function (email) {
+//     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+//     return emailRegex.test(email)
+// }
 
-const phoneNumberValidator = function (phoneNumber) {
-    const numberRegex = /^(\+20|0020)?(10|11|12|15)[0-9]{8}$/
-    return numberRegex.test(phoneNumber)
-}
+// const phoneNumberValidator = function (phoneNumber) {
+//     const numberRegex = /^(\+20|0020)?(10|11|12|15)[0-9]{8}$/
+//     return numberRegex.test(phoneNumber)
+// }
 
 const patientSchema = mongoose.Schema({
     username: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     name: {
         type: String,
@@ -25,10 +25,6 @@ const patientSchema = mongoose.Schema({
         required: true,
         unique: true,
         //validate: emailValidator
-    },
-    password: {
-        type: String,
-        required: true
     },
     dob: {
         type: Date,
@@ -45,10 +41,10 @@ const patientSchema = mongoose.Schema({
         unique: true,
         //validate: phoneNumberValidator
     },
-    emergency: {
+    emergencyContact: {
         type:
-          {
-             name: {
+        {
+            name: {
                 type: String,
                 required: true
             },
@@ -58,7 +54,7 @@ const patientSchema = mongoose.Schema({
                 unique: true,
                 //validate: phoneNumberValidator
             }
-          }
+        }
     },
     family: {
         type: [
@@ -89,11 +85,17 @@ const patientSchema = mongoose.Schema({
             }
         ],
         default: []
-    }
-
+    },
+    prescriptions: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Prescription'
+        }
+    ]
 },
-{
-    timestamps: true
-})
+    {
+        timestamps: true
+    })
 
-module.exports = mongoose.model('Patient', patientSchema)
+const Patient = User.discriminator('Patient', patientSchema)
+module.exports = Patient
