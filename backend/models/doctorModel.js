@@ -46,6 +46,4 @@ const doctorSchema = mongoose.Schema({
     timestamps: true
   })
 
-const Doctor = User.discriminator('Doctor', doctorSchema)
-
-module.exports = Doctor
+module.exports = mongoose.model('Doctor', doctorSchema)
