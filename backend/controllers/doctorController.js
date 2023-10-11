@@ -7,40 +7,53 @@ const Prescription = require('../models/prescriptionModel');
 
 const filterStatus = async(req, res) => {
     const{status,date_1,date_2}= req.body;
-    
+    if (!doctor) {
+        return res.status(404).json({ message: 'please enter status :' });
+    }
+
     const doctor = await Doctor.findById(req.params.id); 
+    const appoint = await Appointment.find({'doctorId':doctor})
     if (doctor){
-        const filteredAppointments = Doctor.appointments.filter(appointment =>{
-           
+        const filteredAppointments =appoint.filter(appointment =>{
+           console.log(req.body)
              if( status!='All'){
                 const Date1 = new Date(date_1);
                 const Date2 = new Date(date_2);
+
                 if(Date1 && Date2 && typeof date_2 !== 'undefined'  ){
                  const WithinRange = appointment.date >= Date1 && appointment.date <= Date2 &&  appointment.status == status  ;
+
                 return WithinRange;}
                
-                if(Date1  && typeof date_2 === 'undefined' ){
+                if(Date1 && typeof date_1 !== 'undefined' && typeof date_2 === 'undefined' ){
 
                         const ondate = appointment.date.toString() == Date1;
                         return ondate;}
 
-               if(typeof Date1 === 'undefined' && typeof Date2 === 'undefined' )
-               return appointment.status == status;
-                
-            }
+                        if (typeof date_1 === 'undefined' && typeof date_2 === 'undefined') {
+                            return appointment.status == status;
+                        }}
             if(status == 'All'){
+                console.log(req.body);
 
                 const Date_1 = new Date(date_1);
                 const Date_2 = new Date(date_2);
 
                 if(Date_1  && Date_2 && typeof date_2 !== 'undefined' )
                 return (appointment.date >= Date_1 && appointment.date <= Date_2 );
+                
+
                
-                if(Date_1  && typeof date_2 === 'undefined' ){
+                if(Date_1 && typeof date_1 !== 'undefined'  && typeof date_2 === 'undefined' ){
                 return (appointment.date.toString() == Date_1 );}
-               
+
+                if( typeof date_1 === 'undefined'  && typeof date_2 === 'undefined' ){
+                    return (appointment );}
+    
+              
 
             }
+            
         });
         res.status(200).json({ filteredAppointments });
     }
@@ -57,6 +70,7 @@ const filterStatus = async(req, res) => {
 
   try {
       const doctor = await Doctor.findById(doctorId);
+      const upappoint = await Appointment.find({'doctorId':doctor})
 
       if (!doctor) {
           return res.status(404).json({ message: 'Doctor not found' });
@@ -64,7 +78,7 @@ const filterStatus = async(req, res) => {
 
       const currentDate = new Date();
 
-      const upcomingApp = Doctor.appointments.filter(appointment => appointment.date > currentDate);
+      const upcomingApp = upappoint.filter(appointment => appointment.date > currentDate);
       upcomingApp.sort((a, b) => new Date(a.date) - new Date(b.date));
 
 
@@ -410,3 +424,4 @@ const selectPatient = async (req, res) => {
     getPatients,
     viewHealthRecords
 }
+
