@@ -4,7 +4,7 @@ const Prescription = require('../models/prescriptionModel')
 const Patient = require('../models/patientModel')
 const Doctor = require('../models/doctorModel')
 const Appointment = require('../models/appointmentModel')
-const Prescription = require('../models/prescriptionModel')
+
 //Get all patients
 const getAllPatients = async (req, res) => {
   const patients = await Patient.find({}).sort({ createdAt: -1 })
