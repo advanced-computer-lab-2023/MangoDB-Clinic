@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const asyncHandler = require('express-async-handler')
-
+const Prescription = require('../models/prescriptionModel')
 const Patient = require('../models/patientModel')
 const Doctor = require('../models/doctorModel')
 const Appointment = require('../models/appointmentModel')
@@ -186,6 +186,10 @@ const filterPrescription = async (req, res) => {
   if (!patient) {
     return res.status(404).json({ error: 'Patient Id Not Found' });
   }
+
+  // if (!mongoose.Types.ObjectId.isValid(patientId)) {
+  //     return res.status(404).json({ error: 'Patient Id Not Found' });
+  // }
 
   try {
     const { doctor, filled, date } = req.query
