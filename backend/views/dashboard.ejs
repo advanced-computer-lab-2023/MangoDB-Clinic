@@ -228,7 +228,7 @@
                   const row = table.insertRow();
                   row.insertCell(0).textContent = new Date(item.date);
                   row.insertCell(1).textContent = item.filled;
-                  row.insertCell(2).textContent = item.doctor.username;
+                  row.insertCell(2).textContent = item.doctor.firstName + " " + item.doctor.lastName;
 
                   const detailsButton = document.createElement("button");
                   detailsButton.textContent = "View Details";

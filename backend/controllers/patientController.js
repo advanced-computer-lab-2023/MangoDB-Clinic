@@ -139,7 +139,13 @@ const getAllPrescriptions = async (req, res) => {
   }
 
   try {
-    const patient = await Patient.findById(patientId).populate('prescriptions');
+    const patient = await Patient.findById(patientId).populate({
+      path: 'prescriptions',
+      populate: {
+        path: 'doctor',
+        model: 'Doctor'
+      }
+    })
 
     if (!patient) {
       return res.status(404).json({ error: 'Patient Not Found' });
@@ -147,12 +153,8 @@ const getAllPrescriptions = async (req, res) => {
 
     const prescriptions = patient.prescriptions
     prescriptions.forEach(async prescription => {
-        console.log(prescription.doctor);
-        prescription.populate('doctor')
-        console.log(await Doctor.findById(prescription.doctor.doctorId).username);
+      const doctorName = prescription.doctor.firstName
     });
-
-    console.log("");
 
     res.status(200).json(patient.prescriptions);
 
@@ -161,7 +163,6 @@ const getAllPrescriptions = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
 const selectPrescription = async (req, res) => {
   const { prescriptionId } = req.params;
 
