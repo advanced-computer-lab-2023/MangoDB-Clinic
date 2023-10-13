@@ -25,7 +25,27 @@
         <br />
         <br />
         <div id="container"></div>
-      </section>
+      
+        <div id="filteringPrescriptions" style="display: none;">
+            <!-- Filter Controls -->
+            <label for="doctorFilter">Doctor:</label>
+            <select id="doctorFilter">
+                <option value="">All</option>
+            </select>
+
+            <label for="filledFilter">Filled:</label>
+            <select id="filledFilter">
+                <option value="">All</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+            </select>
+
+            <label for="dateFilter">Date:</label>
+            <input type="date" id="dateFilter">
+            
+            <button id="applyFilterButton">Apply Filter</button>
+        </div>
+        </section>
     </main>
 
     <script>
@@ -39,6 +59,7 @@
         const getPrescriptionsButton = document.getElementById(
           "getPrescriptionsButton"
         );
+        const applyFilterButton = document.getElementById("applyFilterButton");
         const viewAllDoctorsButton = document.getElementById("viewAllDoctors");
         const container = document.getElementById("container");
 
@@ -63,8 +84,24 @@
           fetchDoctors();
         });
 
+        applyFilterButton.addEventListener("click", function () {
+            
+            fetchFilteredPrescriptions();
+            clearContent();
+        });
+
         function clearContent() {
           container.innerHTML = "";
+          // Reset filter elements
+            const doctorFilter = document.getElementById('doctorFilter');
+            const filledFilter = document.getElementById('filledFilter');
+            const dateFilter = document.getElementById('dateFilter');
+
+            // Set filter elements back to their default or initial state
+            doctorFilter.value = '';
+            filledFilter.value = '';
+            dateFilter.value = '';
+
         }
 
         function fetchFamilyMembers() {
@@ -132,7 +169,10 @@
         }
 
         function fetchPrescriptions() {
-            console.log("Fetching prescriptions...");
+            
+            const filterDiv = document.getElementById('filteringPrescriptions');
+            filterDiv.style.display = 'block'; // Display the filter controls
+
             fetch("http://localhost:4000/patient/get_prescriptions_of_patient/65266a257993f711333900fd")
                 .then((response) => response.json())
                 .then((data) => {
@@ -148,7 +188,7 @@
 
                 data.forEach((item) => {
                     const row = table.insertRow();
-                    row.insertCell(0).textContent = new Date(item.date).toLocaleDateString("en-US");
+                    row.insertCell(0).textContent = new Date(item.date);
                     row.insertCell(1).textContent = item.filled;
                     row.insertCell(2).textContent = item.doctor.username;
 
@@ -167,6 +207,66 @@
                 container.appendChild(table);
                 })
                 .catch((error) => console.error("Error fetching data: ", error));
+        }
+
+        function fetchFilteredPrescriptions() {
+                const doctorFilter = document.getElementById("doctorFilter").value;
+                const filledFilter = document.getElementById("filledFilter").value;
+                const dateFilter = document.getElementById("dateFilter").value;
+
+                // Construct the URL with query parameters
+                let url = `http://localhost:4000/patient/filter_prescription/65266a257993f711333900fd?`;
+
+                if (doctorFilter) {
+                    url += `doctor=${doctorFilter}`;
+                }
+
+                if (filledFilter) {
+                    url += `filled=${filledFilter}`;
+                }
+
+                if (dateFilter) {
+                    url += `date=${dateFilter}`;
+                }
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Display the filtered prescriptions
+                        displayFilteredPrescriptions(data);
+                    })
+                    .catch(error => console.error("Error fetching data: ", error));
+        }
+
+        function displayFilteredPrescriptions(data) {
+                const table = document.createElement("table");
+                table.setAttribute("border", "1");
+                table.innerHTML = `
+                    <tr>
+                        <th>Date</th>
+                        <th>Filled</th>
+                        <th>Doctor</th>
+                    </tr>
+                `;
+
+                data.forEach(item => {
+                    const row = table.insertRow();
+                    row.insertCell(0).textContent = new Date(item.date).toLocaleDateString("en-US");
+                    row.insertCell(1).textContent = item.filled;
+                    row.insertCell(2).textContent = item.doctor.username;
+
+                    const detailsButton = document.createElement("button");
+                    detailsButton.textContent = "View Details";
+                    detailsButton.addEventListener("click", function() {
+                        // Pass the container to fetchPrescriptionDetails
+                        fetchPrescriptionDetails(item._id, container);
+                    });
+
+                    row.insertCell(3).appendChild(detailsButton);
+                });
+
+                table.setAttribute("style", "margin: 0 auto;");
+                container.appendChild(table);
             }
 
         function fetchPrescriptionDetails(prescriptionId, container) {
@@ -208,8 +308,6 @@
                 })
                 .catch((error) => console.error("Error fetching prescription details: ", error));
         }
-
-
     });
     
     </script>
