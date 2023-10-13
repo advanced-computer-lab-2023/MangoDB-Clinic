@@ -1,66 +1,81 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Admin</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <header>
-        <h1 style="text-align: center;">Virtual Clinic</h1>
-        <div class="menu">
-            <ul class="menu-list">
-                <li><a href="/patient/dashboard.html">Home Page</a></li>
-            </ul>
-        </div>
+      <h1 style="text-align: center">Virtual Clinic</h1>
+      <div class="menu">
+        <ul class="menu-list">
+          <li><a href="/patient/dashboard.html">Home Page</a></li>
+        </ul>
+      </div>
     </header>
 
     <main>
-        <section style="text-align: center;">
-            <button id="getFamilyMembersButton">Get Family Members</button>
-            <button id="addFamilyMemberButton">Add Family Member</button>
-            <button id="getPrescriptionsButton">Get Prescriptions</button>
-            <hr> <br> <br>
-            <div id="container">
-            </div>
-        </section>
+      <section style="text-align: center">
+        <button id="getFamilyMembersButton">Get Family Members</button>
+        <button id="addFamilyMemberButton">Add Family Member</button>
+        <button id="getPrescriptionsButton">Get Prescriptions</button>
+        <button id="viewAllDoctors">View All Doctors</button>
+        <hr />
+        <br />
+        <br />
+        <div id="container"></div>
+      </section>
     </main>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const getFamilyMembersButton = document.getElementById("getFamilyMembersButton");
-            const addFamilyMemberButton = document.getElementById("addFamilyMemberButton");
-            const getPrescriptions = document.getElementById("getPrescriptionsButton")
-            const container = document.getElementById("container");
+      document.addEventListener("DOMContentLoaded", function () {
+        const getFamilyMembersButton = document.getElementById(
+          "getFamilyMembersButton"
+        );
+        const addFamilyMemberButton = document.getElementById(
+          "addFamilyMemberButton"
+        );
+        const getPrescriptionsButton = document.getElementById(
+          "getPrescriptionsButton"
+        );
+        const viewAllDoctorsButton = document.getElementById("viewAllDoctors");
+        const container = document.getElementById("container");
 
-            getFamilyMembersButton.addEventListener("click", function () {
-                clearContent();
-                fetchFamilyMembers();
-            });
+        getFamilyMembersButton.addEventListener("click", function () {
+          clearContent();
+          fetchFamilyMembers();
+        });
 
-            addFamilyMemberButton.addEventListener("click", function () {
-                clearContent();
-                window.location.href = "http://localhost:5000/patient/addFamilyMember.html"
-            });
+        addFamilyMemberButton.addEventListener("click", function () {
+          clearContent();
+          window.location.href =
+            "http://localhost:5000/patient/addFamilyMember.html";
+        });
 
-            getPrescriptionsButton.addEventListener("click", function() {
-                clearContent();
-                fetchPrescriptions();
+        getPrescriptionsButton.addEventListener("click", function () {
+          clearContent();
+          fetchPrescriptions();
+        });
 
-            });
+        viewAllDoctorsButton.addEventListener("click", function () {
+          clearContent();
+          fetchDoctors();
+        });
 
-            function clearContent() {
-                container.innerHTML = "";
-            }
+        function clearContent() {
+          container.innerHTML = "";
+        }
 
-            function fetchFamilyMembers() {
-                fetch("http://localhost:5000/patient/get_family_members/6526d3ad0f83f5e462288362")
-                    .then(response => response.json())
-                    .then(data => {
-                        const table = document.createElement("table");
-                        table.setAttribute("border", "1");
-                        table.innerHTML = `
+        function fetchFamilyMembers() {
+          fetch(
+            "http://localhost:5000/patient/get_family_members/6526d3ad0f83f5e462288362"
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              const table = document.createElement("table");
+              table.setAttribute("border", "1");
+              table.innerHTML = `
                 <tr>
                     <th>Name</th>
                     <th>National ID</th>
@@ -70,30 +85,31 @@
                 </tr>
             `;
 
-                        data.forEach(item => {
-                            const row = table.insertRow();
-                            row.insertCell(0).textContent = item.name;
-                            row.insertCell(1).textContent = item.nationalID;
-                            row.insertCell(2).textContent = item.age;
-                            row.insertCell(3).textContent = item.gender;
-                            row.insertCell(4).textContent = item.relation;
-                        });
+              data.forEach((item) => {
+                const row = table.insertRow();
+                row.insertCell(0).textContent = item.name;
+                row.insertCell(1).textContent = item.nationalID;
+                row.insertCell(2).textContent = item.age;
+                row.insertCell(3).textContent = item.gender;
+                row.insertCell(4).textContent = item.relation;
+              });
 
-                        table.setAttribute("style", "margin: 0 auto;");
+              table.setAttribute("style", "margin: 0 auto;");
 
-                        container.appendChild(table);
-                    })
-                    .catch(error => console.error("Error fetching data: ", error));
+              container.appendChild(table);
+            })
+            .catch((error) => console.error("Error fetching data: ", error));
+        }
 
-            }
-
-            function fetchPrescriptions() {
-                fetch("http://localhost:4000/patient/get_prescriptions_of_patient/65266a257993f711333900fd")
-                .then(response => response.json())
-                .then(data => {
-                    const table = document.createElement("table");
-                        table.setAttribute("border", "1");
-                        table.innerHTML = `
+        function fetchPrescriptions() {
+          fetch(
+            "http://localhost:4000/patient/get_prescriptions_of_patient/65266a257993f711333900fd"
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              const table = document.createElement("table");
+              table.setAttribute("border", "1");
+              table.innerHTML = `
                             <tr>
                                 <th>Date</th>
                                 <th>Filled</th>
@@ -101,31 +117,62 @@
                             </tr>
                         `;
 
-                        data.forEach(item => {
-                            const row = table.insertRow();
-                            row.insertCell(0).textContent = new Date(item.date).toLocaleDateString('en-US');
-                            row.insertCell(1).textContent = item.filled;
-                            row.insertCell(2).textContent = item.doctor;
+              data.forEach((item) => {
+                const row = table.insertRow();
+                row.insertCell(0).textContent = new Date(
+                  item.date
+                ).toLocaleDateString("en-US");
+                row.insertCell(1).textContent = item.filled;
+                row.insertCell(2).textContent = item.doctor;
 
-                            // const detailsButton = document.createElement("button");
-                            // detailsButton.textContent = "View Details";
-                            // detailsButton.addEventListener("click", function() {
-                            //     // Call a function to fetch and display the details of this prescription
-                            //     fetchPrescriptionDetails(item._id);
-                            // });
-                            // row.insertCell(3).appendChild(detailsButton);
-                            // row.insertCell(3).textContent = item.gender;
-                            // row.insertCell(4).textContent = item.relation;
-                        });
+                // const detailsButton = document.createElement("button");
+                // detailsButton.textContent = "View Details";
+                // detailsButton.addEventListener("click", function() {
+                //     // Call a function to fetch and display the details of this prescription
+                //     fetchPrescriptionDetails(item._id);
+                // });
+                // row.insertCell(3).appendChild(detailsButton);
+                // row.insertCell(3).textContent = item.gender;
+                // row.insertCell(4).textContent = item.relation;
+              });
 
-                        table.setAttribute("style", "margin: 0 auto;");
+              table.setAttribute("style", "margin: 0 auto;");
 
-                        container.appendChild(table);
-                })
-                .catch(error => console.error("Error fetching data: ", error));
-            }
-        });
+              container.appendChild(table);
+            })
+            .catch((error) => console.error("Error fetching data: ", error));
+        }
+
+        function fetchDoctors() {
+          fetch(
+            "http://localhost:5000/patient/get_all_doctors/6526d3ad0f83f5e462288362"
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              const table = document.createElement("table");
+              table.setAttribute("border", "1");
+              table.innerHTML = `
+                <tr>
+                    <th>Name</th>
+                    <th>Speciality</th>
+                    <th>Hourly Rate</th>
+                </tr>
+            `;
+
+              data.forEach((item) => {
+                const row = table.insertRow();
+                row.insertCell(0).textContent = item.name;
+                row.insertCell(1).textContent = item.hourlyRate;
+                row.insertCell(2).textContent = item.speciality;
+              });
+
+              table.setAttribute("style", "margin: 0 auto;");
+
+              container.appendChild(table);
+            })
+            .catch((error) => console.error("Error fetching data: ", error));
+        }
+      });
     </script>
-</body>
-
+  </body>
 </html>
