@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Add Family Member</title>
+</head>
+
+<body>
+
+    <header>
+        <h1 style="text-align: center;">Virtual Clinic</h1>
+        <div class="menu">
+            <ul class="menu-list">
+                <li><a href="/patient/dashboard.html">Home Page</a></li>
+            </ul>
+        </div>
+    </header>
+
+
+    <h1 style="text-align: center;">Add Family Member</h1>
+    <form style="text-align: center;" id="familyMemberForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="family[name]" required><br> <br>
+
+        <label for="nationalID">National ID:</label>
+        <input type="text" id="nationalID" name="family[nationalID]" required><br> <br>
+
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="family[age]" required><br> <br>
+
+        <label for="gender">Gender:</label>
+        <select id="gender" name="family[gender]">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select><br> <br>
+
+        <label for="relation">Relation:</label>
+        <select id="relation" name="family[relation]">
+            <option value="wife">Wife</option>
+            <option value="husband">Husband</option>
+            <option value="child">Child</option>
+        </select><br> <br> <br> <br>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        document.getElementById('familyMemberForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const familyMembers = [];
+
+            formData.getAll('family[name]').forEach((name, index) => {
+                familyMembers.push({
+                    name: name,
+                    nationalID: formData.getAll('family[nationalID]')[index],
+                    age: parseInt(formData.getAll('family[age]')[index], 10),
+                    gender: formData.getAll('family[gender]')[index],
+                    relation: formData.getAll('family[relation]')[index]
+                });
+            });
+
+            const familyData = { family: familyMembers };
+
+
+
+            try {
+                const response = await fetch('http://localhost:5000/patient/add_family_member/6526d3ad0f83f5e462288362', {
+                    method: 'PUT',
+                    body: JSON.stringify(familyData),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert('Family member added successfully!');
+                    console.log(result);
+                } else {
+                    const errorData = await response.json();
+                    alert('Adding family member failed: ' + errorData.message);
+                }
+            } catch (error) {
+                alert('An error occurred: ' + error.message);
+            }
+        });
+    </script>
+</body>
+
+</html>

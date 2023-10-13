@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin</title>
+</head>
+
+<body>
+    <header>
+        <h1 style="text-align: center;">Virtual Clinic</h1>
+        <div class="menu">
+            <ul class="menu-list">
+                <li><a href="/patient/dashboard.html">Home Page</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main>
+        <section style="text-align: center;">
+            <button id="getFamilyMembersButton">Get Family Members</button>
+            <button id="addFamilyMemberButton">Add Family Member</button>
+            <hr> <br> <br>
+            <div id="container">
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const getFamilyMembersButton = document.getElementById("getFamilyMembersButton");
+            const addFamilyMemberButton = document.getElementById("addFamilyMemberButton");
+            const container = document.getElementById("container");
+
+            getFamilyMembersButton.addEventListener("click", function () {
+                clearContent();
+                fetchFamilyMembers();
+            });
+
+            addFamilyMemberButton.addEventListener("click", function () {
+                clearContent();
+                window.location.href = "http://localhost:5000/patient/addFamilyMember.html"
+            });
+
+            function clearContent() {
+                container.innerHTML = "";
+            }
+
+            function fetchFamilyMembers() {
+                fetch("http://localhost:5000/patient/get_family_members/6526d3ad0f83f5e462288362")
+                    .then(response => response.json())
+                    .then(data => {
+                        const table = document.createElement("table");
+                        table.setAttribute("border", "1");
+                        table.innerHTML = `
+                <tr>
+                    <th>Name</th>
+                    <th>National ID</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Relation to the patient</th>
+                </tr>
+            `;
+
+                        data.forEach(item => {
+                            const row = table.insertRow();
+                            row.insertCell(0).textContent = item.name;
+                            row.insertCell(1).textContent = item.nationalID;
+                            row.insertCell(2).textContent = item.age;
+                            row.insertCell(3).textContent = item.gender;
+                            row.insertCell(4).textContent = item.relation;
+                        });
+
+                        table.setAttribute("style", "margin: 0 auto;");
+
+                        container.appendChild(table);
+                    })
+                    .catch(error => console.error("Error fetching data: ", error));
+
+            }
+        });
+    </script>
+</body>
+
+</html>
