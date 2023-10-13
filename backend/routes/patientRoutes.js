@@ -53,7 +53,7 @@ router.get('/get_prescriptions_of_patient/:patientId', getAllPrescriptions)
 router.get('/filter_prescription/:patientId', filterPrescription)
 
 //select a prescription from my list of prescriptions
-router.get('/select_prescription/:patientId/:prescriptionId', selectPrescription)
+router.get('/select_prescription/:prescriptionId', selectPrescription)
 
 router.get('/get_all_doctors', viewAllDoctors)
 

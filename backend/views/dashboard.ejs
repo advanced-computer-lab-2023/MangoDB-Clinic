@@ -101,48 +101,6 @@
             .catch((error) => console.error("Error fetching data: ", error));
         }
 
-        function fetchPrescriptions() {
-          fetch(
-            "http://localhost:4000/patient/get_prescriptions_of_patient/65266a257993f711333900fd"
-          )
-            .then((response) => response.json())
-            .then((data) => {
-              const table = document.createElement("table");
-              table.setAttribute("border", "1");
-              table.innerHTML = `
-                            <tr>
-                                <th>Date</th>
-                                <th>Filled</th>
-                                <th>Doctor</th>
-                            </tr>
-                        `;
-
-              data.forEach((item) => {
-                const row = table.insertRow();
-                row.insertCell(0).textContent = new Date(
-                  item.date
-                ).toLocaleDateString("en-US");
-                row.insertCell(1).textContent = item.filled;
-                row.insertCell(2).textContent = item.doctor;
-
-                // const detailsButton = document.createElement("button");
-                // detailsButton.textContent = "View Details";
-                // detailsButton.addEventListener("click", function() {
-                //     // Call a function to fetch and display the details of this prescription
-                //     fetchPrescriptionDetails(item._id);
-                // });
-                // row.insertCell(3).appendChild(detailsButton);
-                // row.insertCell(3).textContent = item.gender;
-                // row.insertCell(4).textContent = item.relation;
-              });
-
-              table.setAttribute("style", "margin: 0 auto;");
-
-              container.appendChild(table);
-            })
-            .catch((error) => console.error("Error fetching data: ", error));
-        }
-
         function fetchDoctors() {
           fetch(
             "http://localhost:4000/patient/get_all_doctors"
@@ -172,7 +130,88 @@
             })
             .catch((error) => console.error("Error fetching data: ", error));
         }
-      });
+
+        function fetchPrescriptions() {
+            console.log("Fetching prescriptions...");
+            fetch("http://localhost:4000/patient/get_prescriptions_of_patient/65266a257993f711333900fd")
+                .then((response) => response.json())
+                .then((data) => {
+                const table = document.createElement("table");
+                table.setAttribute("border", "1");
+                table.innerHTML = `
+                    <tr>
+                    <th>Date</th>
+                    <th>Filled</th>
+                    <th>Doctor</th>
+                    </tr>
+                `;
+
+                data.forEach((item) => {
+                    const row = table.insertRow();
+                    row.insertCell(0).textContent = new Date(item.date).toLocaleDateString("en-US");
+                    row.insertCell(1).textContent = item.filled;
+                    row.insertCell(2).textContent = item.doctor.username;
+
+                    const detailsButton = document.createElement("button");
+                    detailsButton.textContent = "View Details";
+                    detailsButton.addEventListener("click", function () {
+                        // Pass the container to fetchPrescriptionDetails
+                        fetchPrescriptionDetails(item._id, container);
+                    });
+
+                    row.insertCell(3).appendChild(detailsButton);
+                });
+
+                table.setAttribute("style", "margin: 0 auto;");
+
+                container.appendChild(table);
+                })
+                .catch((error) => console.error("Error fetching data: ", error));
+            }
+
+        function fetchPrescriptionDetails(prescriptionId, container) {
+            console.log("Fetching prescription details for ID:", prescriptionId);
+            fetch(`http://localhost:4000/patient/select_prescription/${prescriptionId}`)
+                .then((response) => response.json())
+                .then((prescription) => {
+
+                    container.innerHTML = "";
+
+                const table = document.createElement("table");
+                table.setAttribute("border", "1");
+                table.innerHTML = `
+                    <tr>
+                    <th>Medication Name</th>
+                    <th>Frequency</th>
+                    <th>Date</th>
+                    <th>Filled</th>
+                    <th>Doctor</th>
+                    </tr>
+                `;
+
+                prescription.medications.forEach((medication, index) => {
+                    const row = table.insertRow();
+                    row.insertCell(0).textContent = medication.medicationName;
+                    row.insertCell(1).textContent = medication.frequency;
+                    if (index === 0) {
+                    row.insertCell(2).textContent = new Date(prescription.date).toLocaleDateString("en-US");
+                    row.insertCell(3).textContent = prescription.filled ? "Yes" : "No";
+                    row.insertCell(4).textContent = prescription.doctor.username; // Assuming 'doctor' contains 'username'
+                    }
+                });
+
+                table.setAttribute("style", "margin: 0 auto;");
+
+                container.innerHTML = ""; // Clear the container
+                container.appendChild(table);
+                console.log("Prescription Details:", prescription);
+                })
+                .catch((error) => console.error("Error fetching prescription details: ", error));
+        }
+
+
+    });
+    
     </script>
   </body>
 </html>

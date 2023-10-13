@@ -145,6 +145,15 @@ const getAllPrescriptions = async (req, res) => {
       return res.status(404).json({ error: 'Patient Not Found' });
     }
 
+    const prescriptions = patient.prescriptions
+    prescriptions.forEach(async prescription => {
+        console.log(prescription.doctor);
+        prescription.populate('doctor')
+        console.log(await Doctor.findById(prescription.doctor.doctorId).username);
+    });
+
+    console.log("");
+
     res.status(200).json(patient.prescriptions);
 
   } catch (error) {
@@ -154,28 +163,21 @@ const getAllPrescriptions = async (req, res) => {
 };
 
 const selectPrescription = async (req, res) => {
-  const { patientId, prescriptionId } = req.params;
+  const { prescriptionId } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(patientId)) {
+  if (!mongoose.Types.ObjectId.isValid(prescriptionId)) {
     return res.status(404).json({ error: 'Id Not Found' });
   }
 
   try {
-    const patient = await Patient.findById(patientId).populate('prescriptions');
 
-    if (!patient) {
-      return res.status(404).json({ error: 'Patient Not Found' });
-    }
+    const prescription = await Prescription.findById(prescriptionId).populate('doctor');
 
-    const singlePrescription = patient.prescriptions.find((prescription) =>
-      prescription._id.equals(prescriptionId)
-    );
-
-    if (!singlePrescription) {
+    if (!prescription) {
       return res.status(404).json({ error: 'Prescription Not Found' });
     }
 
-    res.status(200).json(singlePrescription);
+    res.status(200).json(prescription);
 
   } catch (error) {
     console.error(error);
