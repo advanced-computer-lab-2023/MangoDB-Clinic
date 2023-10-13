@@ -17,7 +17,7 @@
     "express-async-handler": "^1.2.0",
     "git": "^0.1.5",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^7.5.4",
+    "mongoose": "^7.6.2",
     "nodemailer": "^6.9.6"
   },
   "devDependencies": {
