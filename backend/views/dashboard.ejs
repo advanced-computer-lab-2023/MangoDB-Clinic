@@ -20,6 +20,7 @@
         <section style="text-align: center;">
             <button id="getFamilyMembersButton">Get Family Members</button>
             <button id="addFamilyMemberButton">Add Family Member</button>
+            <button id="getPrescriptionsButton">Get Prescriptions</button>
             <hr> <br> <br>
             <div id="container">
             </div>
@@ -30,6 +31,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             const getFamilyMembersButton = document.getElementById("getFamilyMembersButton");
             const addFamilyMemberButton = document.getElementById("addFamilyMemberButton");
+            const getPrescriptions = document.getElementById("getPrescriptionsButton")
             const container = document.getElementById("container");
 
             getFamilyMembersButton.addEventListener("click", function () {
@@ -40,6 +42,12 @@
             addFamilyMemberButton.addEventListener("click", function () {
                 clearContent();
                 window.location.href = "http://localhost:5000/patient/addFamilyMember.html"
+            });
+
+            getPrescriptionsButton.addEventListener("click", function() {
+                clearContent();
+                fetchPrescriptions();
+
             });
 
             function clearContent() {
@@ -77,6 +85,44 @@
                     })
                     .catch(error => console.error("Error fetching data: ", error));
 
+            }
+
+            function fetchPrescriptions() {
+                fetch("http://localhost:4000/patient/get_prescriptions_of_patient/65266a257993f711333900fd")
+                .then(response => response.json())
+                .then(data => {
+                    const table = document.createElement("table");
+                        table.setAttribute("border", "1");
+                        table.innerHTML = `
+                            <tr>
+                                <th>Date</th>
+                                <th>Filled</th>
+                                <th>Doctor</th>
+                            </tr>
+                        `;
+
+                        data.forEach(item => {
+                            const row = table.insertRow();
+                            row.insertCell(0).textContent = new Date(item.date).toLocaleDateString('en-US');
+                            row.insertCell(1).textContent = item.filled;
+                            row.insertCell(2).textContent = item.doctor;
+
+                            // const detailsButton = document.createElement("button");
+                            // detailsButton.textContent = "View Details";
+                            // detailsButton.addEventListener("click", function() {
+                            //     // Call a function to fetch and display the details of this prescription
+                            //     fetchPrescriptionDetails(item._id);
+                            // });
+                            // row.insertCell(3).appendChild(detailsButton);
+                            // row.insertCell(3).textContent = item.gender;
+                            // row.insertCell(4).textContent = item.relation;
+                        });
+
+                        table.setAttribute("style", "margin: 0 auto;");
+
+                        container.appendChild(table);
+                })
+                .catch(error => console.error("Error fetching data: ", error));
             }
         });
     </script>

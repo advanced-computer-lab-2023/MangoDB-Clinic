@@ -5,6 +5,10 @@ const Patient = require('../models/patientModel')
 const Doctor = require('../models/doctorModel')
 const Appointment = require('../models/appointmentModel')
 
+const renderDashboard = (req, res) => {
+  res.status(200).render('dashboard')
+}
+
 //Get all patients
 const getAllPatients = async (req, res) => {
   const patients = await Patient.find({}).sort({ createdAt: -1 })
@@ -336,9 +340,6 @@ const filterDoctors = async (req, res) => {
 };
 
 
-
-
-
 /////////////////////////////////
 
 // UTILS
@@ -386,5 +387,6 @@ module.exports = {
   searchDoctor,
   filterDoctors,
   addAppointment,
-  addPrescription
+  addPrescription,
+  renderDashboard
 }
