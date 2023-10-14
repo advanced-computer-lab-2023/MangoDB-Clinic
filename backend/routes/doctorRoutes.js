@@ -18,13 +18,19 @@ const {
     searchPatientByName
 } = require('../controllers/doctorController');
 
+
+
+router.post('/filterapp', filterStatus);
+
+router.post('/upcoming',upcoming)
+
 router.post('/CreateDoctor', createDoctor);
 router.post('/CreatePatient', createPatient);
 router.post('/CreateAppointment', createAppointment);
 router.get('/getdoctors', getDoctors);
 router.get('/getPatients', getPatients);
-router.get('/filterapp/:id', filterStatus);
-router.get('/upcoming/:id', upcoming);
+// router.get('/filterapp/:id', filterStatus);
+// router.get('/upcoming/:id', upcoming);
 router.get('/selectedPatient/:id', async (req, res) => {
     try {
         const patientId = req.params.id;
@@ -93,3 +99,4 @@ router.post('/searchPatientByName/:id', searchPatientByName);
 router.post('/viewHealthRecords/:id', viewHealthRecords);
 
 module.exports = router;
+

@@ -5,7 +5,7 @@ require('dotenv').config();
 const { errorHandler } = require('./middleware/errorMiddleware');
 const guestRoutes = require('./routes/guestRoutes')
 const connectDB = require('./config/db');
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 4000;
 var path = require('path');
 const { selectPatient } = require('./controllers/doctorController');
 

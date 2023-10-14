@@ -223,6 +223,141 @@
 
 
   
-    <button id="viewAppointmentsButton">View Appointments</button>
-</body>
+     <h1>View Appointments</h1>
+
+     <button id="viewAppointmentsButton">View Appointments</button>
+ 
+     <div id="formContainer" style="display: none;">
+         <form id="viewAppointmentsForm">
+             <label for="doctor">Doctor ID:</label>
+             <input type="text" id="doctor" name="doctor" placeholder="Enter doctor ID">
+ 
+             <label for="status">Status:</label>
+             <select id="status" name="status">
+                 <option value="All">All</option>
+                 <option value="done">Done</option>
+                 <option value="scheduled">Scheduled</option>
+                 <option value="cancelled">Cancelled</option>
+                 <option value="confirmed">Confirmed</option>
+             </select>
+ 
+             <label for="date_1">Date 1:</label>
+             <input type="datetime-local" id="date_1" name="date_1" step="1">
+ 
+             <label for ="date_2">Date 2:</label>
+             <input type="datetime-local" id="date_2" name="date_2" step="1">
+ 
+             <button type="submit" id="doneButton">Done</button>
+         </form>
+ 
+         <!-- Button to view upcoming appointments -->
+         <button id="upcomingAppointmentsButton">Upcoming Appointments</button>
+     </div>
+ 
+     <div id="appointmentResultsContainer">
+         <!-- Results will be displayed here -->
+     </div>
+ 
+     <script>
+         const viewAppointmentsButton = document.getElementById("viewAppointmentsButton");
+         const formContainer = document.getElementById("formContainer");
+         const viewAppointmentsForm = document.getElementById("viewAppointmentsForm");
+         const appointmentResultsContainer = document.getElementById("appointmentResultsContainer");
+         const doctorIdInput = document.getElementById("doctor"); // Input field for doctor ID
+ 
+         viewAppointmentsButton.addEventListener('click', function () {
+             viewAppointmentsButton.style.display = 'none';
+             formContainer.style.display = 'block';
+         });
+ 
+         // Assuming you set the doctor ID when the page loads, update this value accordingly
+        //  doctorIdInput.value = "YourDoctorID"; // Replace "YourDoctorID" with the actual ID
+ 
+         viewAppointmentsForm.addEventListener('submit', async function (event) {
+             event.preventDefault();
+             console.log("Form submitted"); // Log that the form was submitted
+ 
+             const formData = {
+                 doctor: doctorIdInput.value,
+                 status: document.getElementById("status").value,
+                 date_1: document.getElementById("date_1").value,
+                 date_2: document.getElementById("date_2").value
+             };
+             console.log("Form data:", formData); // Log the form data
+ 
+             try {
+                 console.log("Sending fetch request..."); // Log that the fetch request is being sent
+                 const response = await fetch('/doctor/filterapp', {
+                     method: 'POST',
+                     headers: {
+                         'Content-Type': 'application/json',
+                     },
+                     body: JSON.stringify(formData),
+                 });
+                 console.log("Fetch request completed."); // Log that the fetch request is being completed
+ 
+                 if (response.ok) {
+                     console.log("Response is OK"); // Log that the response is OK
+                     const data = await response.json();
+                     const filteredAppointments = data.filteredAppointments;
+                     const appointmentTable = generateAppointmentTable2(filteredAppointments);
+                     appointmentResultsContainer.innerHTML = appointmentTable;
+                 } else {
+                     console.error('Request failed with status:', response.status);
+                 }
+             } catch (error) {
+                 console.error('Error fetching appointment data:', error);
+             }
+         });
+         function generateAppointmentTable2(appointments) {
+             // Create a table based on the appointments data
+             let table = '<table>';
+             table += '<tr><th>Status</th><th>Date</th><th>patient id</th></tr>';
+             for (const appointment of appointments) {
+                 table += `<tr><td>${appointment.date}</td><td>${appointment.status}</td><td>${appointment.patientId}</td></tr>`;
+             }
+             table += '</table>';
+             return table;
+         }
+ 
+         function generateAppointmentTable(appointments) {
+             // Create a table based on the appointments data
+             let table = '<table>';
+             table += '<tr><th>Status</th><th>Date</th><th>Patient Name</th></tr>';
+             for (const appointment of appointments) {
+                 table += `<tr><td>${appointment.status}</td><td>${appointment.date}</td><td>${appointment.patientName}</td></tr>`;
+             }
+             table += '</table>';
+             return table;
+         }
+ 
+         // Add an event listener for the "Upcoming Appointments" button
+         const upcomingAppointmentsButton = document.getElementById("upcomingAppointmentsButton");
+         upcomingAppointmentsButton.addEventListener('click', async function () {
+             const doctorId = doctorIdInput.value;
+ console.log("doctor id:", doctorId)
+             try {
+                 const response = await fetch('/doctor/upcoming', {
+                     method: 'POST',
+                     headers: {
+                         'Content-Type': 'application/json',
+                     },
+                     body: JSON.stringify({ doctorId: doctorId }),
+                 });
+  if (response.ok) {
+                     const data = await response.json();
+                     console.log(" THE DATA ", data)
+ 
+                     const finalup = data.finalup;
+                     const appointmentTable = generateAppointmentTable(finalup);
+                     appointmentResultsContainer.innerHTML = appointmentTable;
+                 } else {
+                     console.error('Request failed with status:', response.status);
+                 }
+             } catch (error) {
+                 console.error('Error fetching upcoming appointments:', error);
+             }
+         });
+     </script>
+     </body>
 </html>
