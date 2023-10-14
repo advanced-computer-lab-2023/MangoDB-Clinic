@@ -9,6 +9,10 @@ const renderDashboard = (req, res) => {
   res.status(200).render('dashboard')
 }
 
+const renderAddFamilyMember = (req, res) => {
+  res.status(200).render('addFamilyMember')
+}
+
 //Get all patients
 const getAllPatients = async (req, res) => {
   const patients = await Patient.find({}).sort({ createdAt: -1 })
@@ -391,5 +395,6 @@ module.exports = {
   filterDoctors,
   addAppointment,
   addPrescription,
-  renderDashboard
+  renderDashboard,
+  renderAddFamilyMember,
 }

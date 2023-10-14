@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Patient Registration</title>
+</head>
+
+<body>
+    <h1 style="text-align: center;">Patient Registration</h1>
+    <form id="registrationForm" style="text-align: center;">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br> <br>
+
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName" required><br> <br>
+
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" name="lastName" required><br> <br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br> <br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br> <br>
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" required><br> <br>
+
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" required>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select><br> <br>
+
+        <label for="mobile">Mobile:</label>
+        <input type="text" id="mobile" name="mobile" required><br> <br>
+
+        <label for="emergencyContactName">Emergency Contact Name:</label>
+        <input type="text" id="emergencyContactName" name="emergencyContact.name" required><br> <br>
+
+        <label for="emergencyContactMobile">Emergency Contact Mobile:</label>
+        <input type="text" id="emergencyContactMobile" name="emergencyContact.mobile" required><br> <br>
+
+        <button type="button" id="registerButton">Register</button>
+    </form>
+
+    <script>
+        const registerButton = document.getElementById('registerButton');
+        const registrationForm = document.getElementById('registrationForm');
+
+        registerButton.addEventListener('click', async () => {
+            const formData = new FormData(registrationForm);
+            const data = {};
+
+            formData.forEach((value, key) => {
+                if (key.startsWith('emergencyContact')) {
+                    const suffix = key.split('.')[1];
+                    const prefix = 'emergencyContact';
+
+                    if (!data[prefix])
+                        data[prefix] = {};
+                    data[prefix][suffix] = value;
+                } else
+                    data[key] = value;
+            });
+
+
+            try {
+                const response = await fetch("http://localhost:5000/patientRegistration", {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert('Registration successful!');
+                } else {
+                    const errorData = await response.json();
+                    alert('Registration failed: ' + errorData.message);
+                }
+            } catch (error) {
+                alert('An error occurred: ' + error.message);
+            }
+        });
+    </script>
+</body>
+
+</html>

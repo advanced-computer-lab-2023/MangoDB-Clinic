@@ -5,6 +5,14 @@ const Patient = require('../models/patientModel')
 const Doctor = require('../models/doctorModel')
 const User = require('../models/userModel')
 
+const renderPatientRegistration = (req, res) => {
+    res.status(200).render('patientRegistration')
+}
+
+const renderDoctorRegistration = (req, res) => {
+    res.status(200).render('doctorRegistration')
+}
+
 
 const registerUser = async (req, res, model, userType, fields) => {
     const data = req.body;
@@ -77,7 +85,9 @@ const genToken = (id) => {
 module.exports = {
     registerAsPatient,
     registerAsDoctor,
-    login
+    login,
+    renderPatientRegistration,
+    renderDoctorRegistration
 }
 
 

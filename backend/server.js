@@ -26,7 +26,7 @@ app.use((req, res, next) => {
 //Routes
 app.use('/', require('./routes/guestRoutes'))
 app.use('/admin', require('./routes/adminRoutes'))
-app.use('/patient',require('./routes/patientRoutes'))
+app.use('/patient', require('./routes/patientRoutes'))
 app.use('/doctor', require('./routes/doctorRoutes'))
 
 

@@ -1,156 +1,146 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Admin</title>
-  </head>
 
-  <body>
-    <header>
-      <h1 style="text-align: center">Virtual Clinic</h1>
-      <div class="menu">
-        <ul class="menu-list">
-          <li><a href="/patient/dashboard.html">Home Page</a></li>
-        </ul>
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin</title>
+</head>
+
+<body>
+  <header>
+    <h1 style="text-align: center">Virtual Clinic</h1>
+    <div class="menu">
+      <ul class="menu-list">
+        <li><a href="/patient/">Home Page</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+    <section style="text-align: center">
+      <button id="getFamilyMembersButton">Get Family Members</button>
+      <button id="addFamilyMemberButton">Add Family Member</button>
+      <button id="getPrescriptionsButton">Get Prescriptions</button>
+      <button id="viewAllDoctorsButton">View All Doctors</button>
+      <button id="searchDoctorsButton">Search Doctors</button>
+      <hr />
+      <br />
+      <br />
+      <div id="container"></div>
+
+      <div id="filteringPrescriptions" style="display: none">
+        <!-- Filter Controls -->
+        <label for="doctorFilter">Doctor:</label>
+        <select id="doctorFilter">
+          <option value="">All</option>
+        </select>
+
+        <label for="filledFilter">Filled:</label>
+        <select id="filledFilter">
+          <option value="">All</option>
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+
+        <label for="dateFilter">Date:</label>
+        <input type="date" id="dateFilter" />
+
+        <button id="applyFilterButton">Apply Filter</button>
       </div>
-    </header>
+    </section>
 
-    <main>
-      <section style="text-align: center">
-        <button id="getFamilyMembersButton">Get Family Members</button>
-        <button id="addFamilyMemberButton">Add Family Member</button>
-        <button id="getPrescriptionsButton">Get Prescriptions</button>
-        <button id="viewAllDoctorsButton">View All Doctors</button>
-        <button id="searchDoctorsButton">Search Doctors</button>
-        <hr />
-        <br />
-        <br />
-        <div id="container"></div>
+    <style>
+      .hidden {
+        display: none;
+      }
+    </style>
+    <form id="searchDoctorsForm" class="hidden" action="/patient/get_all_doctors" method="GET">
+      <label for="search">Search by Name:</label>
+      <input type="text" id="search" name="search" placeholder="Search by name" />
 
-        <div id="filteringPrescriptions" style="display: none">
-          <!-- Filter Controls -->
-          <label for="doctorFilter">Doctor:</label>
-          <select id="doctorFilter">
-            <option value="">All</option>
-          </select>
+      <label for="speciality">Filter by speciality:</label>
+      <input type="text" id="speciality" name="speciality" placeholder="Filter by speciality" />
 
-          <label for="filledFilter">Filled:</label>
-          <select id="filledFilter">
-            <option value="">All</option>
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-          </select>
+      <button type="submit">Search</button>
+    </form>
+  </main>
 
-          <label for="dateFilter">Date:</label>
-          <input type="date" id="dateFilter" />
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const getFamilyMembersButton = document.getElementById(
+        "getFamilyMembersButton"
+      );
+      const addFamilyMemberButton = document.getElementById(
+        "addFamilyMemberButton"
+      );
+      const getPrescriptionsButton = document.getElementById(
+        "getPrescriptionsButton"
+      );
+      const applyFilterButton = document.getElementById("applyFilterButton");
+      const viewAllDoctorsButton = document.getElementById("viewAllDoctorsButton");
+      const searchDoctorsButton = document.getElementById(
+        "searchDoctorsButton"
+      );
+      const container = document.getElementById("container");
 
-          <button id="applyFilterButton">Apply Filter</button>
-        </div>
-      </section>
+      getFamilyMembersButton.addEventListener("click", function () {
+        console.log('here')
+        clearContent();
+        console.log('here2')
+        fetchFamilyMembers();
+      });
 
-      <style>
-        .hidden {
-          display: none;
-        }
-      </style>
-      <form
-        id="searchDoctorsForm"
-        class="hidden"
-        action="/patient/get_all_doctors"
-        method="GET"
-      >
-        <label for="search">Search by Name:</label>
-        <input
-          type="text"
-          id="search"
-          name="search"
-          placeholder="Search by name"
-        />
+      addFamilyMemberButton.addEventListener("click", function () {
+        clearContent();
+        window.location.href =
+          "http://localhost:5000/patient/addFamilyMember";
+        //"/patient/addFamilyMember"
+      });
 
-        <label for="speciality">Filter by speciality:</label>
-        <input
-          type="text"
-          id="speciality"
-          name="speciality"
-          placeholder="Filter by speciality"
-        />
+      getPrescriptionsButton.addEventListener("click", function () {
+        clearContent();
+        fetchPrescriptions();
+      });
 
-        <button type="submit">Search</button>
-      </form>
-    </main>
+      viewAllDoctorsButton.addEventListener("click", function () {
+        clearContent();
+        fetchDoctors();
+      });
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const getFamilyMembersButton = document.getElementById(
-          "getFamilyMembersButton"
-        );
-        const addFamilyMemberButton = document.getElementById(
-          "addFamilyMemberButton"
-        );
-        const getPrescriptionsButton = document.getElementById(
-          "getPrescriptionsButton"
-        );
-        const applyFilterButton = document.getElementById("applyFilterButton");
-        const viewAllDoctorsButton = document.getElementById("viewAllDoctors");
-        const searchDoctorsButton = document.getElementById(
-          "searchDoctorsButton"
-        );
-        const container = document.getElementById("container");
+      applyFilterButton.addEventListener("click", function () {
+        fetchFilteredPrescriptions();
+        clearContent();
+      })
+      searchDoctorsButton.addEventListener("click", function () {
+        clearContent();
+        searchDoctors();
+      });
 
-        getFamilyMembersButton.addEventListener("click", function () {
-          clearContent();
-          fetchFamilyMembers();
-        });
+      function clearContent() {
+        container.innerHTML = "";
+        // Reset filter elements
+        const doctorFilter = document.getElementById("doctorFilter");
+        const filledFilter = document.getElementById("filledFilter");
+        const dateFilter = document.getElementById("dateFilter");
 
-        addFamilyMemberButton.addEventListener("click", function () {
-          clearContent();
-          window.location.href =
-            "http://localhost:5000/patient/addFamilyMember.html";
-        });
+        // Set filter elements back to their default or initial state
+        doctorFilter.value = "";
+        filledFilter.value = "";
+        dateFilter.value = "";
 
-        getPrescriptionsButton.addEventListener("click", function () {
-          clearContent();
-          fetchPrescriptions();
-        });
+        const myDiv = document.getElementById("searchDoctorsForm");
+        myDiv.classList.add("hidden");
+      }
 
-        viewAllDoctorsButton.addEventListener("click", function () {
-          clearContent();
-          fetchDoctors();
-        });
-
-        applyFilterButton.addEventListener("click", function () {
-          fetchFilteredPrescriptions();
-          clearContent();
-          searchDoctorsButton.addEventListener("click", function () {
-            clearContent();
-            searchDoctors();
-          });
-
-          function clearContent() {
-            container.innerHTML = "";
-            // Reset filter elements
-            const doctorFilter = document.getElementById("doctorFilter");
-            const filledFilter = document.getElementById("filledFilter");
-            const dateFilter = document.getElementById("dateFilter");
-
-            // Set filter elements back to their default or initial state
-            doctorFilter.value = "";
-            filledFilter.value = "";
-            dateFilter.value = "";
-
-            const myDiv = document.getElementById("searchDoctorsForm");
-            myDiv.classList.add("hidden");
-          }
-
-          function fetchFamilyMembers() {
-            fetch(
-              "http://localhost:5000/patient/get_family_members/6526d3ad0f83f5e462288362"
-            )
-              .then((response) => response.json())
-              .then((data) => {
-                const table = document.createElement("table");
-                table.setAttribute("border", "1");
-                table.innerHTML = `
+      function fetchFamilyMembers() {
+        fetch(
+          "http://localhost:5000/patient/get_family_members/6526d3ad0f83f5e462288362"
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            const table = document.createElement("table");
+            table.setAttribute("border", "1");
+            table.innerHTML = `
                 <tr>
                     <th>Name</th>
                     <th>National ID</th>
@@ -159,30 +149,31 @@
                     <th>Relation to the patient</th>
                 </tr>
             `;
+            console.log(data)
 
-                data.forEach((item) => {
-                  const row = table.insertRow();
-                  row.insertCell(0).textContent = item.name;
-                  row.insertCell(1).textContent = item.nationalID;
-                  row.insertCell(2).textContent = item.age;
-                  row.insertCell(3).textContent = item.gender;
-                  row.insertCell(4).textContent = item.relation;
-                });
+            data.forEach((item) => {
+              const row = table.insertRow();
+              row.insertCell(0).textContent = item.name;
+              row.insertCell(1).textContent = item.nationalID;
+              row.insertCell(2).textContent = item.age;
+              row.insertCell(3).textContent = item.gender;
+              row.insertCell(4).textContent = item.relation;
+            });
 
-                table.setAttribute("style", "margin: 0 auto;");
+            table.setAttribute("style", "margin: 0 auto;");
 
-                container.appendChild(table);
-              })
-              .catch((error) => console.error("Error fetching data: ", error));
-          }
+            container.appendChild(table);
+          })
+          .catch((error) => console.error("Error fetching data: ", error));
+      }
 
-          function fetchDoctors() {
-            fetch("http://localhost:4000/patient/get_all_doctors")
-              .then((response) => response.json())
-              .then((data) => {
-                const table = document.createElement("table");
-                table.setAttribute("border", "1");
-                table.innerHTML = `
+      function fetchDoctors() {
+        fetch("http://localhost:5000/patient/get_all_doctors")
+          .then((response) => response.json())
+          .then((data) => {
+            const table = document.createElement("table");
+            table.setAttribute("border", "1");
+            table.innerHTML = `
                 <tr>
                     <th>Name</th>
                     <th>Speciality</th>
@@ -190,33 +181,33 @@
                 </tr>
             `;
 
-                data.forEach((item) => {
-                  const row = table.insertRow();
-                  row.insertCell(0).textContent =
-                    item.firstName + " " + item.lastName;
-                  row.insertCell(1).textContent = item.speciality;
-                  row.insertCell(2).textContent = item.hourlyRate;
-                });
+            data.forEach((item) => {
+              const row = table.insertRow();
+              row.insertCell(0).textContent =
+                item.firstName + " " + item.lastName;
+              row.insertCell(1).textContent = item.speciality;
+              row.insertCell(2).textContent = item.hourlyRate;
+            });
 
-                table.setAttribute("style", "margin: 0 auto;");
+            table.setAttribute("style", "margin: 0 auto;");
 
-                container.appendChild(table);
-              })
-              .catch((error) => console.error("Error fetching data: ", error));
-          }
+            container.appendChild(table);
+          })
+          .catch((error) => console.error("Error fetching data: ", error));
+      }
 
-          function fetchPrescriptions() {
-            const filterDiv = document.getElementById("filteringPrescriptions");
-            filterDiv.style.display = "block"; // Display the filter controls
+      function fetchPrescriptions() {
+        const filterDiv = document.getElementById("filteringPrescriptions");
+        filterDiv.style.display = "block"; // Display the filter controls
 
-            fetch(
-              "http://localhost:4000/patient/get_prescriptions_of_patient/65266a257993f711333900fd"
-            )
-              .then((response) => response.json())
-              .then((data) => {
-                const table = document.createElement("table");
-                table.setAttribute("border", "1");
-                table.innerHTML = `
+        fetch(
+          "http://localhost:4000/patient/get_prescriptions_of_patient/65266a257993f711333900fd"
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            const table = document.createElement("table");
+            table.setAttribute("border", "1");
+            table.innerHTML = `
                     <tr>
                     <th>Date</th>
                     <th>Filled</th>
@@ -224,76 +215,11 @@
                     </tr>
                 `;
 
-                data.forEach((item) => {
-                  const row = table.insertRow();
-                  row.insertCell(0).textContent = new Date(item.date);
-                  row.insertCell(1).textContent = item.filled;
-                  row.insertCell(2).textContent = item.doctor.firstName + " " + item.doctor.lastName;
-
-                  const detailsButton = document.createElement("button");
-                  detailsButton.textContent = "View Details";
-                  detailsButton.addEventListener("click", function () {
-                    // Pass the container to fetchPrescriptionDetails
-                    fetchPrescriptionDetails(item._id, container);
-                  });
-
-                  row.insertCell(3).appendChild(detailsButton);
-                });
-
-                table.setAttribute("style", "margin: 0 auto;");
-
-                container.appendChild(table);
-              })
-              .catch((error) => console.error("Error fetching data: ", error));
-          }
-
-          function fetchFilteredPrescriptions() {
-            const doctorFilter = document.getElementById("doctorFilter").value;
-            const filledFilter = document.getElementById("filledFilter").value;
-            const dateFilter = document.getElementById("dateFilter").value;
-
-            // Construct the URL with query parameters
-            let url = `http://localhost:4000/patient/filter_prescription/65266a257993f711333900fd?`;
-
-            if (doctorFilter) {
-              url += `doctor=${doctorFilter}`;
-            }
-
-            if (filledFilter) {
-              url += `filled=${filledFilter}`;
-            }
-
-            if (dateFilter) {
-              url += `date=${dateFilter}`;
-            }
-
-            fetch(url)
-              .then((response) => response.json())
-              .then((data) => {
-                // Display the filtered prescriptions
-                displayFilteredPrescriptions(data);
-              })
-              .catch((error) => console.error("Error fetching data: ", error));
-          }
-
-          function displayFilteredPrescriptions(data) {
-            const table = document.createElement("table");
-            table.setAttribute("border", "1");
-            table.innerHTML = `
-                    <tr>
-                        <th>Date</th>
-                        <th>Filled</th>
-                        <th>Doctor</th>
-                    </tr>
-                `;
-
             data.forEach((item) => {
               const row = table.insertRow();
-              row.insertCell(0).textContent = new Date(
-                item.date
-              ).toLocaleDateString("en-US");
+              row.insertCell(0).textContent = new Date(item.date);
               row.insertCell(1).textContent = item.filled;
-              row.insertCell(2).textContent = item.doctor.username;
+              row.insertCell(2).textContent = item.doctor.firstName + " " + item.doctor.lastName;
 
               const detailsButton = document.createElement("button");
               detailsButton.textContent = "View Details";
@@ -306,24 +232,89 @@
             });
 
             table.setAttribute("style", "margin: 0 auto;");
+
             container.appendChild(table);
-          }
+          })
+          .catch((error) => console.error("Error fetching data: ", error));
+      }
 
-          function fetchPrescriptionDetails(prescriptionId, container) {
-            console.log(
-              "Fetching prescription details for ID:",
-              prescriptionId
-            );
-            fetch(
-              `http://localhost:4000/patient/select_prescription/${prescriptionId}`
-            )
-              .then((response) => response.json())
-              .then((prescription) => {
-                container.innerHTML = "";
+      function fetchFilteredPrescriptions() {
+        const doctorFilter = document.getElementById("doctorFilter").value;
+        const filledFilter = document.getElementById("filledFilter").value;
+        const dateFilter = document.getElementById("dateFilter").value;
 
-                const table = document.createElement("table");
-                table.setAttribute("border", "1");
-                table.innerHTML = `
+        // Construct the URL with query parameters
+        let url = `http://localhost:5000/patient/filter_prescription/6526d30a0f83f5e462288354?`;
+
+        if (doctorFilter) {
+          url += `doctor=${doctorFilter}`;
+        }
+
+        if (filledFilter) {
+          url += `filled=${filledFilter}`;
+        }
+
+        if (dateFilter) {
+          url += `date=${dateFilter}`;
+        }
+
+        fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            // Display the filtered prescriptions
+            displayFilteredPrescriptions(data);
+          })
+          .catch((error) => console.error("Error fetching data: ", error));
+      }
+
+      function displayFilteredPrescriptions(data) {
+        const table = document.createElement("table");
+        table.setAttribute("border", "1");
+        table.innerHTML = `
+                    <tr>
+                        <th>Date</th>
+                        <th>Filled</th>
+                        <th>Doctor</th>
+                    </tr>
+                `;
+
+        data.forEach((item) => {
+          const row = table.insertRow();
+          row.insertCell(0).textContent = new Date(
+            item.date
+          ).toLocaleDateString("en-US");
+          row.insertCell(1).textContent = item.filled;
+          row.insertCell(2).textContent = item.doctor.username;
+
+          const detailsButton = document.createElement("button");
+          detailsButton.textContent = "View Details";
+          detailsButton.addEventListener("click", function () {
+            // Pass the container to fetchPrescriptionDetails
+            fetchPrescriptionDetails(item._id, container);
+          });
+
+          row.insertCell(3).appendChild(detailsButton);
+        });
+
+        table.setAttribute("style", "margin: 0 auto;");
+        container.appendChild(table);
+      }
+
+      function fetchPrescriptionDetails(prescriptionId, container) {
+        console.log(
+          "Fetching prescription details for ID:",
+          prescriptionId
+        );
+        fetch(
+          `http://localhost:4000/patient/select_prescription/${prescriptionId}`
+        )
+          .then((response) => response.json())
+          .then((prescription) => {
+            container.innerHTML = "";
+
+            const table = document.createElement("table");
+            table.setAttribute("border", "1");
+            table.innerHTML = `
                     <tr>
                     <th>Medication Name</th>
                     <th>Frequency</th>
@@ -333,46 +324,46 @@
                     </tr>
                 `;
 
-                prescription.medications.forEach((medication, index) => {
-                  const row = table.insertRow();
-                  row.insertCell(0).textContent = medication.medicationName;
-                  row.insertCell(1).textContent = medication.frequency;
-                  if (index === 0) {
-                    row.insertCell(2).textContent = new Date(
-                      prescription.date
-                    ).toLocaleDateString("en-US");
-                    row.insertCell(3).textContent = prescription.filled
-                      ? "Yes"
-                      : "No";
-                    row.insertCell(4).textContent =
-                      prescription.doctor.username; // Assuming 'doctor' contains 'username'
-                  }
-                });
+            prescription.medications.forEach((medication, index) => {
+              const row = table.insertRow();
+              row.insertCell(0).textContent = medication.medicationName;
+              row.insertCell(1).textContent = medication.frequency;
+              if (index === 0) {
+                row.insertCell(2).textContent = new Date(
+                  prescription.date
+                ).toLocaleDateString("en-US");
+                row.insertCell(3).textContent = prescription.filled
+                  ? "Yes"
+                  : "No";
+                row.insertCell(4).textContent =
+                  prescription.doctor.username; // Assuming 'doctor' contains 'username'
+              }
+            });
 
-                table.setAttribute("style", "margin: 0 auto;");
+            table.setAttribute("style", "margin: 0 auto;");
 
-                container.innerHTML = ""; // Clear the container
-                container.appendChild(table);
-                console.log("Prescription Details:", prescription);
-              })
-              .catch((error) =>
-                console.error("Error fetching prescription details: ", error)
-              );
-          }
-        });
+            container.innerHTML = ""; // Clear the container
+            container.appendChild(table);
+            console.log("Prescription Details:", prescription);
+          })
+          .catch((error) =>
+            console.error("Error fetching prescription details: ", error)
+          );
+      }
+    });
 
-        function searchDoctors() {
-          const toggleButton = document.getElementById("searchDoctorsButton");
-          const myDiv = document.getElementById("searchDoctorsForm");
-          toggleButton.addEventListener("click", () => {
-            if (myDiv.classList.contains("hidden")) {
-              myDiv.classList.remove("hidden");
-            } else {
-              myDiv.classList.add("hidden");
-            }
-          });
+    function searchDoctors() {
+      const toggleButton = document.getElementById("searchDoctorsButton");
+      const myDiv = document.getElementById("searchDoctorsForm");
+      toggleButton.addEventListener("click", () => {
+        if (myDiv.classList.contains("hidden")) {
+          myDiv.classList.remove("hidden");
+        } else {
+          myDiv.classList.add("hidden");
         }
       });
-    </script>
-  </body>
+    }
+  </script>
+</body>
+
 </html>

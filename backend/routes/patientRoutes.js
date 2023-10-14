@@ -19,11 +19,14 @@ const {
     filterAppointments,
     addAppointment,
     addPrescription,
-    renderDashboard
+    renderDashboard,
+    renderAddFamilyMember,
 } = require('../controllers/patientController')
 
 //Renders the patient Dashboard
 router.get('/', renderDashboard)
+
+router.get('/addFamilyMember', renderAddFamilyMember)
 
 //GET all patients
 router.get('/get_all_patients', getAllPatients)
