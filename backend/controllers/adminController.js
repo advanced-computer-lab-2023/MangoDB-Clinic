@@ -113,6 +113,48 @@ const createAdmin = asyncHandler( async (req, res) => {
     }
 })
 
+// @desc get all admins
+// @route GET /admin/get-admins
+// @access Private
+const getAdmins = asyncHandler( async(req, res) => {
+    const admins = await Admin.find()
+
+    if (admins.length === 0){
+        res.status(400)
+        throw new Error ("No Admins")
+    } else {
+        res.status(200).json(admins)
+    }
+})
+
+// @desc get all patients
+// @route GET /admin/get-patients
+// @access Private
+const getPatients = asyncHandler( async(req, res) => {
+    const patients = await Patient.find()
+
+    if (patients.length === 0){
+        res.status(400)
+        throw new Error ("No Admins")
+    } else {
+        res.status(200).json(patients)
+    }
+})
+
+// @desc get all doctors
+// @route GET /admin/get-doctors
+// @access Private
+const getDoctors = asyncHandler( async(req, res) => {
+    const doctors = await Doctor.find()
+
+    if (doctors.length === 0){
+        res.status(400)
+        throw new Error ("No Admins")
+    } else {
+        res.status(200).json(doctors)
+    }
+})
+
 // @desc Login admin
 // @route POST /admin/login
 // @access Public
@@ -350,6 +392,20 @@ const getPackages = asyncHandler( async(req, res) => {
     }
 })
 
+// @desc Get all packages
+// @route GET /admin/get-package/:id
+// @access Private
+const getPackage = asyncHandler( async(req, res) => {
+    const package = await Packages.findById(req.params.id)
+
+    if (!package){
+        res.status(400)
+        throw new Error("No Packages Found")
+    } else {
+        res.status(200).json(package)
+    }
+})
+
 // @desc Add new packages
 // @route POST /admin/add-packages
 // @access Private
@@ -450,5 +506,9 @@ module.exports = {
     updatePackages,
     deletePackages,
     renderDashboard,
-    getPackages
+    getPackages,
+    getPackage,
+    getAdmins,
+    getDoctors,
+    getPatients
 }

@@ -22,6 +22,10 @@
             <button id="getAllRequestedDoctorsButton" style="cursor: pointer;">Get Requested Doctors</button>
             <button id="addPackageButton" style="cursor: pointer;">Add Package</button>
             <button id="viewAllPackages" style="cursor: pointer;">Get All Packages</button>
+            <button id="addAdmin" style="cursor: pointer;">Add Admin</button>
+            <button id="removeAdmin" style="cursor: pointer;">Remove Admin</button>
+            <button id="removeDoctor" style="cursor: pointer;">Remove Doctor</button>
+            <button id="removePatient" style="cursor: pointer;">Remove Patient</button>
             <hr />
             <br />
             <br />
@@ -71,6 +75,12 @@
 
             const getAllPackagesButton = document.getElementById("viewAllPackages")
 
+            const addAdminButton = document.getElementById("addAdmin")
+
+            const removeDoctorButton = document.getElementById("removeDoctor")
+            const removePatientButton = document.getElementById("removePatient")
+            const removeAdminButton = document.getElementById("removeAdmin")
+
             getAllRequestedDoctorsButton.addEventListener("click", function () {
                 getAllRequestedDoctors()
             })
@@ -86,6 +96,223 @@
             addPackageForm.addEventListener("submit", function (event) {
                 addPackage()
             })
+
+            addAdminButton.addEventListener("click", function () {
+                addAdmin()
+            })
+
+            removeDoctorButton.addEventListener("click", function () {
+                removeDoctor()
+            })
+
+            removePatientButton.addEventListener("click", function () {
+                removePatient()
+            })
+
+            removeAdminButton.addEventListener("click", function () {
+                removeAdmin()
+            })
+
+            function removeAdmin() {
+                fetch("http://localhost:4000/admin/get-admins")
+                .then((response) => response.json())
+                .then(data => {
+                    container.innerHTML = ""
+                    const adminsTable = document.createElement("table")
+                    adminsTable.innerHTML = `
+                        <tr>
+                            <th style="border: 1px solid">ID</th>
+                            <th style="border: 1px solid">Username</th>
+                            <th style="border: 1px solid">Name</th>
+                            <th style="border: 1px solid">Email</th>
+                        </tr>
+                    `;
+
+                    data.forEach(admin => {
+                        const row = adminsTable.insertRow()
+                        row.insertCell(0).textContent = admin._id
+                        row.insertCell(1).textContent = admin.username
+                        row.insertCell(2).textContent = admin.firstName + " " + admin.lastName
+                        row.insertCell(3).textContent = admin.email
+
+                        const deleteAdminButton = document.createElement("button")
+                        deleteAdminButton.textContent = "DELETE USER"
+                        deleteAdminButton.style = "cursor: pointer;"
+                        deleteAdminButton.addEventListener("click", function () {
+                            removeAdminHelper(admin._id, container)
+                        });
+                        row.insertCell(4).appendChild(deleteAdminButton)
+                    });
+                    adminsTable.setAttribute("style", "margin: 0 auto; border: 1px solid;");
+                    container.appendChild(adminsTable)
+                }).catch(error => {console.error("Error: ", error)})
+            }
+
+            function removeAdminHelper (adminID, container) {
+                fetch(`http://localhost:4000/admin/remove-admin/${adminID}`, {
+                    method: 'DELETE'
+                })
+                .then((response) => response.json())
+                .then(data => {
+                    container.innerHTML = "";
+                    const text = document.createElement("h1");
+                    text.innerHTML = `<h1>${data.message}</h1>`;
+                    container.appendChild(text);
+                })
+            }
+
+            function removePatient () {
+                fetch("http://localhost:4000/admin/get-patients")
+                    .then((response) => response.json())
+                    .then(data => {
+                        container.innerHTML = ""
+                        const patientsTable = document.createElement("table")
+                        patientsTable.innerHTML = `
+                        <tr>
+                            <th style="border: 1px solid">ID</th>
+                            <th style="border: 1px solid">Username</th>
+                            <th style="border: 1px solid">Name</th>
+                            <th style="border: 1px solid">Email</th>
+                        </tr>
+                    `;
+
+                        data.forEach(patient => {
+                            const row = patientsTable.insertRow()
+                            row.insertCell(0).textContent = patient._id
+                            row.insertCell(1).textContent = patient.username
+                            row.insertCell(2).textContent = patient.firstName + " " + patient.lastName
+                            row.insertCell(3).textContent = patient.email
+
+                            const deletePatientButton = document.createElement("button")
+                            deletePatientButton.textContent = "DELETE USER"
+                            deletePatientButton.style = "cursor: pointer;"
+                            deletePatientButton.addEventListener("click", function () {
+                                removePatientHelper(patient._id, container)
+                            });
+                            row.insertCell(4).appendChild(deletePatientButton)
+                        });
+                        patientsTable.setAttribute("style", "margin: 0 auto; border: 1px solid;");
+                        container.appendChild(patientsTable)
+                    }).catch(error => { console.error("Error: ", error) })
+            
+            }
+
+            function removePatientHelper(patientID, container) {
+                fetch(`http://localhost:4000/admin/remove-patient/${patientID}`, {
+                    method: 'DELETE'
+                })
+                    .then((response) => response.json())
+                    .then(data => {
+                        container.innerHTML = "";
+                        const text = document.createElement("h1");
+                        text.innerHTML = `<h1>${data.message}</h1>`;
+                        container.appendChild(text);
+                    })
+            }
+
+            function removeDoctor () {
+                fetch("http://localhost:4000/admin/get-doctors")
+                    .then((response) => response.json())
+                    .then(data => {
+                        container.innerHTML = ""
+                        const doctorsTable = document.createElement("table")
+                        doctorsTable.innerHTML = `
+                        <tr>
+                            <th style="border: 1px solid">ID</th>
+                            <th style="border: 1px solid">Username</th>
+                            <th style="border: 1px solid">Name</th>
+                            <th style="border: 1px solid">Email</th>
+                        </tr>
+                    `;
+
+                        data.forEach(doctor => {
+                            const row = doctorsTable.insertRow()
+                            row.insertCell(0).textContent = doctor._id
+                            row.insertCell(1).textContent = doctor.username
+                            row.insertCell(2).textContent = doctor.firstName + " " + doctor.lastName
+                            row.insertCell(3).textContent = doctor.email
+
+                            const deleteDoctorButton = document.createElement("button")
+                            deleteDoctorButton.textContent = "DELETE USER"
+                            deleteDoctorButton.style = "cursor: pointer;"
+                            deleteDoctorButton.addEventListener("click", function () {
+                                removeDoctorHelper(doctor._id, container)
+                            });
+                            row.insertCell(4).appendChild(deleteDoctorButton)
+                        });
+                        doctorsTable.setAttribute("style", "margin: 0 auto; border: 1px solid;");
+                        container.appendChild(doctorsTable)
+                    }).catch(error => { console.error("Error: ", error) })
+            }
+
+            function removeDoctorHelper(doctorID, container) {
+                fetch(`http://localhost:4000/admin/remove-doctor/${doctorID}`, {
+                    method: 'DELETE'
+                })
+                    .then((response) => response.json())
+                    .then(data => {
+                        container.innerHTML = "";
+                        const text = document.createElement("h1");
+                        text.innerHTML = `<h1>${data.message}</h1>`;
+                        container.appendChild(text);
+                    })
+            }
+
+            function addAdmin () {
+                container.innerHTML = ""
+                const addAdminSection = document.createElement("section")
+                addAdminSection.innerHTML = `
+                    <h2>Add A New Admin</h2>
+                    <form id="addAdminForm">
+                        <label for="email">Email:</label>
+                        <input type="email" name="email" id="email" placeholder="Enter Email"><br><br>
+                        
+                        <label for="firstName">First Name:</label>
+                        <input type="text" name="firstName" id="firstName" placeholder="Enter First Name"><br><br>
+                        
+                        <label for="lastName">Last Name:</label>
+                        <input type="text" name="lastName" id="lastName" placeholder="Enter Last Name"><br><br>
+                        
+                        <button type="submit" style="cursor: pointer;">Add Admin</button>
+                    </form>
+                `
+                container.appendChild(addAdminSection)
+
+                
+
+                const addAdminForm = document.getElementById("addAdminForm")
+                addAdminForm.addEventListener("submit", function (event){
+                    event.preventDefault()
+                    createAdmin()
+                })
+
+                
+            }
+
+            function createAdmin () {
+                const formData = new FormData(document.getElementById("addAdminForm"))
+                const packageData = {}
+                formData.forEach((value, key) => {
+                    packageData[key] = value
+                });
+
+                fetch("http://localhost:4000/admin/create-admin", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(packageData)
+                }).then(response => response.json())
+                    .then(data => {
+                        const text = document.createElement("p")
+                        text.innerHTML = `
+                        <h2>Please REMEMBER Your Username and Password</h2>
+                        <p>Username: ${data.username}</p>
+                        <p>Password: ${data.password}</p>
+                    `
+                        container.appendChild(text)
+                    }).catch(error => { console.error('Error: ', error) })
+            }
 
             function getAllPackages () {
                 fetch("http://localhost:4000/admin/get-packages")
@@ -139,8 +366,78 @@
                 }).catch(error => console.error("Error: ", error))
             }
 
-            function editPackage () {
-                
+            function editPackage (packageID, container) {
+                container.innerHTML = ""
+                const editPackageSection = document.createElement("section")
+                editPackageSection.innerHTML = `
+                <h2>Edit Package</h2>
+                    <form id="editPackageForm">
+                        <label for="name">Name:</label>
+                        <input type="text" name="name" id="editname"><br><br>
+
+                        <label for="description">Description:</label>
+                        <textarea name="description" id="editdescription" cols="30" rows="10"></textarea><br><br>
+
+                        <label for="price">Price:</label>
+                        <input type="number" name="price" id="editprice"><br><br>
+
+                        <label for="doctorSessionDiscount">Doctor Session Discount:</label>
+                        <input type="number" name="doctorSessionDiscount" id="editdoctorSessionDiscount"><br><br>
+
+                        <label for="medicineDiscount">Medicine Discount</label>
+                        <input type="number" name="medicineDiscount" id="editmedicineDiscount"><br><br>
+
+                        <label for="familyDiscount">Family Discount:</label>
+                        <input type="number" name="familyDiscount" id="editfamilyDiscount"><br><br>
+
+                        <button type="submit">Edit Package</button>
+                    </form>
+                `
+                container.appendChild(editPackageSection)
+
+                fetch(`http://localhost:4000/admin/get-package/${packageID}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("editname").value = data.name;
+                    document.getElementById("editdescription").value = data.description;
+                    document.getElementById("editprice").value = data.price;
+                    document.getElementById("editdoctorSessionDiscount").value = data.doctorSessionDiscount;
+                    document.getElementById("editmedicineDiscount").value = data.medicineDiscount;
+                    document.getElementById("editfamilyDiscount").value = data.familyDiscount;
+                }).catch(error => {console.error("Error: ", error);})
+
+                const editPackageForm = document.getElementById("editPackageForm")
+                editPackageForm.addEventListener("submit", function (event) {
+                    event.preventDefault();
+                    savePackageChanges(packageID);
+                });
+            }
+
+            function savePackageChanges (packageID) {
+                const formData = new FormData(document.getElementById("editPackageForm"));
+                const packageData = {};
+                formData.forEach((value, key) => {
+                    packageData[key] = value;
+                });
+
+                // const text = document.createElement("p");
+                // text.innerHTML = `<p>${JSON.stringify(packageData)}</p>`;
+                // container.appendChild(text);
+
+                fetch(`http://localhost:4000/admin/update-package/${packageID}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(packageData)
+                }).then(response => response.json())
+                .then(data => {
+                    const text = document.createElement("h1");
+                    text.innerHTML = `<h1>${data.message}</h1>`;
+                    container.appendChild(text);
+                }).catch(error => {
+                    console.error('Error:', error);
+                });
             }
 
             function deletePackage (packageID, container) {

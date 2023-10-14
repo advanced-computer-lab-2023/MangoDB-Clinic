@@ -15,7 +15,11 @@ const {
     deletePackages,
     updatePackages,
     renderDashboard,
-    getPackages
+    getPackages,
+    getPackage,
+    getAdmins,
+    getDoctors,
+    getPatients
 } = require('../controllers/adminController')
 
 const {protectAdmin} = require('../middleware/adminMiddleware')
@@ -24,6 +28,10 @@ router.get('/my-info', getMyInfo)
 router.get('/view-doctor/:id', viewDoctorRequest)
 router.get('/view-requested-doctors', viewAllDoctorRequests)
 router.get('/get-packages', getPackages)
+router.get('/get-package/:id', getPackage)
+router.get('/get-admins', getAdmins)
+router.get('/get-doctors', getDoctors)
+router.get('/get-patients', getPatients)
 
 router.get('/', renderDashboard)
 
