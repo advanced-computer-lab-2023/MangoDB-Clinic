@@ -3,17 +3,23 @@ const colors = require('colors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const { errorHandler } = require('./middleware/errorMiddleware');
+const guestRoutes = require('./routes/guestRoutes')
 const connectDB = require('./config/db');
 const port = process.env.PORT || 8000;
-const path = require('path');
+var path = require('path');
 const { selectPatient } = require('./controllers/doctorController');
+
+
+connectDB()
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
 
-connectDB()
+
 
 
 app.get('/doctorHomePage', (req, res) => {
@@ -54,9 +60,7 @@ app.use((req, res, next) => {
 app.use('/', require('./routes/guestRoutes'));
 app.use('/admin', require('./routes/adminRoutes'));
 app.use('/patient', require('./routes/patientRoutes'));
-
-const doctorRoutes = require('./routes/doctorRoutes');
-app.use('/doctor', doctorRoutes);
+app.use('/doctor', require('./routes/doctorRoutes'))
 
 app.use(errorHandler);
 
