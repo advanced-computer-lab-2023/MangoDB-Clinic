@@ -18,12 +18,39 @@
     </header>
 
     <main>
-        <section style="text-align: center">
+        <section style="text-align: center" id="buttonSection">
             <button id="getAllRequestedDoctorsButton" style="cursor: pointer;">Get Requested Doctors</button>
+            <button id="addPackageButton" style="cursor: pointer;">Add Package</button>
+            <button id="viewAllPackages" style="cursor: pointer;">Get All Packages</button>
             <hr />
             <br />
             <br />
-            <div id="container"></div>
+            <div id="container">
+                <section id="addPackageSection" class="hidden">
+                    <h2>Add New Package</h2>
+                    <form id="addPackageForm">
+                        <label for="name">Name:</label>
+                        <input type="text" name="name" id="name" required><br><br>
+
+                        <label for="description">Description:</label>
+                        <textarea name="description" id="description" cols="30" rows="10" required></textarea><br><br>
+
+                        <label for="price">Price:</label>
+                        <input type="number" name="price" id="price" required><br><br>
+
+                        <label for="doctorSessionDiscount">Doctor Session Discount:</label>
+                        <input type="number" name="doctorSessionDiscount" id="doctorSessionDiscount" required><br><br>
+
+                        <label for="medicineDiscount">Medicine Discount</label>
+                        <input type="number" name="medicineDiscount" id="medicineDiscount" required><br><br>
+
+                        <label for="familyDiscount">Family Discount:</label>
+                        <input type="number" name="familyDiscount" id="familyDiscount" required><br><br>
+
+                        <button type="submit">Add Package</button>
+                    </form>
+                </section>
+            </div>
         </section>
 
         <style>
@@ -38,14 +65,124 @@
             const getAllRequestedDoctorsButton = document.getElementById("getAllRequestedDoctorsButton")
             const container = document.getElementById("container");
 
+            const addPackageButton = document.getElementById("addPackageButton")
+            const addPackageSection = document.getElementById("addPackageSection")
+            const addPackageForm = document.getElementById("addPackageForm")
+
+            const getAllPackagesButton = document.getElementById("viewAllPackages")
+
             getAllRequestedDoctorsButton.addEventListener("click", function () {
                 getAllRequestedDoctors()
             })
 
+            getAllPackagesButton.addEventListener("click", function () {
+                getAllPackages()
+            })
+
+            addPackageButton.addEventListener("click", function () {
+                addPackageSection.classList.remove("hidden")
+            })
+
+            addPackageForm.addEventListener("submit", function (event) {
+                addPackage()
+            })
+
+            function getAllPackages () {
+                fetch("http://localhost:4000/admin/get-packages")
+                .then(response => response.json())
+                .then(data => {
+                    container.innerHTML = ""
+                    const table = document.createElement("table")
+                    table.innerHTML = `
+                        <tr>
+                            <th style="border: 1px solid">ID</th>
+                            <th style="border: 1px solid">Name</th>
+                            <th style="border: 1px solid">Price</th>
+                            <th style="border: 1px solid">Doctor Session Discount</th>
+                            <th style="border: 1px solid">Medicine Discount</th>
+                            <th style="border: 1px solid">Family Discount</th>
+                        </tr>
+                    `;
+
+                    data.forEach(package => {
+                        const row = table.insertRow()
+                        row.insertCell(0).textContent = package._id
+                        row.insertCell(1).textContent = package.name
+                        row.insertCell(2).textContent = package.price
+                        row.insertCell(3).textContent = package.doctorSessionDiscount
+                        row.insertCell(4).textContent = package.medicineDiscount
+                        row.insertCell(5).textContent = package.familyDiscount
+
+                        const editButton = document.createElement("button")
+                        editButton.textContent = "Edit Package"
+                        editButton.style = "cursor: pointer;"
+
+                        const deleteButton = document.createElement("button")
+                        deleteButton.textContent = "Delete Package"
+                        deleteButton.style = "cursor: pointer;"
+
+                        editButton.addEventListener("click", function () {
+                            editPackage(package._id, container)
+                        })
+                        deleteButton.addEventListener("click", function () {
+                            deletePackage(package._id, container)
+                        })
+
+                        row.insertCell(6).appendChild(editButton)
+                        row.insertCell(7).appendChild(deleteButton)
+
+                    });
+
+                    table.setAttribute("style", "margin: 0 auto; border: 1px solid");
+
+                    container.appendChild(table)
+                }).catch(error => console.error("Error: ", error))
+            }
+
+            function editPackage () {
+                
+            }
+
+            function deletePackage (packageID, container) {
+                fetch(`http://localhost:4000/admin/remove-package/${packageID}`, {
+                    method: 'DELETE'
+                }).then(response => response.json())
+                .then(data => {
+                    const text = document.createElement("h1")
+                    text.innerHTML = `<h1>${data.message}</h1>`
+                    container.appendChild(text)
+                }).catch(error => {console.error('Error: ', error)})
+            }
+
+            function addPackage () {
+                event.preventDefault()
+
+                const formData = new FormData(addPackageForm)
+                const packageData = {}
+                formData.forEach((value, key) => {
+                    packageData[key] = value
+                });
+
+                fetch("http://localhost:4000/admin/add-packages", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(packageData)
+                }).then(response => response.json())
+                    .then(data => {
+                        const text = document.createElement("h1")
+                        text.innerHTML = `<h1>${data.message}</h1>`
+                        container.appendChild(text)
+                    }).catch(error => { console.error('Error: ', error) })
+                
+            }
+            
             function getAllRequestedDoctors () {
                 fetch("http://localhost:4000/admin/view-requested-doctors")
                 .then((response) => response.json())
                 .then(data => {
+                    container.innerHTML = ""
                     const table = document.createElement("table")
                     table.innerHTML = `
                         <tr>
@@ -86,6 +223,7 @@
                         row.insertCell(9).appendChild(declineButton)
                     });
 
+                    table.setAttribute("style", "margin: 0 auto;");
 
                     container.appendChild(table);
                 }).catch(error => console.error("Error Fetching", error))
@@ -99,7 +237,7 @@
                     const text = document.createElement("h1")
                     text.innerHTML = `<h1>${data.message}</h1>`;
                     container.appendChild(text)
-                })
+                }).catch(error => {console.error('Error: ', error)})
             }
 
             function declineDoctor (doctorID, container) {

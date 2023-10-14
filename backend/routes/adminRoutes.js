@@ -14,7 +14,8 @@ const {
     addPackages,
     deletePackages,
     updatePackages,
-    renderDashboard
+    renderDashboard,
+    getPackages
 } = require('../controllers/adminController')
 
 const {protectAdmin} = require('../middleware/adminMiddleware')
@@ -22,6 +23,7 @@ const {protectAdmin} = require('../middleware/adminMiddleware')
 router.get('/my-info', getMyInfo)
 router.get('/view-doctor/:id', viewDoctorRequest)
 router.get('/view-requested-doctors', viewAllDoctorRequests)
+router.get('/get-packages', getPackages)
 
 router.get('/', renderDashboard)
 

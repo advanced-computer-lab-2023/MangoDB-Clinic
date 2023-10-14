@@ -336,6 +336,20 @@ const doctorRejection = asyncHandler(async (req, res) => {
     }
 })
 
+// @desc Get all packages
+// @route GET /admin/get-packages
+// @access Private
+const getPackages = asyncHandler( async(req, res) => {
+    const packages = await Packages.find()
+
+    if (packages.length === 0){
+        res.status(400)
+        throw new Error("No Packages Found")
+    } else {
+        res.status(200).json(packages)
+    }
+})
+
 // @desc Add new packages
 // @route POST /admin/add-packages
 // @access Private
@@ -435,5 +449,6 @@ module.exports = {
     addPackages,
     updatePackages,
     deletePackages,
-    renderDashboard
+    renderDashboard,
+    getPackages
 }
