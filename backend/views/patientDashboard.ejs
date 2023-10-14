@@ -307,6 +307,23 @@
       }
 
       function fetchDoctorsWithFilter() {
+        const dropdown = document.getElementById('specialityFilter');
+        if (dropdown.options.length === 1) {
+          fetch('http://localhost:5000/doctor/getAllSpecialities')
+            .then(response => response.json())
+            .then(data => {
+              const uniqueSpecialities = data;
+              for (const speciality of uniqueSpecialities) {
+                const option = document.createElement('option');
+                option.text = speciality;
+                option.value = speciality;
+                dropdown.add(option);
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+        }
         const filterDiv = document.getElementById("filteringDoctors");
         filterDiv.style.display = "block"; // Display the filter controls
 

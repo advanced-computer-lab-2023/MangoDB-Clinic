@@ -15,14 +15,15 @@ const {
     selectPatient,
     getPatients,
     viewHealthRecords,
-    searchPatientByName
+    searchPatientByName,
+    getAllSpecialities
 } = require('../controllers/doctorController');
 
 
 
 router.post('/filterapp', filterStatus);
 
-router.post('/upcoming',upcoming)
+router.post('/upcoming', upcoming)
 
 router.post('/CreateDoctor', createDoctor);
 router.post('/CreatePatient', createPatient);
@@ -36,15 +37,15 @@ router.get('/selectedPatient/:id', async (req, res) => {
         const patientId = req.params.id;
         const patient = await selectPatient(patientId);
         if (!patient) {
-    
+
             console.error('Patient not found for ID:', patientId);
-         
+
         }
         res.render('selectedPatient', { patient });
     } catch (error) {
-    
+
         console.error('Error retrieving patient:', error);
-       
+
     }
 });
 router.get('/viewAllPatients/:doctorId', async (req, res) => {
@@ -97,6 +98,8 @@ router.post('/searchPatientByName/:id', searchPatientByName);
 //     }
 // });
 router.post('/viewHealthRecords/:id', viewHealthRecords);
+
+router.get('/getAllSpecialities', getAllSpecialities)
 
 module.exports = router;
 

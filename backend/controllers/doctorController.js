@@ -9,7 +9,7 @@ const User = require('../models/userModel')
 // FILTER APPOITMENT USING STATUS OR DATE
 const filterStatus = async (req, res) => {
     const { status, date_1, date_2, doctor } = req.body;
-console.log(status, date_1, date_2, doctor)
+    console.log(status, date_1, date_2, doctor)
     if (!status) {
         return res.status(400).json({ message: 'Please enter status' });
     }
@@ -49,10 +49,10 @@ console.log(status, date_1, date_2, doctor)
 };
 
 
-  // filter patients by upcoming appointments
-  const upcoming = async (req, res) => {
+// filter patients by upcoming appointments
+const upcoming = async (req, res) => {
 
-    const {doctorId} = req.body;
+    const { doctorId } = req.body;
 
     try {
         const upappoint = await Appointment.find({ 'doctorId': doctorId });
@@ -66,10 +66,10 @@ console.log(status, date_1, date_2, doctor)
         upcomingApp.sort((a, b) => new Date(a.date) - new Date(b.date));
         const finalup = upcomingApp.map(appointment => {
             const patient = patients.find(patient => patient._id.equals(appointment.patientId));
-            return { 
+            return {
                 date: appointment.date,
                 status: appointment.status,
-                patientName: patient ? patient.firstName : null 
+                patientName: patient ? patient.firstName : null
             };
         });
 
@@ -81,25 +81,25 @@ console.log(status, date_1, date_2, doctor)
         res.status(500).json({ error: 'An error occurred while filtering patient IDs' });
     }
 };
-  
 
 
-  
-     //retrieve all users from the database
 
-  const getDoctors = async (req, res) => {
-    
-     const doctors = await Doctor.find({});
-     res.status(200).json(doctors);
-    
-    
-   }
 
-   const updateEmail = async (req, res) => {
+//retrieve all users from the database
+
+const getDoctors = async (req, res) => {
+
+    const doctors = await Doctor.find({});
+    res.status(200).json(doctors);
+
+
+}
+
+const updateEmail = async (req, res) => {
     console.log('Update email request received');
     const { email } = req.body;
     const doctorId = req.params.id;
-    console.log('Doctor ID:', doctorId); 
+    console.log('Doctor ID:', doctorId);
     console.log('New Email:', email);
 
     try {
@@ -116,41 +116,41 @@ console.log(status, date_1, date_2, doctor)
         console.error(error);
         res.status(500).json({ error: "Error updating email" });
     }
-   
+
 };
 
-   const updateHourlyRate = async (req, res) => {
-   
-    const {hourlyRate}= req.body;
-        const doctorId = req.params.id;
-    
-        try{
-            const doctor = await Doctor.findByIdAndUpdate(doctorId,{hourlyRate},{new: true});
-            res.status(200).json(doctor);
-            console.log('Updated Doctor:', doctor);
-        }
-        
-        catch (error){
-            console.error(error);
-            res.status(500).json({ error: "error updating hourly rate"});
-        }
-   }
+const updateHourlyRate = async (req, res) => {
 
-   const updateAffiliation = async (req, res) => {
-   
-    const {affiliation} = req.body;
-        const doctorId = req.params.id;
-    
-        try{
-            const doctor = await Doctor.findByIdAndUpdate(doctorId,{affiliation}, {new: true});
-            res.status(200).json(doctor);
-            console.log('Updated Doctor:', doctor);
-        }
-        catch (error){
-            console.error(error);
-            res.status(500).json({ error: "error updating Affiliation"});
-        }
-   }
+    const { hourlyRate } = req.body;
+    const doctorId = req.params.id;
+
+    try {
+        const doctor = await Doctor.findByIdAndUpdate(doctorId, { hourlyRate }, { new: true });
+        res.status(200).json(doctor);
+        console.log('Updated Doctor:', doctor);
+    }
+
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "error updating hourly rate" });
+    }
+}
+
+const updateAffiliation = async (req, res) => {
+
+    const { affiliation } = req.body;
+    const doctorId = req.params.id;
+
+    try {
+        const doctor = await Doctor.findByIdAndUpdate(doctorId, { affiliation }, { new: true });
+        res.status(200).json(doctor);
+        console.log('Updated Doctor:', doctor);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "error updating Affiliation" });
+    }
+}
 
 
 // const searchPatientByName = async (req, res) => {
@@ -178,7 +178,7 @@ console.log(status, date_1, date_2, doctor)
 
 //             res.json(patients);
 //         } else {
-     
+
 //             res.status(404).json({ error: 'No matching patients found' });
 //         }
 //     } catch (error) {
@@ -222,17 +222,17 @@ const searchPatientByName = async (req, res) => {
         console.log('Doctor ID:', doctorId);
         console.log('Patient Name:', firstName);
 
-        
+
         const appointments = await Appointment.find({ doctorId: doctorId });
 
         const patientIds = new Set();
 
-   
+
         for (const appointment of appointments) {
             patientIds.add(appointment.patientId.toString());
         }
 
-       
+
         const patients = await Patient.find({
             _id: { $in: Array.from(patientIds) },
             firstName: firstName
@@ -258,19 +258,19 @@ const searchPatientByName = async (req, res) => {
 //     try {
 //       const docId = req.params.id;
 //       const appointments = await Appointment.find({ doctorId: docId });
-  
+
 //       if (!appointments || appointments.length === 0) {
 //         return res.status(404).json({ message: 'No appointments found for this doctor.' });
 //       }
-  
+
 //       const patientIds = appointments.map((appointment) => appointment.patientId);
-      
+
 //       const patients = await Patient.find({ _id: { $in: patientIds } });
-  
+
 //       if (!patients || patients.length === 0) {
 //         return res.status(404).json({ message: 'No patients found for this doctor.' });
 //       }
-  
+
 //       res.status(200).json(patients);
 //     } catch (error) {
 //       console.error(error);
@@ -289,7 +289,7 @@ const viewAllPatients = async (doctorId) => {
         const patientIds = appointments.map((appointment) => appointment.patientId);
 
         const patients = await Patient.find({ _id: { $in: patientIds } })
-            .select('firstName lastName _id email'); 
+            .select('firstName lastName _id email');
 
         if (!patients || patients.length === 0) {
             return [];
@@ -302,25 +302,25 @@ const viewAllPatients = async (doctorId) => {
     }
 };
 
-   
-   const createDoctor = async (req, res) => {
+
+const createDoctor = async (req, res) => {
 
     const {
-        firstName, lastName, email, dob, username, password, hourlyRate, affiliation,  speciality, educationalBackground, userType,accountStatus
+        firstName, lastName, email, dob, username, password, hourlyRate, affiliation, speciality, educationalBackground, userType, accountStatus
     } = req.body;
 
     try {
-        console.log('Creating doctor with data:', firstName, lastName, email, dob, username, password, hourlyRate, affiliation, speciality,accountStatus,
-        educationalBackground, userType,);
+        console.log('Creating doctor with data:', firstName, lastName, email, dob, username, password, hourlyRate, affiliation, speciality, accountStatus,
+            educationalBackground, userType,);
 
         const doctor = await Doctor.create({
-            firstName, 
-            lastName, 
-            email, 
-            dob, 
-            username, 
-            password, 
-            hourlyRate, 
+            firstName,
+            lastName,
+            email,
+            dob,
+            username,
+            password,
+            hourlyRate,
             affiliation,
             speciality,
             educationalBackground,
@@ -341,23 +341,23 @@ const viewAllPatients = async (doctorId) => {
 const createPatient = async (req, res) => {
 
     const {
-        firstName,lastName, email, username, password, mobile,dob,gender,emergency, family,userType,accountStatus
+        firstName, lastName, email, username, password, mobile, dob, gender, emergency, family, userType, accountStatus
     } = req.body;
 
     try {
-        console.log('Creating patient with data:', firstName,lastName, email, username, password, mobile,dob,gender,emergency, family,userType,accountStatus);
+        console.log('Creating patient with data:', firstName, lastName, email, username, password, mobile, dob, gender, emergency, family, userType, accountStatus);
 
         const patient = await Patient.create({
             firstName,
-            lastName, 
-            email, 
-            username, 
-            password, 
+            lastName,
+            email,
+            username,
+            password,
             mobile,
             dob,
             gender,
-            emergency, 
-            family,userType,accountStatus
+            emergency,
+            family, userType, accountStatus
         });
         if (!patient) {
             return res.status(500).json({ error: 'patient creation failed' });
@@ -371,14 +371,14 @@ const createPatient = async (req, res) => {
 };
 
 const createAppointment = async (req, res) => {
-    const { doctorId, patientId,date,status } = req.body;
+    const { doctorId, patientId, date, status } = req.body;
 
     try {
-        console.log('Creating appointment with data:', doctorId, patientId,date,status);
+        console.log('Creating appointment with data:', doctorId, patientId, date, status);
 
         const appointment = await Appointment.create({
             doctorId,
-            patientId, 
+            patientId,
             date,
             status
         });
@@ -412,49 +412,59 @@ const createAppointment = async (req, res) => {
 // };
 const selectPatient = async (patientId) => {
     try {
-      const patient = await Patient.findById(patientId).exec();
-      return patient;
+        const patient = await Patient.findById(patientId).exec();
+        return patient;
     } catch (error) {
-      throw error;
+        throw error;
     }
-  };
+};
 
 
-  const getPatients = async (req, res) => {
-    
+const getPatients = async (req, res) => {
+
     const patients = await Patient.find({});
     res.status(200).json(patients);
-   
 
-  }
-  const viewHealthRecords = async (req, res) => {
+
+}
+const viewHealthRecords = async (req, res) => {
     try {
-      const doctorId = req.params.id;
-  
-      const { patientId } = req.body;
-  
-      const appointments = await Appointment.find({
-        doctorId: doctorId,
-        patientId: patientId,
-      });
-  
-      if (appointments.length === 0) {
-        return res.status(404).json({ message: 'No appointments found for this patient.' });
-      }
-      const patient = await Patient.findById(patientId).populate('prescriptions');
-  
-      if (!patient) {
-        return res.status(404).json({ message: 'Patient not found.' });
-      }
-  
-      res.status(200).json({ appointments, prescriptions: patient.prescriptions });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Error retrieving appointments and prescriptions' });
-    }
-  };
+        const doctorId = req.params.id;
 
-  module.exports ={
+        const { patientId } = req.body;
+
+        const appointments = await Appointment.find({
+            doctorId: doctorId,
+            patientId: patientId,
+        });
+
+        if (appointments.length === 0) {
+            return res.status(404).json({ message: 'No appointments found for this patient.' });
+        }
+        const patient = await Patient.findById(patientId).populate('prescriptions');
+
+        if (!patient) {
+            return res.status(404).json({ message: 'Patient not found.' });
+        }
+
+        res.status(200).json({ appointments, prescriptions: patient.prescriptions });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error retrieving appointments and prescriptions' });
+    }
+};
+
+
+const getAllSpecialities = async (req, res) => {
+    try {
+        const uniqueSpecialities = await Doctor.distinct('speciality');
+        res.status(200).json(uniqueSpecialities)
+    } catch (err) {
+        console.error('Error:', err);
+    }
+}
+
+module.exports = {
     createDoctor,
     updateEmail,
     updateHourlyRate,
@@ -468,6 +478,7 @@ const selectPatient = async (patientId) => {
     upcoming,
     selectPatient,
     getPatients,
-    viewHealthRecords
+    viewHealthRecords,
+    getAllSpecialities
 }
 
