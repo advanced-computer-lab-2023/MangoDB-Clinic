@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Admin</title>
+</head>
+
+<body>
+    <header>
+        <h1 style="text-align: center">Virtual Clinic</h1>
+        <h3 style="text-align: center; color: cornflowerblue;">Admin Dashboard</h3>
+        <div class="menu">
+            <ul class="menu-list">
+                <li><a href="/admin/">Home Page</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main>
+        <section style="text-align: center">
+            <button id="getAllRequestedDoctorsButton" style="cursor: pointer;">Get Requested Doctors</button>
+            <hr />
+            <br />
+            <br />
+            <div id="container"></div>
+        </section>
+
+        <style>
+            .hidden {
+                display: none;
+            }
+        </style>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const getAllRequestedDoctorsButton = document.getElementById("getAllRequestedDoctorsButton")
+            const container = document.getElementById("container");
+
+            getAllRequestedDoctorsButton.addEventListener("click", function () {
+                getAllRequestedDoctors()
+            })
+
+            function getAllRequestedDoctors () {
+                fetch("http://localhost:4000/admin/view-requested-doctors")
+                .then((response) => response.json())
+                .then(data => {
+                    const table = document.createElement("table")
+                    table.innerHTML = `
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Date Of Birth</th>
+                            <th>Affiliation</th>
+                            <th>Speciality</th>
+                            <th>Educational Background</th>
+                            <th>Hourly Rate</th>
+                            <th>Action</th>
+                        </tr>
+                    `;
+
+                    data.forEach(doctor => {
+                        const row = table.insertRow()
+                        row.insertCell(0).textContent = doctor._id
+                        row.insertCell(1).textContent = doctor.firstName + " " + doctor.lastName
+                        row.insertCell(2).textContent = doctor.email
+                        row.insertCell(3).textContent = new Date(doctor.dob).toLocaleDateString("en-UK")
+                        row.insertCell(4).textContent = doctor.affiliation
+                        row.insertCell(5).textContent = doctor.speciality
+                        row.insertCell(6).textContent = doctor.educationalBackground
+                        row.insertCell(7).textContent = doctor.hourlyRate
+
+                        const acceptButton = document.createElement("button");
+                        const declineButton = document.createElement("button");
+                        acceptButton.textContent = "Accept";
+                        declineButton.textContent = "Decline";
+                        acceptButton.addEventListener("click", function () {
+                            acceptDoctor(doctor._id, container)
+                        });
+                        declineButton.addEventListener("click", function () {
+                            declineDoctor(doctor._id, container)
+                        });
+                        row.insertCell(8).appendChild(acceptButton)
+                        row.insertCell(9).appendChild(declineButton)
+                    });
+
+
+                    container.appendChild(table);
+                }).catch(error => console.error("Error Fetching", error))
+            }
+
+            function acceptDoctor (doctorID, container) {
+                fetch(`http://localhost:4000/admin/doctor-approval/${doctorID}`, {
+                    method: 'PUT'
+                }).then((response) => response.json()).then(data => {
+                    container.innerHTML = ""
+                    const text = document.createElement("h1")
+                    text.innerHTML = `<h1>${data.message}</h1>`;
+                    container.appendChild(text)
+                })
+            }
+
+            function declineDoctor (doctorID, container) {
+                fetch(`http://localhost:4000/admin/doctor-rejection/${doctorID}`, {
+                    method: 'PUT'
+                }).then((response) => response.json()).then(data => {
+                    container.innerHTML = "";
+                    const text = document.createElement("h1");
+                    text.innerHTML = `<h1>${data.message}</h1>`;
+                    container.appendChild(text);
+                })
+            }
+
+            function clearContent() {
+                container.innerHTML = "";
+                // Reset filter elements
+                const doctorFilter = document.getElementById("doctorFilter");
+                const filledFilter = document.getElementById("filledFilter");
+                const dateFilter = document.getElementById("dateFilter");
+
+                // Set filter elements back to their default or initial state
+                doctorFilter.value = "";
+                filledFilter.value = "";
+                dateFilter.value = "";
+
+                const myDiv = document.getElementById("searchDoctorsForm");
+                myDiv.classList.add("hidden");
+            }
+        });
+    </script>
+</body>
+
+</html>

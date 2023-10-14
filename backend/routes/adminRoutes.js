@@ -13,7 +13,8 @@ const {
     viewAllDoctorRequests,
     addPackages,
     deletePackages,
-    updatePackages
+    updatePackages,
+    renderDashboard
 } = require('../controllers/adminController')
 
 const {protectAdmin} = require('../middleware/adminMiddleware')
@@ -21,6 +22,8 @@ const {protectAdmin} = require('../middleware/adminMiddleware')
 router.get('/my-info', getMyInfo)
 router.get('/view-doctor/:id', viewDoctorRequest)
 router.get('/view-requested-doctors', viewAllDoctorRequests)
+
+router.get('/', renderDashboard)
 
 router.post('/create-admin', createAdmin)
 router.post('/login', loginAdmin)

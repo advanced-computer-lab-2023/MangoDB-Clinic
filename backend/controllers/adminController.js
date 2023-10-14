@@ -7,6 +7,10 @@ const Doctor = require('../models/doctorModel')
 const Patient = require('../models/patientModel')
 const Packages = require('../models/packagesModel')
 
+const renderDashboard = (req, res) => {
+  res.status(200).render('adminDashboard')
+}
+
 const generateRandomUsername = (maxLength = 10) => {
     const prefix = 'admin-'
     const suffix = Math.random().toString(36).substring(2, 2 + (maxLength - prefix.length))
@@ -430,5 +434,6 @@ module.exports = {
     viewAllDoctorRequests,
     addPackages,
     updatePackages,
-    deletePackages
+    deletePackages,
+    renderDashboard
 }
