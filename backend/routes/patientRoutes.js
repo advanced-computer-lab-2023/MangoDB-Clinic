@@ -16,6 +16,7 @@ const {
     filterDoctors,
     searchDoctor,
     viewAllDoctors,
+    getAllAppointments,
     filterAppointments,
     addAppointment,
     addPrescription,
@@ -61,6 +62,8 @@ router.get('/select_prescription/:prescriptionId', selectPrescription)
 router.get('/get_all_doctors', viewAllDoctors)
 
 router.get('/filter_doctors', filterDoctors)
+
+router.get('/get_all_appointments/:id', getAllAppointments)
 
 router.get('/filter_appointments/:id', filterAppointments)
 

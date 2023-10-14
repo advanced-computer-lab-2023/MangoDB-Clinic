@@ -233,12 +233,27 @@ const filterPrescription = async (req, res) => {
   }
 };
 
+const getAllAppointments = async (req, res) => {
+  try {
+    const appointments = await Appointment.find({ patientId: req.params.id }).populate({
+      path: 'doctorId',
+      select: 'firstName lastName'
+    })
+    res.status(200).json(appointments)
+  } catch (error) {
+    res.status(400).json({ error: error.message })
+  }
+}
+
 //Filter appointments by Date/Status
 const filterAppointments = async (req, res) => {
   let { status, date_1, date_2 } = req.query;
 
   const patient = await Patient.findById(req.params.id);
-  const appoint = await Appointment.find({ patientId: req.params.id })
+  const appoint = await Appointment.find({ patientId: req.params.id }).populate({
+    path: 'doctorId',
+    select: 'firstName lastName'
+  })
 
   if (patient) {
     if (!status && !date_1 && !date_2)
@@ -389,6 +404,7 @@ module.exports = {
   getAllPrescriptions,
   filterPrescription,
   selectPrescription,
+  getAllAppointments,
   filterAppointments,
   viewAllDoctors,
   searchDoctor,
