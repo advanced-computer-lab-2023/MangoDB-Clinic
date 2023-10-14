@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const doctorController = require('../controllers/doctorController');
 const {
     createDoctor,
     updateEmail,
@@ -7,32 +8,88 @@ const {
     updateAffiliation,
     createPatient,
     createAppointment,
-    searchPatientByName,
-    viewAllPatients,getDoctors,filterStatus,upcoming,selectPatient,getPatients,viewHealthRecords
+    viewAllPatients,
+    getDoctors,
+    filterStatus,
+    upcoming,
+    selectPatient,
+    getPatients,
+    viewHealthRecords,
+    searchPatientByName
 } = require('../controllers/doctorController');
-
 
 router.post('/CreateDoctor', createDoctor);
 router.post('/CreatePatient', createPatient);
 router.post('/CreateAppointment', createAppointment);
-router.get('/getdoctors',getDoctors)
-router.get('/filterapp/:id',filterStatus)
-router.get('/upcoming/:id',upcoming)
-router.get('/selectPatient/:id',selectPatient)
-router.get('/getPatients',getPatients)
+router.get('/getdoctors', getDoctors);
+router.get('/getPatients', getPatients);
+router.get('/filterapp/:id', filterStatus);
+router.get('/upcoming/:id', upcoming);
+router.get('/selectedPatient/:id', async (req, res) => {
+    try {
+        const patientId = req.params.id;
+        const patient = await selectPatient(patientId);
+        if (!patient) {
+            // Log and handle the case where no patient is found with the given ID
+            console.error('Patient not found for ID:', patientId);
+            // You can send a response or render an error page here.
+        }
+        res.render('selectedPatient', { patient });
+    } catch (error) {
+        // Handle any other errors, such as database connection issues
+        console.error('Error retrieving patient:', error);
+        // You can send an error response or render an error page here.
+    }
+});
+router.get('/viewAllPatients/:doctorId', async (req, res) => {
+    try {
+        const doctorId = req.params.doctorId;
+        const patientsData = await viewAllPatients(doctorId);
 
-
-
+        if (patientsData && patientsData.length > 0) {
+            res.render('viewAllPatients', { patients: patientsData });
+        } else {
+            res.status(404).json({ message: 'No patients found' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error retrieving patients' });
+    }
+});
 
 router.put('/updateEmail/:id', updateEmail);
 router.put('/updateHourlyRate/:id', updateHourlyRate);
 router.put('/updateAffiliation/:id', updateAffiliation);
 
-
-
-router.get('/viewAllPatients/:id', viewAllPatients);
-
-
 router.post('/searchPatientByName/:id', searchPatientByName);
+// sync (req, res) => {
+//     const doctorId = req.params.id;
+//     const firstName = req.body.firstName; // Assuming that the first name is sent in the request body
+
+//     try {
+//         // Call the function from the controller with the firstName parameter
+//         const patients = await doctorController.searchPatientByName(doctorId, firstName);
+//         res.render('searchByName', { patients: patients || [] });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'Something went wrong' });
+//     }
+// });
+// router.get('/searchPatientByName/:id', async (req, res) => {
+//     try {
+//         const doctorId = req.params.doctorId;
+//         const patientData = await doctorController.searchPatientByName(doctorId);
+
+//         if (patientsData && patientsData.length > 0) {
+//             res.render('searchByName', { patient: patientsData });
+//         } else {
+//             res.status(404).json({ message: 'No patient found' });
+//         }
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ message: 'Error retrieving patient' });
+//     }
+// });
 router.post('/viewHealthRecords/:id', viewHealthRecords);
+
 module.exports = router;

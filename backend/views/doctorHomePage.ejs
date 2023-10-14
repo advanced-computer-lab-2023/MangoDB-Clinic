@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor's Home Page</title>
+</head>
+<body>
+    <h1>Welcome, Doctor</h1>
+
+    <!-- Button to View All Lists -->
+    <input type="text" id="d1" placeholder="Enter Doctor ID">
+<button id="viewAllListsButton">View All Patients</button>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Handle button click
+        $("#viewAllListsButton").on("click", function() {
+            // Get the Doctor ID from the text field
+            var doctorId1 = $("#d1").val();
+
+            // Redirect to the correct route with the doctorId parameter
+            window.location.href = `/doctor/viewAllPatients/${doctorId1}`;
+        });
+    });
+</script>
+
+<br><br>
+<br><br>
+
+
+  <input type="text" id="d2" placeholder="Enter Doctor ID">
+<br><br>
+<input type="text" id="emailTextBox" placeholder="Enter New Email">
+<br><br>
+<button id="updateEmailButton">Update Email</button>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+
+    $(document).ready(function() {
+       
+        $("#updateEmailButton").on("click", function() {
+            var doctorId2 = $("#d2").val();
+            var newEmail = $("#emailTextBox").val();
+            console.log('Doctor ID:', doctorId2);
+            console.log('New Email:', newEmail);
+            $.ajax({
+                url: `/doctor/updateEmail/${doctorId2}`,
+                method: "PUT",
+                data: { email: newEmail },
+                success: function(response) {
+                    console.log("Email updated successfully.");
+                },
+                error: function(error) {
+                    console.error("Error updating email:", error);
+                }
+            });
+        });
+    });
+</script>
+<br><br>
+<br><br>
+
+    <!-- Update Affiliation Section -->
+    <!-- Doctor ID Textbox -->
+  <input type="text" id="d3" placeholder="Enter Doctor ID">
+  <br><br>
+<input type="text" id="affiliationTextBox" placeholder="Enter New Affiliation">
+<br><br>
+<button id="updateAffiliationButton">Update Affiliation</button>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+
+        $(document).ready(function() {
+            $("#updateAffiliationButton").on("click", function() {
+    var doctorId3 = $("#d3").val();
+    var newAffiliation = $("#affiliationTextBox").val();
+    console.log('Doctor ID:', doctorId3);
+            console.log('New Email:', newAffiliation);
+
+    $.ajax({
+        url: `/doctor/updateAffiliation/${doctorId3}`,
+        method: "PUT",
+        data: { affiliation: newAffiliation },
+        success: function(response) {
+            console.log("Affiliation updated successfully.");
+        },
+        error: function(error) {
+            console.error("Error updating affiliation:", error);
+        }
+    });
+});
+});
+</script>
+<br><br>
+<br><br>
+
+    <!-- Textbox and Button for the Third Text -->
+    <input type="text" id="d4" placeholder="Enter Doctor ID">
+    <br><br>
+    <input type="text" id="hourlyRateTextBox" placeholder="Enter Hourly Rate">
+    <br><br>
+    <button id="updateHourlyRateButton">Update Hourly Rate</button>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+
+        $(document).ready(function() {
+            $("#updateHourlyRateButton").on("click", function() {
+    var doctorId4 = $("#d4").val();
+    var newHourlyRate = $("#hourlyRateTextBox").val();
+    console.log('Doctor ID:', doctorId4);
+            console.log('New Email:', newHourlyRate);
+
+    $.ajax({
+        url: `/doctor/updateHourlyRate/${doctorId4}`,
+        method: "PUT",
+        data: { hourlyRate: newHourlyRate },
+        success: function(response) {
+            console.log("Hourly Rate updated successfully.");
+        },
+        error: function(error) {
+            console.error("Error updating affiliation:", error);
+        }
+    });
+});
+});
+</script>
+    <br><br> 
+    <br><br>
+    <br><br>
+    <br><br>
+
+    <input type="text" id="doctorId0" placeholder="Enter Doctor ID">
+    <br><br>
+
+    <!-- Patient Name Textbox -->
+    <input type="text" id="patientName" placeholder="Enter Patient Name">
+    <br><br>
+
+    <!-- Search Button -->
+    <button id="searchButton">Search For Patient</button>
+
+    <br><br>
+
+    <!-- Patient Information Table -->
+    <table id="patientInfo" style="display: none;"> <!-- Hide the table initially -->
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>ID</th>
+                <th>email</th>
+                <th>dob</th>
+                <th>username</th>
+                <th>gender</th>
+                <th>mobile</th>
+                <!-- Add more columns as needed -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Patient information will be displayed here -->
+        </tbody>
+    </table>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#searchButton").on("click", function() {
+                // Show the table when you press the button
+                $("#patientInfo").show();
+
+                // Get doctor ID and patient name from textboxes
+                var doctorId = $("#doctorId0").val();
+                var patientName = $("#patientName").val();
+
+                // Make an AJAX request to fetch patient information
+                $.ajax({
+                    url: `/doctor/searchPatientByName/${doctorId}`,
+                    method: "POST",
+                    data: { firstName: patientName },
+                    success: function(patients) {
+                        // Clear the previous results
+                        $("#patientInfo tbody").empty();
+
+                        if (patients.length > 0) {
+                            // Populate the table with patient information
+                            patients.forEach(function(patient) {
+                                // Convert the family array to a comma-separated string
+                                var familyString = patient.family.join(', ');
+
+                                // Append patient information to the table
+                                $("#patientInfo tbody").append(
+                                    "<tr>" +
+                                        "<td>" + patient.firstName + " " + patient.lastName + "</td>" +
+                                        "<td><a href='/selectedPatient/" + patient._id + "'>" + patient._id + "</a></td>" +
+                                        "<td>" + patient.email + "</td>" +
+                                        "<td>" + patient.dob + "</td>" +
+                                        "<td>" + patient.username + "</td>" +
+                                        "<td>" + patient.gender + "</td>" +
+                                        "<td>" + patient.mobile + "</td>" +
+                                    "</tr>"
+                                );
+                            });
+                        } else {
+                            // Display an error message if no matching patients are found
+                            $("#patientInfo tbody").append("<tr><td colspan='12'>No matching patients found</td></tr>");
+                        }
+                    },
+                    error: function(error) {
+                        console.error("Error searching for patients:", error);
+                    }
+                });
+            });
+        });
+    </script>
+    
+</body>
+</html>
+
+     <br><br> 
+     <br><br>
+     <br><br>
+
+
+    <!-- Button to View Appointments -->
+    <button id="viewAppointmentsButton">View Appointments</button>
+</body>
+</html>

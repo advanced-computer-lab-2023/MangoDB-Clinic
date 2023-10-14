@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>List of Patients</title>
+</head>
+<body>
+    <h1>List of Patients</h1>
+    <ul>
+        <% patients.forEach(patient => { %>
+            <li>
+                <strong>ID:</strong> <a href="/selectedPatient/<%= patient._id %>"><%= patient._id %></a><br>
+                <strong>Name:</strong> <%= patient.firstName %> <%= patient.lastName %><br>
+                <strong>Email:</strong> <%= patient.email %>
+            </li>
+        <% }); %>
+    </ul>
+    
+    <!-- Button to Return to Doctor's Home Page -->
+    <a href="/doctorHomePage">Return to Doctor's Home Page</a>
+</body>
+</html>

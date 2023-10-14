@@ -1,5 +1,5 @@
 const asyncHandler = require('express-async-handler');
-const Doctor = require('../models/doctorModel.js');
+const Doctor = require('../models/doctorModel');
 const Patient = require('../models/patientModel.js');
 const Appointment = require('../models/appointmentModel');
 const Prescription = require('../models/prescriptionModel');
@@ -102,17 +102,28 @@ const filterStatus = async(req, res) => {
     
    }
 
-const updateEmail = async (req, res) => {
+   const updateEmail = async (req, res) => {
+    console.log('Update email request received');
     const { email } = req.body;
-    const doctorId = req.params.id; 
+    const doctorId = req.params.id;
+    console.log('Doctor ID:', doctorId); // Add this line
+    console.log('New Email:', email);  // Add this line
 
     try {
-        const doctor = await Doctor.findByIdAndUpdate(doctorId, { email }, { new: true });
+        const doctor = await Doctor.findByIdAndUpdate(doctorId, { email: email }, { new: true });
+
+        if (!doctor) {
+            return res.status(404).json({ error: 'Doctor not found' });
+        }
+
+        console.log('Updated Doctor:', doctor);
+
         res.status(200).json(doctor);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Error updating email" });
     }
+   
 };
 
    const updateHourlyRate = async (req, res) => {
@@ -123,7 +134,9 @@ const updateEmail = async (req, res) => {
         try{
             const doctor = await Doctor.findByIdAndUpdate(doctorId,{hourlyRate},{new: true});
             res.status(200).json(doctor);
+            console.log('Updated Doctor:', doctor);
         }
+        
         catch (error){
             console.error(error);
             res.status(500).json({ error: "error updating hourly rate"});
@@ -138,6 +151,7 @@ const updateEmail = async (req, res) => {
         try{
             const doctor = await Doctor.findByIdAndUpdate(doctorId,{affiliation}, {new: true});
             res.status(200).json(doctor);
+            console.log('Updated Doctor:', doctor);
         }
         catch (error){
             console.error(error);
@@ -180,6 +194,33 @@ const updateEmail = async (req, res) => {
 //     }
 // };
 
+// const searchPatientByName = async (doctorId, firstName) => {
+//     try {
+//         console.log('Doctor ID:', doctorId);
+//         console.log('Patient Name:', firstName);
+
+//         const appointments = await Appointment.find({ doctorId: doctorId });
+//         console.log('Appointments:', appointments);
+
+//         const patientIds = new Set();
+
+//         for (const appointment of appointments) {
+//             patientIds.add(appointment.patientId.toString());
+//         }
+//         console.log('Patient IDs:', Array.from(patientIds));
+
+//         const patients = await Patient.find({
+//             _id: { $in: Array.from(patientIds) },
+//             firstName: firstName
+//         });
+//         console.log('Patients:', patients);
+
+//         return patients; // Return the patients to be rendered
+//     } catch (error) {
+//         throw error; // Throw the error to be caught in the route handler
+//     }
+// };
+
 const searchPatientByName = async (req, res) => {
     try {
         const doctorId = req.params.id;
@@ -205,6 +246,7 @@ const searchPatientByName = async (req, res) => {
         });
 
         if (patients.length > 0) {
+            console.log('patient info: ', patients);
             res.json(patients);
         } else {
             res.status(404).json({ error: 'No matching patients found' });
@@ -213,6 +255,10 @@ const searchPatientByName = async (req, res) => {
         console.error(error);
         res.status(500).json({ error: 'Something went wrong' });
     }
+};
+
+module.exports = {
+    searchPatientByName, // Export the function
 };
 
 
@@ -241,30 +287,29 @@ const searchPatientByName = async (req, res) => {
 //     }
 //   };
 
-const viewAllPatients = async (req, res) => {
+const viewAllPatients = async (doctorId) => {
     try {
-      const docId = req.params.id;
-      const appointments = await Appointment.find({ doctorId: docId });
-  
-      if (!appointments || appointments.length === 0) {
-        return res.status(404).json({ message: 'No appointments found for this doctor.' });
-      }
-  
-      const patientIds = appointments.map((appointment) => appointment.patientId);
-  
-      const patients = await Patient.find({ _id: { $in: patientIds } })
-        .select('firstName lastName _id email'); // Specify the fields you want to select
-  
-      if (!patients || patients.length === 0) {
-        return res.status(404).json({ message: 'No patients found for this doctor.' });
-      }
-  
-      res.status(200).json(patients);
+        const appointments = await Appointment.find({ doctorId });
+
+        if (!appointments || appointments.length === 0) {
+            return [];
+        }
+
+        const patientIds = appointments.map((appointment) => appointment.patientId);
+
+        const patients = await Patient.find({ _id: { $in: patientIds } })
+            .select('firstName lastName _id email'); // Specify the fields you want to select
+
+        if (!patients || patients.length === 0) {
+            return [];
+        }
+
+        return patients;
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Error retrieving patients' });
+        console.error(error);
+        return [];
     }
-  };
+};
 
    
    const createDoctor = async (req, res) => {
@@ -357,22 +402,32 @@ const createAppointment = async (req, res) => {
     }
 };
 
-const selectPatient = async (req, res) => {
+// const selectPatient = async (req, res) => {
+//     try {
+//         const patientId = req.params.id;
+//         const patient = await Patient.findById(patientId).select('firstName lastName email username dob gender accountStatus userType mobile emergency family prescriptions');
+
+//         if (!patient) {
+//             return res.status(404).json({ message: 'Patient not found' });
+//         }
+
+//         // Render the "selectedPatient.ejs" template with patient data
+//         console.log('patient info: ', patient);
+//         res.render('selectedPatient', { patient });
+//     } catch (error) {
+//         console.error(error); // Log the error for debugging
+//         res.status(500).json({ message: 'Error retrieving patient information', error: error.message }); // Return a more detailed error response
+//     }
+// };
+const selectPatient = async (patientId) => {
     try {
-      const patientId = req.params.id;
-  
-      const patient = await Patient.findById(patientId).select('firstName lastName email username dob gender accountStatus userType mobile emergency family prescriptions');
-  
-      if (!patient) {
-        return res.status(404).json({ message: 'Patient not found' });
-      }
-  
-      res.status(200).json(patient);
+      const patient = await Patient.findById(patientId).exec();
+      return patient;
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Error retrieving patient information' });
+      throw error;
     }
   };
+
 
   const getPatients = async (req, res) => {
     
