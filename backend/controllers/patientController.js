@@ -6,7 +6,7 @@ const Doctor = require('../models/doctorModel')
 const Appointment = require('../models/appointmentModel')
 
 const renderDashboard = (req, res) => {
-  res.status(200).render('dashboard')
+  res.status(200).render('patientDashboard')
 }
 
 const renderAddFamilyMember = (req, res) => {

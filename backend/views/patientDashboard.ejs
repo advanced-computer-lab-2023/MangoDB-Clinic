@@ -26,27 +26,28 @@
       <hr />
       <br />
       <br />
-      <div id="container"></div>
 
       <div id="filteringPrescriptions" style="display: none">
         <!-- Filter Controls -->
-        <label for="doctorFilter">Doctor:</label>
+        <label id="doctorLabel" for="doctorFilter">Doctor:</label>
         <select id="doctorFilter">
           <option value="">All</option>
+          <!--        <option value=""></option>" 
+          add -->
         </select>
 
-        <label for="filledFilter">Filled:</label>
+        <label id=" filledLabel" for="filledFilter">Filled:</label>
         <select id="filledFilter">
           <option value="">All</option>
           <option value="true">Yes</option>
           <option value="false">No</option>
         </select>
 
-        <label for="dateFilter">Date:</label>
+        <label id="dateLabel" for="dateFilter">Date:</label>
         <input type="date" id="dateFilter" />
 
         <button id="applyFilterButton">Apply Filter</button>
-      </div>
+      </div> <br> <br>
     </section>
 
     <style>
@@ -54,15 +55,18 @@
         display: none;
       }
     </style>
-    <form id="searchDoctorsForm" class="hidden" action="/patient/get_all_doctors" method="GET">
+
+    <div id="searchDoctorsForm" class="hidden" style="text-align: center;">
+
       <label for="search">Search by Name:</label>
       <input type="text" id="search" name="search" placeholder="Search by name" />
-
-      <label for="speciality">Filter by speciality:</label>
+      <label for="speciality">Search by speciality:</label>
       <input type="text" id="speciality" name="speciality" placeholder="Filter by speciality" />
 
-      <button type="submit">Search</button>
-    </form>
+      <button id="getSearchResultsButton" type="button">Search</button>
+    </div> <br> <br>
+    <div id="container"></div>
+
   </main>
 
   <script>
@@ -81,12 +85,13 @@
       const searchDoctorsButton = document.getElementById(
         "searchDoctorsButton"
       );
+      const getSearchResultsButton = document.getElementById("getSearchResultsButton");
       const container = document.getElementById("container");
 
       getFamilyMembersButton.addEventListener("click", function () {
-        console.log('here')
+        hideFilter();
+        hideSearch();
         clearContent();
-        console.log('here2')
         fetchFamilyMembers();
       });
 
@@ -94,40 +99,52 @@
         clearContent();
         window.location.href =
           "http://localhost:5000/patient/addFamilyMember";
-        //"/patient/addFamilyMember"
       });
 
       getPrescriptionsButton.addEventListener("click", function () {
+        hideSearch();
         clearContent();
         fetchPrescriptions();
       });
 
       viewAllDoctorsButton.addEventListener("click", function () {
+        hideSearch();
+        hideFilter();
         clearContent();
         fetchDoctors();
       });
 
       applyFilterButton.addEventListener("click", function () {
+        hideSearch();
         fetchFilteredPrescriptions();
         clearContent();
       })
       searchDoctorsButton.addEventListener("click", function () {
+        hideFilter();
         clearContent();
-        searchDoctors();
+        document.getElementById('searchDoctorsForm').classList.remove('hidden')
       });
+      getSearchResultsButton.addEventListener("click", function () {
+        fetchSearchedDoctors();
+        clearContent();
+      });
+
 
       function clearContent() {
         container.innerHTML = "";
         // Reset filter elements
-        const doctorFilter = document.getElementById("doctorFilter");
-        const filledFilter = document.getElementById("filledFilter");
-        const dateFilter = document.getElementById("dateFilter");
+        const doctorFilter = document.getElementById("doctorFilter").value = "";
+        const filledFilter = document.getElementById("filledFilter").value = "";
+        const dateFilter = document.getElementById("dateFilter").value = "";
+        const name = document.getElementById("search").value = "";
+        const speciality = document.getElementById("search").value = "";
+      }
 
-        // Set filter elements back to their default or initial state
-        doctorFilter.value = "";
-        filledFilter.value = "";
-        dateFilter.value = "";
+      function hideFilter() {
+        document.getElementById("filteringPrescriptions").style.display = "none";
+      }
 
+      function hideSearch() {
         const myDiv = document.getElementById("searchDoctorsForm");
         myDiv.classList.add("hidden");
       }
@@ -201,7 +218,7 @@
         filterDiv.style.display = "block"; // Display the filter controls
 
         fetch(
-          "http://localhost:4000/patient/get_prescriptions_of_patient/65266a257993f711333900fd"
+          "http://localhost:5000/patient/get_prescriptions_of_patient/65266a257993f711333900fd"
         )
           .then((response) => response.json())
           .then((data) => {
@@ -241,7 +258,8 @@
       function fetchFilteredPrescriptions() {
         const doctorFilter = document.getElementById("doctorFilter").value;
         const filledFilter = document.getElementById("filledFilter").value;
-        const dateFilter = document.getElementById("dateFilter").value;
+        const dateInput = document.getElementById("dateFilter").value
+        const dateFilter = dateInput.length === 0 ? "" : dateInput + 'T00:00:00.000Z'
 
         // Construct the URL with query parameters
         let url = `http://localhost:5000/patient/filter_prescription/6526d30a0f83f5e462288354?`;
@@ -251,12 +269,16 @@
         }
 
         if (filledFilter) {
+          url += url.slice(-1) === '?' ? '' : '&'
           url += `filled=${filledFilter}`;
         }
 
         if (dateFilter) {
+          url += url.slice(-1) === '?' ? '' : '&'
           url += `date=${dateFilter}`;
         }
+
+        console.log(url)
 
         fetch(url)
           .then((response) => response.json())
@@ -306,7 +328,7 @@
           prescriptionId
         );
         fetch(
-          `http://localhost:4000/patient/select_prescription/${prescriptionId}`
+          `http://localhost:5000/patient/select_prescription/${prescriptionId}`
         )
           .then((response) => response.json())
           .then((prescription) => {
@@ -350,19 +372,130 @@
             console.error("Error fetching prescription details: ", error)
           );
       }
+
+      function searchDoctors() {
+        const toggleButton = document.getElementById("searchDoctorsButton");
+        const myDiv = document.getElementById("searchDoctorsForm");
+        toggleButton.addEventListener("click", () => {
+          if (myDiv.classList.contains("hidden")) {
+            myDiv.classList.remove("hidden");
+          } else {
+            myDiv.classList.add("hidden");
+          }
+        });
+      }
+
+      function fetchSearchedDoctors() {
+        const name = document.getElementById("search").value
+        const speciality = document.getElementById("speciality").value
+        console.log(name + " " + speciality)
+        console.error(name + " " + speciality)
+
+        // Construct the URL with query parameters
+        let url = `http://localhost:5000/patient/search_doctor/?`;
+
+
+        if (name) {
+          url += `name=${name}`;
+        }
+        console.log(url)
+
+        if (speciality) {
+          url += url.slice(-1) === '?' ? '' : '&'
+          url += `speciality=${speciality}`;
+        }
+
+        console.log(url)
+
+        fetch(url).then((response) => response.json())
+          .then((data) => {
+            // Display the filtered prescriptions
+            displayDoctors(data);
+          })
+          .catch((error) => console.error("Error fetching data: ", error));
+
+        // if (dateFilter) {
+        //   url += `date=${dateFilter}`;
+        // }
+      }
+
+      function displayDoctors(data) {
+        const table = document.createElement("table");
+        table.setAttribute("border", "1");
+        table.innerHTML = `
+                    <tr>
+                        <th>Name</th>
+                        <th>Speciality</th>
+                        <th>Hourly Rate</th>
+                    </tr>
+                `;
+
+        data.forEach((item) => {
+          const row = table.insertRow();
+          row.insertCell(0).textContent = item.firstName + ' ' + item.lastName
+          row.insertCell(1).textContent = item.speciality;
+          row.insertCell(2).textContent = item.hourlyRate;
+
+          const detailsButton = document.createElement("button");
+          detailsButton.textContent = "View Details";
+          detailsButton.addEventListener("click", function () {
+            // Pass the container to fetchPrescriptionDetails
+            fetchDoctorDetails(item._id, container);
+          });
+
+          row.insertCell(3).appendChild(detailsButton);
+        });
+
+        table.setAttribute("style", "margin: 0 auto;");
+        container.appendChild(table);
+      }
+
+      function fetchDoctorDetails(doctorId, container) {
+        console.log(
+          "Fetching doctor details for ID:",
+          doctorId
+        );
+        fetch(
+          `http://localhost:5000/patient/get_selected_doctor/${doctorId}`
+        )
+          .then((response) => response.json())
+          .then((doctor) => {
+            container.innerHTML = "";
+
+            const table = document.createElement("table");
+            table.setAttribute("border", "1");
+            table.innerHTML = `
+                    <tr>
+                    <th>Name</th>
+                    <th>Speciality</th>
+                    <th>Affiliation</th>
+                    <th>Educational Background</th>
+                    <th>Hourly Rate</th>
+                    </tr>
+                `;
+
+            // doctor.forEach((item) => {
+            const row = table.insertRow();
+            row.insertCell(0).textContent = doctor.firstName + ' ' + doctor.lastName;
+            row.insertCell(1).textContent = doctor.speciality;
+            row.insertCell(2).textContent = doctor.affiliation;
+            row.insertCell(3).textContent = doctor.educationalBackground;
+            row.insertCell(4).textContent = doctor.hourlyRate
+            // })
+            //    });
+
+            table.setAttribute("style", "margin: 0 auto;");
+
+            container.innerHTML = ""; // Clear the container
+            container.appendChild(table);
+            console.log("Doctor Details:", doctor);
+          })
+          .catch((error) =>
+            console.error("Error fetching doctor details: ", error)
+          );
+      }
     });
 
-    function searchDoctors() {
-      const toggleButton = document.getElementById("searchDoctorsButton");
-      const myDiv = document.getElementById("searchDoctorsForm");
-      toggleButton.addEventListener("click", () => {
-        if (myDiv.classList.contains("hidden")) {
-          myDiv.classList.remove("hidden");
-        } else {
-          myDiv.classList.add("hidden");
-        }
-      });
-    }
   </script>
 </body>
 
