@@ -24,6 +24,7 @@
       <button id="viewAllDoctorsButton">View All Doctors</button>
       <button id="searchDoctorsButton">Search Doctors</button>
       <button id="filterAppointmentsButton">Filter Appointments</button>
+      <button id="filterDoctor">Filter Doctors</button>
       <hr />
       <br />
       <br />
@@ -50,7 +51,24 @@
         <button id="applyFilterButton">Apply Filter</button>
       </div>
 
-      <div id="filteringAppointments" style="display: none">
+      <div id="filteringDoctors" style="display: none">
+        <!-- Filter Controls -->
+        <label for="specialityFilter">Speciality:</label>
+        <select id="specialityFilter">
+            <option value="">All</option>
+        </select>
+    
+        <label for="dateFilter">Date:</label>
+        <input type="date" id="dateFilter" />
+    
+        <label for="timeFilter">Time:</label>
+        <input type="time" id="timeFilter" />
+    
+        <button id="applyFilterButtonDoctor">Apply Filter</button>
+      </div>
+    
+
+      <div id="filteringAppointments">
         <!-- Filter Controls -->
 
         <label id=" statusLabel" for="statusFilter">Status:</label>
@@ -104,14 +122,17 @@
       const getPrescriptionsButton = document.getElementById(
         "getPrescriptionsButton"
       );
-      const applyFilterButton = document.getElementById("applyFilterButton");
+      const applyFilterButtonPrescription = document.getElementById("applyFilterButtonPrescription");
       const viewAllDoctorsButton = document.getElementById("viewAllDoctorsButton");
       const searchDoctorsButton = document.getElementById(
         "searchDoctorsButton"
       );
-      const getSearchResultsButton = document.getElementById("getSearchResultsButton");
+      const getSearchResultsButtonDo = document.getElementById("getSearchResultsButton");
       const filterAppointmentsButton = document.getElementById("filterAppointmentsButton");
       const container = document.getElementById("container");
+
+      const filterDoctor = document.getElementById("filterDoctor");
+      const applyFilterButtonDoctor = document.getElementById("applyFilterButtonDoctor");
 
       getFamilyMembersButton.addEventListener("click", function () {
         hidePrescriptionsFilter();
@@ -124,7 +145,7 @@
       addFamilyMemberButton.addEventListener("click", function () {
         clearContent();
         window.location.href =
-          "http://localhost:5000/patient/addFamilyMember";
+          "http://localhost:4000/patient/addFamilyMember";
       });
 
       getPrescriptionsButton.addEventListener("click", function () {
@@ -142,7 +163,7 @@
         fetchDoctors();
       });
 
-      applyFilterButton.addEventListener("click", function () {
+      applyFilterButtonPrescription.addEventListener("click", function () {
         hideSearch();
         fetchFilteredPrescriptions();
         clearContent();
@@ -168,6 +189,17 @@
         fetchFilteredAppointments();
         clearContent();
       });
+      filterDoctor.addEventListener("click", function () {
+        hideSearch();
+        fetchDoctorsWithFilter();
+        clearContent();
+        
+      })
+      applyFilterButtonDoctor.addEventListener("click", function () {
+        hideSearch();
+        fetchFilteredDoctors();
+        clearContent();
+      })
 
 
       function clearContent() {
@@ -178,6 +210,9 @@
         const dateFilter = document.getElementById("dateFilter").value = "";
         const name = document.getElementById("search").value = "";
         const speciality = document.getElementById("search").value = "";
+        const specialityInFilterDoctor = document.getElementById("specialityFilter").value = "";
+        const date = document.getElementById("dateFilter").value = "";
+        const time = document.getElementById("timeFilter").value = "";
 
         const statusFilter = document.getElementById("statusFilter").value = "";
         const date1Input = document.getElementById("date1Filter").value = ""
@@ -199,7 +234,7 @@
 
       function fetchFamilyMembers() {
         fetch(
-          "http://localhost:5000/patient/get_family_members/6526d3ad0f83f5e462288362"
+          "http://localhost:4000/patient/get_family_members/6526d3ad0f83f5e462288362"
         )
           .then((response) => response.json())
           .then((data) => {
@@ -232,7 +267,39 @@
       }
 
       function fetchDoctors() {
-        fetch("http://localhost:5000/patient/get_all_doctors")
+        fetch("http://localhost:4000/patient/get_all_doctors")
+          .then((response) => response.json())
+          .then((data) => {
+            const table = document.createElement("table");
+            table.setAttribute("border", "1");
+            table.innerHTML = `
+                <tr>
+                    <th>Name</th>
+                    <th>Speciality</th>
+                    <th>Hourly Rate</th>
+                </tr>
+            `;
+
+            data.forEach((item) => {
+              const row = table.insertRow();
+              row.insertCell(0).textContent =
+                item.firstName + " " + item.lastName;
+              row.insertCell(1).textContent = item.speciality;
+              row.insertCell(2).textContent = item.hourlyRate;
+            });
+
+            table.setAttribute("style", "margin: 0 auto;");
+
+            container.appendChild(table);
+          })
+          .catch((error) => console.error("Error fetching data: ", error));
+      }
+
+      function fetchDoctorsWithFilter() {
+        const filterDiv = document.getElementById("filteringDoctors");
+        filterDiv.style.display = "block"; // Display the filter controls
+
+        fetch("http://localhost:4000/patient/get_all_doctors")
           .then((response) => response.json())
           .then((data) => {
             const table = document.createElement("table");
@@ -265,7 +332,7 @@
         filterDiv.style.display = "block"; // Display the filter controls
 
         fetch(
-          "http://localhost:5000/patient/get_prescriptions_of_patient/6526d30a0f83f5e462288354"
+          "http://localhost:4000/patient/get_prescriptions_of_patient/6526d30a0f83f5e462288354"
         )
           .then((response) => response.json())
           .then((data) => {
@@ -309,7 +376,7 @@
         const dateFilter = dateInput.length === 0 ? "" : dateInput + 'T00:00:00.000Z'
 
         // Construct the URL with query parameters
-        let url = `http://localhost:5000/patient/filter_prescription/6526d30a0f83f5e462288354?`;
+        let url = `http://localhost:4000/patient/filter_prescription/6526d30a0f83f5e462288354?`;
 
         if (doctorFilter) {
           url += `doctor=${doctorFilter}`;
@@ -375,7 +442,7 @@
           prescriptionId
         );
         fetch(
-          `http://localhost:5000/patient/select_prescription/${prescriptionId}`
+          `http://localhost:4000/patient/select_prescription/${prescriptionId}`
         )
           .then((response) => response.json())
           .then((prescription) => {
@@ -420,6 +487,76 @@
           );
       }
 
+      function fetchFilteredDoctors() {
+
+        const specialityInFilterDoctor = document.getElementById("specialityFilter").value;
+        const date = document.getElementById("dateFilter").value;
+        const time = document.getElementById("timeFilter").value;
+
+        let url = "http://localhost:4000/patient/filter_doctors";
+
+        // Define an object to hold the filter criteria
+        const filters = {};
+
+        if (speciality) {
+            filters.speciality = speciality;
+        }
+
+        if (date) {
+            filters.date = date;
+        }
+
+        if (time) {
+            filters.time = time;
+        }
+
+        // Convert the filters object to query parameters
+        const queryParams = new URLSearchParams(filters);
+
+        // Append the query parameters to the URL
+        if (queryParams.toString()) {
+            url += "?" + queryParams.toString();
+        }
+
+        fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+                // Display the filtered doctors
+                displayFilteredDoctors(data);
+            })
+            .catch((error) => console.error("Error fetching data: ", error));
+    }
+
+    function displayFilteredDoctors(data) {
+      const table = document.createElement("table");
+      table.setAttribute("border", "1");
+      table.innerHTML = `
+          <tr>
+              <th>Name</th>
+              <th>Speciality</th>
+              <th>Hourly Rate</th>
+          </tr>
+      `;
+
+      data.forEach((item) => {
+          const row = table.insertRow();
+          row.insertCell(0).textContent = item.firstName + ' ' + item.lastName;
+          row.insertCell(1).textContent = item.speciality;
+          row.insertCell(2).textContent = item.hourlyRate;
+
+          const detailsButton = document.createElement("button");
+          detailsButton.textContent = "View Details";
+          detailsButton.addEventListener("click", function () {
+              fetchDoctorDetails(item._id, container);
+          });
+
+          row.insertCell(3).appendChild(detailsButton);
+      });
+
+      table.setAttribute("style", "margin: 0 auto;");
+      container.appendChild(table);
+  }
+
       function searchDoctors() {
         const toggleButton = document.getElementById("searchDoctorsButton");
         const myDiv = document.getElementById("searchDoctorsForm");
@@ -439,7 +576,7 @@
         console.error(name + " " + speciality)
 
         // Construct the URL with query parameters
-        let url = `http://localhost:5000/patient/search_doctor/?`;
+        let url = `http://localhost:4000/patient/search_doctor/?`;
 
 
         if (name) {
@@ -497,7 +634,7 @@
           doctorId
         );
         fetch(
-          `http://localhost:5000/patient/get_selected_doctor/${doctorId}`
+          `http://localhost:4000/patient/get_selected_doctor/${doctorId}`
         )
           .then((response) => response.json())
           .then((doctor) => {
@@ -538,7 +675,7 @@
         filterDiv.style.display = "block"; // Display the filter controls
 
         fetch(
-          "http://localhost:5000/patient/get_all_appointments/6526d30a0f83f5e462288354"
+          "http://localhost:4000/patient/get_all_appointments/6526d30a0f83f5e462288354"
         )
           .then((response) => response.json())
           .then((data) => {
@@ -575,7 +712,7 @@
         const date2Filter = date2Input.length === 0 ? "" : date2Input + 'T00:00:00.000Z'
 
         // Construct the URL with query parameters
-        let url = `http://localhost:5000/patient/filter_appointments/6526d30a0f83f5e462288354?`;
+        let url = `http://localhost:4000/patient/filter_appointments/6526d30a0f83f5e462288354?`;
 
         if (statusFilter) {
           url += `status=${statusFilter}`;
