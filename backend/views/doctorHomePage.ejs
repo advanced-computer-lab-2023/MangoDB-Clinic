@@ -8,19 +8,19 @@
 <body>
     <h1>Welcome, Doctor</h1>
 
-    <!-- Button to View All Lists -->
+
     <input type="text" id="d1" placeholder="Enter Doctor ID">
 <button id="viewAllListsButton">View All Patients</button>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
     $(document).ready(function() {
-        // Handle button click
+
         $("#viewAllListsButton").on("click", function() {
-            // Get the Doctor ID from the text field
+    
             var doctorId1 = $("#d1").val();
 
-            // Redirect to the correct route with the doctorId parameter
+         
             window.location.href = `/doctor/viewAllPatients/${doctorId1}`;
         });
     });
@@ -63,8 +63,6 @@
 <br><br>
 <br><br>
 
-    <!-- Update Affiliation Section -->
-    <!-- Doctor ID Textbox -->
   <input type="text" id="d3" placeholder="Enter Doctor ID">
   <br><br>
 <input type="text" id="affiliationTextBox" placeholder="Enter New Affiliation">
@@ -98,7 +96,7 @@
 <br><br>
 <br><br>
 
-    <!-- Textbox and Button for the Third Text -->
+
     <input type="text" id="d4" placeholder="Enter Doctor ID">
     <br><br>
     <input type="text" id="hourlyRateTextBox" placeholder="Enter Hourly Rate">
@@ -137,17 +135,16 @@
     <input type="text" id="doctorId0" placeholder="Enter Doctor ID">
     <br><br>
 
-    <!-- Patient Name Textbox -->
+
     <input type="text" id="patientName" placeholder="Enter Patient Name">
     <br><br>
 
-    <!-- Search Button -->
     <button id="searchButton">Search For Patient</button>
 
     <br><br>
 
-    <!-- Patient Information Table -->
-    <table id="patientInfo" style="display: none;"> <!-- Hide the table initially -->
+
+    <table id="patientInfo" style="display: none;"> 
         <thead>
             <tr>
                 <th>Full Name</th>
@@ -157,11 +154,11 @@
                 <th>username</th>
                 <th>gender</th>
                 <th>mobile</th>
-                <!-- Add more columns as needed -->
+                
             </tr>
         </thead>
         <tbody>
-            <!-- Patient information will be displayed here -->
+          
         </tbody>
     </table>
 
@@ -169,29 +166,29 @@
     <script>
         $(document).ready(function() {
             $("#searchButton").on("click", function() {
-                // Show the table when you press the button
+                
                 $("#patientInfo").show();
 
-                // Get doctor ID and patient name from textboxes
+               
                 var doctorId = $("#doctorId0").val();
                 var patientName = $("#patientName").val();
 
-                // Make an AJAX request to fetch patient information
+               
                 $.ajax({
                     url: `/doctor/searchPatientByName/${doctorId}`,
                     method: "POST",
                     data: { firstName: patientName },
                     success: function(patients) {
-                        // Clear the previous results
+                       
                         $("#patientInfo tbody").empty();
 
                         if (patients.length > 0) {
-                            // Populate the table with patient information
+        
                             patients.forEach(function(patient) {
-                                // Convert the family array to a comma-separated string
+                      
                                 var familyString = patient.family.join(', ');
 
-                                // Append patient information to the table
+                           
                                 $("#patientInfo tbody").append(
                                     "<tr>" +
                                         "<td>" + patient.firstName + " " + patient.lastName + "</td>" +
@@ -205,7 +202,7 @@
                                 );
                             });
                         } else {
-                            // Display an error message if no matching patients are found
+               
                             $("#patientInfo tbody").append("<tr><td colspan='12'>No matching patients found</td></tr>");
                         }
                     },
@@ -225,7 +222,7 @@
      <br><br>
 
 
-    <!-- Button to View Appointments -->
+  
     <button id="viewAppointmentsButton">View Appointments</button>
 </body>
 </html>

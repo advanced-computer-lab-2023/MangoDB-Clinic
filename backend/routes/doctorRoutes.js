@@ -30,15 +30,15 @@ router.get('/selectedPatient/:id', async (req, res) => {
         const patientId = req.params.id;
         const patient = await selectPatient(patientId);
         if (!patient) {
-            // Log and handle the case where no patient is found with the given ID
+    
             console.error('Patient not found for ID:', patientId);
-            // You can send a response or render an error page here.
+         
         }
         res.render('selectedPatient', { patient });
     } catch (error) {
-        // Handle any other errors, such as database connection issues
+    
         console.error('Error retrieving patient:', error);
-        // You can send an error response or render an error page here.
+       
     }
 });
 router.get('/viewAllPatients/:doctorId', async (req, res) => {
@@ -64,10 +64,10 @@ router.put('/updateAffiliation/:id', updateAffiliation);
 router.post('/searchPatientByName/:id', searchPatientByName);
 // sync (req, res) => {
 //     const doctorId = req.params.id;
-//     const firstName = req.body.firstName; // Assuming that the first name is sent in the request body
+//     const firstName = req.body.firstName; 
 
 //     try {
-//         // Call the function from the controller with the firstName parameter
+//       
 //         const patients = await doctorController.searchPatientByName(doctorId, firstName);
 //         res.render('searchByName', { patients: patients || [] });
 //     } catch (error) {
