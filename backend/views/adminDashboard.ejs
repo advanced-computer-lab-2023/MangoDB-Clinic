@@ -114,7 +114,7 @@
             })
 
             function removeAdmin() {
-                fetch("http://localhost:4000/admin/get-admins")
+                fetch("http://localhost:5000/admin/get-admins")
                 .then((response) => response.json())
                 .then(data => {
                     container.innerHTML = ""
@@ -149,7 +149,7 @@
             }
 
             function removeAdminHelper (adminID, container) {
-                fetch(`http://localhost:4000/admin/remove-admin/${adminID}`, {
+                fetch(`http://localhost:5000/admin/remove-admin/${adminID}`, {
                     method: 'DELETE'
                 })
                 .then((response) => response.json())
@@ -162,7 +162,7 @@
             }
 
             function removePatient () {
-                fetch("http://localhost:4000/admin/get-patients")
+                fetch("http://localhost:5000/admin/get-patients")
                     .then((response) => response.json())
                     .then(data => {
                         container.innerHTML = ""
@@ -198,7 +198,7 @@
             }
 
             function removePatientHelper(patientID, container) {
-                fetch(`http://localhost:4000/admin/remove-patient/${patientID}`, {
+                fetch(`http://localhost:5000/admin/remove-patient/${patientID}`, {
                     method: 'DELETE'
                 })
                     .then((response) => response.json())
@@ -211,7 +211,7 @@
             }
 
             function removeDoctor () {
-                fetch("http://localhost:4000/admin/get-doctors")
+                fetch("http://localhost:5000/admin/get-doctors")
                     .then((response) => response.json())
                     .then(data => {
                         container.innerHTML = ""
@@ -246,7 +246,7 @@
             }
 
             function removeDoctorHelper(doctorID, container) {
-                fetch(`http://localhost:4000/admin/remove-doctor/${doctorID}`, {
+                fetch(`http://localhost:5000/admin/remove-doctor/${doctorID}`, {
                     method: 'DELETE'
                 })
                     .then((response) => response.json())
@@ -296,7 +296,7 @@
                     packageData[key] = value
                 });
 
-                fetch("http://localhost:4000/admin/create-admin", {
+                fetch("http://localhost:5000/admin/create-admin", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -315,7 +315,7 @@
             }
 
             function getAllPackages () {
-                fetch("http://localhost:4000/admin/get-packages")
+                fetch("http://localhost:5000/admin/get-packages")
                 .then(response => response.json())
                 .then(data => {
                     container.innerHTML = ""
@@ -395,7 +395,7 @@
                 `
                 container.appendChild(editPackageSection)
 
-                fetch(`http://localhost:4000/admin/get-package/${packageID}`)
+                fetch(`http://localhost:5000/admin/get-package/${packageID}`)
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById("editname").value = data.name;
@@ -424,7 +424,7 @@
                 // text.innerHTML = `<p>${JSON.stringify(packageData)}</p>`;
                 // container.appendChild(text);
 
-                fetch(`http://localhost:4000/admin/update-package/${packageID}`, {
+                fetch(`http://localhost:5000/admin/update-package/${packageID}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -441,7 +441,7 @@
             }
 
             function deletePackage (packageID, container) {
-                fetch(`http://localhost:4000/admin/remove-package/${packageID}`, {
+                fetch(`http://localhost:5000/admin/remove-package/${packageID}`, {
                     method: 'DELETE'
                 }).then(response => response.json())
                 .then(data => {
@@ -460,7 +460,7 @@
                     packageData[key] = value
                 });
 
-                fetch("http://localhost:4000/admin/add-packages", {
+                fetch("http://localhost:5000/admin/add-packages", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -476,7 +476,7 @@
             }
             
             function getAllRequestedDoctors () {
-                fetch("http://localhost:4000/admin/view-requested-doctors")
+                fetch("http://localhost:5000/admin/view-requested-doctors")
                 .then((response) => response.json())
                 .then(data => {
                     container.innerHTML = ""
@@ -527,7 +527,7 @@
             }
 
             function acceptDoctor (doctorID, container) {
-                fetch(`http://localhost:4000/admin/doctor-approval/${doctorID}`, {
+                fetch(`http://localhost:5000/admin/doctor-approval/${doctorID}`, {
                     method: 'PUT'
                 }).then((response) => response.json()).then(data => {
                     container.innerHTML = ""
@@ -538,7 +538,7 @@
             }
 
             function declineDoctor (doctorID, container) {
-                fetch(`http://localhost:4000/admin/doctor-rejection/${doctorID}`, {
+                fetch(`http://localhost:5000/admin/doctor-rejection/${doctorID}`, {
                     method: 'PUT'
                 }).then((response) => response.json()).then(data => {
                     container.innerHTML = "";
