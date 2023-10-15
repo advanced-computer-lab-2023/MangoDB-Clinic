@@ -207,7 +207,13 @@ const filterPrescription = async (req, res) => {
     const query = {}
 
     if (doctor) {
-      query['doctor'] = doctor;
+      const doc = await Doctor.findOne({ firstName: doctor});
+
+      if (doc) {
+        query['doctor'] = doc._id;
+      } else {
+        return res.status(400).json({ error: "Not found" });
+      }
     }
 
     if (filled) {

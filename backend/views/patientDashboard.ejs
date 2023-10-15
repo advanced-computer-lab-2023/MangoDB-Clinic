@@ -146,7 +146,7 @@
       addFamilyMemberButton.addEventListener("click", function () {
         clearContent();
         window.location.href =
-          "http://localhost:5000/patient/addFamilyMember";
+          "http://localhost:4000/patient/addFamilyMember";
       });
 
       getPrescriptionsButton.addEventListener("click", function () {
@@ -245,7 +245,7 @@
 
       function fetchFamilyMembers() {
         fetch(
-          "http://localhost:5000/patient/get_family_members/6526d3ad0f83f5e462288362"
+          "http://localhost:4000/patient/get_family_members/6526d3ad0f83f5e462288362"
         )
           .then((response) => response.json())
           .then((data) => {
@@ -278,7 +278,7 @@
       }
 
       function fetchDoctors() {
-        fetch("http://localhost:5000/patient/get_all_doctors")
+        fetch("http://localhost:4000/patient/get_all_doctors")
           .then((response) => response.json())
           .then((data) => {
             const table = document.createElement("table");
@@ -309,7 +309,7 @@
       function fetchDoctorsWithFilter() {
         const dropdown = document.getElementById('specialityFilter');
         if (dropdown.options.length === 1) {
-          fetch('http://localhost:5000/doctor/getAllSpecialities')
+          fetch('http://localhost:4000/doctor/getAllSpecialities')
             .then(response => response.json())
             .then(data => {
               const uniqueSpecialities = data;
@@ -327,7 +327,7 @@
         const filterDiv = document.getElementById("filteringDoctors");
         filterDiv.style.display = "block"; // Display the filter controls
 
-        fetch("http://localhost:5000/patient/get_all_doctors")
+        fetch("http://localhost:4000/patient/get_all_doctors")
           .then((response) => response.json())
           .then((data) => {
             const table = document.createElement("table");
@@ -369,7 +369,7 @@
         filterDiv.style.display = "block"; // Display the filter controls
 
         fetch(
-          "http://localhost:5000/patient/get_prescriptions_of_patient/6526d30a0f83f5e462288354"
+          "http://localhost:4000/patient/get_prescriptions_of_patient/6526d30a0f83f5e462288354"
         )
           .then((response) => response.json())
           .then((data) => {
@@ -382,6 +382,14 @@
                     <th>Doctor</th>
                     </tr>
                 `;
+
+            const doctors = new Set();
+
+            data.forEach((item) => {
+                doctors.add(item.doctor.firstName + " " + item.doctor.lastName);
+            });
+            // Populate the doctor filter select element
+            populateDoctorFilter(doctors);
 
             data.forEach((item) => {
               const row = table.insertRow();
@@ -412,11 +420,14 @@
         const dateInput = document.getElementById("dateFilter").value
         const dateFilter = dateInput.length === 0 ? "" : dateInput + 'T00:00:00.000Z'
 
+        const doctorNameParts = doctorFilter.split(' ');
+        const firstName = doctorNameParts[0];
+
         // Construct the URL with query parameters
-        let url = `http://localhost:5000/patient/filter_prescription/6526d30a0f83f5e462288354?`;
+        let url = `http://localhost:4000/patient/filter_prescription/6526d30a0f83f5e462288354?`;
 
         if (doctorFilter) {
-          url += `doctor=${doctorFilter}`;
+          url += `doctor=${encodeURIComponent(firstName)}`;
         }
 
         if (filledFilter) {
@@ -439,6 +450,27 @@
           })
           .catch((error) => console.error("Error fetching data: ", error));
       }
+
+      function populateDoctorFilter(doctors) {
+        const doctorFilter = document.getElementById("doctorFilter");
+
+        // Clear existing options
+        doctorFilter.innerHTML = "";
+
+        // Add an "All" option
+        const allOption = document.createElement("option");
+        allOption.value = "";
+        allOption.textContent = "All";
+        doctorFilter.appendChild(allOption);
+
+        // Add options for each doctor
+        doctors.forEach((doctor) => {
+            const option = document.createElement("option");
+            option.value = doctor;
+            option.textContent = doctor;
+            doctorFilter.appendChild(option);
+        });
+    }
 
       function displayFilteredPrescriptions(data) {
         const table = document.createElement("table");
@@ -479,7 +511,7 @@
           prescriptionId
         );
         fetch(
-          `http://localhost:5000/patient/select_prescription/${prescriptionId}`
+          `http://localhost:4000/patient/select_prescription/${prescriptionId}`
         )
           .then((response) => response.json())
           .then((prescription) => {
@@ -532,7 +564,7 @@
         const datetime = date + 'T' + time + ':00.000Z'
         console.log(datetime)
 
-        let url = "http://localhost:5000/patient/filter_doctors?";
+        let url = "http://localhost:4000/patient/filter_doctors?";
 
 
         if (specialityInFilterDoctor) {
@@ -604,7 +636,7 @@
         console.error(name + " " + speciality)
 
         // Construct the URL with query parameters
-        let url = `http://localhost:5000/patient/search_doctor/?`;
+        let url = `http://localhost:4000/patient/search_doctor/?`;
 
 
         if (name) {
@@ -662,7 +694,7 @@
           doctorId
         );
         fetch(
-          `http://localhost:5000/patient/get_selected_doctor/${doctorId}`
+          `http://localhost:4000/patient/get_selected_doctor/${doctorId}`
         )
           .then((response) => response.json())
           .then((doctor) => {
@@ -703,7 +735,7 @@
         filterDiv.style.display = "block"; // Display the filter controls
 
         fetch(
-          "http://localhost:5000/patient/get_all_appointments/6526d30a0f83f5e462288354"
+          "http://localhost:4000/patient/get_all_appointments/6526d30a0f83f5e462288354"
         )
           .then((response) => response.json())
           .then((data) => {
@@ -740,7 +772,7 @@
         const date2Filter = date2Input.length === 0 ? "" : date2Input + 'T00:00:00.000Z'
 
         // Construct the URL with query parameters
-        let url = `http://localhost:5000/patient/filter_appointments/6526d30a0f83f5e462288354?`;
+        let url = `http://localhost:4000/patient/filter_appointments/6526d30a0f83f5e462288354?`;
 
         if (statusFilter) {
           url += `status=${statusFilter}`;
