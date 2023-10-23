@@ -19,11 +19,6 @@ const protectAdmin = asyncHandler( async (req,res, next) => {
                 res.status(401)
                 throw new Error('Unauthorized')
             }
-            
-            if(admin.role !== 'admin'){
-                res.status(403)
-                throw new Error('Permission Denied')
-            }
 
             req.user = admin
 
@@ -31,7 +26,7 @@ const protectAdmin = asyncHandler( async (req,res, next) => {
         } catch (error) {
             console.log(error)
             res.status(401)
-            throw new Error('Unauthorized')
+            throw new Error('Error: Unauthorized')
         }
     }
 

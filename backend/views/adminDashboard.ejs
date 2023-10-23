@@ -19,6 +19,7 @@
 
     <main>
         <section style="text-align: center" id="buttonSection">
+            <button id="loginAdmin" style="cursor: pointer;">Login</button>
             <button id="getAllRequestedDoctorsButton" style="cursor: pointer;">Get Requested Doctors</button>
             <button id="addPackageButton" style="cursor: pointer;">Add Package</button>
             <button id="viewAllPackages" style="cursor: pointer;">Get All Packages</button>
@@ -81,6 +82,12 @@
             const removePatientButton = document.getElementById("removePatient")
             const removeAdminButton = document.getElementById("removeAdmin")
 
+            const loginAdminButton = document.getElementById("loginAdmin")
+
+            loginAdminButton.addEventListener("click", function () {
+                loginAdmin()
+            })
+
             getAllRequestedDoctorsButton.addEventListener("click", function () {
                 getAllRequestedDoctors()
             })
@@ -112,6 +119,56 @@
             removeAdminButton.addEventListener("click", function () {
                 removeAdmin()
             })
+
+            function loginAdmin () {
+                container.innerHTML = ""
+                const loginAdminSection = document.createElement("section")
+                loginAdminSection.innerHTML = `
+                    <h2>Login</h2>
+                    <form id="loginAdminForm">
+                        <label for="username">Username:</label>
+                        <input type="text" name="username" id="username" placeholder="Enter Username"><br><br>
+
+                        <label for="password">Password:</label>
+                        <input type="password" name="password" id="password" placeholder="Enter Password"><br><br>
+
+                        <button type="submit" style="cursor: pointer;">Login</button>
+                    </form>
+                `
+
+                container.appendChild(loginAdminSection)
+
+                const loginAdminForm = document.getElementById("loginAdminForm")
+                loginAdminForm.addEventListener("submit", function (event) {
+                    event.preventDefault()
+                    loginAdminHelper()
+                })
+            }
+
+            function loginAdminHelper () {
+                const formData = new FormData(document.getElementById("loginAdminForm"))
+                const packageData = {}
+                formData.forEach((value, key) => {
+                    packageData[key] = value
+                })
+
+                fetch("http://localhost:4000/admin/login", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(packageData)
+                }).then(response => response.json())
+                .then(data => {
+                    const text = document.createElement("p")
+                    text.innerHTML = `
+                    <p>${data.message}</p>
+                    <p>${data.token}</p>
+                    `
+
+                    container.appendChild(text)
+                }).catch(error => {console.error('Error ', error)})
+            }
 
             function removeAdmin() {
                 fetch("http://localhost:5000/admin/get-admins")

@@ -11,6 +11,10 @@ const renderDashboard = (req, res) => {
   res.status(200).render('adminDashboard')
 }
 
+function generateOTP() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
 const generateRandomUsername = (maxLength = 10) => {
     const prefix = 'admin-'
     const suffix = Math.random().toString(36).substring(2, 2 + (maxLength - prefix.length))
@@ -104,8 +108,7 @@ const createAdmin = asyncHandler( async (req, res) => {
             _id: admin.id,
             name: admin.firstName + ' ' + admin.lastName,
             username: randomUsername,
-            password: password,
-            token: generateToken(admin._id)
+            password: password
         })
     } else {
         res.status(400)
@@ -484,6 +487,84 @@ const deletePackages = asyncHandler( async(req, res) => {
     }
 })
 
+// @desc Request 
+// @route GET /admin/request-otp
+// @access Private
+const sendOTP = asyncHandler( async(req, res) => {
+    const admin = req.user
+
+    const otp = generateOTP()
+    admin.passwordResetOTP = otp
+    await admin.save()
+
+    const transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'omarelzaher93@gmail.com',
+            pass: 'vtzilhuubkdtphww'
+        }
+    })
+
+      const mailOptions = {
+        from: 'omarelzaher93@gmail.com',
+        to: admin.email,
+        subject: '[NO REPLY] Your Password Reset Request',
+        html: `<h1>You have requested to reset your password.<h1>
+                <p>Your OTP is ${otp}<p>
+                <p>If you did not request to reset your password, you can safely disregard this message.<p>
+                <p>We wish you a fruitful experience using El7a2ny!<p>
+                <p>This Is An Automated Message, Please Do Not Reply.<p>`
+      }
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error){
+            res.status(500)
+            throw new Error("Failed to Send OTP Email.")
+        } else {
+            res.status(200).json({ message: 'OTP Sent, Please Check Your Email'})
+        }
+      })
+})
+
+// @desc Delete packages
+// @route POST /admin/verify-otp
+// @access Private
+const verifyOTP = asyncHandler( async(req, res) => {
+    const {otp} = req.body
+    const admin = req.user
+
+    if (otp === admin.passwordResetOTP){
+        res.status(200).json({message: "Correct OTP"})
+    } else {
+        res.status(400)
+        throw new Error("Invalid OTP Entered")
+    }
+})
+
+// @desc Delete packages
+// @route POST /admin/reset-password
+// @access Private
+const resetPassword = asyncHandler(async (req, res) => {
+    try {
+        const { newPassword } = req.body;
+        const admin = req.user;
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        if (await bcrypt.compare(newPassword, admin.password)) {
+            res.status(400).json({message: "New Password Cannot Be The Same As the Old One"});
+        } else {
+            admin.password = hashedPassword;
+            await admin.save();
+            res.status(200).json({ message: 'Your Password Has Been Reset Successfuly' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error resetting password' });
+    }
+});
+
+
 // Generate Token
 const generateToken = (id) => {
     return jwt.sign({id}, process.env.JWT_SECRET, {
@@ -510,5 +591,8 @@ module.exports = {
     getPackage,
     getAdmins,
     getDoctors,
-    getPatients
+    getPatients,
+    sendOTP,
+    verifyOTP,
+    resetPassword
 }
