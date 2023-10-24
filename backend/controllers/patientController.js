@@ -37,7 +37,6 @@ const getPatient = async (req, res) => {
 }
 
 //Create a patient
-//
 const addPatient = async (req, res) => {
   const {
     name, email, password, dob, gender, mobile, emergencyContact, family, prescriptions

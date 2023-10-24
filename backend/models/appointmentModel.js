@@ -19,14 +19,6 @@ const appointmentSchema = mongoose.Schema({
   status: {
     type: String,
     required: true
-  },
-  doctorName: {
-    type: String,
-    required: true,
-  },
-  patientName: {
-    type: String,
-    required: true,
   }
 
 },
@@ -34,6 +26,7 @@ const appointmentSchema = mongoose.Schema({
     timestamps: true,
   });
 
+appointmentSchema.index({ doctorId: 1, date: 1}, { unique: true });
 
 module.exports = mongoose.model('Appointment', appointmentSchema);
 
