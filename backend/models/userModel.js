@@ -35,6 +35,11 @@ const userSchema = mongoose.Schema({
         type: String,
         enum: ['active', 'inactive'],
         default: 'inactive'
+    },
+    wallet: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Wallet',
+        required: true
     }
 },
     {

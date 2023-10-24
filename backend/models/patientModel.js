@@ -1,6 +1,10 @@
 const mongoose = require('mongoose')
 
 const patientSchema = mongoose.Schema({
+    nationalID: {
+        type: String,
+        required: true
+    },
     gender: {
         type: String,
         required: true,
@@ -50,15 +54,31 @@ const patientSchema = mongoose.Schema({
                     type: String,
                     required: true,
                     enum: ['wife', 'husband', 'child']
+                },
+                userId: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Patient'
                 }
             }
         ],
         default: []
+    },
+    healthPackage: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Packages',
+    },
+    healthRecord: {
+        content: {
+            type: String,
+            required: true
+        },
+        files: {
+            type: [String]
+        }
     }
-
 },
-{
-    timestamps: true
-})
+    {
+        timestamps: true
+    })
 
 module.exports = mongoose.model('Patient', patientSchema)

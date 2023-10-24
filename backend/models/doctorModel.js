@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 const User = require('./userModel')
-const Appointment = require('./appointmentModel')
 
 const doctorSchema = mongoose.Schema({
   affiliation: {
@@ -19,28 +18,35 @@ const doctorSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  appointments: [{
-    date: {
-      type: Date,
-      required: true,
-    },
-    status: {
-      type: String,
-      required: true,
-    },
-    patient: {
-      id: {
-        type: mongoose.Schema.Types.ObjectId,
+  availableSlots: [
+    {
+      weekday: {
+        type: Number,
         required: true,
-        ref: 'Patient'
+        enum: [0, 1, 2, 3, 4, 5, 6]
       },
+      startTime: {
+        type: Date,
+        required: true,
+      },
+      endTime: {
+        type: Date,
+        required: true,
+      },
+    },
+  ],
+  documents: [ 
+    {
       name: {
         type: String,
-        required: true,
-      }
+        required: true
+      },
+      file: {
+        type: String,
+        required: true
+      } 
     }
-  }]
-
+  ]
 },
   {
     timestamps: true
