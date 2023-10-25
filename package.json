@@ -21,7 +21,8 @@
     "git": "^0.1.5",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.6.2",
-    "nodemailer": "^6.9.6"
+    "nodemailer": "^6.9.6",
+    "stripe": "^14.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
