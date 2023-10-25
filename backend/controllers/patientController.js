@@ -13,6 +13,123 @@ const renderAddFamilyMember = (req, res) => {
   res.status(200).render('addFamilyMember')
 }
 
+// @desc Login patient
+// @route POST /patient/login
+// @access Public
+const loginPatient = asyncHandler( async (req, res) => {
+    const {username, password} = req.body
+
+    if (!username){
+        res.status(400)
+        throw new Error("Please Enter Your Username")
+    } else if (!password) {
+        res.status(400)
+        throw new Error("Enter Your Password")
+    }
+
+    // Check for username
+    const patient = await Patient.findOne({username})
+
+    if (patient && (await bcrypt.compare(password, patient.password))){
+        res.status(200).json({
+            message: "Successful Login",
+            _id: patient.id,
+            username: patient.username,
+            name: patient.firstName + patient.lastName,
+            email: patient.email,
+            token: generateToken(patient._id)
+        })
+    } else {
+        res.status(400)
+        throw new Error("Invalid Credentials")
+    }
+})
+
+// @desc Request 
+// @route GET /patient/request-otp
+// @access Private
+const sendOTP = asyncHandler( async(req, res) => {
+    const patient = req.user
+
+    const otp = generateOTP()
+    patient.passwordResetOTP = otp
+    await patient.save()
+
+    const transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'omarelzaher93@gmail.com',
+            pass: 'vtzilhuubkdtphww'
+        }
+    })
+
+      const mailOptions = {
+        from: 'omarelzaher93@gmail.com',
+        to: patient.email,
+        subject: '[NO REPLY] Your Password Reset Request',
+        html: `<h1>You have requested to reset your password.<h1>
+                <p>Your OTP is ${otp}<p>
+                <p>If you did not request to reset your password, you can safely disregard this message.<p>
+                <p>We wish you a fruitful experience using El7a2ny!<p>
+                <p>This Is An Automated Message, Please Do Not Reply.<p>`
+      }
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error){
+            res.status(500)
+            throw new Error("Failed to Send OTP Email.")
+        } else {
+            res.status(200).json({ message: 'OTP Sent, Please Check Your Email'})
+        }
+      })
+})
+
+// @desc Delete packages
+// @route POST /patient/verify-otp
+// @access Private
+const verifyOTP = asyncHandler( async(req, res) => {
+    const {otp} = req.body
+    const patient = req.user
+
+    if (otp === patient.passwordResetOTP){
+        res.status(200).json({message: "Correct OTP"})
+    } else {
+        res.status(400)
+        throw new Error("Invalid OTP Entered")
+    }
+})
+
+// @desc Delete packages
+// @route POST /patient/reset-password
+// @access Private
+const resetPassword = asyncHandler(async (req, res) => {
+    try {
+        const { newPassword } = req.body;
+        const patient = req.user;
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        if (await bcrypt.compare(newPassword, patient.password)) {
+            res.status(400).json({message: "New Password Cannot Be The Same As the Old One"});
+        } else {
+            patient.password = hashedPassword;
+            await patient.save();
+            res.status(200).json({ message: 'Your Password Has Been Reset Successfuly' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error resetting password' });
+    }
+});
+
+
+// Generate Token
+const generateToken = (id) => {
+    return jwt.sign({id}, process.env.JWT_SECRET, {
+        expiresIn: '30d'
+    })
+}
+
 //Get all patients
 const getAllPatients = async (req, res) => {
   const patients = await Patient.find({}).sort({ createdAt: -1 })
