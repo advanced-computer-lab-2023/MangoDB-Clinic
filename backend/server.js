@@ -61,6 +61,8 @@ app.use('/', require('./routes/guestRoutes'));
 app.use('/admin', require('./routes/adminRoutes'));
 app.use('/patient', require('./routes/patientRoutes'));
 app.use('/doctor', require('./routes/doctorRoutes'))
+app.use('/uploads/', express.static('uploads'));
+
 
 app.use(errorHandler);
 

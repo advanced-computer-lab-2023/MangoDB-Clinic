@@ -16,7 +16,8 @@ const {
     getPatients,
     viewHealthRecords,
     searchPatientByName,
-    getAllSpecialities
+    getAllSpecialities,
+    viewWallet
 } = require('../controllers/doctorController');
 
 
@@ -100,6 +101,8 @@ router.post('/searchPatientByName/:id', searchPatientByName);
 router.post('/viewHealthRecords/:id', viewHealthRecords);
 
 router.get('/getAllSpecialities', getAllSpecialities)
+
+router.get('/view_wallet/:id', viewWallet)
 
 module.exports = router;
 

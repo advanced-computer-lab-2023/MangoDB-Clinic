@@ -1,9 +1,13 @@
 const asyncHandler = require('express-async-handler')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const shortid = require('shortid');
 const Patient = require('../models/patientModel')
 const Doctor = require('../models/doctorModel')
 const User = require('../models/userModel')
+const Wallet = require('../models/walletModel')
+
+const port = process.env.PORT;
 
 const renderPatientRegistration = (req, res) => {
     res.status(200).render('patientRegistration')
@@ -33,7 +37,24 @@ const registerUser = async (req, res, model, userType, fields) => {
 
         const hashedPassword = await bcrypt.hash(data.password, 10);
 
-        const user = await model.create({ ...data, password: hashedPassword, userType: userType, accountStatus: userType === 'patient' ? 'active' : 'inactive' })
+        const user = await model.create({ ...data, password: hashedPassword, userType: userType, accountStatus: userType === 'patient' ? 'active' : 'inactive'})
+
+        if(userType === 'doctor' && req.files){
+            for (const file of req.files) {
+                const url = `http://localhost:${port}/uploads/${file.originalname}`;
+                const document = {
+                    name: file.originalname,
+                    file: url
+                }
+                user.documents.push(document);
+            }
+            await user.save();
+        }
+
+        const wallet = await Wallet.create({ user: user._id});
+
+        user.wallet = wallet._id;
+        await user.save();
 
         return res.status(201).json({
             _id: user._id,

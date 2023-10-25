@@ -5,6 +5,8 @@ const Patient = require('../models/patientModel')
 const Doctor = require('../models/doctorModel')
 const Appointment = require('../models/appointmentModel')
 
+const port = process.env.PORT
+
 const renderDashboard = (req, res) => {
   res.status(200).render('patientDashboard')
 }
@@ -366,6 +368,171 @@ const filterDoctors = async (req, res) => {
   }
 };
 
+const viewWallet = async (req, res) => {
+  const id = req.params.id
+  try {
+    const patient = await Patient.findById(id).populate('wallet');
+
+    if(patient){
+      if(!patient.wallet){
+        res.status(500).json({ error: 'an error occured'})
+      }
+      
+      const wallet = patient.wallet
+
+      res.status(200).json({ wallet: wallet})
+    }
+    else{
+      res.status(404).json({ error: "Not Found"})
+    }
+  }
+  catch (err) {
+    res.status(500).json({error: err.message})
+  }
+}
+
+const addDocuments = async (req, res) => {
+  const id = req.params.id
+  try {
+    const patient = await Patient.findById(id);
+
+    if(patient) {
+      const healthRecord = patient.healthRecord;
+
+      console.log(patient);
+      console.log(healthRecord);
+
+      if(req.files){
+        for (const file of req.files) {
+            const url = `http://localhost:${port}/uploads/${file.originalname}`
+            const document = {
+              name: file.originalname,
+              file: url
+            }
+            healthRecord.files.push(document);
+        }
+        await patient.save();
+        res.status(200).json('Added successfully')
+      }
+      else
+        res.status(400).json({ error: 'No documents provided' });
+    }
+    else {
+      res.status(404).json({ error: "Not Found"})
+    }
+  }
+  catch(err) {
+    res.status(500).json({ error: err.message})
+  }
+}
+
+const deleteDocument = async (req, res) => {
+  const patientId = req.params.patientId;
+  const documentId = req.params.documentId;
+
+  try {
+    const patient = await Patient.findById(patientId);
+
+    if (patient) {
+      const healthRecord = patient.healthRecord;
+      const documentIndex = healthRecord.files.findIndex((doc) => doc._id.toString() === documentId);
+
+      if (documentIndex !== -1) {
+        healthRecord.files.splice(documentIndex, 1);
+        await patient.save();
+        res.status(200).json('Document removed successfully');
+      } else {
+        res.status(404).json({ error: 'Document Not Found' });
+      }
+    } else {
+      res.status(404).json({ error: 'Patient Not Found' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const linkFamilyMember = async (req, res) => {
+  const id = req.params.id
+  const email = req.query.email
+  const relation = req.query.relation
+
+  try {
+
+    const patient = await Patient.findById(id);
+
+    if (patient) {
+      const member = await Patient.findOne({email: email})
+      if(member) {
+        const memberExists = patient.family.some(mem => mem.userId && mem.userId.toString() === member._id.toString());
+        if(!memberExists){
+          const entry = {
+            name: member.firstName + " " + member.lastName,
+            nationalID: member.nationalID,
+            age: Math.floor((new Date() - member.dob) / (1000 * 60 * 60 * 24 * 365.25)),
+            gender: member.gender,
+            relation: relation,
+            userId: member._id
+          }
+          patient.family.push(entry)
+          await patient.save();
+
+          res.status(200).json({message: "Family member linked successfully"})
+        }
+        else{
+          res.status(200).json({message: "Family member already linked"})
+        }
+      }
+      else{
+        res.status(404).json({message: 'Family Member Not Found'})
+
+      }
+    }
+    else{
+      res.status(404).json({message: 'Patient Not Found'})
+    }
+  }
+  catch(err) {
+    res.status(500).json({error: err.message})
+  }
+}
+
+
+const subscribeToHealthPackage = async (req, res) => {
+  const patientId = req.params.patientId;
+  const packageId = req.params.packageId;
+
+  try {
+
+    const patient = await Patient.findById(patientId);
+
+    if (patient){
+      if (patient.healthPackage) {
+        return res.status(400).json({ error: 'You are already subscribed to a health package. Cancel your subscription first' });
+      }
+
+      patient.healthPackage = packageId;
+
+      for (const familyMember of patient.family) {
+        if (familyMember.userId) {
+          const member = await Patient.findById(familyMember.userId);
+          if (member) {
+            member.healthPackage = packageId;
+            await member.save();
+          }
+        }
+      }
+
+      await patient.save();
+
+      res.status(200).json({message: 'Successfully subscribed to health package' })
+    }
+  } catch (err) {
+    res.status(200).json({error: err.message })
+  }
+}
+
+
 
 /////////////////////////////////
 
@@ -418,4 +585,9 @@ module.exports = {
   addPrescription,
   renderDashboard,
   renderAddFamilyMember,
+  viewWallet,
+  addDocuments,
+  deleteDocument,
+  linkFamilyMember,
+  subscribeToHealthPackage
 }

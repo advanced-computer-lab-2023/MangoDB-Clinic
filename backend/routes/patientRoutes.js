@@ -1,5 +1,7 @@
 const express = require('express')
 const router = express.Router()
+const upload = require('../middleware/upload');
+
 
 const {
     getAllPatients,
@@ -22,6 +24,11 @@ const {
     addPrescription,
     renderDashboard,
     renderAddFamilyMember,
+    viewWallet,
+    addDocuments,
+    deleteDocument,
+    linkFamilyMember,
+    subscribeToHealthPackage
 } = require('../controllers/patientController')
 
 //Renders the patient Dashboard
@@ -68,6 +75,17 @@ router.get('/get_all_appointments/:id', getAllAppointments)
 router.get('/filter_appointments/:id', filterAppointments)
 
 router.get('/search_doctor', searchDoctor)
+
+router.get('/view_wallet/:id', viewWallet)
+
+router.put('/add_documents/:id', upload.array('document[]'), addDocuments)
+
+router.delete('/delete_document/:patientId/:documentId', deleteDocument)
+
+router.put('/link_family_member/:id', linkFamilyMember)
+
+router.put('/subscribe_to_health_package/:patientId/:packageId', subscribeToHealthPackage)
+
 
 // utils
 router.post('/add_prescription/:id', addPrescription)
