@@ -536,4 +536,8 @@ module.exports = {
   addPrescription,
   renderDashboard,
   renderAddFamilyMember,
+  loginPatient,
+  sendOTP,
+  verifyOTP,
+  resetPassword,
 }
