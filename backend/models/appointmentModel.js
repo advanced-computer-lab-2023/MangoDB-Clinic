@@ -19,6 +19,10 @@ const appointmentSchema = mongoose.Schema({
   status: {
     type: String,
     required: true
+  },
+  followUp: {
+    type: Boolean,
+    default: false
   }
 
 },
