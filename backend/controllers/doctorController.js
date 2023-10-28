@@ -1,10 +1,17 @@
 const asyncHandler = require('express-async-handler');
+const bcrypt = require('bcryptjs')
+const nodemailer = require('nodemailer')
+const jwt = require('jsonwebtoken')
 const Doctor = require('../models/doctorModel');
 const Patient = require('../models/patientModel.js');
 const Appointment = require('../models/appointmentModel');
 const Prescription = require('../models/prescriptionModel');
 const User = require('../models/userModel')
 
+
+function generateOTP() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
 
 // FILTER APPOITMENT USING STATUS OR DATE
 const filterStatus = async (req, res) => {

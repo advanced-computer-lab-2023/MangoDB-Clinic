@@ -16,10 +16,20 @@ const {
     getPatients,
     viewHealthRecords,
     searchPatientByName,
-    getAllSpecialities
+    getAllSpecialities,
+    loginDoctor,
+    resetPassword,
+    sendOTP,
+    verifyOTP
 } = require('../controllers/doctorController');
 
+const {protectDoctor} = require('../middleware/doctorMiddleware')
 
+
+router.post('/login', loginDoctor)
+router.post('/verify-otp', protectDoctor, verifyOTP)
+router.post('/reset-password', protectDoctor, resetPassword)
+router.get('/request-otp', protectDoctor, sendOTP)
 
 router.post('/filterapp', filterStatus);
 

@@ -22,12 +22,24 @@ const {
     addPrescription,
     renderDashboard,
     renderAddFamilyMember,
+    loginPatient,
+    resetPassword,
+    sendOTP,
+    verifyOTP
 } = require('../controllers/patientController')
+
+const {protectPatient} = require('../middleware/patientMiddleware')
 
 //Renders the patient Dashboard
 router.get('/', renderDashboard)
 
 router.get('/addFamilyMember', renderAddFamilyMember)
+
+
+router.post('/login', loginPatient)
+router.get('/request-otp', protectPatient, sendOTP)
+router.post('/verify-otp', protectPatient, verifyOTP)
+router.post('/reset-password', protectPatient, resetPassword)
 
 //GET all patients
 router.get('/get_all_patients', getAllPatients)

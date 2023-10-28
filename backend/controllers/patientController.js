@@ -1,5 +1,8 @@
 const mongoose = require('mongoose')
 const asyncHandler = require('express-async-handler')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const nodemailer = require('nodemailer')
 const Prescription = require('../models/prescriptionModel')
 const Patient = require('../models/patientModel')
 const Doctor = require('../models/doctorModel')
@@ -11,6 +14,10 @@ const renderDashboard = (req, res) => {
 
 const renderAddFamilyMember = (req, res) => {
   res.status(200).render('addFamilyMember')
+}
+
+function generateOTP() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
 // @desc Login patient
