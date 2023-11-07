@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-const User = require('./userModel')
+const mongoose = require('mongoose');
+const User = require('./userModel');
 
 const doctorSchema = mongoose.Schema({
   affiliation: {
@@ -35,7 +35,7 @@ const doctorSchema = mongoose.Schema({
       },
     },
   ],
-  documents: [ 
+  documents: [
     {
       name: {
         type: String,
@@ -44,13 +44,24 @@ const doctorSchema = mongoose.Schema({
       file: {
         type: String,
         required: true
-      } 
+      }
     }
-  ]
+  ],
+  employmentContract: {
+    name: {
+      type: String,
+      required: false 
+    },
+    file: {
+      type: String,
+      required: false 
+    }
+  }
 },
-  {
-    timestamps: true
-  })
+{
+  timestamps: true
+});
 
-const Doctor = User.discriminator('Doctor', doctorSchema)
-module.exports = Doctor
+const Doctor = User.discriminator('Doctor', doctorSchema);
+
+module.exports = Doctor;

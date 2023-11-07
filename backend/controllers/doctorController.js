@@ -4,6 +4,8 @@ const Patient = require('../models/patientModel.js');
 const Appointment = require('../models/appointmentModel');
 const Prescription = require('../models/prescriptionModel');
 const User = require('../models/userModel')
+const fs = require('fs');
+const path = require('path');
 
 
 // FILTER APPOITMENT USING STATUS OR DATE
@@ -482,6 +484,119 @@ const viewWallet = async (req, res) => {
       res.status(500).json({error: err.message})
     }
   }
+  const followUpDoc = async (req, res) => {
+    const { doctorId, patientId,date,status } = req.body;
+  
+    try {
+        console.log('Creating follow up with data:', doctorId, patientId,date,status);
+  
+        const appointment = await Appointment.create({
+            doctorId,
+            patientId, 
+            date,
+            status,
+            followUp: true
+        });
+        if (!appointment) {
+            return res.status(500).json({ error: 'Appointment creation failed' });
+        }
+  
+        res.status(201).json(appointment);
+    } catch (error) {
+        console.error('Error creating appointment:', error);
+        res.status(500).json({ error: error.message });
+    }
+  };
+  const addNewSlots = async (req, res) => {
+    try {
+      const doctorId = req.body.doctorId;
+      console.log(doctorId)
+      const newSlots = req.body.availableSlots; 
+      const doc = await User.findById(doctorId);
+      console.log(doc);
+      const doctor = await User.findByIdAndUpdate(
+        doctorId,
+        { $push: { availableSlots: { $each: newSlots } } },
+        { new: true }
+      );
+  
+      
+      if (!doctor) {
+        return res.status(404).json({ error: 'Doctor not found' });
+      }
+  
+      res.json(doctor);
+    } catch (error) {
+      res.status(400).json({ error: 'Failed to update slots' });
+    }
+  };
+  const getMyAppointments = async (req, res) => {
+    try {
+        const doctorId = req.body.doctorId; 
+        
+        const appointments = await Appointment.find({ doctorId });
+    
+        res.json(appointments);
+      } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch appointments' });
+      }
+    };
+    const viewEmploymentContract = async (req, res) => {
+      try {
+        const doctorId = req.user.id; // Assuming you have the doctor's ID in the user object (e.g., after authentication)
+    
+        const doctor = await Doctor.findById(doctorId);
+    
+        if (!doctor) {
+          return res.status(404).json({ error: 'Doctor not found' });
+        }
+    
+        if (!doctor.employmentContract || !doctor.employmentContract.file) {
+          return res.status(404).json({ error: 'Employment contract not found' });
+        }
+    
+        // Construct the file path to the employment contract
+        const filePath = path.join(__dirname, '../uploads/employment_contracts', doctor.employmentContract.file);
+    
+        // Check if the file exists
+        if (fs.existsSync(filePath)) {
+          // Return the file as a response
+          res.download(filePath);
+        } else {
+          res.status(404).json({ error: 'Employment contract file not found' });
+        }
+      } catch (error) {
+        console.error('Error viewing employment contract:', error);
+        res.status(500).json({ error: 'An error occurred' });
+      }
+    };
+  //  const Patient = require('../models/Patient'); 
+const addHealthRecord = async (req, res) => {
+  try {
+    const patientId = req.params.patientId;
+    const patient = await Patient.findOne({ _id: patientId });
+
+    if (!patient) {
+      return res.status(404).json({ error: 'Patient not found' });
+    }
+
+    const { content, files } = req.body; 
+    const healthRecord = {
+      content,
+      files,
+    };
+
+    patient.healthRecord.push(healthRecord);
+
+    await patient.save();
+
+    res.json(patient); 
+  } catch (error) {
+    console.error('Error adding health record:', error);
+    res.status(500).json({ error: 'An error occurred' });
+  }
+};
+  
 
 module.exports = {
     createDoctor,
@@ -499,6 +614,11 @@ module.exports = {
     getPatients,
     viewHealthRecords,
     getAllSpecialities,
-    viewWallet
+    viewWallet,
+    addNewSlots,
+    getMyAppointments,
+    followUpDoc,
+    viewEmploymentContract,
+    addHealthRecord
 }
 
