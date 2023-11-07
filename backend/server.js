@@ -7,6 +7,7 @@ const guestRoutes = require('./routes/guestRoutes')
 const connectDB = require('./config/db');
 const port = process.env.PORT || 4000;
 var path = require('path');
+const cors = require('cors');
 const { selectPatient } = require('./controllers/doctorController');
 
 
@@ -15,6 +16,7 @@ connectDB()
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
