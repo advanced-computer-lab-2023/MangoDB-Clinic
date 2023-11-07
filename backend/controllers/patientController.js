@@ -1,3 +1,4 @@
+
 const mongoose = require("mongoose");
 const asyncHandler = require("express-async-handler");
 const Prescription = require("../models/prescriptionModel");
@@ -5,6 +6,8 @@ const Patient = require("../models/patientModel");
 const Doctor = require("../models/doctorModel");
 const Appointment = require("../models/appointmentModel");
 const Packages = require("../models/packagesModel");
+const Wallet = require('../models/walletModel')
+
 
 const port = process.env.PORT;
 
@@ -689,7 +692,123 @@ const addPrescription = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+
 };
+
+
+////////////////////////
+
+//view all available appoitnments of a selected doctor
+const getAvailableAppointments = async (req, res) => {
+  let {doctorId } = req.query;
+  try {
+   const doctor = await Doctor.findById(doctorId);
+    if (!doctor) {
+      throw new Error('Doctor not found');
+    }
+    const availableAppointments = doctor.appointments.filter(appointment => 
+      new RegExp('available', 'i').test(appointment.status)); //available bas msh case sensitive 
+
+      //available 3ade 3shan le el tanya bayza 
+//  const availableAppointments = doctor.appointments.filter(appointment => appointment.status === 'available');
+    return availableAppointments;
+  } catch (error) {
+    console.error(error.message);
+    throw error;
+  }
+}
+//select an appointment date and time for myself or for a family member
+const makeAppointment = async (req, res) => {
+//el patient hyd5al esm el doctor w pass lel function el id bta3 el doctor 
+//el patient hyd5al esm el hy7gezlo 3shan momkn ykon be esmo aw be esm a family member w pass lel function el id bta3 el patient keda keda 
+  let {doctorId,patientId,date,patientrName } = req.query;
+  try {
+    const doctor = await Doctor.findById(doctorId);
+     if (!doctor) {
+       throw new Error('Doctor not found');
+     }
+
+     const doctorName = doctor.name;
+
+     const patient = await Patient.findById(patientId); 
+    //  const patientrName = patient.name;
+
+     //check if time is available for this dr 
+     const isAppointmentAvailable = doctor.appointments.some(appointment =>
+      appointment.date.getTime() === date.getTime() && appointment.status === 'available'
+    );
+    if (!isAppointmentAvailable) {
+      throw new Error('Selected appointment date and time is not available');
+    }
+    
+    //check if this is his name 
+    const isPatient = patient.name === patientrName;
+    //check lw el name bta3 a family member
+    const isFamilyMember = patient.family.some(member =>
+      member.name === patientrName
+    );
+    if(!isPatient&& !isFamilyMember){
+      throw new Error('this name is not a patient/familyMember name ');
+    }
+
+    const appointment = new Appointment({
+      doctorId,
+      patientId,
+      date,
+      status: 'scheduled',
+      doctorName,
+      patientrName
+    });
+
+    await appointment.save();
+  // return appointment;
+  } catch (error) {
+    console.error(error.message);
+    throw error;
+  }
+}
+//pay with wallet
+const payFromWallet = async (req, res) => {
+  //msh mota2keda mn payment amount d msh 3arfa hya htege mnen
+  let {patientId, paymentAmount } = req.query;
+
+  try {
+    const patient = await Patient.findById(patientId);
+    if (!patient) {
+      throw new Error('Patient not found');
+    }
+  
+    if (!patient.wallet) {
+      throw new Error('Patient does not have an active wallet');
+    }
+
+    const wallet = await Wallet.findById(patient.wallet);
+
+    if (!wallet) {
+      throw new Error('Wallet not found');
+    }
+    if (wallet.balance < paymentAmount) {
+      throw new Error('you are poor :(');
+    }
+    wallet.balance -= amount;
+
+    wallet.transactions.push({
+      type: 'debit',
+      amount: paymentAmount,
+      date: new Date(),
+    });
+    await wallet.save();
+
+
+  } catch (error) {
+    console.error(error.message);
+    throw error;
+  }
+}
+
+
+
+
 
 module.exports = {
   getAllPatients,
@@ -721,4 +840,9 @@ module.exports = {
   deleteDocument,
   linkFamilyMember,
   subscribeToHealthPackage,
-};
+
+  makeAppointment,
+  getAvailableAppointments,
+  payFromWallet,
+}
+
