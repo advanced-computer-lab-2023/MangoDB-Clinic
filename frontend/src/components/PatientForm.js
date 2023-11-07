@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, TextField, Select, MenuItem, FormControl, InputLabel, Grid, Paper } from '@mui/material';
+import { Button, TextField, Select, MenuItem, FormControl, InputLabel, Grid, Paper, Typography } from '@mui/material';
 import { addPatient } from '../services/api';
 
 const PatientForm = () => {
@@ -17,7 +17,19 @@ const PatientForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const patient = {username, name, email, password, dob, gender, mobile, emergencyContact};
+        const patient = {
+            username,
+            name,
+            email,
+            password,
+            dob,
+            gender,
+            mobile,
+            emergencyContact: {
+                fullName: emergencyContact.fullName || '', // Add a default value to prevent errors
+                mobileNumber: emergencyContact.mobileNumber || '', // Add a default value to prevent errors
+            },
+        };
 
         setIsPending(true);
 
@@ -42,6 +54,7 @@ const PatientForm = () => {
         // })
     }
     return ( 
+        
         <Grid container justifyContent="center">
             <Grid item xs={6}>
                 <Paper elevation={3} style={{ padding: '2rem' }}>
@@ -92,35 +105,54 @@ const PatientForm = () => {
                             onChange={(e) => setDOB(e.target.value)}
                             style={{ marginBottom: '1rem' }}
                         />
-                        {/* <select
+                        
+                        <Select
+                            labelId="demo-simple-select-standard-label"
+                            id="demo-simple-select-standard"
                             value={gender}
                             onChange={(e) => setGender(e.target.value)}
+                            label="Gender"
+                            style={{ marginBottom: '1rem' }}
                         >
-                            <option value="Male">Male</option>
-                            <option value="yoshi">Female</option>
-                        </select>
-                        <label>Mobile Number: </label>
-                        <textarea
+                            <MenuItem value="">
+                                <em>None</em>
+                            </MenuItem>
+                            <MenuItem value={10}>Male</MenuItem>
+                            <MenuItem value={20}>Female</MenuItem>
+                            <MenuItem value={30}>Transgender</MenuItem>
+                        </Select>
+                        <TextField
+                            label="Mobile Number"
                             type="tel"
                             required
+                            fullWidth
                             value={mobile}
                             onChange={(e) => setMobile(e.target.value)}
-                        ></textarea>
-                        <label>Emergency Contact Full Name:</label>
-                            <input 
-                                type="text" 
-                                required
-                                value={emergencyContact.fullName}
-                                onChange={(e) => setEmergencyContact({ ...emergencyContact, fullName: e.target.value })}
-                            />
-
-                            <label>Emergency Contact Mobile Number:</label>
-                            <input 
-                                type="tel" 
-                                required
-                                value={emergencyContact.mobileNumber}
-                                onChange={(e) => setEmergencyContact({ ...emergencyContact, mobileNumber: e.target.value })}
-                            /> */}
+                            style={{ marginBottom: '1rem' }}
+                        />
+                        <Typography variant='h6' gutterBottom='true'>Emergency Contact Information:</Typography>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                                <TextField 
+                                    label="Emergency Contact Name"
+                                    type="text" 
+                                    required
+                                    value={emergencyContact.fullName}
+                                    onChange={(e) => setEmergencyContact({ ...emergencyContact, fullName: e.target.value })}
+                                    style={{ margin: '1rem' }}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField 
+                                    label="Emergency Contact Mobile Number"
+                                    type="tel" 
+                                    required
+                                    value={emergencyContact.mobileNumber}
+                                    onChange={(e) => setEmergencyContact({ ...emergencyContact, mobileNumber: e.target.value })}
+                                    style={{ margin: '1rem' }}
+                                />
+                            </Grid>
+                        </Grid>
                         {!isPending ? (
                             <Button variant="contained" type="submit" fullWidth>
                                 Register
