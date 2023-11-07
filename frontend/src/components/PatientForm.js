@@ -43,7 +43,7 @@ const PatientForm = () => {
     }
     return ( 
         <Grid container justifyContent="center">
-            <Gird item xs={6}>
+            <Grid item xs={6}>
                 <Paper elevation={3} style={{ padding: '2rem' }}>
                     <h2>Register As Patient</h2>
                     <form onSubmit={handleSubmit}>
@@ -132,7 +132,7 @@ const PatientForm = () => {
                         )}
                     </form>
                 </Paper>
-            </Gird>
+            </Grid>
         </Grid>
      );
 }

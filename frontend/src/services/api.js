@@ -12,5 +12,7 @@ const API = axios.create({
 export const getPatients = () => API.get('/patients');
 export const addPatient = (patient) => API.post('/patientRegistration', patient);
 
+export const getPatientsDoctor = (id) => API.get(`/doctor/viewAllPatients/${ id }`);
+export const selectPatient = (id) => API.get(`/doctor/selectedPatient/${ id }`);
 
 export default API;

@@ -42,7 +42,8 @@ router.get('/selectedPatient/:id', async (req, res) => {
             console.error('Patient not found for ID:', patientId);
 
         }
-        res.render('selectedPatient', { patient });
+        // res.render('selectedPatient', { patient });
+        res.json(patient);
     } catch (error) {
 
         console.error('Error retrieving patient:', error);
@@ -54,11 +55,12 @@ router.get('/viewAllPatients/:doctorId', async (req, res) => {
         const doctorId = req.params.doctorId;
         const patientsData = await viewAllPatients(doctorId);
 
-        if (patientsData && patientsData.length > 0) {
-            res.render('viewAllPatients', { patients: patientsData });
-        } else {
-            res.status(404).json({ message: 'No patients found' });
-        }
+        res.json(patientsData);
+        // if (patientsData && patientsData.length > 0) {
+        //     res.render('viewAllPatients', { patients: patientsData });
+        // } else {
+        //     res.status(404).json({ message: 'No patients found' });
+        // }
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error retrieving patients' });
