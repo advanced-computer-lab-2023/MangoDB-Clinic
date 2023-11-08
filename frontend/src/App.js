@@ -12,6 +12,7 @@ import ViewDoctors from './pages/ViewDoctors';
 import ViewPrescriptions from './pages/ViewPrescriptions';
 import ViewProfile from './pages/ViewProfile';
 import ViewWallet from './pages/ViewWallet';
+import EditDoctor from './components/EditDoctor';
 
 
 function App() {
@@ -52,6 +53,9 @@ function App() {
             </Route>
             <Route path='/viewwallet'>
               <ViewWallet />
+            </Route>
+            <Route path='/editDoctor/:id'>
+              <EditDoctor />
             </Route>
           </Switch>
         </div>

@@ -3,8 +3,8 @@ import { useParams } from 'react-router-dom'
 import { selectPatient } from '../services/api';
 
 /**
- * TODO: 1-Get the patient using the id param
- *       2-View basic information
+ * TODO: 1-Get the patient using the id param (Done)
+ *       2-View basic information (Done)
  *       3-View health records
  */
 

@@ -598,6 +598,14 @@ const addHealthRecord = async (req, res) => {
 };
   
 
+// Extra frontend methods
+const getDoctorInfo = (req, res) => {
+    const doctorId = req.params.id;
+    Doctor.findById(doctorId)
+          .then((result) => res.json(result))
+          .catch((err) => res.status(404).json());
+};
+
 module.exports = {
     createDoctor,
     updateEmail,
@@ -619,6 +627,7 @@ module.exports = {
     getMyAppointments,
     followUpDoc,
     viewEmploymentContract,
-    addHealthRecord
+    addHealthRecord,
+    getDoctorInfo
 }
 

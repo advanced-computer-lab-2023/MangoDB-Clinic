@@ -22,9 +22,14 @@ const {
     getMyAppointments,
     followUpDoc,
     addHealthRecord,
-    viewEmploymentContract
+    viewEmploymentContract,
+    getDoctorInfo
 } = require('../controllers/doctorController');
 
+
+// Extra frontend routes
+router.get('/doctorInfo/:id', getDoctorInfo);
+//
 
 
 router.post('/filterapp', filterStatus);
