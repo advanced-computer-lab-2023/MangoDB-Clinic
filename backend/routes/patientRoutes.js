@@ -32,7 +32,6 @@ const {
   deleteDocument,
   linkFamilyMember,
   subscribeToHealthPackage,
-  cancelHealthPackage,
 } = require("../controllers/patientController");
 
 //Renders the patient Dashboard
