@@ -161,24 +161,15 @@ const getAllPrescriptions = async (req, res) => {
   }
 
   try {
-    const patient = await Patient.findById(patientId).populate({
-      path: "prescriptions",
-      populate: {
-        path: "doctor",
-        model: "Doctor",
-      },
-    });
+    const patient = await Patient.findById(patientId)
 
     if (!patient) {
       return res.status(404).json({ error: "Patient Not Found" });
     }
 
-    const prescriptions = patient.prescriptions;
-    prescriptions.forEach(async (prescription) => {
-      const doctorName = prescription.doctor.firstName;
-    });
+    const prescriptions = await Prescription.find({patientId: patientId}).populate('doctorId')
+    res.status(200).json(prescriptions);
 
-    res.status(200).json(patient.prescriptions);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -192,9 +183,10 @@ const selectPrescription = async (req, res) => {
   }
 
   try {
-    const prescription = await Prescription.findById(prescriptionId).populate(
-      "doctor"
-    );
+
+    const prescription = await Prescription.findById(prescriptionId).populate('doctorId');
+
+    console.log(prescription);
 
     if (!prescription) {
       return res.status(404).json({ error: "Prescription Not Found" });
@@ -208,9 +200,7 @@ const selectPrescription = async (req, res) => {
 };
 
 const filterPrescription = async (req, res) => {
-  const patient = await Patient.findById(req.params.patientId).populate(
-    "prescriptions"
-  );
+  const patient = await Patient.findById(req.params.patientId)
 
   if (!patient) {
     return res.status(404).json({ error: "Patient Id Not Found" });
@@ -224,11 +214,12 @@ const filterPrescription = async (req, res) => {
     const { doctor, filled, date } = req.query;
     const query = {};
 
-    if (doctor) {
-      const doc = await Doctor.findOne({ firstName: doctor });
+    query['patientId'] = req.params.patientId
 
+    if (doctor) {
+      const doc = await Doctor.findOne({ firstName: doctor.split(' ')[0], lastName: doctor.split(' ')[1] });
       if (doc) {
-        query["doctor"] = doc._id;
+        query['doctorId'] = doc._id;
       } else {
         return res.status(400).json({ error: "Not found" });
       }
@@ -246,9 +237,8 @@ const filterPrescription = async (req, res) => {
     }
 
     const filteredPrescriptions = await Prescription.find({
-      _id: { $in: patient.prescriptions },
-      ...query,
-    }).populate("doctor");
+      ...query
+    }).populate('doctorId')
 
     res.status(200).json(filteredPrescriptions);
   } catch (error) {
