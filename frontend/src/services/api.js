@@ -14,7 +14,7 @@ export const addPatient = (patient) => API.post('/patientRegistration', patient)
 
 export const getDoctor = (id) => API.get(`doctor/doctorInfo/${ id }`);
 export const getPatientsDoctor = (id) => API.get(`/doctor/viewAllPatients/${ id }`);
-export const searchPatients = (id) => API.get(`/doctor/searchPatientByName/${ id }`);
+export const searchPatients = (id, search) => API.post(`/doctor/searchPatientByName/${ id }`, search);
 export const selectPatient = (id) => API.get(`/doctor/selectedPatient/${ id }`);
 
 export const updateDoctorEmail = (id, doctor) => API.put(`/doctor/updateEmail/${ id }`, doctor);

@@ -9,6 +9,8 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 // import FormControlLabel from '@mui/material/FormControlLabel';
 // import Checkbox from '@mui/material/Checkbox';
@@ -20,6 +22,7 @@ const EditDoctor = () => {
     const [ doctor, setDoctor ] = useState(null);
     const [ isPending, setIsPending ] = useState(true);
     const [ error, setError ] = useState(null);
+    const [ success, setSuccess ] = useState(false); 
 
     const defaultTheme = createTheme();
 
@@ -33,7 +36,11 @@ const EditDoctor = () => {
         updateDoctorEmail(id, doctor);
         updateDoctorRate(id, doctor);
         updateDoctorAffiliation(id, doctor);
-        window.location.reload();
+        setSuccess(true);
+
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
     }
 
     useEffect(() => {
@@ -170,6 +177,12 @@ const EditDoctor = () => {
                 </ThemeProvider>
                 )
             }
+            { success && (
+                <Alert severity="success">
+                    <AlertTitle>Success</AlertTitle>
+                    Submitted Successfully!
+                </Alert>
+            ) }
         </div>
     );
 }

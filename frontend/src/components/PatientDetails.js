@@ -32,9 +32,10 @@ const PatientDetails = () => {
             { error && <div>{ error }</div> }
             { patient && (
                 <div>
-                    <h2>First Name: { patient.firstName }</h2>
-                    <h2>Last Name: { patient.lastName } </h2>
-                    <p>Email: { patient.email }</p>
+                    <h2>Patient Name: { patient.firstName + " " + patient.lastName } </h2>
+                    <h3>Email: { patient.email }</h3>
+                    <p>Emergency Contact: { patient.emergencyContact.name } - Number: { patient.emergencyContact.mobile }</p>
+                    <p>Health Records: { patient.healthRecord.files.length == 0 ? "No records to display" : "Working on it..." } </p>
                 </div>
             ) }
         </div>
