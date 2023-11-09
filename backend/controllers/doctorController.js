@@ -65,19 +65,26 @@ const upcoming = async (req, res) => {
         const patientIds = upcomingApp.map(appointment => appointment.patientId);
         const patients = await User.find({ _id: { $in: patientIds } });
 
+        let appointmentId = 1;
+
         upcomingApp.sort((a, b) => new Date(a.date) - new Date(b.date));
         const finalup = upcomingApp.map(appointment => {
             const patient = patients.find(patient => patient._id.equals(appointment.patientId));
             return {
                 date: appointment.date,
                 status: appointment.status,
-                patientName: patient ? patient.firstName : null
+                firstName: patient ? patient.firstName : null,
+                lastName: patient ? patient.lastName : null,
+                email: patient ? patient.email : null,
+                _id: patient ? patient._id : null,
+                appointmentId: appointmentId++
             };
         });
 
 
-        res.status(200).json({ finalup });
+        res.status(200).json(finalup);
         console.log("Response sent successfully.");
+        console.log(finalup)
     } catch (error) {
         console.error('Error filtering patient IDs:', error);
         res.status(500).json({ error: 'An error occurred while filtering patient IDs' });
@@ -244,7 +251,8 @@ const searchPatientByName = async (req, res) => {
             console.log('patient info: ', patients);
             res.json(patients);
         } else {
-            res.status(404).json({ error: 'No matching patients found' });
+            res.json([]);
+            // res.status(404).json({ error: 'No matching patients found' });
         }
     } catch (error) {
         console.error(error);
