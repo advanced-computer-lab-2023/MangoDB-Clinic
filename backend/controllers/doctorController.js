@@ -512,20 +512,19 @@ const viewWallet = async (req, res) => {
       const doctorId = req.body.doctorId;
       console.log(doctorId)
       const newSlots = req.body.availableSlots; 
+      
+      console.log('newSlots:', newSlots);
       const doc = await User.findById(doctorId);
       console.log(doc);
-      const doctor = await User.findByIdAndUpdate(
-        doctorId,
-        { $push: { availableSlots: { $each: newSlots } } },
-        { new: true }
-      );
+      doc.availableSlots = doc.availableSlots.concat(newSlots);
+        await doc.save();
   
       
-      if (!doctor) {
+      if (!doc) {
         return res.status(404).json({ error: 'Doctor not found' });
       }
   
-      res.json(doctor);
+      res.json(doc);
     } catch (error) {
       res.status(400).json({ error: 'Failed to update slots' });
     }
