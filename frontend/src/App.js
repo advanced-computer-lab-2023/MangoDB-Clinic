@@ -12,6 +12,7 @@ import ViewDoctors from './pages/ViewDoctors';
 import ViewPrescriptions from './pages/ViewPrescriptions';
 import ViewProfile from './pages/ViewProfile';
 import ViewWallet from './pages/ViewWallet';
+import PrescriptionDetials from './pages/PrescriptionDetails';
 
 
 function App() {
@@ -46,6 +47,9 @@ function App() {
             </Route>
             <Route path='/viewprescriptions'>
               <ViewPrescriptions />
+            </Route>
+            <Route path='/prescriptiondetials/:prescriptionId'>
+              <PrescriptionDetials />
             </Route>
             <Route path='/viewprofile'>
               <ViewProfile />

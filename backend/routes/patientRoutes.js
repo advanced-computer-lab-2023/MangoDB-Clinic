@@ -12,6 +12,7 @@ const {
   getFamilyMembers,
   getSelectedDoctor,
   getAllPrescriptions,
+  getAllPrescriptionsOfPatient,
   filterPrescription,
   selectPrescription,
   filterDoctors,
@@ -60,8 +61,10 @@ router.get("/get_family_members/:id", getFamilyMembers);
 
 router.get("/get_selected_doctor/:id", getSelectedDoctor);
 
+router.get("/get_all_prescriptions", getAllPrescriptions);
+
 //GET all prescriptions of a single patient
-router.get("/get_prescriptions_of_patient/:patientId", getAllPrescriptions);
+router.get("/get_prescriptions_of_patient/:patientId", getAllPrescriptionsOfPatient);
 
 //filter prescriptions
 router.get("/filter_prescription/:patientId", filterPrescription);
@@ -101,7 +104,7 @@ router.put(
 );
 
 // utils
-router.post("/add_prescription/:id", addPrescription);
+router.post("/add_prescription/:doctorId/:patientId", addPrescription);
 router.post("/add_appointment/:doctorId/:patientId", addAppointment);
 
 module.exports = router;
