@@ -337,6 +337,50 @@ const filterAppointments = async (req, res) => {
   } else res.status(404).json({ message: "Doctor not found" });
 };
 
+// FILTER APPOITMENT USING STATUS OR DATE
+const filterStatus = async (req, res) => {
+  const { status, date_1, date_2, patient } = req.body;
+  console.log(status, date_1, date_2, patient)
+  if (!status) {
+      return res.status(400).json({ message: 'Please enter status' });
+  }
+
+  const appoint = await Appointment.find({ 'patientId': patient });
+  const filteredAppointments = appoint.filter(appointment => {
+      if (status !== 'All') {
+
+          const Date1 = new Date(date_1);
+          const Date2 = new Date(date_2);
+
+          if (Date1 && Date2) {
+              if (appointment.date >= Date1 && appointment.date <= Date2 && appointment.status === status) {
+                  return true;
+              }
+          } else if (Date1 && !date_2) {
+              if (appointment.date.toDateString() === Date1.toDateString() && appointment.status === status) {
+                  return true;
+              }
+          }
+      } else if (status === 'All') {
+          const Date_1 = new Date(date_1);
+          const Date_2 = new Date(date_2);
+
+          if (Date_1 && Date_2) {
+              if (appointment.date >= Date_1 && appointment.date <= Date_2) {
+                  return true;
+              }
+          } else if (Date_1 && !date_2) {
+              if (appointment.date.toDateString() === Date_1.toDateString()) {
+                  return true;
+              }
+          }
+      }
+  });
+  console.log(filteredAppointments);
+  res.status(200).json(filteredAppointments);
+};
+
+
 //View a list of all doctors along with their specialty, session price(based on subscribed health package if any)
 const viewAllDoctors = asyncHandler(async (req, res) => {
   try {
@@ -807,6 +851,60 @@ const payFromWallet = async (req, res) => {
   }
 }
 
+// filter patients by upcoming appointments
+const upcoming = async (req, res) => {
+
+  const { patientId } = req.body;
+  try {
+    const upcomingAppointments = await Appointment.find({
+      patientId,
+      date: { $gte: new Date() }, // Get appointments with dates greater than or equal to the current date
+    })
+      .populate({
+      path: "doctorId",
+      select: "firstName lastName"}) // Populate doctor details
+      .sort({ date: 1 }); // Sort appointments by date in ascending order
+
+      res.status(200).json(upcomingAppointments);
+  } catch (error) {
+    throw new Error(error.message);
+  }
+
+  // try {
+  //     const upappoint = await Appointment.find({ 'patientId': patientId });
+
+  //     const currentDate = new Date();
+
+  //     const upcomingApp = upappoint.filter(appointment => appointment.date > currentDate);
+  //     const doctorIds = upcomingApp.map(appointment => appointment.doctorId);
+  //     const doctors = await User.find({ _id: { $in: doctorIds } });
+
+  //     upcomingApp.sort((a, b) => new Date(a.date) - new Date(b.date));
+  //     const finalup = upcomingApp.map((appointment) => {
+  //         const doctor = doctors.find(doctor => doctor._id.equals(appointment.doctorId));
+  //         return {
+  //             date: appointment.date,
+  //             status: appointment.status,
+  //             firstName: doctor ? doctor.firstName : null,
+  //             lastName: doctor ? doctor.lastName : null,
+  //             email: doctor ? doctor.email : null,
+  //             _id: doctor ? doctor._id : null,
+  //             appointmentId: appointment._id
+  //         };
+  //     });
+
+
+  //     // res.status(200).json(finalup);
+  //     res.status(200).json(upcomingApp)
+  //     console.log("Response sent successfully.");
+  //     // console.log(finalup)
+  // } catch (error) {
+  //     console.error('Error filtering patient IDs:', error);
+  //     res.status(500).json({ error: 'An error occurred while filtering patient IDs' });
+  // }
+};
+
+
 
 
 
@@ -845,5 +943,7 @@ module.exports = {
   makeAppointment,
   getAvailableAppointments,
   payFromWallet,
+  upcoming,
+  filterStatus,
 }
 
