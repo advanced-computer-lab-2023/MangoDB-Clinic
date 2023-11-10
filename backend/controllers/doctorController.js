@@ -604,7 +604,19 @@ const addHealthRecord = async (req, res) => {
   }
 };
   
-
+const getAllAppointments = async (req, res) => {
+    try {
+      const appointments = await Appointment.find({
+        doctorId: req.params.id,
+      }).populate({
+        path: "patientId",
+        select: "firstName lastName",
+      });
+      res.status(200).json(appointments);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  };
 // Extra frontend methods
 const getDoctorInfo = (req, res) => {
     const doctorId = req.params.id;
@@ -635,6 +647,8 @@ module.exports = {
     followUpDoc,
     viewEmploymentContract,
     addHealthRecord,
-    getDoctorInfo
+    getDoctorInfo,
+    getAllAppointments
+    
 }
 

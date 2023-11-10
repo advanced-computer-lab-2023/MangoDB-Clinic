@@ -23,7 +23,8 @@ const {
     followUpDoc,
     addHealthRecord,
     viewEmploymentContract,
-    getDoctorInfo
+    getDoctorInfo,
+    getAllAppointments
 } = require('../controllers/doctorController');
 
 
@@ -114,12 +115,14 @@ router.post('/viewHealthRecords/:id', viewHealthRecords);
 
 router.get('/getAllSpecialities', getAllSpecialities)
 
+router.get('/getAllAppointments/:id',getAllAppointments)
 router.get('/view_wallet/:id', viewWallet)
 router.post('/followUp', followUpDoc);
 router.get('/getMyAppointments',getMyAppointments)
 router.get('/getEmploymentContract',viewEmploymentContract)
 router.patch('/addSlots', addNewSlots);
 router.patch('/addHealthRecord', addHealthRecord);
+
 
 module.exports = router;
 
