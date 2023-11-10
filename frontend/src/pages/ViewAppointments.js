@@ -13,13 +13,11 @@ const ViewAppointments = () => {
 
     useEffect(() => {
         viewPatientAppointments(patient_id)
-            .then((response) => {
-                // Filter out duplicate appointments based on their unique ID
-                const uniqueAppointments = response.data.filter((app, index, self) => self.findIndex(a => a.id === app.id) === index);
-                setApp(uniqueAppointments);
-                setIsPending(false);
-                setError(null);
-            })
+        .then((response) => {
+            setApp(response.data);
+            setIsPending(false);
+            setError(null);
+          })
             .catch((err) => {
                 setIsPending(false);
                 setError(err.message);

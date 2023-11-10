@@ -4,7 +4,10 @@
 * {
   margin: 0;
   font-family: "Quicksand";
-  color: #333;
+  color: rgb(11, 0, 46);
+}
+.app-preview-container {
+  text-align: center;
 }
 .app-preview {
     padding: 10px 16px;
@@ -16,17 +19,17 @@
   }
 .app-preview h3 {
     font-size: 20px;
-    color: #f1356d;
+    color: #000363;
     margin-bottom: 8px;
   }
   .app-preview h4 {
     font-size: 20px;
-    color: #f1356d;
+    color: rgb(77, 141, 190);
     margin-bottom: 8px;
   }
   .app-preview h5 {
     font-size: 20px;
-    color: #f1356d;
+    color:rgb(77, 141, 190);
     margin-bottom: 8px;
   }
   

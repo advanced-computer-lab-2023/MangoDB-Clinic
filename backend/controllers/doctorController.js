@@ -608,7 +608,8 @@ const getAllAppointments = async (req, res) => {
     try {
       const appointments = await Appointment.find({
         doctorId: req.params.id,
-      }).populate({
+      })
+      .populate({
         path: "patientId",
         select: "firstName lastName",
       });

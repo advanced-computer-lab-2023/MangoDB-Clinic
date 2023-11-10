@@ -14,6 +14,7 @@ import ViewProfile from './pages/ViewProfile';
 import ViewWallet from './pages/ViewWallet';
 import EditDoctor from './components/EditDoctor';
 import PrescriptionDetials from './pages/PrescriptionDetails';
+import ViewAppointmentsDR from './pages/ViewAppointmentsDR';
 
 
 function App() {
@@ -60,6 +61,9 @@ function App() {
             </Route>
             <Route path='/editDoctor/:id'>
               <EditDoctor />
+            </Route>
+            <Route path='/viewAppointmentsDR'>
+              <ViewAppointmentsDR />
             </Route>
           </Switch>
         </div>

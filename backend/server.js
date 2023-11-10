@@ -1,4 +1,3 @@
-require('dotenv ').config() 
 const express = require('express');
 const colors = require('colors');
 const mongoose = require('mongoose');
@@ -24,11 +23,6 @@ app.set('view engine', 'ejs');
 
 
 
-const stripe =require('stripe')(process.env.STRIPE_PRIVATE_KEY)
-const storeItem = new Map([
-    [1,{price:1000, name: 'Appointment'}],
-    [2,{price:2000, name: 'healthPackage'}],
- ])
 
 app.get('/doctorHomePage', (req, res) => {
     res.render('doctorHomePage'); 
