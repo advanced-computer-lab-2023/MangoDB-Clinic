@@ -38,7 +38,7 @@ const DoctorApps = () => {
 
     const handleUpcomingClick = () => {
         setUpcoming(!upcoming);
-        setStatus('');
+        setStatus('All');
         setFrom('');
         setTo('');
     }
