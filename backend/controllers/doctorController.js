@@ -52,8 +52,44 @@ const filterStatus = async (req, res) => {
 
 
 // filter patients by upcoming appointments
-const upcoming = async (req, res) => {
+// const upcoming = async (req, res) => {
 
+//     const { doctorId } = req.body;
+
+//     try {
+//         const upappoint = await Appointment.find({ 'doctorId': doctorId });
+
+//         const currentDate = new Date();
+
+//         const upcomingApp = upappoint.filter(appointment => appointment.date > currentDate);
+//         const patientIds = upcomingApp.map(appointment => appointment.patientId);
+//         const patients = await User.find({ _id: { $in: patientIds } });
+
+//         upcomingApp.sort((a, b) => new Date(a.date) - new Date(b.date));
+//         const finalup = upcomingApp.map((appointment) => {
+//             const patient = patients.find(patient => patient._id.equals(appointment.patientId));
+//             return {
+//                 date: appointment.date,
+//                 status: appointment.status,
+//                 firstName: patient ? patient.firstName : null,
+//                 lastName: patient ? patient.lastName : null,
+//                 email: patient ? patient.email : null,
+//                 _id: patient ? patient._id : null,
+//                 appointmentId: appointment._id
+//             };
+//         });
+
+
+//         res.status(200).json(finalup);
+//         console.log("Response sent successfully.");
+//         console.log(finalup)
+//     } catch (error) {
+//         console.error('Error filtering patient IDs:', error);
+//         res.status(500).json({ error: 'An error occurred while filtering patient IDs' });
+//     }
+// };
+// Updated upcoming
+const upcoming = async (req, res) => {
     const { doctorId } = req.body;
 
     try {
@@ -65,26 +101,33 @@ const upcoming = async (req, res) => {
         const patientIds = upcomingApp.map(appointment => appointment.patientId);
         const patients = await User.find({ _id: { $in: patientIds } });
 
-        let appointmentId = 1;
-
         upcomingApp.sort((a, b) => new Date(a.date) - new Date(b.date));
-        const finalup = upcomingApp.map(appointment => {
+
+        const uniqueIds = new Set(); // Use a Set to track unique _id values
+        const finalup = upcomingApp.reduce((accumulator, appointment) => {
             const patient = patients.find(patient => patient._id.equals(appointment.patientId));
-            return {
+            const appointmentData = {
                 date: appointment.date,
                 status: appointment.status,
                 firstName: patient ? patient.firstName : null,
                 lastName: patient ? patient.lastName : null,
                 email: patient ? patient.email : null,
                 _id: patient ? patient._id : null,
-                appointmentId: appointmentId++
+                appointmentId: appointment._id
             };
-        });
 
+            // Check if the _id is already in the Set
+            if (!uniqueIds.has(appointmentData._id)) {
+                uniqueIds.add(appointmentData._id); // Add the _id to the Set
+                accumulator.push(appointmentData); // Add the appointment data to the result array
+            }
+
+            return accumulator;
+        }, []);
 
         res.status(200).json(finalup);
         console.log("Response sent successfully.");
-        console.log(finalup)
+        console.log(finalup);
     } catch (error) {
         console.error('Error filtering patient IDs:', error);
         res.status(500).json({ error: 'An error occurred while filtering patient IDs' });
@@ -537,17 +580,44 @@ const viewWallet = async (req, res) => {
       res.status(400).json({ error: 'Failed to update slots' });
     }
   };
-  const getMyAppointments = async (req, res) => {
+const getMyAppointments = async (req, res) => {
     try {
-        const doctorId = req.body.doctorId; 
+        const doctorId = req.params.id; 
         
         const appointments = await Appointment.find({ doctorId });
-    
-        res.json(appointments);
+
+        const result = appointments.map(async (appointment) => {
+            const patient = await Patient.findById(appointment.patientId);
+
+            return {
+                ...appointment,
+                patientFirstName: patient.firstName,
+                patientLastName: patient.lastName 
+            };
+        });
+
+        const resolvedResult = await Promise.all(result);
+
+        const mergedDataArray = resolvedResult.map(appointment => {
+            const mergedData = {
+                ...appointment._doc,
+                patientFirstName: appointment.patientFirstName,
+                patientLastName: appointment.patientLastName,
+                key: true
+            };
+        
+            // Remove the "$isNew" property
+            delete mergedData.$isNew;
+        
+            return mergedData;
+        });
+        
+        // console.log(mergedDataArray);
+        res.json(mergedDataArray);
       } catch (error) {
         res.status(500).json({ error: 'Failed to fetch appointments' });
       }
-    };
+};
     const viewEmploymentContract = async (req, res) => {
       try {
         const doctorId = req.user.id; // Assuming you have the doctor's ID in the user object (e.g., after authentication)

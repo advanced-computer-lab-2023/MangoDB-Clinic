@@ -36,7 +36,7 @@ const PatientList = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
+
         if (search) {
             setIsPending(true);
             setPatients([]);
@@ -121,7 +121,7 @@ const PatientList = () => {
                     style={{ margin: '10px', color: '#1976d2' }}
                     onClick={ handleUpcomingClick }
                 >
-                    Upcoming
+                    Upcoming Appointments
                 </Button> 
             }
             { upcoming &&
@@ -132,7 +132,7 @@ const PatientList = () => {
                     style={{ margin: '10px', color: 'white', background: '#1976d2' }}
                     onClick={ handleUpcomingClick }
                 >
-                    Upcoming
+                    Upcoming Appointments
                 </Button> 
             }
             { isPending && <div>Loading...</div> }
@@ -165,7 +165,7 @@ const PatientList = () => {
                 >
 
                     { patients.map((patient, index) => (
-                        <Grid item xs={ 12 } sm={ 6 } md={ 4 } key={ patients.length > 2 ? `${patient.appointmentId}-${patient._id}` : patient._id  }>
+                        <Grid item xs={ 12 } sm={ 6 } md={ 4 } key={ patient.appointmentId ? `${ patient.appointmentId }-${ patient._id }` : patient._id  }>
                             <div>
                                 <Link to={`/selectedPatient/${patient._id}`} style={{ textDecoration: 'none' }}>
                                     <Item>

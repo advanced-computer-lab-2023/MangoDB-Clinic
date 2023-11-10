@@ -116,7 +116,7 @@ router.get('/getAllSpecialities', getAllSpecialities)
 
 router.get('/view_wallet/:id', viewWallet)
 router.post('/followUp', followUpDoc);
-router.get('/getMyAppointments',getMyAppointments)
+router.get('/getMyAppointments/:id',getMyAppointments)
 router.get('/getEmploymentContract',viewEmploymentContract)
 router.patch('/addSlots', addNewSlots);
 router.patch('/addHealthRecord', addHealthRecord);
