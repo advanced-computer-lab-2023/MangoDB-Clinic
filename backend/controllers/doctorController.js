@@ -47,8 +47,40 @@ const filterStatus = async (req, res) => {
             }
         }
     });
-    console.log(filteredAppointments);
-    res.status(200).json(filteredAppointments);
+
+    // GET PATIENT NAME
+    const result = filteredAppointments.map(async (appointment) => {
+        const patient = await Patient.findById(appointment.patientId);
+
+        return {
+            ...appointment,
+            patientFirstName: patient.firstName,
+            patientLastName: patient.lastName 
+        };
+    });
+
+    const resolvedResult = await Promise.all(result);
+
+    const mergedDataArray = resolvedResult.map(appointment => {
+        const mergedData = {
+            ...appointment._doc,
+            patientFirstName: appointment.patientFirstName,
+            patientLastName: appointment.patientLastName,
+            key: true
+        };
+    
+        // Remove the "$isNew" property
+        delete mergedData.$isNew;
+    
+        return mergedData;
+    });
+    
+    // console.log(mergedDataArray);
+    res.json(mergedDataArray);
+    /////////////////////////////////////////////////////////////////////
+
+//     console.log(filteredAppointments);
+//     res.status(200).json(filteredAppointments);
 };
 
 
@@ -436,33 +468,59 @@ const getPatients = async (req, res) => {
 
 
 }
+// const viewHealthRecords = async (req, res) => {
+//     try {
+//         const doctorId = req.params.id;
+
+//         const { patientId } = req.body;
+
+//         const appointments = await Appointment.find({
+//             doctorId: doctorId,
+//             patientId: patientId,
+//         });
+
+//         if (appointments.length === 0) {
+//             return res.status(404).json({ message: 'No appointments found for this patient.' });
+//         }
+//         const patient = await Patient.findById(patientId).populate('prescriptions');
+
+//         if (!patient) {
+//             return res.status(404).json({ message: 'Patient not found.' });
+//         }
+
+//         res.status(200).json({ appointments, prescriptions: patient.prescriptions });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ message: 'Error retrieving appointments and prescriptions' });
+//     }
+// };
+
+// UPDATED viewHealthRecords
 const viewHealthRecords = async (req, res) => {
+    // const patient = await Patient.findById(req.params.id);
+    const doctorId = req.params.id;
+    const { patientId } = req.body;
+
+    const patient = await Patient.findById(patientId);
+
     try {
-        const doctorId = req.params.id;
-
-        const { patientId } = req.body;
-
-        const appointments = await Appointment.find({
-            doctorId: doctorId,
-            patientId: patientId,
-        });
-
-        if (appointments.length === 0) {
-            return res.status(404).json({ message: 'No appointments found for this patient.' });
+      if (!patient) {
+        res.status(400);
+        throw new Error("Patient does not exist.");
+      } else {
+        const healthRecords = patient.healthRecord;
+        if (healthRecords) {
+          res.status(200).json(healthRecords);
+        } else {
+          res.status(400);
+          throw new Error("Patient has no health record.");
         }
-        const patient = await Patient.findById(patientId).populate('prescriptions');
-
-        if (!patient) {
-            return res.status(404).json({ message: 'Patient not found.' });
-        }
-
-        res.status(200).json({ appointments, prescriptions: patient.prescriptions });
+      }
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error retrieving appointments and prescriptions' });
+      res.status(400);
+      throw new Error("Error viewing health records.");
     }
 };
-
 
 const getAllSpecialities = async (req, res) => {
     try {
