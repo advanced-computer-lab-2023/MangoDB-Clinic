@@ -59,6 +59,20 @@ const DoctorApps = () => {
         setAppointments([]);
 
         const query = { status,  date_1: from, date_2: to, doctor: id };
+
+        if (!query[status]) {
+            query[status] = 'All';
+        }
+
+        if (!query['date_1']) {
+            query['date_1'] = convertToISOFormat('01/01/1960');
+        }
+
+        if (!query['date_2']) {
+            query['date_2'] = convertToISOFormat('31/12/2060');
+        }
+        
+        console.log(query);
         console.log(query)
         filterAppointments(query)
             .then((result) => {
