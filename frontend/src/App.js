@@ -12,6 +12,10 @@ import ViewDoctors from './pages/ViewDoctors';
 import ViewPrescriptions from './pages/ViewPrescriptions';
 import ViewProfile from './pages/ViewProfile';
 import ViewWallet from './pages/ViewWallet';
+import DoctorDetails from './components/DoctorDetails';
+import Search from './pages/Search';
+import DoctorSearch from './components/DoctorSearch';
+import Filter from './components/Filter';
 
 
 function App() {
@@ -52,6 +56,15 @@ function App() {
             </Route>
             <Route path='/viewwallet'>
               <ViewWallet />
+            </Route>
+            <Route path='/doctor-details/:id'>
+              <DoctorDetails />
+            </Route>
+            <Route path='/search-doctors'>
+              <DoctorSearch />
+            </Route>
+            <Route path='/filter'>
+              <Filter />
             </Route>
           </Switch>
         </div>
