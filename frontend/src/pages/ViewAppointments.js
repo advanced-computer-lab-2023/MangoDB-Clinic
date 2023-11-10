@@ -122,8 +122,9 @@ const ViewAppointments = () => {
     }, [appointments])
 
     return (
-        <div>
+        <div >
             <h1>Appointments</h1>
+            <div className="app-p">
             { !upcoming &&
                 <Button
                     disabled={false}
@@ -149,7 +150,7 @@ const ViewAppointments = () => {
 
             <br />
             <form onSubmit={ handleSubmit }>
-                <Grid item xs={ 12 } style={{ padding: '5px' }}>
+                <Grid>
                     <TextField id="status" name="status" label="Status" variant="outlined" value={ status } onChange={ handleChange } size="small"/>
                     <TextField 
                         id="from"
@@ -175,44 +176,40 @@ const ViewAppointments = () => {
                     />
                     <Button variant="contained"  type="submit">Filter</Button>
                 </Grid>
+                
             </form>
+            </div>
 
             { isPending && <div>Loading...</div> }
             { error && <div>{ error }</div> }
             { !isPending && !error && appointments.length < 1 && <div>No appointments to show...</div> }
             { appointments.length > 0 && (
                 <Grid 
-                    container 
-                    direction="column" 
-                    justifyContent="center"
-                    alignItems="flex-start" spacing={ 3 }
+                    
                 >
 
                     { appointments.map((appointment) => (
-                            <Grid item xs={ 12 } sm={ 6 } md={ 4 }  key={appointment.id}>
+                            <Grid className="app-preview"  key={appointment.id}>
                                 <div>
-                                        <Item>
-                                                    <Typography variant="h6" style={{ color: 'black' }}>
+                                       
+                                                    <h1 >
                                                          Doctor Name: {appointment.doctorId.firstName} {appointment.doctorId.lastName}
-                                                    </Typography>
-                                                    <Typography variant="body2" style={{ color: 'black' }}>
+                                                    </h1>
+                                                    <h2 >
                                                            { `Date: ${new Date(appointment.date).toLocaleDateString()}` }
-                                                     </Typography>
-                                                     <Typography variant="body2" style={{ color: 'black' }}>
-                                                        { `Time: ${new Date(appointment.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` }
-                                                    </Typography>
-                                                    <Typography variant="body2" style={{ color: 'black' }}>
+                                                           { `         Time: ${new Date(appointment.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` }
+                                                     </h2>
+                                                     
+                                                    <h4 >
                                                         Status: { appointment.status }
-                                                    </Typography>
-                                                    <Typography variant="body2" style={{ color: 'black' }}>
+                                                    </h4>
+                                                    <h5 >
                                                         Follow up: { appointment.followUp ? 'Yes' : 'No' }
-                                                    </Typography>
-                                            
-                                        </Item>
-                                    {/* </Link> */}
+                                                    </h5>
+                                          
                                 </div>
                             </Grid>
-                    )) }s
+                    )) }
                 </Grid>
             ) }
         </div>
