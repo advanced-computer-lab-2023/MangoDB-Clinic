@@ -60,8 +60,8 @@ const DoctorApps = () => {
 
         const query = { status,  date_1: from, date_2: to, doctor: id };
 
-        if (!query[status]) {
-            query[status] = 'All';
+        if (!query['status']) {
+            query['status'] = 'All';
         }
 
         if (!query['date_1']) {
