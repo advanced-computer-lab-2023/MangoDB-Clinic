@@ -47,49 +47,14 @@ const filterStatus = async (req, res) => {
             }
         }
     });
-    res.status(200).json({ filteredAppointments });
+    console.log(filteredAppointments);
+    res.status(200).json(filteredAppointments);
 };
 
 
 // filter patients by upcoming appointments
-// const upcoming = async (req, res) => {
-
-//     const { doctorId } = req.body;
-
-//     try {
-//         const upappoint = await Appointment.find({ 'doctorId': doctorId });
-
-//         const currentDate = new Date();
-
-//         const upcomingApp = upappoint.filter(appointment => appointment.date > currentDate);
-//         const patientIds = upcomingApp.map(appointment => appointment.patientId);
-//         const patients = await User.find({ _id: { $in: patientIds } });
-
-//         upcomingApp.sort((a, b) => new Date(a.date) - new Date(b.date));
-//         const finalup = upcomingApp.map((appointment) => {
-//             const patient = patients.find(patient => patient._id.equals(appointment.patientId));
-//             return {
-//                 date: appointment.date,
-//                 status: appointment.status,
-//                 firstName: patient ? patient.firstName : null,
-//                 lastName: patient ? patient.lastName : null,
-//                 email: patient ? patient.email : null,
-//                 _id: patient ? patient._id : null,
-//                 appointmentId: appointment._id
-//             };
-//         });
-
-
-//         res.status(200).json(finalup);
-//         console.log("Response sent successfully.");
-//         console.log(finalup)
-//     } catch (error) {
-//         console.error('Error filtering patient IDs:', error);
-//         res.status(500).json({ error: 'An error occurred while filtering patient IDs' });
-//     }
-// };
-// Updated upcoming
 const upcoming = async (req, res) => {
+
     const { doctorId } = req.body;
 
     try {
@@ -102,11 +67,9 @@ const upcoming = async (req, res) => {
         const patients = await User.find({ _id: { $in: patientIds } });
 
         upcomingApp.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-        const uniqueIds = new Set(); // Use a Set to track unique _id values
-        const finalup = upcomingApp.reduce((accumulator, appointment) => {
+        const finalup = upcomingApp.map((appointment) => {
             const patient = patients.find(patient => patient._id.equals(appointment.patientId));
-            const appointmentData = {
+            return {
                 date: appointment.date,
                 status: appointment.status,
                 firstName: patient ? patient.firstName : null,
@@ -115,19 +78,12 @@ const upcoming = async (req, res) => {
                 _id: patient ? patient._id : null,
                 appointmentId: appointment._id
             };
+        });
 
-            // Check if the _id is already in the Set
-            if (!uniqueIds.has(appointmentData._id)) {
-                uniqueIds.add(appointmentData._id); // Add the _id to the Set
-                accumulator.push(appointmentData); // Add the appointment data to the result array
-            }
-
-            return accumulator;
-        }, []);
 
         res.status(200).json(finalup);
         console.log("Response sent successfully.");
-        console.log(finalup);
+        console.log(finalup)
     } catch (error) {
         console.error('Error filtering patient IDs:', error);
         res.status(500).json({ error: 'An error occurred while filtering patient IDs' });

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getMyAppointments, upcomingApp } from "../services/api";
+import { getMyAppointments, upcomingApp, filterAppointments } from "../services/api";
 import { Grid, Paper, Typography, TextField } from "@mui/material";
 import { experimentalStyled as styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
@@ -18,13 +18,57 @@ const DoctorApps = () => {
     const [ appointments, setAppointments ] = useState([]);
     const [ isPending, setIsPending ] = useState(true);
     const [ error, setError ] = useState('');
-    const [ status, setStatus ] = useState('');
-    // const [ from, setFrom ] = useState('');
-    // const [ to, setTo ] = useState('');
+    const [ status, setStatus ] = useState('All');
+    const [ from, setFrom ] = useState('');
+    const [ to, setTo ] = useState('');
     const [ upcoming, setUpcoming ] = useState(false);
+
+    function convertToISOFormat(dateString) {
+        // Split the input string into day, month, and year
+        const [day, month, year] = dateString.split('/');
+      
+        // Create a new Date object using the components
+        const dateObject = new Date(`${year}-${month}-${day}`);
+      
+        // Use the toISOString method to get the date in ISO format
+        const isoDateString = dateObject.toISOString().split('T')[0];
+      
+        return isoDateString;
+    }
 
     const handleUpcomingClick = () => {
         setUpcoming(!upcoming);
+        setStatus('');
+        setFrom('');
+        setTo('');
+    }
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        switch (name) {
+            case 'status': setStatus(value); break;
+            case 'from': setFrom(convertToISOFormat(value)); break;
+            case 'to': setTo(convertToISOFormat(value)); break;
+        }
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        setIsPending(true);
+        setAppointments([]);
+
+        const query = { status,  date_1: from, date_2: to, doctor: id };
+        console.log(query)
+        filterAppointments(query)
+            .then((result) => {
+                setAppointments(result.data);
+                setIsPending(false);
+            })
+            .catch((err) => {
+                setError(err.message);
+                setIsPending(false);
+            });
     }
 
     useEffect(() => {
@@ -60,6 +104,10 @@ const DoctorApps = () => {
         }
     }, [upcoming])
 
+    useEffect(() => {
+        console.log(appointments);
+    }, [appointments])
+
     return (
         <div>
             <h1>Appointments</h1>
@@ -83,8 +131,39 @@ const DoctorApps = () => {
                     onClick={ handleUpcomingClick }
                 >
                     Upcoming Appointments
-                </Button> 
+                </Button>
             }
+
+            <br />
+            <form onSubmit={ handleSubmit }>
+                <Grid item xs={ 12 } style={{ padding: '5px' }}>
+                    <TextField id="status" name="status" label="Status" variant="outlined" value={ status } onChange={ handleChange } size="small"/>
+                    <TextField 
+                        id="from"
+                        name="from"
+                        label="From"
+                        variant="outlined"
+                        value={ from }
+                        onChange={ handleChange }
+                        size="small"
+                        type="date"
+                        InputLabelProps={{ shrink: true }}
+                    />
+                    <TextField
+                        id="to"
+                        name="to"
+                        label="To"
+                        variant="outlined"
+                        value={ to }
+                        onChange={ handleChange }
+                        size="small"
+                        type="date"
+                        InputLabelProps={{ shrink: true }} 
+                    />
+                    <Button variant="contained"  type="submit">Filter</Button>
+                </Grid>
+            </form>
+
             { isPending && <div>Loading...</div> }
             { error && <div>{ error }</div> }
             { !isPending && !error && appointments.length < 1 && <div>No appointments to show...</div> }
@@ -97,7 +176,7 @@ const DoctorApps = () => {
                 >
 
                     { appointments.map((appointment) => (
-                            <Grid item xs={ 12 } sm={ 6 } md={ 4 } key={ appointment._id }>
+                            <Grid item xs={ 12 } sm={ 6 } md={ 4 } key={ appointment.appointmentId ? appointment.appointmentId : appointment._id }>
                                 <div>
                                     {/* <Link to={`/selectedPatient/${patient._id}`} style={{ textDecoration: 'none' }}> */}
                                         <Item>

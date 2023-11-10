@@ -22,5 +22,6 @@ export const updateDoctorRate = (id, doctor) => API.put(`/doctor/updateHourlyRat
 export const updateDoctorAffiliation = (id, doctor) => API.put(`/doctor/updateAffiliation/${id}`, doctor);
 
 export const getMyAppointments = (id) => API.get(`/doctor/getMyAppointments/${ id }`);
+export const filterAppointments = (query) => API.post('/doctor/filterapp', query);
 
 export default API;
