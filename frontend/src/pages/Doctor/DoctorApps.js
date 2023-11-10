@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getMyAppointments, upcomingApp, filterAppointments } from "../services/api";
+import { getMyAppointments, upcomingApp, filterAppointments } from "../../services/api";
 import { Grid, Paper, Typography, TextField } from "@mui/material";
 import { experimentalStyled as styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
@@ -73,7 +73,6 @@ const DoctorApps = () => {
         }
         
         console.log(query);
-        console.log(query)
         filterAppointments(query)
             .then((result) => {
                 setAppointments(result.data);
@@ -196,7 +195,7 @@ const DoctorApps = () => {
                                         <Item>
                                             <Typography variant="h6" style={{ color: 'black' }}>
                                                 Patient: { appointment.patientFirstName ? `${ appointment.patientFirstName } ${ appointment.patientLastName }` : 
-                                                                                          `${ appointment.firstName} ${ appointment.lastName }`}
+                                                                                          `${ appointment.firstName} ${ appointment.lastName }` }
                                             </Typography>
                                             <Typography variant="body2" style={{ color: 'black' }}>
                                                 { `Date: ${new Date(appointment.date).toLocaleDateString()}` }

@@ -5,16 +5,16 @@ import PatientDashboard from './pages/PatientDashboard';
 import DoctorsTable from './components/DoctorsTable';
 import { BrowserRouter as Router, Switch, Route,  } from 'react-router-dom';
 import PatientForm from './components/PatientForm';
-import PatientList from './components/PatientList';
-import PatientDetails from './components/PatientDetails';
+import PatientList from './pages/Doctor/PatientList';
+import PatientDetails from './pages/Doctor/PatientDetails';
 import ViewAppointments from './pages/ViewAppointments'; 
 import ViewDoctors from './pages/ViewDoctors';
 import ViewPrescriptions from './pages/ViewPrescriptions';
 import ViewProfile from './pages/ViewProfile';
 import ViewWallet from './pages/ViewWallet';
-import EditDoctor from './components/EditDoctor';
+import EditDoctor from './pages/Doctor/EditDoctor';
 import PrescriptionDetials from './pages/PrescriptionDetails';
-import DoctorApps from './components/DoctorApps';
+import DoctorApps from './pages/Doctor/DoctorApps';
 
 
 function App() {

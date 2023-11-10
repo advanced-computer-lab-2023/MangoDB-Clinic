@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getDoctor, updateDoctorAffiliation, updateDoctorEmail, updateDoctorRate } from "../services/api";
+import { getDoctor, updateDoctorAffiliation, updateDoctorEmail, updateDoctorRate } from "../../services/api";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getPatientsDoctor, searchPatients, upcomingApp } from "../services/api";
+import { getPatientsDoctor, searchPatients, upcomingApp } from "../../services/api";
 import { Grid, Paper, Typography, TextField } from "@mui/material";
 import { experimentalStyled as styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';

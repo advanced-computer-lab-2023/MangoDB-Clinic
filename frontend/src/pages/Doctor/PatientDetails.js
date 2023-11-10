@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom'
-import { selectPatient } from '../services/api';
+import { selectPatient } from '../../services/api';
 
 /**
  * TODO: 1-Get the patient using the id param (Done)
