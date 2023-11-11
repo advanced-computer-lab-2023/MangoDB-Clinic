@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import DoctorsTable from './DoctorsTable';
@@ -10,48 +10,70 @@ const DoctorSearch = () => {
   const [filterParams, setFilterParams] = useState({});
   const [url, setUrl] = useState('');
 
+  const port = 4000
+
+  useEffect(() => {
+    const url = `http://localhost:${port}/patient/get_all_doctors/65394ff997fe2d0027faca14`;
+    setUrl(url);
+  }, []);
+
   const handleSearch = () => {
-    let searchUrl = `http://localhost:5000/patient/search_doctor/65394ff997fe2d0027faca14?`;
+    let searchUrl = `http://localhost:${port}/patient/search_doctor/65394ff997fe2d0027faca14?`;
     if (searchTerm && !speciality) searchUrl += `name=${searchTerm}`;
     else if (speciality && !searchTerm) searchUrl += `speciality=${speciality}`;
     else if (searchTerm && speciality) searchUrl += `name=${searchTerm}&speciality=${speciality}`;
-
     setUrl(searchUrl);
   };
 
   const handleFilter = () => {
+    let filterUrl = `http://localhost:${port}/patient/search_doctor/65394ff997fe2d0027faca14?`;
+    console.log(filterParams.time)
+    if(filterParams.speciality)
+      filterUrl+= `speciality=${filterParams.speciality}`;
+    if(filterParams.date){
+      if(filterParams.time)
+        filterUrl+= `datetime=${filterParams.date}T${filterParams.time}:00`;
+      else
+        filterUrl+= `datetime=${filterParams.date}T00:00:00`;
+    }
     const filterQueryString = new URLSearchParams(filterParams).toString();
-    const filterUrl = `http://localhost:5000/patient/filter_doctors/65394ff997fe2d0027faca14?${filterQueryString}`;
+    console.log(filterUrl);
     setUrl(filterUrl);
   };
 
   return (
-    <div>
-      <TextField
-        label="Doctor Name"
-        variant="outlined"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-      <TextField
-        label="Speciality"
-        variant="outlined"
-        value={speciality}
-        onChange={(e) => setSpeciality(e.target.value)}
-      />
-      <Filter onFilterChange={setFilterParams} />
-      <Button variant="contained" onClick={handleSearch}>
-        Search
-      </Button>
-      <Button variant="contained" onClick={handleFilter}>
-        Apply Filters
-      </Button>
-      {url && <DoctorsTable url={url} />}
-    </div>
+  <div>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '100px'}}>
+      <div style={{display: 'inline'}}>
+        <TextField
+          label="Doctor Name"
+          variant="outlined"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ marginBottom: '20px' }}
+        />
+        <TextField
+          label="Speciality"
+          variant="outlined"
+          value={speciality}
+          onChange={(e) => setSpeciality(e.target.value)}
+          style={{ marginBottom: '20px' }}
+        />
+        <Button variant="contained" onClick={handleSearch} style={{ marginTop: '10px', marginLeft: '10px' }}>
+          Search
+        </Button>
+        </div>
+        <div style={{display: 'inline', marginBottom: '10px'}}>
+        <Filter onFilterChange={setFilterParams} style={{ marginTop: '10px' }} />
+        <Button variant="contained" onClick={handleFilter} style={{ marginLeft: '10px'  }}>
+          Apply Filters
+        </Button>
+        </div>
+        {url && <DoctorsTable url={url} />}
+      </div>
+
+     </div>
   );
-};
+  };
 
 export default DoctorSearch;
-
-
-

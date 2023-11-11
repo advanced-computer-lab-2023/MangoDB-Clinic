@@ -73,7 +73,7 @@ const registerUser = async (req, res, model, userType, fields) => {
 
 
 const registerAsPatient = asyncHandler(async (req, res) => {
-    await registerUser(req, res, Patient, 'patient', ['mobile', 'emergencyContact']);
+    await registerUser(req, res, Patient, 'patient', ['mobile', 'emergencyContact', 'nationalID', 'gender']);
 });
 
 const registerAsDoctor = asyncHandler(async (req, res) => {

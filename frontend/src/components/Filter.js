@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import { InputLabel } from '@mui/material';
+
 
 const Filter = ({ onFilterChange }) => {
   const [date, setDate] = useState('');
@@ -12,10 +12,12 @@ const Filter = ({ onFilterChange }) => {
   const [speciality, setSpeciality] = useState('');
   const [uniqueSpecialities, setUniqueSpecialities] = useState([]);
 
+  const port = 4000
+
   useEffect(() => {
     const fetchSpecialities = async () => {
       try {
-        const response = await fetch('http://localhost:5000/patient/get_specialities');
+        const response = await fetch(`http://localhost:${port}/patient/get_specialities`);
         const data = await response.json();
 
         setUniqueSpecialities(data);
@@ -42,8 +44,7 @@ const Filter = ({ onFilterChange }) => {
 
 
   return (
-    <div>
-      <InputLabel>Speciality</InputLabel>
+    <div style={{display: 'inline'}}>
       <Select
         variant="outlined"
         value={speciality}
@@ -59,14 +60,12 @@ const Filter = ({ onFilterChange }) => {
         ))}
       </Select>
       <TextField
-        label="Date"
         type="date"
         variant="outlined"
         value={date}
         onChange={(e) => setDate(e.target.value)}
       />
       <TextField
-        label="Time"
         type="time"
         variant="outlined"
         value={time}

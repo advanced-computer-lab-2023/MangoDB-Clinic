@@ -550,31 +550,26 @@ const getPatients = async (req, res) => {
 
 
 }
+
 const viewHealthRecords = async (req, res) => {
-    try {
-        const doctorId = req.params.id;
-
-        const { patientId } = req.body;
-
-        const appointments = await Appointment.find({
-            doctorId: doctorId,
-            patientId: patientId,
-        });
-
-        if (appointments.length === 0) {
-            return res.status(404).json({ message: 'No appointments found for this patient.' });
-        }
-        const patient = await Patient.findById(patientId).populate('prescriptions');
-
-        if (!patient) {
-            return res.status(404).json({ message: 'Patient not found.' });
-        }
-
-        res.status(200).json({ appointments, prescriptions: patient.prescriptions });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error retrieving appointments and prescriptions' });
+  const patient = await Patient.findById(req.params.id);
+  try {
+    if (!patient) {
+      res.status(400);
+      throw new Error("Patient does not exist.");
+    } else {
+      const healthRecords = patient.healthRecord;
+      if (healthRecords) {
+        res.status(200).json(healthRecords);
+      } else {
+        res.status(400);
+        throw new Error("Patient has no health record.");
+      }
     }
+  } catch (error) {
+    res.status(400);
+    throw new Error("Error viewing health records.");
+  }
 };
 
 

@@ -317,8 +317,6 @@ const selectPrescription = async (req, res) => {
 
     const prescription = await Prescription.findById(prescriptionId).populate('doctorId');
 
-    console.log(prescription);
-
     if (!prescription) {
       return res.status(404).json({ error: "Prescription Not Found" });
     }
@@ -461,7 +459,7 @@ const filterAppointments = async (req, res) => {
 //View a list of all doctors along with their specialty, session price(based on subscribed health package if any)
 const viewAllDoctors = asyncHandler(async (req, res) => {
   try {
-    const doctors = await Doctor.find({}).sort({ createdAt: -1 });
+    const doctors = await Doctor.find({accountStatus: 'active'}).sort({ createdAt: -1 });
     if (!doctors) {
       res.status(400).json({ error: "No Doctors Found" });
     } else {
@@ -472,7 +470,7 @@ const viewAllDoctors = asyncHandler(async (req, res) => {
       if(patient.healthPackage)
         discount = patient.healthPackage.doctorSessionDiscount / 100
       const doctorsWithPrices = doctors.map((doctor) => {
-        const sessionPrice = doctor.hourlyRate - (doctor.hourlyRate * discount || 0);
+        const sessionPrice = Math.ceil(1.1 * doctor.hourlyRate +  - (doctor.hourlyRate * discount || 0));
         return { ...doctor._doc, sessionPrice };
       });
 
@@ -489,7 +487,7 @@ const viewAllDoctors = asyncHandler(async (req, res) => {
 const searchDoctor = asyncHandler(async (req, res) => {
   try {
     const { name, speciality } = req.query;
-    const query = {};
+    const query = {accountStats: 'active'};
     if (name) {
       firstName = name.split(" ")[0];
       query.firstName = { $regex: firstName, $options: "i" };
@@ -507,7 +505,7 @@ const searchDoctor = asyncHandler(async (req, res) => {
       if(patient.healthPackage)
         discount = patient.healthPackage.doctorSessionDiscount / 100
       const doctorsWithPrices = doctor.map((doctor) => {
-        const sessionPrice = doctor.hourlyRate - (doctor.hourlyRate * discount || 0);
+        const sessionPrice = Math.ceil(1.1 * doctor.hourlyRate - (doctor.hourlyRate * discount || 0));
         return { ...doctor._doc, sessionPrice };
       });
     res.status(200).json(doctorsWithPrices);
@@ -518,9 +516,8 @@ const searchDoctor = asyncHandler(async (req, res) => {
 
 const filterDoctors = async (req, res) => {
   const { datetime, speciality } = req.query;
-
   try {
-    const query = {};
+    const query = {accountStats: 'active'};
 
     if (speciality) query.speciality = speciality;
 
@@ -541,7 +538,7 @@ const filterDoctors = async (req, res) => {
       if(patient.healthPackage)
         discount = patient.healthPackage.doctorSessionDiscount / 100
       const doctorsWithPrices = filteredDoctors.map((doctor) => {
-        const sessionPrice = doctor.hourlyRate - (doctor.hourlyRate * discount || 0);
+        const sessionPrice = Math.ceil(1.1 * doctor.hourlyRate - (doctor.hourlyRate * discount || 0));
         return { ...doctor._doc, sessionPrice };
       });
       res.status(200).json(doctorsWithPrices)
@@ -679,9 +676,6 @@ const addDocuments = async (req, res) => {
 
     if (patient) {
       const healthRecord = patient.healthRecord;
-
-      console.log(patient);
-      console.log(healthRecord);
 
       if (req.files) {
         for (const file of req.files) {
