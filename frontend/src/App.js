@@ -47,7 +47,7 @@ function App() {
             <Route path='/viewdoctors'>
               <ViewDoctors />
             </Route>
-            <Route path='/viewprescriptions'>
+            <Route path='/viewprescriptions/:patientId'>
               <ViewPrescriptions />
             </Route>
             <Route path='/prescriptiondetials/:prescriptionId'>

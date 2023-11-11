@@ -1,23 +1,110 @@
-import { ListItemButton, Grid, Link, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography, Button  } from "@mui/material";
-// import { createFilterOptions } from '@mui/material/Autocomplete';
-import { useState } from "react";
-import useFetch from "../useFetch";
-import MedicationIcon from '@mui/icons-material/Medication';
-import { Component } from "react";
-import { Link as RouterLink } from 'react-router-dom';
+import { Dialog, Grid, DialogContent, Paper, Card, CardContent, TextField, FormControlLabel, Checkbox, Tooltip, Typography, Button  } from "@mui/material";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import FilterListIcon from '@mui/icons-material/FilterList';
+import PrescriptionsTable from "../components/PrescriptionsTable";
 
 const ViewPrescriptions = () => {
-    const patient_id = '6526d2210f83f5e46228834c';
-    const [filterValue, setFilterValue] = useState('');
+    const { patientId } = useParams();
+    const [prescriptions, setPrescriptions] = useState([]);
+    const [isPending, setIsPending] = useState(true);
+    const [error, setError] = useState(null);
+    const [isFilterApplied, setIsFilterApplied] = useState(false);
     const [open, setOpen] = useState(false);
+    const [filterByDate, setFilterByDate] = useState('');
+    const [filterByDoctor, setFilterByDoctor] = useState('');
+    const [filterByFilled, setFilterByFilled] = useState(null);
+    const filterParams = [];
 
-    const { data: prescriptions, error, isPending} = 
-        useFetch('http://localhost:4000/patient/get_prescriptions_of_patient/' + patient_id);
+    useEffect(() => {
+        setPrescriptions([]);
+        setIsPending(true);
+        setError(null);
+
+        console.log(isFilterApplied);
+
+        if(!isFilterApplied){
+
+            fetch(`http://localhost:4000/patient/get_prescriptions_of_patient/${patientId}`)
+            .then((res) => {
+                if (!res.ok) {
+                    throw Error('Could not fetch the data for that resource');
+                }
+                return res.json();
+            })
+            .then((data) => {
+                setPrescriptions(data);
+                setIsPending(false);
+                setError(null);
+            })
+            .catch((err) => {
+                setIsPending(false);
+                setError(err.message);
+            });
+        }
+    }, [patientId, isFilterApplied ]);
 
     const handleFilter = () => {
         setOpen(false);
+        setIsFilterApplied(true);
+        setIsPending(true);
+        setPrescriptions([]);
+        setError(null);
+    
+        if (filterByDoctor) {
+            filterParams.push(`doctor=${encodeURIComponent(filterByDoctor)}`);
+        }
+
+        if (filterByDate) {
+            const formattedDate = formatDateForBackend(filterByDate);
+            filterParams.push(`date=${encodeURIComponent(formattedDate)}`);
+        }
+
+        if (filterByFilled !== null) {
+            filterParams.push(`filled=${encodeURIComponent(filterByFilled)}`);
+        }
+
+        console.log(filterParams);
+
+        const url = `http://localhost:4000/patient/filter_prescription/${patientId}?${filterParams.join('&')}`;
+
+        fetch(url)
+            .then((res) => {
+                if (!res.ok) {
+                    throw Error('Could not fetch the data for that resource');
+                }
+                return res.json();
+            })
+            .then((data) => {
+                setPrescriptions(data);
+                setIsPending(false);
+                setError(null);
+            })
+            .catch((err) => {
+                setIsPending(false);
+                setError(err.message);
+            });
+        
+        
+        
     }
+
+    const handleCheckboxChange = (event) => {
+        setFilterByFilled(event.target.checked);
+    };
+
+    const formatDateForBackend = (dateString) => {
+        const dateObject = new Date(dateString);
+        return dateObject.toISOString(); // Converts the date to the ISO format
+    };
+
+    const handleClearFilter = () => {
+        setFilterByDate('');
+        setFilterByDoctor('');
+        setFilterByFilled(null);
+        setIsFilterApplied(false);
+    }
+
 
     return ( 
         <Grid container  justifyContent="center" style={{ padding: '2rem' }}>
@@ -31,48 +118,7 @@ const ViewPrescriptions = () => {
                             </Button>
                         </Tooltip>
                     </Grid>
-                    <TableContainer component={Paper} xs={8}>
-                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead>
-                                <TableRow>
-                                    <TableCell>Doctor</TableCell>
-                                    <TableCell align="center">
-                                        <TableCell align="center">Medications</TableCell>
-                                        <TableCell align="center">Frequency</TableCell>
-                                    </TableCell>
-                                    <TableCell align="left">Date</TableCell>
-                                    <TableCell align="left">Filled</TableCell>
-                                    <TableCell align="left">Details</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {prescriptions && prescriptions.map((prescription) => (
-                                    <TableRow key={prescription._id}>
-                                        <TableCell component="th" scope="row">
-                                            {prescription.doctorId.firstName + ' ' + prescription.doctorId.lastName}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            {prescription.medications.map((medication, index) => (
-                                                <TableRow key={index}>
-                                                    <TableCell align="right">{medication.medicationName}</TableCell>
-                                                    <TableCell align="right">{medication.frequency}</TableCell>
-                                                </TableRow>
-                                                ))}
-                                        </TableCell>
-                                        <TableCell align="left">{new Date(prescription.date).toLocaleDateString()}</TableCell>
-                                        <TableCell align="left">{prescription.filled.toString()}</TableCell>
-                                        <TableCell align="left">
-                                            <Tooltip title="View Details">
-                                                <ListItemButton component={RouterLink} to={`/prescriptiondetails/${prescription._id}`}>
-                                                    <MedicationIcon />
-                                                </ListItemButton>
-                                            </Tooltip>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                    <PrescriptionsTable data={prescriptions}/>
                     { isPending && <div>Loading...</div> }
                     { error && <div>{ error }</div> }
                 </Paper>
@@ -81,33 +127,50 @@ const ViewPrescriptions = () => {
                         <Card variant="outlined">
                             <CardContent>
                                 <Typography variant="h6" component="div">
-                                    Filter Options
+                                    Filter Options 
+                                    <Typography variant="body2" component="div">
+                                        Select only one option
+                                    </Typography>
                                 </Typography>
                                 <TextField
                                     id="doctor-filter"
                                     label="Doctor Name"
                                     variant="outlined"
-                                    value={filterValue}
-                                    onChange={(e) => setFilterValue(e.target.value)}
-                                    style={{ marginBottom: '1rem' }}
+                                    value={filterByDoctor}
+                                    onChange={(e) => setFilterByDoctor(e.target.value)}
+                                    style={{ margin: '1rem' }}
                                 />
                                 <TextField
                                     id="date-filter"
                                     label="Date"
                                     type="date"
                                     variant="outlined"
+                                    value={filterByDate}
+                                    onChange={(e) => setFilterByDate(e.target.value)}
                                     InputLabelProps={{
                                         shrink: true,
                                 }}
-                                style={{ marginBottom: '1rem' }}
+                                style={{ margin: '1rem' }}
                                 />
                                 <FormControlLabel
-                                    control={<Checkbox />}
+                                    control={<Checkbox  
+                                        checked={filterByFilled} 
+                                        onChange={handleCheckboxChange} 
+                                        />}
                                     label="Filled"
-                                    style={{ marginBottom: '1rem' }}
+                                    style={{ margin: '1rem' }}
                                 />
+                                {!isFilterApplied ? (
+                                    <Button  disabled>
+                                        Clear Filters
+                                    </Button>
+                                ) : (
+                                    <Button variant="text" onClick={handleClearFilter} >
+                                        Clear Filters
+                                    </Button>
+                                )}
                                 <Button variant="contained" onClick={handleFilter}>
-                                    Apply Filters
+                                    Apply Filter
                                 </Button>
                             </CardContent>
                         </Card>
@@ -119,26 +182,3 @@ const ViewPrescriptions = () => {
 }
  
 export default ViewPrescriptions;
-
-// const [prescriptions, setPrescriptions] = useState(null);
-    // const [isPending, setIsPending] = useState(true);
-    // const [error, setError] = useState(null);
-
-// useEffect(() => {
-    //     fetch('http://localhost:4000/patient/get_prescriptions_of_patient/' + patient_id)
-    //     .then(res => {
-    //         if (!res.ok) {
-    //             throw Error('Could not fetch the data for that resource');
-    //         }
-    //         return res.json();
-    //     })
-    //     .then(data => {
-    //         setPrescriptions(data);
-    //         setIsPending(false);
-    //         setError(null);
-    //     })
-    //     .catch(err => {
-    //         setIsPending(false);
-    //         setError(err.message);
-    //     })
-    // }, []);
