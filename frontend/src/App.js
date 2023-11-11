@@ -15,7 +15,7 @@ import ViewWallet from './pages/ViewWallet';
 import EditDoctor from './pages/Doctor/EditDoctor';
 import PrescriptionDetials from './pages/PrescriptionDetails';
 import DoctorApps from './pages/Doctor/DoctorApps';
-
+import Checkout from './pages/Checkout';
 
 function App() {
   return (
@@ -64,6 +64,9 @@ function App() {
             </Route>
             <Route path='/doctorAppointments/:id'>
               <DoctorApps />
+            </Route>
+            <Route path='/checkout'>
+              <Checkout />
             </Route>
           </Switch>
         </div>

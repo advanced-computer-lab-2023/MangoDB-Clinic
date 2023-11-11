@@ -10,6 +10,7 @@ var path = require('path');
 const cors = require('cors');
 const { selectPatient } = require('./controllers/doctorController');
 
+const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
 
 connectDB()
 
@@ -21,7 +22,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 
-
+const storeItems = new Map([
+    [1, { priceInCents: 10000, name: "Learn React Today" }],
+    [2, { priceInCents: 20000, name: "Learn CSS Today" }],
+  ])
+  
 
 
 app.get('/doctorHomePage', (req, res) => {
@@ -51,6 +56,7 @@ app.get('/selectedPatient/:id', async (req, res) => {
 });
 
 
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -64,6 +70,36 @@ app.use('/admin', require('./routes/adminRoutes'));
 app.use('/patient', require('./routes/patientRoutes'));
 app.use('/doctor', require('./routes/doctorRoutes'))
 app.use('/uploads/', express.static('uploads'));
+
+
+
+
+app.post("/create-checkout-session", async (req, res) => {
+    try {
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        mode: "payment",
+        line_items: req.body.items.map(item => {
+          const storeItem = storeItems.get(item.id)
+          return {
+            price_data: {
+              currency: "usd",
+              product_data: {
+                name: storeItem.name,
+              },
+              unit_amount: storeItem.priceInCents,
+            },
+            quantity: item.quantity,
+          }
+        }),
+        success_url: 'localhost:3000/success',
+        // cancel_url:  'localhost:3000/cancel',
+      })
+      res.json({ url: session.url })
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
 
 
 app.use(errorHandler);
