@@ -142,7 +142,7 @@ const generateToken = (id) => {
 
 //Get all patients
 const getAllPatients = async (req, res) => {
-  const patients = await Patient.find({}).sort({ createdAt: -1 });
+  const patients = await Patient.find({});
   res.status(200).json(patients);
 };
 
@@ -275,6 +275,15 @@ const getSelectedDoctor = asyncHandler(async (req, res) => {
 });
 
 const getAllPrescriptions = async (req, res) => {
+  try {
+    const prescriptions = await Prescription.find({}).populate("doctorId").populate("patientId");
+    res.status(200).json(prescriptions);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const getAllPrescriptionsOfPatient = async (req, res) => {
   const { patientId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(patientId)) {
@@ -296,6 +305,7 @@ const getAllPrescriptions = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 const selectPrescription = async (req, res) => {
   const { prescriptionId } = req.params;
 
@@ -826,11 +836,12 @@ const addAppointment = async (req, res) => {
 };
 
 const addPrescription = async (req, res) => {
-  const docid = req.params.id;
+  const docid = req.params.doctorId;
+  const patid = req.params.patientId;
   const data = req.body;
 
   try {
-    const pres = await Prescription.create({ doctor: docid, ...data });
+    const pres = await Prescription.create({ doctorId: docid, patientId: patid, ...data });
     res.status(200).json(pres);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -972,7 +983,7 @@ module.exports = {
   addFamilyMember,
   getFamilyMembers,
   getSelectedDoctor,
-  getAllPrescriptions,
+  getAllPrescriptionsOfPatient,
   filterPrescription,
   selectPrescription,
   getAllAppointments,
@@ -994,7 +1005,7 @@ module.exports = {
   deleteDocument,
   linkFamilyMember,
   subscribeToHealthPackage,
-
+  getAllPrescriptions,
   makeAppointment,
   getAvailableAppointments,
   payFromWallet,

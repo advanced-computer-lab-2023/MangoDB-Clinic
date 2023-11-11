@@ -12,10 +12,11 @@ import ViewDoctors from './pages/ViewDoctors';
 import ViewPrescriptions from './pages/ViewPrescriptions';
 import ViewProfile from './pages/ViewProfile';
 import ViewWallet from './pages/ViewWallet';
+import DoctorForm from './components/DoctorForm';
 import DoctorDetails from './components/DoctorDetails';
-import Search from './pages/Search';
 import DoctorSearch from './components/DoctorSearch';
 import Filter from './components/Filter';
+import PrescriptionDetials from './pages/PrescriptionDetails';
 
 
 function App() {
@@ -32,6 +33,9 @@ function App() {
             </Route>
             <Route path='/patientform'>
               <PatientForm />
+            </Route>
+            <Route path='/doctorform'>
+              <DoctorForm />
             </Route>
             <Route path='/doctorsTable'>
               <DoctorsTable />
@@ -50,6 +54,9 @@ function App() {
             </Route>
             <Route path='/viewprescriptions'>
               <ViewPrescriptions />
+            </Route>
+            <Route path='/prescriptiondetials/:prescriptionId'>
+              <PrescriptionDetials />
             </Route>
             <Route path='/viewprofile'>
               <ViewProfile />

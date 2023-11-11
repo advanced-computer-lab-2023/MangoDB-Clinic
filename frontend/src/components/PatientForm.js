@@ -10,10 +10,10 @@ const PatientForm = () => {
     const[firstName, setFirstName] = useState('Karim Gabr');
     const[lastName, setLastName] = useState('Karim Gabr');
     const[dob, setDOB] = useState('27/05/2002');
-    const[nationalId, setNationalId] = useState('Karim Gabr');
+    const[nationalID, setNationalID] = useState('Karim Gabr');
     const[gender, setGender] = useState('');
     const[mobile, setMobile] = useState('0102334455');
-    const [emergencyContact, setEmergencyContact] = useState({ fullName: 'ahmed', mobileNumber: '1232132123' });
+    const [emergencyContact, setEmergencyContact] = useState({ name: 'ahmed', mobile: '1232132123' });
     const [isPending, setIsPending] = useState(false);
     const history = useHistory();
 
@@ -26,12 +26,12 @@ const PatientForm = () => {
             firstName,
             lastName,
             dob,
-            nationalId,
+            nationalID,
             gender,
             mobile,
             emergencyContact: {
-                fullName: emergencyContact.fullName || '', // Add a default value to prevent errors
-                mobileNumber: emergencyContact.mobileNumber || '', // Add a default value to prevent errors
+                name: emergencyContact.name || '', // Add a default value to prevent errors
+                mobile: emergencyContact.mobile || '', // Add a default value to prevent errors
             },
         };
 
@@ -63,7 +63,7 @@ const PatientForm = () => {
             <Grid item xs={6}>
                 <Paper elevation={3} style={{ padding: '2rem' }}>
                     <h2>Register As Patient</h2>
-                    <FormControl onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit}>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
                                 <TextField
@@ -158,9 +158,8 @@ const PatientForm = () => {
                                         <MenuItem value="">
                                             <em>None</em>
                                         </MenuItem>
-                                        <MenuItem value={10}>Male</MenuItem>
-                                        <MenuItem value={20}>Female</MenuItem>
-                                        <MenuItem value={30}>Transgender</MenuItem>
+                                        <MenuItem value="male">Male</MenuItem>
+                                        <MenuItem value="female">Female</MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>
@@ -171,14 +170,13 @@ const PatientForm = () => {
                                     type="number"
                                     required
                                     fullWidth
-                                    value={nationalId}
-                                    onChange={(e) => setNationalId(e.target.value)}
+                                    value={nationalID}
+                                    onChange={(e) => setNationalID(e.target.value)}
                                     style={{ marginTop: '1rem', marginBottom: '1rem', marginLeft: '1rem' }}
                                 />
                             
                         </Grid>
                         <Paper elevation={3} style={{ padding: '1rem', marginTop: '1rem' ,marginBottom: '2rem', marginRight: '1rem', marginLeft: '1rem' }}>
-                                {/* <Typography variant='h6' gutterBottom='true'>Emergency Contact Information:</Typography> */}
                             <h3>Emergency Contact Information:</h3>
                                 <Grid container spacing={2}>
                                     <Grid item xs={6}>
@@ -187,8 +185,8 @@ const PatientForm = () => {
                                             type="text" 
                                             required
                                             fullWidth
-                                            value={emergencyContact.fullName}
-                                            onChange={(e) => setEmergencyContact({ ...emergencyContact, fullName: e.target.value })}
+                                            value={emergencyContact.name}
+                                            onChange={(e) => setEmergencyContact({ ...emergencyContact, name: e.target.value })}
                                             // style={{ margin: '1rem' }}
                                         />
                                     </Grid>
@@ -198,24 +196,24 @@ const PatientForm = () => {
                                             type="tel" 
                                             required
                                             fullWidth
-                                            value={emergencyContact.mobileNumber}
-                                            onChange={(e) => setEmergencyContact({ ...emergencyContact, mobileNumber: e.target.value })}
+                                            value={emergencyContact.mobile}
+                                            onChange={(e) => setEmergencyContact({ ...emergencyContact, mobile: e.target.value })}
                                             // style={{ margin: '1rem' }}
                                         />
                                     </Grid>
                                 </Grid>
                         </Paper>
-                                {!isPending ? (
-                                    <Button variant="contained" type="submit" fullWidth>
-                                        Register
-                                    </Button>
-                                ) : (
-                                    <Button variant="contained" disabled fullWidth>
-                                        Registering
-                                    </Button>
-                                )}
+                    {!isPending ? (
+                        <Button variant="contained" type="submit" fullWidth>
+                            Register
+                        </Button>
+                    ) : (
+                        <Button variant="contained" disabled fullWidth>
+                            Registering
+                        </Button>
+                    )}
                         
-                    </FormControl>
+                    </form>
                 </Paper>
             </Grid>
         </Grid>
