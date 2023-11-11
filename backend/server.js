@@ -10,7 +10,7 @@ var path = require('path');
 const cors = require('cors');
 const { selectPatient } = require('./controllers/doctorController');
 
-const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
+// const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
 connectDB()
 
@@ -20,13 +20,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
-
-const storeItems = new Map([
-    [1, { priceInCents: 10000, name: "Learn React Today" }],
-    [2, { priceInCents: 20000, name: "Learn CSS Today" }],
-  ])
-  
 
 
 app.get('/doctorHomePage', (req, res) => {
@@ -68,8 +61,12 @@ app.use((req, res, next) => {
 app.use('/', require('./routes/guestRoutes'));
 app.use('/admin', require('./routes/adminRoutes'));
 app.use('/patient', require('./routes/patientRoutes'));
-app.use('/doctor', require('./routes/doctorRoutes'))
+app.use('/doctor', require('./routes/doctorRoutes'));
+
+app.use('/payments', require('./middleware/stripeMiddleware'));
+
 app.use('/uploads/', express.static('uploads'));
+
 
 
 
@@ -101,38 +98,38 @@ app.use('/uploads/', express.static('uploads'));
 //     }
 //   })
 
-  app.post("/create-checkout-session", async (req, res) => {
-    try {
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ["card"],
-        mode: "payment",
-        line_items: req.body.items.map(item => {
-          const storeItem = storeItems.get(item.id);
+// app.post("/create-checkout-session", async (req, res) => {
+//     try {
+//       const session = await stripe.checkout.sessions.create({
+//         payment_method_types: ["card"],
+//         mode: "payment",
+//         line_items: req.body.items.map(item => {
+//           const storeItem = storeItems.get(item.id);
   
-          if (!storeItem) {
-            // throw new Error(Store item not found for id: ${item.id});
-            throw new Error('blalblabla')
-          }
-           return {
-            price_data: {
-              currency: "usd",
-              product_data: {
-                name: storeItem.name,
-              },
-              unit_amount: storeItem.priceInCents,
-            },
-            quantity: item.quantity,
-          };
-        }),
-        success_url:'http://localhost:3000/success',
-        cancel_url:'http://localhost:3000/cancel',
-      });
+//           if (!storeItem) {
+//             // throw new Error(Store item not found for id: ${item.id});
+//             throw new Error('blalblabla')
+//           }
+//            return {
+//             price_data: {
+//               currency: "usd",
+//               product_data: {
+//                 name: storeItem.name,
+//               },
+//               unit_amount: storeItem.priceInCents,
+//             },
+//             quantity: item.quantity,
+//           };
+//         }),
+//         success_url:'http://localhost:3000/success',
+//         cancel_url:'http://localhost:3000/cancel',
+//       });
   
-      res.json({ url: session.url });
-    } catch (e) {
-      res.status(500).json({ error: e.message });
-    }
-  });
+//       res.json({ url: session.url });
+//     } catch (e) {
+//       res.status(500).json({ error: e.message });
+//     }
+// });
 
 
 app.use(errorHandler);

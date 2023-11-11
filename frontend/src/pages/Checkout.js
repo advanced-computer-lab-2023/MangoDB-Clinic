@@ -1,16 +1,24 @@
 import React from 'react';
 import axios from 'axios';
+import { checkout } from '../services/api';
 
 const Checkout = () => {
   const handleCheckoutClick = async () => {
     try {
       // Make a request to /create-checkout-session using Axios
-      const response = await axios.post('http://localhost:4000/create-checkout-session', {
-        items: [
-          { id: 1, quantity: 3 },
-          { id: 2, quantity: 1 },
-        ],
-      });
+      // const response = await axios.post('http://localhost:4000/create-checkout-session', {
+      //   items: [
+      //     { id: 1, quantity: 3 },
+      //     { id: 2, quantity: 1 },
+      //   ],
+      // });
+
+      const items = [
+        { id: 1, quantity: 3},
+        { id: 2, quantity: 1},
+      ];
+
+      const response = await checkout(items);
 
       // Check if the request was successful (status code 2xx)
       if (response.status === 200) {

@@ -12,7 +12,7 @@ const API = axios.create({
 export const getPatients = () => API.get('/patients');
 export const addPatient = (patient) => API.post('/patientRegistration', patient);
 
-export const getDoctor = (id) => API.get(`doctor/doctorInfo/${ id }`);
+export const getDoctor = (id) => API.get(`/doctor/doctorInfo/${ id }`);
 export const getPatientsDoctor = (id) => API.get(`/doctor/viewAllPatients/${ id }`);
 export const searchPatients = (id, firstName) => API.post(`/doctor/searchPatientByName/${ id }`, { firstName });
 export const upcomingApp = (doctorId) => API.post('/doctor/upcoming/', { doctorId });
@@ -28,5 +28,8 @@ export const filterAppointments = (query) => API.post('/doctor/filterapp', query
 export const viewPatientAppointments=(id)=> API.get(`/patient/get_all_appointments/${ id }`)
 export const upcomingPatientApp = (patientId) => API.post('/patient/upcoming/', { patientId });
 export const filterPatientAppointments = (query) => API.post('/patient/filterapp', query);
+
+// payments
+export const checkout = (items) => API.post('/payments/create-checkout-session', { items });
 
 export default API;
