@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+/* base styles */
+* {
+  margin: 0;
+  font-family: "Quicksand";
+  color: rgb(11, 0, 46);
+}
+.app-preview-container {
+  text-align: center;
+}
+.app-preview {
+    padding: 10px;
+    margin: 10px 0;
+    border-bottom: 1px solid #fafafa;
+    text-align: left; /* Align text to the left */
+  }
+  
+  .app-preview:hover {
+    box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .app-preview h1 {
+    font-size: 20px;
+    color: #000363;
+    margin-bottom: 8px;
+    margin-left: 500px;
+  }
+  
+  .app-preview h2 {
+    font-size: 20px;
+    color: rgb(77, 141, 190);
+    margin-bottom: 8px;
+    margin-left: 500px;
+  }
+  
+  .app-preview h3 {
+    font-size: 20px;
+    color: rgb(77, 141, 190);
+    margin-bottom: 8px;
+    margin-left: 500px;
+  }
+  
+  .app-preview h4 {
+    font-size: 20px;
+    color: rgb(77, 141, 190);
+    margin-bottom: 8px;
+    margin-left: 500px;
+  }
+  
+  .app-preview h5 {
+    font-size: 20px;
+    color: rgb(77, 141, 190);
+    margin-bottom: 8px;
+    margin-left: 500px;
+  }
+
+  .app-p{
+    margin-left: 400px;
+  }
+  
+  

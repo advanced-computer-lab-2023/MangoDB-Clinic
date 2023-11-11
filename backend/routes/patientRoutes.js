@@ -33,6 +33,8 @@ const {
   deleteDocument,
   linkFamilyMember,
   subscribeToHealthPackage,
+  upcoming,
+  filterStatus,
 } = require("../controllers/patientController");
 
 //Renders the patient Dashboard
@@ -106,5 +108,9 @@ router.put(
 // utils
 router.post("/add_prescription/:doctorId/:patientId", addPrescription);
 router.post("/add_appointment/:doctorId/:patientId", addAppointment);
+
+router.post('/upcoming', upcoming)
+
+router.post('/filterapp', filterStatus);
 
 module.exports = router;
