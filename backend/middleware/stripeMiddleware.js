@@ -4,7 +4,7 @@ const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 
 const storeItems = new Map([
-    [1, { priceInCents: 10000, name: "Learn React Today" }],
+    [1, { priceInCents: 10000, name: "Learn React Today" }], // priceInSharks = pounds * 100
     [2, { priceInCents: 20000, name: "Learn CSS Today" }],
 ])
 
@@ -23,7 +23,7 @@ router.post('/create-checkout-session', async (req, res) => {
 
                 return {
                     price_data: {
-                        currency: 'usd',
+                        currency: 'egp',
                         product_data: {
                             name: storeItem.name,
                         },

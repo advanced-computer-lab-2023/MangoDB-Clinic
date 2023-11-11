@@ -765,8 +765,8 @@ const getAvailableAppointments = async (req, res) => {
 //select an appointment date and time for myself or for a family member
 const makeAppointment = async (req, res) => {
 //el patient hyd5al esm el doctor w pass lel function el id bta3 el doctor 
-//el patient hyd5al esm el hy7gezlo 3shan momkn ykon be esmo aw be esm a family member w pass lel function el id bta3 el patient keda keda 
-  let {doctorId,patientId,date,patientrName } = req.query;
+//el patient hyd5al esm el hy7gezlo 3shan momkn ykon be esmo aw be esm a family member w pass lel function el id bta3 el patient keda keda
+  let { doctorId, patientId, date, patientName } = req.body;  
   try {
     const doctor = await Doctor.findById(doctorId);
      if (!doctor) {
@@ -776,7 +776,7 @@ const makeAppointment = async (req, res) => {
      const doctorName = doctor.name;
 
      const patient = await Patient.findById(patientId); 
-    //  const patientrName = patient.name;
+    //  const patientName = patient.name;
 
      //check if time is available for this dr 
      const isAppointmentAvailable = doctor.appointments.some(appointment =>
@@ -787,10 +787,10 @@ const makeAppointment = async (req, res) => {
     }
     
     //check if this is his name 
-    const isPatient = patient.name === patientrName;
+    const isPatient = patient.name === patientName;
     //check lw el name bta3 a family member
     const isFamilyMember = patient.family.some(member =>
-      member.name === patientrName
+      member.name === patientName
     );
     if(!isPatient&& !isFamilyMember){
       throw new Error('this name is not a patient/familyMember name ');
@@ -802,7 +802,7 @@ const makeAppointment = async (req, res) => {
       date,
       status: 'scheduled',
       doctorName,
-      patientrName
+      patientName
     });
 
     await appointment.save();
