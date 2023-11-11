@@ -34,8 +34,19 @@ const PatientDetails = () => {
                 <div>
                     <h2>Patient Name: { patient.firstName + " " + patient.lastName } </h2>
                     <h3>Email: { patient.email }</h3>
-                    <p>Emergency Contact: { patient.emergencyContact.name } - Number: { patient.emergencyContact.mobile }</p>
-                    <p>Health Records: { patient.healthRecord.files.length == 0 ? "No records to display" : "Working on it..." } </p>
+                    <p>Emergency Contact: { patient.emergencyContact.name } - Number: { patient.emergencyContact.mobile }</p><br/>
+                    <p>Health Records: </p><br/>
+                    { patient.healthRecord.files.length == 0 ? "No records to display" : (
+                        patient.healthRecord.files.map((file, index) => (
+                            <img 
+                                key={ index + file.name } 
+                                src={ file.file } 
+                                alt={ file.name } 
+                                // crossOrigin="anonymous" 
+                            />
+                        ))
+                    )
+                    }
                 </div>
             ) }
         </div>
