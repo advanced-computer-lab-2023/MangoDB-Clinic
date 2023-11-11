@@ -546,6 +546,7 @@ const addDocuments = async (req, res) => {
       res.status(404).json({ error: "Not Found" });
     }
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };
