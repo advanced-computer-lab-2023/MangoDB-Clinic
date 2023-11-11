@@ -5,7 +5,7 @@ const Checkout = () => {
   const handleCheckoutClick = async () => {
     try {
       // Make a request to /create-checkout-session using Axios
-      const response = await axios.post('/create-checkout-session', {
+      const response = await axios.post('http://localhost:4000/create-checkout-session', {
         items: [
           { id: 1, quantity: 3 },
           { id: 2, quantity: 1 },
