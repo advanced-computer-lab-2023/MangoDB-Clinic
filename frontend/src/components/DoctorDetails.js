@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getSelectedDoctor } from '../services/api';
-import FileViewer from 'react-file-viewer';
+// import FileViewer from 'react-file-viewer';
 
 const DoctorDetails = () => {
   const { id } = useParams();
@@ -88,7 +88,7 @@ const DoctorDetails = () => {
             <p>Educational Background: {doctor.educationalBackground}</p>
             <p>Affiliation: {doctor.affiliation}</p>
             <h3>Documents:</h3>
-            {doctor.documents.map((document, index) => (
+            {/* {doctor.documents.map((document, index) => (
             <div key={index}>
               <p>File: {document.name}</p>
               {getFileType(document.name) === 'pdf' ? (
@@ -99,7 +99,7 @@ const DoctorDetails = () => {
                 <p>Unsupported file type</p>
               )}
             </div>
-))}
+))} */}
 
           <input type="date" onChange={(e) => handleDateChange(e.target.value)} />
 
