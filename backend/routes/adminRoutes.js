@@ -1,57 +1,57 @@
-const express = require('express')
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
 const {
-    createAdmin,
-    loginAdmin,
-    removeAdmin,
-    removeDoctor,
-    removePatient,
-    getMyInfo,
-    viewDoctorRequest,
-    doctorApproval,
-    doctorRejection,
-    viewAllDoctorRequests,
-    addPackages,
-    deletePackages,
-    updatePackages,
-    renderDashboard,
-    getPackages,
-    getPackage,
-    getAdmins,
-    getDoctors,
-    getPatients,
-    resetPassword,
-    sendOTP,
-    verifyOTP
-} = require('../controllers/adminController')
+	createAdmin,
+	loginAdmin,
+	removeAdmin,
+	removeDoctor,
+	removePatient,
+	getMyInfo,
+	viewDoctorRequest,
+	doctorApproval,
+	doctorRejection,
+	viewAllDoctorRequests,
+	addPackages,
+	deletePackages,
+	updatePackages,
+	renderDashboard,
+	getPackages,
+	getPackage,
+	getAdmins,
+	getDoctors,
+	getPatients,
+	resetPassword,
+	sendOTP,
+	verifyOTP,
+} = require("../controllers/adminController");
 
-const {protectAdmin} = require('../middleware/adminMiddleware')
+const { protectAdmin } = require("../middleware/adminMiddleware");
 
-router.get('/', renderDashboard)
+router.get("/", renderDashboard);
 
-router.get('/my-info', protectAdmin, getMyInfo)
-router.get('/view-doctor/:id', protectAdmin, viewDoctorRequest)
-router.get('/view-requested-doctors', protectAdmin, viewAllDoctorRequests)
-router.get('/get-packages', protectAdmin, getPackages)
-router.get('/get-package/:id', protectAdmin, getPackage)
-router.get('/get-admins', protectAdmin, getAdmins)
-router.get('/get-doctors', protectAdmin, getDoctors)
-router.get('/get-patients', protectAdmin, getPatients)
-router.get('/request-otp', protectAdmin, sendOTP)
+router.get("/my-info", protectAdmin, getMyInfo);
+router.get("/view-doctor/:id", protectAdmin, viewDoctorRequest);
+router.get("/view-requested-doctors", protectAdmin, viewAllDoctorRequests);
+router.get("/get-packages", protectAdmin, getPackages);
+router.get("/get-package/:id", protectAdmin, getPackage);
+router.get("/get-admins", protectAdmin, getAdmins);
+router.get("/get-doctors", protectAdmin, getDoctors);
+router.get("/get-patients", protectAdmin, getPatients);
 
-router.post('/login', loginAdmin)
-router.post('/create-admin', createAdmin)
-router.post('/add-packages', protectAdmin, addPackages)
-router.post('/verify-otp', protectAdmin, verifyOTP)
-router.post('/reset-password', protectAdmin, resetPassword)
+router.post("/login", loginAdmin);
+router.post("/create-admin", createAdmin);
+router.post("/add-packages", protectAdmin, addPackages);
+router.post("/request-otp", sendOTP);
+router.post("/verify-otp", verifyOTP);
+router.post("/reset-password", resetPassword);
 
-router.delete('/remove-doctor/:id', protectAdmin, removeDoctor)
-router.delete('/remove-patient/:id', protectAdmin, removePatient)
-router.delete('/remove-admin/:id', protectAdmin, removeAdmin)
-router.delete('/remove-package/:id', protectAdmin, deletePackages)
+router.delete("/remove-doctor/:id", protectAdmin, removeDoctor);
+router.delete("/remove-patient/:id", protectAdmin, removePatient);
+router.delete("/remove-admin/:id", protectAdmin, removeAdmin);
+router.delete("/remove-package/:id", protectAdmin, deletePackages);
 
-router.put('/doctor-approval/:id', protectAdmin, doctorApproval)
-router.put('/doctor-rejection/:id', protectAdmin, doctorRejection)
-router.put('/update-package/:id', protectAdmin, updatePackages)
+router.put("/doctor-approval/:id", protectAdmin, doctorApproval);
+router.put("/doctor-rejection/:id", protectAdmin, doctorRejection);
+router.put("/update-package/:id", protectAdmin, updatePackages);
 
-module.exports = router
+module.exports = router;
