@@ -84,7 +84,7 @@ router.post('/create-checkout-session/:id', async (req, res) => {
 
         const storeItems = new Map([
             [1, { priceInCents: paymentAmount * 100, name: `Appointment for ${ patient.firstName } - Dr. ${ doctor.firstName }` }], // priceInSharks = pounds * 100
-            [2, { priceInCents: 20000, name: "Learn CSS Today" }],
+           
         ])
         // END OF PASTE
 
