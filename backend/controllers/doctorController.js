@@ -7,6 +7,10 @@ const User = require('../models/userModel')
 const fs = require('fs');
 const path = require('path');
 
+function generateOTP() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  }
+
 
 // FILTER APPOITMENT USING STATUS OR DATE
 const filterStatus = async (req, res) => {
@@ -121,6 +125,123 @@ const upcoming = async (req, res) => {
         res.status(500).json({ error: 'An error occurred while filtering patient IDs' });
     }
 };
+
+// @desc Login doctor
+// @route POST /doctor/login
+// @access Public
+const loginDoctor = asyncHandler( async (req, res) => {
+    const {username, password} = req.body
+
+    if (!username){
+        res.status(400)
+        throw new Error("Please Enter Your Username")
+    } else if (!password) {
+        res.status(400)
+        throw new Error("Enter Your Password")
+    }
+
+    // Check for username
+    const doctor = await Doctor.findOne({username})
+
+    if (doctor && (await bcrypt.compare(password, doctor.password))){
+        res.status(200).json({
+            message: "Successful Login",
+            _id: doctor.id,
+            username: doctor.username,
+            name: doctor.firstName + doctor.lastName,
+            email: doctor.email,
+            token: generateToken(doctor._id)
+        })
+    } else {
+        res.status(400)
+        throw new Error("Invalid Credentials")
+    }
+})
+
+// @desc Request 
+// @route GET /doctor/request-otp
+// @access Private
+const sendOTP = asyncHandler( async(req, res) => {
+    const doctor = req.user
+
+    const otp = generateOTP()
+    doctor.passwordResetOTP = otp
+    await doctor.save()
+
+    const transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'omarelzaher93@gmail.com',
+            pass: 'vtzilhuubkdtphww'
+        }
+    })
+
+      const mailOptions = {
+        from: 'omarelzaher93@gmail.com',
+        to: doctor.email,
+        subject: '[NO REPLY] Your Password Reset Request',
+        html: `<h1>You have requested to reset your password.<h1>
+                <p>Your OTP is ${otp}<p>
+                <p>If you did not request to reset your password, you can safely disregard this message.<p>
+                <p>We wish you a fruitful experience using El7a2ny!<p>
+                <p>This Is An Automated Message, Please Do Not Reply.<p>`
+      }
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error){
+            res.status(500)
+            throw new Error("Failed to Send OTP Email.")
+        } else {
+            res.status(200).json({ message: 'OTP Sent, Please Check Your Email'})
+        }
+      })
+})
+
+// @desc Delete packages
+// @route POST /doctor/verify-otp
+// @access Private
+const verifyOTP = asyncHandler( async(req, res) => {
+    const {otp} = req.body
+    const doctor = req.user
+
+    if (otp === doctor.passwordResetOTP){
+        res.status(200).json({message: "Correct OTP"})
+    } else {
+        res.status(400)
+        throw new Error("Invalid OTP Entered")
+    }
+})
+
+// @desc Delete packages
+// @route POST /doctor/reset-password
+// @access Private
+const resetPassword = asyncHandler(async (req, res) => {
+    try {
+        const { newPassword } = req.body;
+        const doctor = req.user;
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        if (await bcrypt.compare(newPassword, doctor.password)) {
+            res.status(400).json({message: "New Password Cannot Be The Same As the Old One"});
+        } else {
+            doctor.password = hashedPassword;
+            await doctor.save();
+            res.status(200).json({ message: 'Your Password Has Been Reset Successfuly' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error resetting password' });
+    }
+});
+
+// Generate Token
+const generateToken = (id) => {
+    return jwt.sign({id}, process.env.JWT_SECRET, {
+        expiresIn: '30d'
+    })
+}
+
 
 
 
@@ -519,8 +640,29 @@ const viewHealthRecords = async (req, res) => {
     } catch (error) {
       res.status(400);
       throw new Error("Error viewing health records.");
-    }
+    };
 };
+
+// const viewHealthRecords = async (req, res) => {
+//   const patient = await Patient.findById(req.params.id);
+//   try {
+//     if (!patient) {
+//       res.status(400);
+//       throw new Error("Patient does not exist.");
+//     } else {
+//       const healthRecords = patient.healthRecord;
+//       if (healthRecords) {
+//         res.status(200).json(healthRecords);
+//       } else {
+//         res.status(400);
+//         throw new Error("Patient has no health record.");
+//       }
+//     }
+//   } catch (error) {
+//     res.status(400);
+//     throw new Error("Error viewing health records.");
+//   }
+// };
 
 const getAllSpecialities = async (req, res) => {
     try {
@@ -719,6 +861,10 @@ module.exports = {
     followUpDoc,
     viewEmploymentContract,
     addHealthRecord,
-    getDoctorInfo
+    getDoctorInfo,
+    loginDoctor,
+    verifyOTP,
+    sendOTP,
+    resetPassword
 }
 

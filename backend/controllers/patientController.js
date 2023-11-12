@@ -19,6 +19,127 @@ const renderAddFamilyMember = (req, res) => {
   res.status(200).render("addFamilyMember");
 };
 
+function generateOTP() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+// @desc Login patient
+// @route POST /patient/login
+// @access Public
+const loginPatient = asyncHandler( async (req, res) => {
+  const {username, password} = req.body
+
+  if (!username){
+      res.status(400)
+      throw new Error("Please Enter Your Username")
+  } else if (!password) {
+      res.status(400)
+      throw new Error("Enter Your Password")
+  }
+
+  // Check for username
+  const patient = await Patient.findOne({username})
+
+  if (patient && (await bcrypt.compare(password, patient.password))){
+      res.status(200).json({
+          message: "Successful Login",
+          _id: patient.id,
+          username: patient.username,
+          name: patient.firstName + patient.lastName,
+          email: patient.email,
+          token: generateToken(patient._id)
+      })
+  } else {
+      res.status(400)
+      throw new Error("Invalid Credentials")
+  }
+})
+
+// @desc Request 
+// @route GET /patient/request-otp
+// @access Private
+const sendOTP = asyncHandler( async(req, res) => {
+  const patient = req.user
+
+  const otp = generateOTP()
+  patient.passwordResetOTP = otp
+  await patient.save()
+
+  const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+          user: 'omarelzaher93@gmail.com',
+          pass: 'vtzilhuubkdtphww'
+      }
+  })
+
+    const mailOptions = {
+      from: 'omarelzaher93@gmail.com',
+      to: patient.email,
+      subject: '[NO REPLY] Your Password Reset Request',
+      html: `<h1>You have requested to reset your password.<h1>
+              <p>Your OTP is ${otp}<p>
+              <p>If you did not request to reset your password, you can safely disregard this message.<p>
+              <p>We wish you a fruitful experience using El7a2ny!<p>
+              <p>This Is An Automated Message, Please Do Not Reply.<p>`
+    }
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error){
+          res.status(500)
+          throw new Error("Failed to Send OTP Email.")
+      } else {
+          res.status(200).json({ message: 'OTP Sent, Please Check Your Email'})
+      }
+    })
+})
+
+// @desc Delete packages
+// @route POST /patient/verify-otp
+// @access Private
+const verifyOTP = asyncHandler( async(req, res) => {
+  const {otp} = req.body
+  const patient = req.user
+
+  if (otp === patient.passwordResetOTP){
+      res.status(200).json({message: "Correct OTP"})
+  } else {
+      res.status(400)
+      throw new Error("Invalid OTP Entered")
+  }
+})
+
+// @desc Delete packages
+// @route POST /patient/reset-password
+// @access Private
+const resetPassword = asyncHandler(async (req, res) => {
+  try {
+      const { newPassword } = req.body;
+      const patient = req.user;
+
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+      if (await bcrypt.compare(newPassword, patient.password)) {
+          res.status(400).json({message: "New Password Cannot Be The Same As the Old One"});
+      } else {
+          patient.password = hashedPassword;
+          await patient.save();
+          res.status(200).json({ message: 'Your Password Has Been Reset Successfuly' });
+      }
+  } catch (error) {
+      res.status(500).json({ message: 'Error resetting password' });
+  }
+});
+
+
+// Generate Token
+const generateToken = (id) => {
+  return jwt.sign({id}, process.env.JWT_SECRET, {
+      expiresIn: '30d'
+  })
+}
+
 //Get all patients
 const getAllPatients = async (req, res) => {
   const patients = await Patient.find({});
@@ -195,8 +316,6 @@ const selectPrescription = async (req, res) => {
   try {
 
     const prescription = await Prescription.findById(prescriptionId).populate('doctorId');
-
-    console.log(prescription);
 
     if (!prescription) {
       return res.status(404).json({ error: "Prescription Not Found" });
@@ -384,11 +503,23 @@ const filterStatus = async (req, res) => {
 //View a list of all doctors along with their specialty, session price(based on subscribed health package if any)
 const viewAllDoctors = asyncHandler(async (req, res) => {
   try {
-    const doctors = await Doctor.find({}).sort({ createdAt: -1 });
+    const doctors = await Doctor.find({/*accountStatus: 'active'*/}).sort({ createdAt: -1 });
     if (!doctors) {
       res.status(400).json({ error: "No Doctors Found" });
     } else {
-      res.status(200).json(doctors);
+      const patient = await Patient.findById(req.params.id).populate('healthPackage')
+      if(!patient)
+        res.status(400).json({ error: "An error occured"})
+      let discount;
+      if(patient.healthPackage)
+        discount = patient.healthPackage.doctorSessionDiscount / 100
+      const doctorsWithPrices = doctors.map((doctor) => {
+        const sessionPrice = Math.ceil(1.1 * doctor.hourlyRate +  - (doctor.hourlyRate * discount || 0));
+        return { ...doctor._doc, sessionPrice };
+      });
+
+
+      res.status(200).json(doctorsWithPrices);
     }
   } catch (error) {
     res.status(400);
@@ -400,7 +531,7 @@ const viewAllDoctors = asyncHandler(async (req, res) => {
 const searchDoctor = asyncHandler(async (req, res) => {
   try {
     const { name, speciality } = req.query;
-    const query = {};
+    const query = {accountStats: 'active'};
     if (name) {
       firstName = name.split(" ")[0];
       query.firstName = { $regex: firstName, $options: "i" };
@@ -411,7 +542,17 @@ const searchDoctor = asyncHandler(async (req, res) => {
     if (speciality) query.speciality = { $regex: speciality, $options: "i" };
 
     const doctor = await Doctor.find(query);
-    res.status(200).json(doctor);
+    const patient = await Patient.findById(req.params.id).populate('healthPackage')
+      if(!patient)
+        res.status(400).json({ error: "An error occured"})
+      let discount;
+      if(patient.healthPackage)
+        discount = patient.healthPackage.doctorSessionDiscount / 100
+      const doctorsWithPrices = doctor.map((doctor) => {
+        const sessionPrice = Math.ceil(1.1 * doctor.hourlyRate - (doctor.hourlyRate * discount || 0));
+        return { ...doctor._doc, sessionPrice };
+      });
+    res.status(200).json(doctorsWithPrices);
   } catch (error) {
     res.status(500).json({ error: "Error while searching for Doctor" });
   }
@@ -419,9 +560,8 @@ const searchDoctor = asyncHandler(async (req, res) => {
 
 const filterDoctors = async (req, res) => {
   const { datetime, speciality } = req.query;
-
   try {
-    const query = {};
+    const query = {accountStats: 'active'};
 
     if (speciality) query.speciality = speciality;
 
@@ -435,8 +575,18 @@ const filterDoctors = async (req, res) => {
       query._id = { $nin: doctorIdsWithAppointments };
     }
     const filteredDoctors = await Doctor.find(query);
-
-    res.status(200).json(filteredDoctors);
+    const patient = await Patient.findById(req.params.id).populate('healthPackage')
+      if(!patient)
+        res.status(400).json({ error: "An error occured"})
+      let discount;
+      if(patient.healthPackage)
+        discount = patient.healthPackage.doctorSessionDiscount / 100
+      const doctorsWithPrices = filteredDoctors.map((doctor) => {
+        const sessionPrice = Math.ceil(1.1 * doctor.hourlyRate - (doctor.hourlyRate * discount || 0));
+        return { ...doctor._doc, sessionPrice };
+      });
+      res.status(200).json(doctorsWithPrices)
+    //res.status(200).json(filteredDoctors);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -570,9 +720,6 @@ const addDocuments = async (req, res) => {
 
     if (patient) {
       const healthRecord = patient.healthRecord;
-
-      console.log(patient);
-      console.log(healthRecord);
 
       if (req.files) {
         for (const file of req.files) {
@@ -741,71 +888,152 @@ const addPrescription = async (req, res) => {
 
 };
 
+const getSpecialities = async (req, res) => {
+  try {
+    const specialities = await Doctor.distinct('speciality')
+
+    res.status(200).json(specialities);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 
 ////////////////////////
 
-//view all available appoitnments of a selected doctor
-const getAvailableAppointments = async (req, res) => {
-  let {doctorId } = req.query;
-  try {
-   const doctor = await Doctor.findById(doctorId);
-    if (!doctor) {
-      throw new Error('Doctor not found');
-    }
-    const availableAppointments = doctor.appointments.filter(appointment => 
-      new RegExp('available', 'i').test(appointment.status)); //available bas msh case sensitive 
+// //view all available appoitnments of a selected doctor
+// const getAvailableAppointments = async (req, res) => {
+//   let {doctorId } = req.query;
+//   try {
+//    const doctor = await Doctor.findById(doctorId);
+//     if (!doctor) {
+//       throw new Error('Doctor not found');
+//     }
+//     const availableAppointments = doctor.appointments.filter(appointment => 
+//       new RegExp('available', 'i').test(appointment.status)); //available bas msh case sensitive 
 
-      //available 3ade 3shan le el tanya bayza 
-//  const availableAppointments = doctor.appointments.filter(appointment => appointment.status === 'available');
-    return availableAppointments;
-  } catch (error) {
-    console.error(error.message);
-    throw error;
-  }
-}
+//       //available 3ade 3shan le el tanya bayza 
+// //  const availableAppointments = doctor.appointments.filter(appointment => appointment.status === 'available');
+//     return availableAppointments;
+//   } catch (error) {
+//     console.error(error.message);
+//     throw error;
+//   }
+// }
+
+
+
+
+const getAvailableAppointments = async (req, res) => {
+  try {
+    const doctorId = req.params.id
+
+    const selectedDate = new Date(req.query.date)
+    const doctor = await Doctor.findOne({ _id: doctorId }).exec();
+
+    if (doctor) {
+      const availabilitySlots = doctor.availableSlots;
+      const selectedWeekday = selectedDate.getDay(); // 0 for Sunday, 1 for Monday, ...
+
+      const appointments = await Appointment.find({
+        doctorId,
+        date: {
+          $gte: new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate()),
+          $lt: new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1),
+        }
+      }).exec();
+      
+      const bookedTimeSlots = appointments.map(appointment => appointment.date.getHours() - 2);
+      const availableSlots = [];
+      
+      availabilitySlots.forEach(slot => {
+        if (slot.weekday === selectedWeekday) {
+          for (let hour = slot.startTime.getHours() - 2; hour <= slot.endTime.getHours() - 2; hour++) {
+            if (!bookedTimeSlots.includes(hour)) {
+              availableSlots.push(hour);
+            }
+          }
+        }
+      });
+
+          res.status(200).json(availableSlots);
+        } else {
+          res.status(404).json("Not found");
+        }
+      } catch (error) {
+          res.stats(500).json({error: error.message});
+      }
+    };
+
 //select an appointment date and time for myself or for a family member
 const makeAppointment = async (req, res) => {
 //el patient hyd5al esm el doctor w pass lel function el id bta3 el doctor 
 //el patient hyd5al esm el hy7gezlo 3shan momkn ykon be esmo aw be esm a family member w pass lel function el id bta3 el patient keda keda 
-  let {doctorId,patientId,date,patientName } = req.body;
+  // let {doctorId,patientId,date,patientName } = req.body;
+  let {nationalID, date, docid, patientid} = req.query;
   try {
-    const doctor = await Doctor.findById(doctorId);
+    const doctor = await Doctor.findById(docid);
      if (!doctor) {
        throw new Error('Doctor not found');
      }
 
-     const doctorName = doctor.firstName;
+    //  const doctorName = doctor.firstName;
 
-     const patient = await Patient.findById(patientId); 
-    //  const patientrName = patient.name;
+    //  const patient = await Patient.findById(patientId); 
+    // //  const patientrName = patient.name;
 
-     //check if time is available for this dr 
-     const isAppointmentAvailable = doctor.appointments.some(appointment =>
-      appointment.date.getTime() === date.getTime() && appointment.status === 'available'
-    );
-    if (!isAppointmentAvailable) {
-      throw new Error('Selected appointment date and time is not available');
-    }
+    //  //check if time is available for this dr 
+    //  const isAppointmentAvailable = doctor.appointments.some(appointment =>
+    //   appointment.date.getTime() === date.getTime() && appointment.status === 'available'
+    // );
+    // if (!isAppointmentAvailable) {
+    //   throw new Error('Selected appointment date and time is not available');
+    // }
+    
+    // //check if this is his name 
+    // const isPatient = patient.firstName === patientName;
+    // //check lw el name bta3 a family member
+    // const isFamilyMember = patient.family.some(member =>
+    //   member.name === patientName
+     const patient = await Patient.findById(patientid); 
     
     //check if this is his name 
-    const isPatient = patient.firstName === patientName;
+    const isPatient = patient.nationalID === nationalID;
     //check lw el name bta3 a family member
     const isFamilyMember = patient.family.some(member =>
-      member.name === patientName
+      member.nationalID === nationalID
     );
     if(!isPatient&& !isFamilyMember){
-      throw new Error('this name is not a patient/familyMember name ');
+      throw new Error('this ID is not a patient/familyMember national ID ');
     }
 
-    const appointment = new Appointment({
-      doctorId,
-      patientId,
-      date,
-      status: 'scheduled',
+    // const appointment = new Appointment({
+    //   doctorId,
+    //   patientId,
+    //   date,
+    //   status: 'scheduled',
      
-    });
+    // });
+    let appPatientID = patientid
+    if(isFamilyMember){
+      for (const familyMember of patient.family) {
+        if (familyMember.userId) {
+          const member = await Patient.findOne({nationalID: nationalID});
+          if (member) {
+            appPatientID = member.id
+          }
+        }
+      }
+    }
+    const app = await Appointment.create({
+      patientId: appPatientID,
+      doctorId: docid,
+      date: date,
+      status: 'confirmed'
+    })
 
-    await appointment.save();
+     res.status(200).json(app)
+
   // return appointment;
   } catch (error) {
     console.error(error.message);
@@ -1010,6 +1238,7 @@ module.exports = {
   filterDoctors,
   addAppointment,
   addPrescription,
+  getSpecialities,
   renderDashboard,
   renderAddFamilyMember,
   viewHealthRecords,
@@ -1027,5 +1256,9 @@ module.exports = {
   payFromWallet,
   upcoming,
   filterStatus,
+  loginPatient,
+  sendOTP,
+  verifyOTP,
+  resetPassword,
 }
 

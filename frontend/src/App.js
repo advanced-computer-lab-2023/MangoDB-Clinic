@@ -13,6 +13,10 @@ import ViewPrescriptions from './pages/ViewPrescriptions';
 import ViewProfile from './pages/ViewProfile';
 import ViewWallet from './pages/ViewWallet';
 import EditDoctor from './pages/Doctor/EditDoctor';
+import DoctorForm from './components/DoctorForm';
+import DoctorDetails from './components/DoctorDetails';
+import DoctorSearch from './components/DoctorSearch';
+import Filter from './components/Filter';
 import PrescriptionDetials from './pages/PrescriptionDetails';
 import DoctorApps from './pages/Doctor/DoctorApps';
 import Checkout from './pages/Checkout';
@@ -31,6 +35,9 @@ function App() {
             </Route>
             <Route path='/patientform'>
               <PatientForm />
+            </Route>
+            <Route path='/doctorform'>
+              <DoctorForm />
             </Route>
             <Route path='/doctorsTable'>
               <DoctorsTable />
@@ -67,6 +74,15 @@ function App() {
             </Route>
             <Route path='/view_wallet/:id'>
               <ViewWallet />
+            </Route>
+            <Route path='/doctor-details/:id'>
+              <DoctorDetails />
+            </Route>
+            <Route path='/search-doctors'>
+              <DoctorSearch />
+            </Route>
+            <Route path='/filter'>
+              <Filter />
             </Route>
           </Switch>
         </div>

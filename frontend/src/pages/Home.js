@@ -12,6 +12,8 @@ const Home = () => {
             <button onClick={() => history.push('/')}>Home</button>
             <button onClick={() => history.push('/patientform')}>Patient Registration</button>
             <button onClick={() => history.push('/patientdashboard')}>Patient Dashboard</button>
+            <button onClick={() => history.push('/doctorform')}>Doctor Registration</button>
+
             {/* <Button component={Link} to="/patientform" variant="contained" color="primary">Patient Registration</Button>
             <Button component={Link} to="/doctorsTable" variant="contained" color="primary">Doctors Table</Button>
             <Button component={Link} to="/patientdashboard" variant="contained" color="primary">Patient Dashboard</Button> */}
