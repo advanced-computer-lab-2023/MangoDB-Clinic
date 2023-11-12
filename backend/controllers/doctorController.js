@@ -509,14 +509,15 @@ const viewWallet = async (req, res) => {
   };
   const addNewSlots = async (req, res) => {
     try {
-      const doctorId = req.body.doctorId;
+      const doctorId = req.params.id;
       console.log(doctorId)
-      const newSlots = req.body.availableSlots; 
-      
-      console.log('newSlots:', newSlots);
+      const {weekday,startTime,endTime} = req.body; 
+      const newSlots = {weekday,startTime,endTime};
+      console.log({weekday,startTime,endTime});
+      console.log('newSlots:', {weekday,startTime,endTime});
       const doc = await User.findById(doctorId);
       console.log(doc);
-      doc.availableSlots = doc.availableSlots.concat(newSlots);
+      doc.availableSlots = doc.availableSlots.concat({weekday,startTime,endTime});
         await doc.save();
   
       
@@ -572,7 +573,7 @@ const viewWallet = async (req, res) => {
   //  const Patient = require('../models/Patient'); 
 const addHealthRecord = async (req, res) => {
   try {
-    const patientId = req.params.patientId;
+    const patientId = req.body.patientId;
     const patient = await Patient.findOne({ _id: patientId });
 
     if (!patient) {

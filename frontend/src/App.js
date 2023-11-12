@@ -13,6 +13,10 @@ import ViewPrescriptions from './pages/ViewPrescriptions';
 import ViewProfile from './pages/ViewProfile';
 import ViewWallet from './pages/ViewWallet';
 import PrescriptionDetials from './pages/PrescriptionDetails';
+import ViewFamilyMembers from './pages/ViewFamilyMembers';
+import LinkFamMember from './pages/LinkFamMember';
+import AddSlotsPage from './pages/AddSlots';
+import ViewHealthRecordsPat from './pages/ViewHealthRecordsPat';
 
 
 function App() {
@@ -41,6 +45,18 @@ function App() {
             </Route>
             <Route path='/viewappointments'>
               <ViewAppointments />
+            </Route>
+            <Route path='/viewfammembers/:id'>
+              <ViewFamilyMembers />
+            </Route>
+            <Route path='/linkfammember/:id'>
+              <LinkFamMember />
+            </Route>
+            <Route path='/addslots/:id'>
+              <AddSlotsPage />
+            </Route>
+            <Route path='/viewhealthrecpat/:id'>
+              <ViewHealthRecordsPat />
             </Route>
             <Route path='/viewdoctors'>
               <ViewDoctors />

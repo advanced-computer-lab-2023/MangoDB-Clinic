@@ -113,7 +113,7 @@ router.get('/view_wallet/:id', viewWallet)
 router.post('/followUp', followUpDoc);
 router.get('/getMyAppointments',getMyAppointments)
 router.get('/getEmploymentContract',viewEmploymentContract)
-router.patch('/addSlots', addNewSlots);
+router.patch('/addSlots/:id', addNewSlots);
 router.patch('/addHealthRecord', addHealthRecord);
 
 module.exports = router;

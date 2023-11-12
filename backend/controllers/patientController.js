@@ -116,11 +116,12 @@ const addFamilyMember = asyncHandler(async (req, res) => {
     const patient = await Patient.findById(id);
     if (!patient) return res.status(404).json({ message: "Patient not found" });
 
+    console.log(req.body.family.name);
     patient.family.push(...req.body.family);
     await patient.save();
     res.status(200).json(patient);
   } catch (error) {
-    return res.status(500).json({ error: "Something went wrong" });
+    return res.status(500).json({ error: error.message });
   }
 });
 
