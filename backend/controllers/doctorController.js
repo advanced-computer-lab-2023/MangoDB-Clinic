@@ -664,7 +664,7 @@ const getMyAppointments = async (req, res) => {
   //  const Patient = require('../models/Patient'); 
 const addHealthRecord = async (req, res) => {
   try {
-    const patientId = req.params.patientId;
+    const patientId = req.params.id;
     const patient = await Patient.findOne({ _id: patientId });
 
     if (!patient) {
@@ -677,7 +677,7 @@ const addHealthRecord = async (req, res) => {
       files,
     };
 
-    patient.healthRecord.push(healthRecord);
+    patient.healthRecord.files.push(healthRecord);
 
     await patient.save();
 

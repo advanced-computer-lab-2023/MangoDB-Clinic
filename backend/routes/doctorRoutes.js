@@ -119,7 +119,7 @@ router.post('/followUp', followUpDoc);
 router.get('/getMyAppointments/:id',getMyAppointments)
 router.get('/getEmploymentContract',viewEmploymentContract)
 router.patch('/addSlots', addNewSlots);
-router.patch('/addHealthRecord', addHealthRecord);
+router.patch('/addHealthRecord/:id', addHealthRecord);
 
 module.exports = router;
 

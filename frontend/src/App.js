@@ -47,7 +47,7 @@ function App() {
             <Route path='/viewdoctors'>
               <ViewDoctors />
             </Route>
-            <Route path='/viewprescriptions'>
+            <Route path='/viewprescriptions/:patientId'>
               <ViewPrescriptions />
             </Route>
             <Route path='/prescriptiondetials/:prescriptionId'>
@@ -55,9 +55,6 @@ function App() {
             </Route>
             <Route path='/viewprofile'>
               <ViewProfile />
-            </Route>
-            <Route path='/viewwallet'>
-              <ViewWallet />
             </Route>
             <Route path='/editDoctor/:id'>
               <EditDoctor />
@@ -67,6 +64,9 @@ function App() {
             </Route>
             <Route path='/checkout/:id'>
               <Checkout />
+            </Route>
+            <Route path='/view_wallet/:id'>
+              <ViewWallet />
             </Route>
           </Switch>
         </div>

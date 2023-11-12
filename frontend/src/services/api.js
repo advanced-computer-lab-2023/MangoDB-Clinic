@@ -11,6 +11,7 @@ const API = axios.create({
 //API requests
 export const getPatients = () => API.get('/patients');
 export const addPatient = (patient) => API.post('/patientRegistration', patient);
+export const uploadHealthRecord = (id, files) => API.put(`/patient/add_documents/${ id }`, files, { headers: { 'Content-Type': 'multipart/form-data' } });
 
 export const getDoctor = (id) => API.get(`/doctor/doctorInfo/${ id }`);
 export const getPatientsDoctor = (id) => API.get(`/doctor/viewAllPatients/${ id }`);
@@ -24,6 +25,7 @@ export const updateDoctorAffiliation = (id, doctor) => API.put(`/doctor/updateAf
 export const getMyAppointments = (id) => API.get(`/doctor/getMyAppointments/${ id }`);
 export const filterAppointments = (query) => API.post('/doctor/filterapp', query);
 
+export const viewWallet = (id) => API.get(`/patient/view_wallet/${ id }`);
 
 export const viewPatientAppointments=(id)=> API.get(`/patient/get_all_appointments/${ id }`)
 export const upcomingPatientApp = (patientId) => API.post('/patient/upcoming/', { patientId });

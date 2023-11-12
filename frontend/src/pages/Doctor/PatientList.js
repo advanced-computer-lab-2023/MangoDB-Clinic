@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getPatientsDoctor, searchPatients, upcomingApp } from "../../services/api";
+import { getPatientsDoctor, searchPatients } from "../../services/api";
 import { Grid, Paper, Typography, TextField } from "@mui/material";
 import { experimentalStyled as styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
@@ -28,7 +28,7 @@ const PatientList = () => {
     const [ isPending, setIsPending ] = useState(true);
     const [ error, setError ] = useState(null);
     const [ search, setSearch ] = useState('');
-    const [ upcoming, setUpcoming ] = useState(false);
+    // const [ upcoming, setUpcoming ] = useState(false);
 
     const handleChange = (e) => {
         setSearch(e.target.value);
@@ -53,12 +53,9 @@ const PatientList = () => {
         }
     }
 
-    const handleUpcomingClick = () => {
-        setUpcoming(!upcoming);
-    }
 
     useEffect(() => {
-        if (search == '' && !upcoming) {
+        if (search == '') {
             setIsPending(true);
             setPatients([]);
 
@@ -72,24 +69,46 @@ const PatientList = () => {
                     setIsPending(false);
                 });
         }
-    }, [id, search, upcoming]);
+    }, [id, search]);
 
-    useEffect(() => {
-        setIsPending(true);
-        setPatients([]);
 
-        if (upcoming) {
-            upcomingApp(id)
-                .then((result) => {
-                    setIsPending(false);
-                    setPatients(result.data);
-                })
-                .catch((err) => {
-                    setIsPending(false);
-                    setError(err.message);
-                })
-        }
-    }, [upcoming])
+    // const handleUpcomingClick = () => {
+    //     setUpcoming(!upcoming);
+    // }
+
+    // useEffect(() => {
+    //     if (search == '' && !upcoming) {
+    //         setIsPending(true);
+    //         setPatients([]);
+
+    //         getPatientsDoctor(id)
+    //             .then((res) => {
+    //                 setPatients(res.data);
+    //                 setIsPending(false);
+    //             })
+    //             .catch((err) => {
+    //                 setError(err.message);
+    //                 setIsPending(false);
+    //             });
+    //     }
+    // }, [id, search, upcoming]);
+
+    // useEffect(() => {
+    //     setIsPending(true);
+    //     setPatients([]);
+
+    //     if (upcoming) {
+    //         upcomingApp(id)
+    //             .then((result) => {
+    //                 setIsPending(false);
+    //                 setPatients(result.data);
+    //             })
+    //             .catch((err) => {
+    //                 setIsPending(false);
+    //                 setError(err.message);
+    //             })
+    //     }
+    // }, [upcoming])
 
     return (
         <div className='patient-list'>
@@ -113,7 +132,7 @@ const PatientList = () => {
                     </form>
                 </>
             }
-            { !upcoming &&
+            {/* { !upcoming &&
                 <Button
                     disabled={false}
                     size="medium"
@@ -134,6 +153,18 @@ const PatientList = () => {
                 >
                     Upcoming Appointments
                 </Button> 
+            } */}
+            {
+                <Button
+                    component={Link}
+                    disabled={ false }
+                    size="medium"
+                    variant="outlined"
+                    style={{ margin: '10px', color: 'white', background: '#1976d2' }}
+                    to="/doctorAppointments/6526de95033c945b74c32d7d"    
+                >
+                    Appointments
+                </Button>
             }
             { isPending && <div>Loading...</div> }
             { error && <div>{ error }</div> }
@@ -175,7 +206,7 @@ const PatientList = () => {
                                         <Typography variant="body2">
                                             { patient.email }
                                         </Typography>
-                                        { upcoming &&
+                                        {/* { upcoming &&
                                             <>
                                                 <Typography variant="body2">
                                                     { `Date: ${new Date(patient.date).toLocaleDateString()}` }
@@ -187,7 +218,7 @@ const PatientList = () => {
                                                     { `Status: ${ patient.status }` }
                                                 </Typography>
                                             </>
-                                        }
+                                        } */}
                                     </Item>
                                 </Link>
                             </div>

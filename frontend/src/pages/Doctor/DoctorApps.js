@@ -23,17 +23,35 @@ const DoctorApps = () => {
     const [ to, setTo ] = useState('');
     const [ upcoming, setUpcoming ] = useState(false);
 
+    // function convertToISOFormat(dateString) {
+    //     // Split the input string into day, month, and year
+    //     const [day, month, year] = dateString.split('/');
+      
+    //     // Create a new Date object using the components
+    //     const dateObject = new Date(`${year}-${month}-${day}`);
+      
+    //     // Use the toISOString method to get the date in ISO format
+    //     const isoDateString = dateObject.toISOString().split('T')[0];
+      
+    //     return isoDateString;
+    // }
+
     function convertToISOFormat(dateString) {
-        // Split the input string into day, month, and year
-        const [day, month, year] = dateString.split('/');
-      
-        // Create a new Date object using the components
-        const dateObject = new Date(`${year}-${month}-${day}`);
-      
-        // Use the toISOString method to get the date in ISO format
-        const isoDateString = dateObject.toISOString().split('T')[0];
-      
-        return isoDateString;
+        try {
+            // Split the input string into day, month, and year
+            const [day, month, year] = dateString.split('/');
+    
+            // Create a new Date object in UTC using the components
+            const dateObjectUTC = new Date(Date.UTC(year, month - 1, day));
+    
+            // Use the toISOString method to get the date in ISO format
+            const isoDateString = dateObjectUTC.toISOString().split('T')[0];
+    
+            return isoDateString;
+        } catch (error) {
+            console.error('Error converting date to ISO format:', error);
+            return null;
+        }
     }
 
     const handleUpcomingClick = () => {
@@ -101,10 +119,9 @@ const DoctorApps = () => {
     }, [id, upcoming]);
 
     useEffect(() => {
-        setIsPending(true);
-        setAppointments([]);
-
         if (upcoming) {
+            setIsPending(true);
+            setAppointments([]);
             upcomingApp(id)
                 .then((result) => {
                     setIsPending(false);
