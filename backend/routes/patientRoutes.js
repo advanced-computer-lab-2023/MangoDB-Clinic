@@ -94,7 +94,7 @@ router.put("/cancel_health_package/:id", cancelHealthPackage);
 
 router.get("/view_wallet/:id", viewWallet);
 
-router.put("/add_documents/:id", upload.array("document[]"), addDocuments);
+router.put("/add_documents/:id", upload.array("document"), addDocuments);
 
 router.delete("/delete_document/:patientId/:documentId", deleteDocument);
 
