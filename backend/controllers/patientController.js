@@ -765,18 +765,18 @@ const getAvailableAppointments = async (req, res) => {
 //select an appointment date and time for myself or for a family member
 const makeAppointment = async (req, res) => {
 //el patient hyd5al esm el doctor w pass lel function el id bta3 el doctor 
-//el patient hyd5al esm el hy7gezlo 3shan momkn ykon be esmo aw be esm a family member w pass lel function el id bta3 el patient keda keda
-  let { doctorId, patientId, date, patientName } = req.body;  
+//el patient hyd5al esm el hy7gezlo 3shan momkn ykon be esmo aw be esm a family member w pass lel function el id bta3 el patient keda keda 
+  let {doctorId,patientId,date,patientName } = req.body;
   try {
     const doctor = await Doctor.findById(doctorId);
      if (!doctor) {
        throw new Error('Doctor not found');
      }
 
-     const doctorName = doctor.name;
+     const doctorName = doctor.firstName;
 
      const patient = await Patient.findById(patientId); 
-    //  const patientName = patient.name;
+    //  const patientrName = patient.name;
 
      //check if time is available for this dr 
      const isAppointmentAvailable = doctor.appointments.some(appointment =>
@@ -787,7 +787,7 @@ const makeAppointment = async (req, res) => {
     }
     
     //check if this is his name 
-    const isPatient = patient.name === patientName;
+    const isPatient = patient.firstName === patientName;
     //check lw el name bta3 a family member
     const isFamilyMember = patient.family.some(member =>
       member.name === patientName
@@ -801,8 +801,7 @@ const makeAppointment = async (req, res) => {
       patientId,
       date,
       status: 'scheduled',
-      doctorName,
-      patientName
+     
     });
 
     await appointment.save();
@@ -812,44 +811,126 @@ const makeAppointment = async (req, res) => {
     throw error;
   }
 }
-//pay with wallet
+// pay with wallet
 const payFromWallet = async (req, res) => {
-  //msh mota2keda mn payment amount d msh 3arfa hya htege mnen
-  let {patientId, paymentAmount } = req.query;
-
   try {
-    const patient = await Patient.findById(patientId);
-    if (!patient) {
-      throw new Error('Patient not found');
+    // appointment 
+    const appointmentId = req.params.appointmentId;
+    const appointment = await Appointment.findById(appointmentId);
+    if (!appointment) {
+      return res.status(404).json({ error: 'Appointment not found' });
     }
+    //patient
+    const patientId = appointment.patientId; 
+
+    if (!patientId) {
+      return res.status(404).json({ error: 'Patient ID not found for the appointment' });
+    }
+
+     // Retrieve the patient from the database and populate the healthPackage field
+     const patient = await Patient.findById(patientId).populate('healthPackage');
+     const patientName=patient.firstName;
+
+     if (!patient) {
+       return res.status(404).json({ error: 'Patient not found' });
+     }
+    //dr
+    const doctorId = appointment.doctorId; 
+
+    if (!doctorId) {
+      return res.status(404).json({ error: 'doctor ID not found for the appointment' });
+    }
+    const doctor = await Doctor.findById(doctorId);
+
+    if (!doctor) {
+      throw new Error('Doctor not found');
+    }
+
+    // Extract the hourly rate from the doctor data
+    const hourlyRate = doctor.hourlyRate;
+
+    // Retrieve the package type from the associated healthPackage
+    const packageType = patient.healthPackage ? patient.healthPackage.name : null;
+
+    if (!packageType) {
+      return res.status(404).json({ error: 'Package not found for the patient' });
+    }
+
+    // Initialize discount values
+    let doctorSessionDiscount = 0;
   
-    if (!patient.wallet) {
-      throw new Error('Patient does not have an active wallet');
+
+    // Calculate discounts based on the packageType
+    switch (packageType) {
+      case 'Silver':
+        doctorSessionDiscount = 0.4;
+       
+        break;
+
+      case 'Gold':
+        doctorSessionDiscount = 0.6;
+      
+        break;
+
+      case 'Platinum':
+        doctorSessionDiscount = 0.8;
+       
+        break;
+
+      default:
+        // Handle the case where an invalid package type is provided
+        console.error('Invalid package type');
+        return res.status(400).json({ error: 'Invalid package type' });
     }
 
-    const wallet = await Wallet.findById(patient.wallet);
+    
+    const paymentAmount= (hourlyRate*1.1)-(hourlyRate*doctorSessionDiscount);
+    
+    
 
-    if (!wallet) {
-      throw new Error('Wallet not found');
+    // Example: Update wallet balance and transactions
+    try {
+      const wallet = await Wallet.findById(patient.wallet);
+
+      if (!wallet) {
+        throw new Error('Wallet not found');
+      }
+
+      // Use the calculated discounts and other variables in your payment logic
+      // const paymentAmount = calculatePaymentAmount(drRate, doctorSessionDiscount, familyDiscount);
+
+      if (wallet.balance < paymentAmount) {
+        throw new Error('Insufficient funds in the wallet');
+      }
+
+      // Deduct the payment amount from the wallet balance
+      wallet.balance -= paymentAmount;
+
+      // Record the transaction in the wallet
+      wallet.transactions.push({
+        type: 'debit',
+        amount: paymentAmount,
+        date: new Date(),
+      });
+
+      // Save the updated wallet
+      await wallet.save();
+
+      // Respond with success message or other necessary data
+      res.json({ success: true, message: 'Payment successful' });
+
+    } catch (error) {
+      console.error('Error processing payment:', error);
+      res.status(500).json({ error: 'Internal server error during payment' });
     }
-    if (wallet.balance < paymentAmount) {
-      throw new Error('you are poor :(');
-    }
-    wallet.balance -= amount;
-
-    wallet.transactions.push({
-      type: 'debit',
-      amount: paymentAmount,
-      date: new Date(),
-    });
-    await wallet.save();
-
 
   } catch (error) {
-    console.error(error.message);
-    throw error;
+    console.error('Error in payFromWallet:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
-}
+};
+
+
 
 // filter patients by upcoming appointments
 const upcoming = async (req, res) => {
