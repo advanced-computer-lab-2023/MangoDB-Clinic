@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const upload = require("../middleware/upload");
+const {protectPatient} = require('../middleware/patientMiddleware')
 
 const {
   getAllPatients,
@@ -27,18 +28,31 @@ const {
   viewHealthRecords,
   viewHealthPackages,
   viewSubscribedhealthPackage,
-  cancelHealthPackage,
   viewWallet,
   addDocuments,
   deleteDocument,
   linkFamilyMember,
   subscribeToHealthPackage,
+  cancelHealthPackage,
+  getSpecialities,
+  loginPatient,
+  resetPassword,
+  sendOTP,
+  verifyOTP,
+  getAvailableAppointments,
+  makeAppointment
+
 } = require("../controllers/patientController");
 
 //Renders the patient Dashboard
 router.get("/", renderDashboard);
 
 router.get("/addFamilyMember", renderAddFamilyMember);
+
+router.post('/login', loginPatient)
+router.get('/request-otp', protectPatient, sendOTP)
+router.post('/verify-otp', protectPatient, verifyOTP)
+router.post('/reset-password', protectPatient, resetPassword)
 
 //GET all patients
 router.get("/get_all_patients", getAllPatients);
@@ -72,15 +86,15 @@ router.get("/filter_prescription/:patientId", filterPrescription);
 //select a prescription from my list of prescriptions
 router.get("/select_prescription/:prescriptionId", selectPrescription);
 
-router.get("/get_all_doctors", viewAllDoctors);
+router.get("/get_all_doctors/:id", viewAllDoctors);
 
-router.get("/filter_doctors", filterDoctors);
+router.get("/filter_doctors/:id", filterDoctors);
 
 router.get("/get_all_appointments/:id", getAllAppointments);
 
 router.get("/filter_appointments/:id", filterAppointments);
 
-router.get("/search_doctor", searchDoctor);
+router.get("/search_doctor/:id", searchDoctor);
 
 router.get("/view_health_records/:id", viewHealthRecords);
 
@@ -106,5 +120,13 @@ router.put(
 // utils
 router.post("/add_prescription/:doctorId/:patientId", addPrescription);
 router.post("/add_appointment/:doctorId/:patientId", addAppointment);
+router.get("/get_specialities", getSpecialities);
+router.get("/getAvailableAppointments",getAvailableAppointments)
+
+
+router.get("/get_available_appointments/:id", getAvailableAppointments);
+
+router.post("/make_appointment", makeAppointment)
+
 
 module.exports = router;

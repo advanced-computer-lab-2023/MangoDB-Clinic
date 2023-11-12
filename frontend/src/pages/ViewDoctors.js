@@ -1,6 +1,10 @@
+import DoctorSearch from "../components/DoctorSearch";
+
 const ViewDoctors = () => {
     return ( 
-        <h1>View Doctors</h1>
+        <div className="doctors">
+        {<DoctorSearch />}
+        </div>
      );
 }
  

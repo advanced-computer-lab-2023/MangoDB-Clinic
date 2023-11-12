@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const doctorController = require('../controllers/doctorController');
+const {protectDoctor} = require('../middleware/doctorMiddleware')
+
 const {
     createDoctor,
     updateEmail,
@@ -22,10 +24,17 @@ const {
     getMyAppointments,
     followUpDoc,
     addHealthRecord,
-    viewEmploymentContract
+    viewEmploymentContract,
+    loginDoctor,
+    resetPassword,
+    sendOTP,
+    verifyOTP
 } = require('../controllers/doctorController');
 
-
+router.post('/login', loginDoctor)
+router.post('/verify-otp', protectDoctor, verifyOTP)
+router.post('/reset-password', protectDoctor, resetPassword)
+router.get('/request-otp', protectDoctor, sendOTP)
 
 router.post('/filterapp', filterStatus);
 

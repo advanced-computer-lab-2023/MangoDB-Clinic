@@ -12,7 +12,7 @@ router.get('/doctorRegistration', renderDoctorRegistration)
 
 
 router.post('/patientRegistration', registerAsPatient)
-router.post('/doctorRegistration', upload.array('document[]'), registerAsDoctor)
+router.post('/doctorRegistration', upload.array('documents'), registerAsDoctor)
 router.post('/login', login)
 
 
