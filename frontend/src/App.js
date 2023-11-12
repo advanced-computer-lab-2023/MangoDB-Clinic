@@ -65,7 +65,7 @@ function App() {
             <Route path='/doctorAppointments/:id'>
               <DoctorApps />
             </Route>
-            <Route path='/checkout'>
+            <Route path='/checkout/:id'>
               <Checkout />
             </Route>
           </Switch>

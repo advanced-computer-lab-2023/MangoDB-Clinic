@@ -30,7 +30,7 @@ export const upcomingPatientApp = (patientId) => API.post('/patient/upcoming/', 
 export const filterPatientAppointments = (query) => API.post('/patient/filterapp', query);
 
 // payments
-export const checkout = (items) => API.post('/payments/create-checkout-session', { items });
+export const checkout = (id, items) => API.post(`/payments/create-checkout-session/${ id }`, { items });
 export const wallet = (appointmentId) => API.post(`/patient/payFromWallet/${ appointmentId }`);
 
 export default API;

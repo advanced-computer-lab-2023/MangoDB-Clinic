@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { checkout,wallet } from '../services/api';
 
 const Checkout = () => {
-  const appointmentID = useParams();
+  const { id } = useParams();
   const handleCheckoutClick = async () => {
     try {
       // Make a request to /create-checkout-session using Axios
@@ -20,7 +20,7 @@ const Checkout = () => {
         { id: 2, quantity: 1 },
       ];
 
-      const response = await checkout(items);
+      const response = await checkout(id, items);
 
       // Check if the request was successful (status code 2xx)
       if (response.status === 200) {
