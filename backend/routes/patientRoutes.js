@@ -38,7 +38,10 @@ const {
   loginPatient,
   resetPassword,
   sendOTP,
-  verifyOTP
+  verifyOTP,
+  getAvailableAppointments,
+  makeAppointment
+
 } = require("../controllers/patientController");
 
 //Renders the patient Dashboard
@@ -118,5 +121,11 @@ router.put(
 router.post("/add_prescription/:doctorId/:patientId", addPrescription);
 router.post("/add_appointment/:doctorId/:patientId", addAppointment);
 router.get("/get_specialities", getSpecialities);
+
+
+router.get("/get_available_appointments/:id", getAvailableAppointments);
+
+router.post("/make_appointment", makeAppointment)
+
 
 module.exports = router;

@@ -459,7 +459,7 @@ const filterAppointments = async (req, res) => {
 //View a list of all doctors along with their specialty, session price(based on subscribed health package if any)
 const viewAllDoctors = asyncHandler(async (req, res) => {
   try {
-    const doctors = await Doctor.find({accountStatus: 'active'}).sort({ createdAt: -1 });
+    const doctors = await Doctor.find({/*accountStatus: 'active'*/}).sort({ createdAt: -1 });
     if (!doctors) {
       res.status(400).json({ error: "No Doctors Found" });
     } else {
@@ -856,69 +856,110 @@ const getSpecialities = async (req, res) => {
 
 ////////////////////////
 
-//view all available appoitnments of a selected doctor
-const getAvailableAppointments = async (req, res) => {
-  let {doctorId } = req.query;
-  try {
-   const doctor = await Doctor.findById(doctorId);
-    if (!doctor) {
-      throw new Error('Doctor not found');
-    }
-    const availableAppointments = doctor.appointments.filter(appointment => 
-      new RegExp('available', 'i').test(appointment.status)); //available bas msh case sensitive 
+// //view all available appoitnments of a selected doctor
+// const getAvailableAppointments = async (req, res) => {
+//   let {doctorId } = req.query;
+//   try {
+//    const doctor = await Doctor.findById(doctorId);
+//     if (!doctor) {
+//       throw new Error('Doctor not found');
+//     }
+//     const availableAppointments = doctor.appointments.filter(appointment => 
+//       new RegExp('available', 'i').test(appointment.status)); //available bas msh case sensitive 
 
-      //available 3ade 3shan le el tanya bayza 
-//  const availableAppointments = doctor.appointments.filter(appointment => appointment.status === 'available');
-    return availableAppointments;
-  } catch (error) {
-    console.error(error.message);
-    throw error;
-  }
-}
+//       //available 3ade 3shan le el tanya bayza 
+// //  const availableAppointments = doctor.appointments.filter(appointment => appointment.status === 'available');
+//     return availableAppointments;
+//   } catch (error) {
+//     console.error(error.message);
+//     throw error;
+//   }
+// }
+
+
+
+
+const getAvailableAppointments = async (req, res) => {
+  try {
+    const doctorId = req.params.id
+
+    const selectedDate = new Date(req.query.date)
+    const doctor = await Doctor.findOne({ _id: doctorId }).exec();
+
+    if (doctor) {
+      const availabilitySlots = doctor.availableSlots;
+      const selectedWeekday = selectedDate.getDay(); // 0 for Sunday, 1 for Monday, ...
+
+      const appointments = await Appointment.find({
+        doctorId,
+        date: {
+          $gte: new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate()),
+          $lt: new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1),
+        }
+      }).exec();
+      
+      const bookedTimeSlots = appointments.map(appointment => appointment.date.getHours() - 2);
+      const availableSlots = [];
+      
+      availabilitySlots.forEach(slot => {
+        if (slot.weekday === selectedWeekday) {
+          for (let hour = slot.startTime.getHours() - 2; hour <= slot.endTime.getHours() - 2; hour++) {
+            if (!bookedTimeSlots.includes(hour)) {
+              availableSlots.push(hour);
+            }
+          }
+        }
+      });
+
+          res.status(200).json(availableSlots);
+        } else {
+          res.status(404).json("Not found");
+        }
+      } catch (error) {
+          res.stats(500).json({error: error.message});
+      }
+    };
+
 //select an appointment date and time for myself or for a family member
 const makeAppointment = async (req, res) => {
-//el patient hyd5al esm el doctor w pass lel function el id bta3 el doctor 
-//el patient hyd5al esm el hy7gezlo 3shan momkn ykon be esmo aw be esm a family member w pass lel function el id bta3 el patient keda keda 
-  let {doctorId,patientId,date,patientrName } = req.query;
+  let {nationalID, date, docid, patientid} = req.query;
   try {
-    const doctor = await Doctor.findById(doctorId);
+    const doctor = await Doctor.findById(docid);
      if (!doctor) {
        throw new Error('Doctor not found');
      }
-
-     const doctorName = doctor.name;
-
-     const patient = await Patient.findById(patientId); 
-    //  const patientrName = patient.name;
-
-     //check if time is available for this dr 
-     const isAppointmentAvailable = doctor.appointments.some(appointment =>
-      appointment.date.getTime() === date.getTime() && appointment.status === 'available'
-    );
-    if (!isAppointmentAvailable) {
-      throw new Error('Selected appointment date and time is not available');
-    }
+     const patient = await Patient.findById(patientid); 
     
     //check if this is his name 
-    const isPatient = patient.name === patientrName;
+    const isPatient = patient.nationalID === nationalID;
     //check lw el name bta3 a family member
     const isFamilyMember = patient.family.some(member =>
-      member.name === patientrName
+      member.nationalID === nationalID
     );
     if(!isPatient&& !isFamilyMember){
-      throw new Error('this name is not a patient/familyMember name ');
+      throw new Error('this ID is not a patient/familyMember national ID ');
     }
 
-    const appointment = new Appointment({
-      doctorId,
-      patientId,
-      date,
-      status: 'scheduled',
-      doctorName,
-      patientrName
-    });
+    let appPatientID = patientid
+    if(isFamilyMember){
+      for (const familyMember of patient.family) {
+        if (familyMember.userId) {
+          const member = await Patient.findOne({nationalID: nationalID});
+          if (member) {
+            appPatientID = member.id
+          }
+        }
+      }
+    }
+    const app = await Appointment.create({
+      patientId: appPatientID,
+      doctorId: docid,
+      date: date,
+      status: 'confirmed'
+    })
 
-    await appointment.save();
+     res.status(200).json(app)
+
   // return appointment;
   } catch (error) {
     console.error(error.message);
