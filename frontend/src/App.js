@@ -24,6 +24,7 @@ import ViewFamilyMembers from './pages/ViewFamilyMembers';
 import LinkFamMember from './pages/LinkFamMember';
 import AddSlotsPage from './pages/AddSlots';
 import ViewHealthRecordsPat from './pages/ViewHealthRecordsPat';
+import ViewPackages from './pages/ViewPackages';
 
 function App() {
   return (
@@ -99,6 +100,9 @@ function App() {
             </Route>
             <Route path='/filter'>
               <Filter />
+            </Route>
+             <Route path='/viewpackages'>
+              <ViewPackages />
             </Route>
           </Switch>
         </div>
