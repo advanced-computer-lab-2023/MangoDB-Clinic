@@ -62,7 +62,7 @@ const PatientForm = () => {
         <Grid container  justifyContent="center" style={{ padding: '2rem' }}>
             <Grid item xs={6}>
                 <Paper elevation={3} style={{ padding: '2rem' }}>
-                    <h2>Register As Patient</h2>
+                    <Typography variant='h4' style={{ margin: '1rem' }}>Register As Patient</Typography>
                     <form onSubmit={handleSubmit}>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
@@ -164,20 +164,19 @@ const PatientForm = () => {
                                 </FormControl>
                             </Grid>
 
-                            
-                                <TextField
-                                    label="National ID"
-                                    type="number"
-                                    required
-                                    fullWidth
-                                    value={nationalID}
-                                    onChange={(e) => setNationalID(e.target.value)}
-                                    style={{ marginTop: '1rem', marginBottom: '1rem', marginLeft: '1rem' }}
-                                />
+                            <TextField
+                                label="National ID"
+                                type="number"
+                                required
+                                fullWidth
+                                value={nationalID}
+                                onChange={(e) => setNationalID(e.target.value)}
+                                style={{ marginTop: '1rem', marginBottom: '1rem', marginLeft: '1rem' }}
+                            />
                             
                         </Grid>
                         <Paper elevation={3} style={{ padding: '1rem', marginTop: '1rem' ,marginBottom: '2rem', marginRight: '1rem', marginLeft: '1rem' }}>
-                            <h3>Emergency Contact Information:</h3>
+                            <Typography variant='h5' style={{margin: '1rem'}}>Emergency Contact Information:</Typography>
                                 <Grid container spacing={2}>
                                     <Grid item xs={6}>
                                         <TextField 

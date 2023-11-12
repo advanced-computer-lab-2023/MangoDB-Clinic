@@ -56,14 +56,14 @@ function App() {
             <Route path='/viewprofile'>
               <ViewProfile />
             </Route>
-            <Route path='/viewwallet'>
-              <ViewWallet />
-            </Route>
             <Route path='/editDoctor/:id'>
               <EditDoctor />
             </Route>
             <Route path='/doctorAppointments/:id'>
               <DoctorApps />
+            </Route>
+            <Route path='/view_wallet/:id'>
+              <ViewWallet />
             </Route>
           </Switch>
         </div>
