@@ -858,22 +858,24 @@ const getSpecialities = async (req, res) => {
 
 //view all available appoitnments of a selected doctor
 const getAvailableAppointments = async (req, res) => {
-  let {doctorId } = req.query;
   try {
-   const doctor = await Doctor.findById(doctorId);
-    if (!doctor) {
-      throw new Error('Doctor not found');
-    }
-    const availableAppointments = doctor.appointments.filter(appointment => 
-      new RegExp('available', 'i').test(appointment.status)); //available bas msh case sensitive 
+ let {doctorId } = req.query;
+  const doctor = await Doctor.findById(doctorId);
+   if (!doctor) {
+     throw new Error('Doctor not found');
+   }
+   const availableAppointments = await Appointment.find({ doctorId, status: 'available' });
 
-      //available 3ade 3shan le el tanya bayza 
+   // const availableAppointments = doctor.appointments.filter(appointment => 
+   //   new RegExp('available', 'i').test(appointment.status)); //available bas msh case sensitive 
+
+     //available 3ade 3shan le el tanya bayza 
 //  const availableAppointments = doctor.appointments.filter(appointment => appointment.status === 'available');
-    return availableAppointments;
-  } catch (error) {
-    console.error(error.message);
-    throw error;
-  }
+   res.status(200).json(availableAppointments);
+ } catch (error) {
+   console.error(error.message);
+   throw error;
+ }
 }
 //select an appointment date and time for myself or for a family member
 const makeAppointment = async (req, res) => {
