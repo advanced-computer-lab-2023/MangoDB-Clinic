@@ -20,6 +20,10 @@ import Filter from './components/Filter';
 import PrescriptionDetials from './pages/PrescriptionDetails';
 import DoctorApps from './pages/Doctor/DoctorApps';
 import Checkout from './pages/Checkout';
+import ViewFamilyMembers from './pages/ViewFamilyMembers';
+import LinkFamMember from './pages/LinkFamMember';
+import AddSlotsPage from './pages/AddSlots';
+import ViewHealthRecordsPat from './pages/ViewHealthRecordsPat';
 
 function App() {
   return (
@@ -35,6 +39,18 @@ function App() {
             </Route>
             <Route path='/patientform'>
               <PatientForm />
+            </Route>
+            <Route path='/viewfammembers/:id'>
+              <ViewFamilyMembers />
+            </Route>
+            <Route path='/linkfammember/:id'>
+              <LinkFamMember />
+            </Route>
+            <Route path='/addslots/:id'>
+              <AddSlotsPage />
+            </Route>
+            <Route path='/viewhealthrecpat/:id'>
+              <ViewHealthRecordsPat />
             </Route>
             <Route path='/doctorform'>
               <DoctorForm />
