@@ -23,6 +23,22 @@ export const selectPatient = (id) => API.get(`/doctor/selectedPatient/${ id }`);
 export const updateDoctorEmail = (id, doctor) => API.put(`/doctor/updateEmail/${ id }`, doctor);
 export const updateDoctorRate = (id, doctor) => API.put(`/doctor/updateHourlyRate/${ id }`, doctor);
 export const updateDoctorAffiliation = (id, doctor) => API.put(`/doctor/updateAffiliation/${id}`, doctor);
+export const viewRegFamMembers = (id) => API.get(`/Patient/get_family_members/${ id }`);
+export const linkFam = (id, family) => {
+    const familyData = family.map(member => ({
+        name: member.name,
+        nationalID: member.nationalID,
+        age: member.age,
+        gender: member.gender,
+        relation: member.relation
+        // Add other fields as needed
+    }));
+
+    return API.put(`/Patient/add_family_member/${id}`, { family: familyData });
+};export const addSlots= (id,weekday,startTime,endTime) => API.patch(`/doctor/addSlots/${id}`,{weekday,startTime,endTime})
+export const getHealthRecords = (id) => API.get(`/Patient/view_health_records/${ id }`);
+
+
 
 export const getMyAppointments = (id) => API.get(`/doctor/getMyAppointments/${ id }`);
 export const filterAppointments = (query) => API.post('/doctor/filterapp', query);
