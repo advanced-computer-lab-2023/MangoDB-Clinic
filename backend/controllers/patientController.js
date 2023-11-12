@@ -772,14 +772,17 @@ const deleteDocument = async (req, res) => {
 
 const linkFamilyMember = async (req, res) => {
   const id = req.params.id;
-  const email = req.query.email;
-  const relation = req.query.relation;
+  const {email, relation, mobile, linkWithEmail} = req.query
 
   try {
     const patient = await Patient.findById(id);
 
     if (patient) {
-      const member = await Patient.findOne({ email: email });
+      let member;
+      if(linkWithEmail)
+        member = await Patient.findOne({ email: email });
+      else
+        member = await Patient.findOne({ mobile: mobile})
       if (member) {
         const memberExists = patient.family.some(
           (mem) => mem.userId && mem.userId.toString() === member._id.toString()
