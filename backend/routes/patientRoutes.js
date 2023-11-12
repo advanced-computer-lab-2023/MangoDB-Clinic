@@ -121,6 +121,7 @@ router.put(
 router.post("/add_prescription/:doctorId/:patientId", addPrescription);
 router.post("/add_appointment/:doctorId/:patientId", addAppointment);
 router.get("/get_specialities", getSpecialities);
+router.get("/getAvailableAppointments",getAvailableAppointments)
 
 
 router.get("/get_available_appointments/:id", getAvailableAppointments);
