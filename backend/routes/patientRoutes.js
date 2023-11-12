@@ -35,6 +35,7 @@ const {
   subscribeToHealthPackage,
   upcoming,
   filterStatus,
+  payFromWallet,
 } = require("../controllers/patientController");
 
 //Renders the patient Dashboard
@@ -112,5 +113,8 @@ router.post("/add_appointment/:doctorId/:patientId", addAppointment);
 router.post('/upcoming', upcoming)
 
 router.post('/filterapp', filterStatus);
+
+router.post('/payFromWallet/:appointmentId', payFromWallet);
+
 
 module.exports = router;
