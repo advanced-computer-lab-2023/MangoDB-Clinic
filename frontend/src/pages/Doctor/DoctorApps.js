@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getMyAppointments, upcomingApp, filterAppointments } from "../../services/api";
+import { getMyAppointments, upcomingApp, filterAppointments,scheduleFollowup } from "../../services/api";
 import { Grid, Paper, Typography, TextField } from "@mui/material";
 import { experimentalStyled as styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
@@ -53,6 +53,16 @@ const DoctorApps = () => {
             return null;
         }
     }
+    const scheduleFollowupHandler = async (docotrId, patientId, appointmentId) => {
+        try {
+            await scheduleFollowup(docotrId, patientId,appointmentId);
+
+            //reload el 7aga ??
+        } catch (error) {
+            console.error('Error scheduling follow-up:', error);
+        }
+    };
+
 
     const handleUpcomingClick = () => {
         setUpcoming(!upcoming);
@@ -226,6 +236,15 @@ const DoctorApps = () => {
                                             <Typography variant="body2" style={{ color: 'black' }}>
                                                 Follow up: { appointment.followUp ? 'Yes' : 'No' }
                                             </Typography>
+                                            {appointment.status === 'confirmed' && (
+                                            <Button
+                                                variant="outlined"
+                                                size="small"
+                                                onClick={() => scheduleFollowupHandler(appointment.doctorId,appointment.patientId,appointment._id)}
+                                            >
+                                                Schedule Followup
+                                            </Button>
+                                        )}
                                         </Item>
                                     {/* </Link> */}
                                 </div>

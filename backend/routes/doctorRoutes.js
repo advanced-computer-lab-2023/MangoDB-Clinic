@@ -29,7 +29,8 @@ const {
     loginDoctor,
     resetPassword,
     sendOTP,
-    verifyOTP
+    verifyOTP,
+    followUp
 } = require('../controllers/doctorController');
 
 
@@ -129,6 +130,7 @@ router.get('/getMyAppointments/:id',getMyAppointments)
 router.get('/getEmploymentContract',viewEmploymentContract)
 router.patch('/addSlots/:id', addNewSlots);
 router.patch('/addHealthRecord/:id', addHealthRecord);
+router.patch('scheduleFollowup/:id', followUp)
 
 module.exports = router;
 
