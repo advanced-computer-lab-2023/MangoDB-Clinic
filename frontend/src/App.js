@@ -27,6 +27,7 @@ import ViewHealthRecordsPat from './pages/ViewHealthRecordsPat';
 import ViewPackages from './pages/ViewPackages';
 import AddHealthRecordsPatient from './pages/AddHealthRecordsPatient';
 import LinkPatientAsFam from './pages/LinkPatientAsFam';
+import ViewEmploymentContract from './pages/ViewEmploymentContract';
 
 function App() {
   return (
@@ -60,6 +61,9 @@ function App() {
             </Route>
             <Route path='/viewhealthrecpat/:id'>
               <ViewHealthRecordsPat />
+            </Route>
+            <Route path='/viewemploymentcontract/:id'>
+              <ViewEmploymentContract />
             </Route>
             <Route path='/doctorform'>
               <DoctorForm />

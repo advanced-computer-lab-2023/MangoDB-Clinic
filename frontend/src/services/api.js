@@ -47,7 +47,14 @@ export const linkPatAsFam = (id, email, mobile, relation, linkWithEmail) => {
   export const addSlots= (id,weekday,startTime,endTime) => API.patch(`/doctor/addSlots/${id}`,{weekday,startTime,endTime})
 export const getHealthRecords = (id) => API.get(`/Patient/view_health_records/${ id }`);
 
-
+export const getEmploymentContract = async (id) => {
+    try {
+        const response = await API.get(`/doctor/viewEmploymentContract/${id}`);
+        return response.data; // You might receive the PDF blob or link here
+    } catch (error) {
+        throw new Error('Failed to fetch employment contract');
+    }
+};
 
 export const getMyAppointments = (id) => API.get(`/doctor/getMyAppointments/${ id }`);
 export const filterAppointments = (query) => API.post('/doctor/filterapp', query);
