@@ -773,15 +773,18 @@ const deleteDocument = async (req, res) => {
 const linkFamilyMember = async (req, res) => {
   const id = req.params.id;
   const {email, relation, mobile, linkWithEmail} = req.query
-
+  const Boolean =false;
   try {
+    if(email.length>6){
+      Boolean = true;
+    }
     console.log("id:",id)
     const patient = await Patient.findById(id);
 
-    console.log(patient.json)
+    console.log(patient)
     if (patient) {
       let member;
-      if(linkWithEmail){
+      if(Boolean){
       console.log("email:", email)
         member = await Patient.findOne({ email: email });}
       else{
@@ -802,9 +805,12 @@ const linkFamilyMember = async (req, res) => {
             relation: relation,
             userId: member._id,
           };
+          console.log(entry);
           patient.family.push(entry);
+          console.log(patient.family)
           await patient.save();
 
+          console.log("h")
           res
             .status(200)
             .json({ message: "Family member linked successfully" });
