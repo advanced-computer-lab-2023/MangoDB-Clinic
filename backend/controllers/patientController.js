@@ -778,7 +778,7 @@ const linkFamilyMember = async (req, res) => {
     console.log("id:",id)
     const patient = await Patient.findById(id);
 
-    console.log(patient.json)
+    console.log(patient)
     if (patient) {
       let member;
       if(linkWithEmail){
@@ -802,9 +802,12 @@ const linkFamilyMember = async (req, res) => {
             relation: relation,
             userId: member._id,
           };
+          console.log(entry);
           patient.family.push(entry);
+          console.log(patient.family)
           await patient.save();
 
+          console.log("h")
           res
             .status(200)
             .json({ message: "Family member linked successfully" });
