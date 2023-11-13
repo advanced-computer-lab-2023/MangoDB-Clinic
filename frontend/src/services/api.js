@@ -16,6 +16,7 @@ export const addPatient = (patient) => API.post('/patientRegistration', patient)
 export const uploadHealthRecord = (id, files) => API.put(`/patient/add_documents/${ id }`, files, { headers: { 'Content-Type': 'multipart/form-data' } });
 
 export const getDoctor = (id) => API.get(`/doctor/doctorInfo/${ id }`);
+export const statusEnum = () => API.get('/doctor/statusOptions');
 export const getPatientsDoctor = (id) => API.get(`/doctor/viewAllPatients/${ id }`);
 export const searchPatients = (id, firstName) => API.post(`/doctor/searchPatientByName/${ id }`, { firstName });
 export const upcomingApp = (doctorId) => API.post('/doctor/upcoming/', { doctorId });

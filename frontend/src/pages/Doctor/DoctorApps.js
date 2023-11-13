@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getMyAppointments, upcomingApp, filterAppointments,scheduleFollowup } from "../../services/api";
+import { getMyAppointments, upcomingApp, filterAppointments,scheduleFollowup, statusEnum } from "../../services/api";
 import { Grid, Paper, Typography, TextField } from "@mui/material";
 import { experimentalStyled as styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -22,6 +26,7 @@ const DoctorApps = () => {
     const [ from, setFrom ] = useState('');
     const [ to, setTo ] = useState('');
     const [ upcoming, setUpcoming ] = useState(false);
+    const [ statEnum, setStatEnum ] = useState(['All']); 
 
     // function convertToISOFormat(dateString) {
     //     // Split the input string into day, month, and year
@@ -113,6 +118,20 @@ const DoctorApps = () => {
     }
 
     useEffect(() => {
+        setIsPending(true);
+        statusEnum()
+            .then(result => {
+                setStatEnum(result.data);
+                console.log(result.data);
+                setIsPending(false);
+            })
+            .catch(err => {
+                setError(err.message);
+                setIsPending(false);
+            });
+    }, []);
+
+    useEffect(() => {
         if (!upcoming) {
             setAppointments([]);
             setIsPending(true);
@@ -177,7 +196,41 @@ const DoctorApps = () => {
             <br />
             <form onSubmit={ handleSubmit }>
                 <Grid item xs={ 12 } style={{ padding: '5px' }}>
-                    <TextField id="status" name="status" label="Status" variant="outlined" value={ status } onChange={ handleChange } size="small"/>
+                    {/* <TextField id="status" name="status" label="Status" variant="outlined" value={ status } onChange={ handleChange } size="small"/> */}
+                    {/* <Select
+                        id="status" 
+                        name="status" 
+                        label="Status"
+                        variant="outlined" 
+                        size="small"
+                        value={status}
+                        onChange={handleChange}
+                    >
+                        {statEnum.map((option) => (
+                            <MenuItem key={ option } value={ option }>
+                                { option }
+                            </MenuItem>
+                        ))}
+                    </Select> */}
+                    <FormControl fullWidth variant="outlined" size="small" style={{ 'width': 'auto' }}>
+                    <InputLabel id="status-label">Status</InputLabel>
+                    <Select
+                        labelId="status-label"
+                        id="status"
+                        name="status"
+                        label="Status"
+                        variant="outlined"
+                        size="small"
+                        value={status}
+                        onChange={handleChange}
+                    >
+                        {statEnum.map((option) => (
+                            <MenuItem key={option} value={option}>
+                                {option}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
                     <TextField 
                         id="from"
                         name="from"
