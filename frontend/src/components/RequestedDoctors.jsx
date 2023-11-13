@@ -13,15 +13,12 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Link from "@mui/material/Link";
-import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { mainListItems } from "./listItems";
-import { useNavigate } from "react-router-dom";
-
-import Chart from "./Chart";
-import DateCard from "./DateCard";
 import RequestedDoctors from "./RequestedDoctorsTable";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
 	return (
@@ -101,7 +98,6 @@ export default function Dashboard() {
 		localStorage.removeItem("token");
 		navigate("/admin/login");
 	};
-
 	return (
 		<ThemeProvider theme={defaultTheme}>
 			<Box sx={{ display: "flex" }}>
@@ -131,7 +127,7 @@ export default function Dashboard() {
 							noWrap
 							sx={{ flexGrow: 1 }}
 						>
-							Dashboard
+							Requested Doctors
 						</Typography>
 						<IconButton color='inherit'>
 							<LogoutIcon onClick={handleLogout} />
@@ -169,36 +165,10 @@ export default function Dashboard() {
 					<Toolbar />
 					<Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
 						<Grid container spacing={3}>
-							{/* Chart */}
-							<Grid item xs={12} md={8} lg={9}>
-								<Paper
-									sx={{
-										p: 2,
-										display: "flex",
-										flexDirection: "column",
-										height: 240,
-									}}
-								>
-									<Chart />
-								</Paper>
-							</Grid>
-							{/* Recent Deposits */}
-							<Grid item xs={12} md={4} lg={3}>
-								<Paper
-									sx={{
-										p: 2,
-										display: "flex",
-										flexDirection: "column",
-										height: 240,
-									}}
-								>
-									<DateCard />
-								</Paper>
-							</Grid>
 							{/* Recent Orders */}
 							<Grid item xs={12}>
 								<Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-									<RequestedDoctors />
+									<RequestedDoctors maxRows={10000} seeMore={false} />
 								</Paper>
 							</Grid>
 						</Grid>

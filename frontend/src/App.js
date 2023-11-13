@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import AddAdminPage from "./pages/AddAdminPage";
+import RequestedDoctorsPage from "./pages/RequestedDoctorsPage";
 
 export default function App() {
 	return (
@@ -17,6 +18,10 @@ export default function App() {
 						element={<ForgotPasswordPage />}
 					/>
 					<Route path='/admin/add-admin' element={<AddAdminPage />} />
+					<Route
+						path='/admin/requested-doctors'
+						element={<RequestedDoctorsPage />}
+					/>
 				</Routes>
 			</Router>
 		</>

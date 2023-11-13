@@ -82,8 +82,6 @@ export default function ForgotPassword() {
 
 	const handleVerify = async () => {
 		try {
-			console.log(formDataRequest.email);
-			console.log(formDataVerify.otp);
 			setIsLoading(true);
 			const response = await axios.post(
 				`http://localhost:4000/admin/verify-otp`,

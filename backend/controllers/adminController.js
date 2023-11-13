@@ -255,7 +255,6 @@ const getMyInfo = asyncHandler(async (req, res) => {
 		name: admin.firstName + " " + admin.lastName,
 		username: admin.username,
 		email: admin.email,
-		role: admin.role,
 	});
 });
 
@@ -300,8 +299,8 @@ const doctorApproval = asyncHandler(async (req, res) => {
 		}
 
 		if (doctor.accountStatus === "inactive") {
-			doctor.accountStatus = "active";
-			await doctor.save();
+			// doctor.accountStatus = "active";
+			// await doctor.save();
 
 			const transporter = nodemailer.createTransport({
 				service: "Gmail",

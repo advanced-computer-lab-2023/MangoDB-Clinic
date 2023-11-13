@@ -14,8 +14,10 @@
 	"dependencies": {
 		"bcryptjs": "^2.4.3",
 		"body-parser": "^1.20.2",
+		"buffer": "^6.0.3",
 		"colors": "^1.4.0",
 		"cors": "^2.8.5",
+		"crypto-browserify": "^3.12.0",
 		"dot-env": "^0.0.1",
 		"dotenv": "^16.3.1",
 		"ejs": "^3.1.9",
@@ -25,7 +27,10 @@
 		"git": "^0.1.5",
 		"jsonwebtoken": "^9.0.2",
 		"mongoose": "^7.6.2",
-		"nodemailer": "^6.9.6"
+		"nodemailer": "^6.9.6",
+		"stream-browserify": "^3.0.0",
+		"util": "^0.12.5",
+		"webpack": "^5.89.0"
 	},
 	"devDependencies": {
 		"concurrently": "^8.2.2",
