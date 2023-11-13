@@ -53,10 +53,12 @@ const DoctorDetails = () => {
     try {
       const app= await bookAppointmentApi(key, nationalID);
       fetchAvailableSlots(id, selectedDate);
+      checkout(app.id);
+
     } catch (error) {
       console.error('Error booking appointment:', error);
     }
-    checkout(app._id);
+    
   };
 
   const bookAppointmentApi = async (key, nationalID) => {
