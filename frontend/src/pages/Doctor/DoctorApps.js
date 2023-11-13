@@ -65,8 +65,8 @@ const DoctorApps = () => {
         const { name, value } = e.target;
         switch (name) {
             case 'status': setStatus(value); break;
-            case 'from': setFrom(convertToISOFormat(value)); break;
-            case 'to': setTo(convertToISOFormat(value)); break;
+            case 'from': value == '' ? setFrom('') : setFrom(value); break;
+            case 'to': value == '' ? setTo('') : setTo(value); break;
         }
     }
 
