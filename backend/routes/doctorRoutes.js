@@ -30,12 +30,14 @@ const {
     resetPassword,
     sendOTP,
     verifyOTP,
-    followUp
+    followUp,
+    getStatusOptions,
 } = require('../controllers/doctorController');
 
 
 // Extra frontend routes
 router.get('/doctorInfo/:id', getDoctorInfo);
+router.get('/statusOptions', getStatusOptions);
 
 router.post('/login', loginDoctor)
 router.post('/verify-otp', protectDoctor, verifyOTP)

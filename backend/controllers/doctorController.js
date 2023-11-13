@@ -840,6 +840,20 @@ const getDoctorInfo = (req, res) => {
           .catch((err) => res.status(404).json());
 };
 
+const getStatusOptions = async (req, res) => {
+    try {
+        // Use the distinct method to get unique status options
+        const uniqueStatusOptions = await Appointment.distinct('status');
+        uniqueStatusOptions.push('All');
+        console.log('Unique Status Options:', uniqueStatusOptions);
+        // return uniqueStatusOptions;
+        res.status(200).json(uniqueStatusOptions);
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+}
+
 
 
 
@@ -898,5 +912,6 @@ module.exports = {
     sendOTP,
     resetPassword,
     followUp,
+    getStatusOptions,
 }
 
