@@ -71,6 +71,8 @@ export const wallet = (appointmentId) => API.post(`/patient/payFromWallet/${ app
 
 export const getSelectedDoctor = (id) => API.get(`/patient/get_selected_doctor/${ id }`);
 
+export const addAppointment =(patientId, doctorId,date)  => API.get(`/patient/add_appointment/${ patientId }/${ doctorId }`,date);
+
 
 const API2 = axios.create({
     baseURL: `http://localhost:${port}`,

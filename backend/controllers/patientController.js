@@ -873,7 +873,8 @@ const addAppointment = async (req, res) => {
     const app = await Appointment.create({
       doctorId: docid,
       patientId: patid,
-      ...data,
+      date:data,
+      status:'scheduled',
     });
     res.status(200).json(app);
   } catch (err) {
