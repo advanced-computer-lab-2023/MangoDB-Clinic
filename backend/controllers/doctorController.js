@@ -840,6 +840,36 @@ const getDoctorInfo = (req, res) => {
           .catch((err) => res.status(404).json());
 };
 
+
+
+
+const followUp = async (req, res) => {
+    const doctorId = req.params.id; 
+    const patientId = req.body.patientId;
+    const appointmentId = req.body.appointmentId;
+
+    try {
+       
+        const updatedAppointment = await Appointment.findOneAndUpdate(
+            { _id: appointmentId, doctorId, patientId },
+            { $set: { followUp: true } },
+            { new: true } 
+        );
+
+        if (!updatedAppointment) {
+            return res.status(404).json({ message: 'Appointment not found or not authorized' });
+        }
+
+        
+        res.status(200).json(updatedAppointment);
+    } catch (error) {
+        console.error('Error updating appointment:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
+
+
 module.exports = {
     createDoctor,
     updateEmail,
@@ -866,6 +896,7 @@ module.exports = {
     loginDoctor,
     verifyOTP,
     sendOTP,
-    resetPassword
+    resetPassword,
+    followUp,
 }
 
