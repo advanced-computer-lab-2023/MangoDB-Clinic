@@ -20,6 +20,7 @@ const renderDoctorRegistration = (req, res) => {
 
 const registerUser = async (req, res, model, userType, fields) => {
     const data = req.body;
+
     for (const field of fields) {
         if (!data[field]) {
             return res.status(400).json({ message: 'Fill all fields' });
@@ -39,6 +40,8 @@ const registerUser = async (req, res, model, userType, fields) => {
 
         const user = await model.create({ ...data, password: hashedPassword, userType: userType, accountStatus: userType === 'patient' ? 'active' : 'inactive'})
 
+        const token = createToken(user.name);
+
         if(userType === 'doctor' && req.files){
             for (const file of req.files) {
                 const url = `http://localhost:${port}/uploads/${file.originalname}`;
@@ -56,17 +59,19 @@ const registerUser = async (req, res, model, userType, fields) => {
         user.wallet = wallet._id;
         await user.save();
 
+        res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+
         return res.status(201).json({
             _id: user._id,
             username: user.username,
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
-            token: genToken(user._id),
+            token: token,
         });
 
     } catch (error) {
-        return res.status(400).json({ error: error.message });
+        return res.status(400).json({ error: error.message + " henaa"});
     }
 };
 
@@ -91,16 +96,26 @@ const login = asyncHandler(async (req, res) => {
     if (!correctPassword)
         res.status(400).json({ message: 'Password is incorrect' })
 
+    const token = createToken(user._id);
+    res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+
     res.status(200).json({
         _id: user.id,
         username: user.username,
-        token: genToken(user._id),
+        token: token,
     })
 })
 
-const genToken = (id) => {
-    return jwt.sign({ id }, process.env.SECRET)
-}
+const maxAge = 3 * 24 * 60 * 60;
+const createToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: maxAge
+    });
+};
+
+// const genToken = (id) => {
+//     return jwt.sign({ id }, process.env.SECRET)
+// }
 
 
 module.exports = {

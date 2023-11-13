@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getSelectedDoctor } from '../services/api';
+import { getSelectedDoctor, checkout } from '../services/api';
 // import FileViewer from 'react-file-viewer';
 
 const DoctorDetails = () => {
@@ -51,11 +51,14 @@ const DoctorDetails = () => {
 
   const bookAppointment = async (key, nationalID) => {
     try {
-      await bookAppointmentApi(key, nationalID);
+      const app= await bookAppointmentApi(key, nationalID);
       fetchAvailableSlots(id, selectedDate);
+      checkout(app.id);
+
     } catch (error) {
       console.error('Error booking appointment:', error);
     }
+    
   };
 
   const bookAppointmentApi = async (key, nationalID) => {
@@ -123,7 +126,7 @@ const DoctorDetails = () => {
                     <tr key={index}>
                       <td>{key.toLocaleTimeString()}</td>
                       <td>
-                        <button onClick={() => /*</td>bookAppointment(key, nationalID)*/{}}>Book Appointment</button>
+                        <button onClick={() => bookAppointment(key, nationalID)}> Book Appointment</button>
                       </td>
                     </tr>
                   ))}

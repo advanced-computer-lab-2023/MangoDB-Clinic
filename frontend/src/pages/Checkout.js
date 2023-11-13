@@ -40,46 +40,46 @@ const Checkout = () => {
 
 
   const handleWallet = async () => {
-    try {
-      // Call your backend API endpoint for wallet payment
-      const response = await wallet(appointmentID);
+    // try {
+    //   // Call your backend API endpoint for wallet payment
+    //   const response = await wallet(appointmentID);
   
-      // Check if the request was successful (status code 2xx)
-      if (response.status === 200) {
-        const { success, message } = response.data;
-        console.log('Wallet Payment:', response.data);
+    //   // Check if the request was successful (status code 2xx)
+    //   if (response.status === 200) {
+    //     const { success, message } = response.data;
+    //     console.log('Wallet Payment:', response.data);
   
-        if (success) {
-          // Handle success as needed
-          alert(message);
-        } else {
-          // Handle failure as needed
-          console.error('Wallet payment failed:', message);
-        }
-      } else {
-        console.error('Failed to process wallet payment. Status:', response.status);
-        // Log the full response for debugging purposes
-        console.error('Full response:', response);
+    //     if (success) {
+    //       // Handle success as needed
+    //       alert(message);
+    //     } else {
+    //       // Handle failure as needed
+    //       console.error('Wallet payment failed:', message);
+    //     }
+    //   } else {
+    //     console.error('Failed to process wallet payment. Status:', response.status);
+    //     // Log the full response for debugging purposes
+    //     console.error('Full response:', response);
   
-        // Handle error as needed
-      }
-    } catch (error) {
-      // Log the details of the AxiosError
-      console.error('Error during wallet payment:', error);
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.error('Server responded with status:', error.response.status);
-        console.error('Response data:', error.response.data);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.error('No response received');
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.error('Error message:', error.message);
-      }
-      // Handle error as needed
-    }
+    //     // Handle error as needed
+    //   }
+    // } catch (error) {
+    //   // Log the details of the AxiosError
+    //   console.error('Error during wallet payment:', error);
+    //   if (error.response) {
+    //     // The request was made and the server responded with a status code
+    //     // that falls out of the range of 2xx
+    //     console.error('Server responded with status:', error.response.status);
+    //     console.error('Response data:', error.response.data);
+    //   } else if (error.request) {
+    //     // The request was made but no response was received
+    //     console.error('No response received');
+    //   } else {
+    //     // Something happened in setting up the request that triggered an Error
+    //     console.error('Error message:', error.message);
+    //   }
+    //   // Handle error as needed
+    // }
   };
   
 

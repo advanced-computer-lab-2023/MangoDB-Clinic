@@ -9,6 +9,8 @@ const port = process.env.PORT || 4000;
 var path = require('path');
 const cors = require('cors');
 const { selectPatient } = require('./controllers/doctorController');
+const cookieParser = require('cookie-parser');
+
 
 // const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
@@ -18,6 +20,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
+app.use(cookieParser());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 

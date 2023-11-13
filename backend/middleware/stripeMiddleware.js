@@ -121,6 +121,69 @@ router.post('/create-checkout-session/:id', async (req, res) => {
     }
 });
 
+
+router.post('/create-checkout-session-packages/:id', async (req, res) => {
+    try {
+        const packageType = id;
+        let paymentAmount = 0;
+        
+        switch (packageType) {
+            case 'Silver':
+                paymentAmount = 3600; break;
+          
+            case 'Gold':
+                paymentAmount = 6000; break;
+          
+            case 'Platinum':
+                paymentAmount = 9000; break;
+          
+            default:
+                paymentAmount = 0;
+        }
+          
+              
+        // const paymentAmount = (hourlyRate * 1.1) - (hourlyRate * doctorSessionDiscount);
+
+        const storeItems = new Map([
+            [1, { priceInCents: paymentAmount * 100, name: `${ packageType } Health Package` }], // priceInSharks = pounds * 100
+           
+        ])
+        // END OF PASTE
+
+
+
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            mode: 'payment',
+            line_items: req.body.items.map(item => {
+                const storeItem = storeItems.get(item.id);
+
+                if (!storeItem) {
+                    throw new Error("Item does not exists");
+                }
+
+                return {
+                    price_data: {
+                        currency: 'egp',
+                        product_data: {
+                            name: storeItem.name,
+                        },
+                        unit_amount: storeItem.priceInCents,
+                    },
+                    quantity: item.quantity,
+                };
+            }),
+            success_url: 'http://localhost:3000/success',
+            cancel_url: 'http://localhost:3000/cancel',
+        });
+
+        res.json({ url: session.url });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 // app.post("/create-checkout-session", async (req, res) => {
 //     try {
 //       const session = await stripe.checkout.sessions.create({
