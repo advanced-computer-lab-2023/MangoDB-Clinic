@@ -1039,6 +1039,7 @@ const makeAppointment = async (req, res) => {
       date: date,
       status: 'confirmed'
     })
+    console.log(app);
 
      res.status(200).json(app)
 
