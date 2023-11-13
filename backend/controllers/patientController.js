@@ -775,14 +775,18 @@ const linkFamilyMember = async (req, res) => {
   const {email, relation, mobile, linkWithEmail} = req.query
 
   try {
+    console.log("id:",id)
     const patient = await Patient.findById(id);
 
+    console.log(patient.json)
     if (patient) {
       let member;
-      if(linkWithEmail)
-        member = await Patient.findOne({ email: email });
-      else
-        member = await Patient.findOne({ mobile: mobile})
+      if(linkWithEmail){
+      console.log("email:", email)
+        member = await Patient.findOne({ email: email });}
+      else{
+        console.log("phone:", mobile)
+        member = await Patient.findOne({ mobile: mobile})}
       if (member) {
         const memberExists = patient.family.some(
           (mem) => mem.userId && mem.userId.toString() === member._id.toString()

@@ -35,7 +35,16 @@ export const linkFam = (id, family) => {
     }));
 
     return API.put(`/Patient/add_family_member/${id}`, { family: familyData });
-};export const addSlots= (id,weekday,startTime,endTime) => API.patch(`/doctor/addSlots/${id}`,{weekday,startTime,endTime})
+};
+export const linkPatAsFam = (id, email, mobile, relation, linkWithEmail) => {
+    const queryParams = linkWithEmail
+      ? `?mobile=${mobile}&email=${email}&relation=${relation}&linkWithEmail=true`
+      : `?mobile=${mobile}&email=${email}&relation=${relation}&linkWithEmail=false`;
+  
+    return API.put(`/Patient/link_family_member/${id}${queryParams}`);
+  };
+  
+  export const addSlots= (id,weekday,startTime,endTime) => API.patch(`/doctor/addSlots/${id}`,{weekday,startTime,endTime})
 export const getHealthRecords = (id) => API.get(`/Patient/view_health_records/${ id }`);
 
 
