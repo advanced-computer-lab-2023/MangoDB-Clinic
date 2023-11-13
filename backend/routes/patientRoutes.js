@@ -44,7 +44,7 @@ router.post("/reset-password", resetPassword);
 router.get("/get_all_patients", getAllPatients);
 
 //GET a single patient
-router.get("/get_patient/:id", getPatient);
+router.post("/get_patient", getPatient);
 
 //POST a single patient
 router.post("/add_patient", addPatient);

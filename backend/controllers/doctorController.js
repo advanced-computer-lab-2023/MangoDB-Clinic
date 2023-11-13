@@ -435,6 +435,23 @@ const viewAllPatients = async (doctorId) => {
 	}
 };
 
+const getDoctor = async (req, res) => {
+	const email = req.body.email;
+
+	try {
+		const doctor = await Doctor.findOne({ email: email });
+
+		if (!doctor) {
+			return res.status(404).json({ error: "No such doctor found" });
+		}
+
+		return res.status(200).json(doctor);
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
 const createDoctor = async (req, res) => {
 	const {
 		firstName,
@@ -655,6 +672,7 @@ const getAllSpecialities = async (req, res) => {
 module.exports = {
 	createDoctor,
 	updateEmail,
+	getDoctor,
 	updateHourlyRate,
 	updateAffiliation,
 	createPatient,

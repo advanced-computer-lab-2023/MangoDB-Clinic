@@ -36,7 +36,7 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function Login() {
+export default function LoginAdmin() {
 	const navigate = useNavigate();
 	const [formData, setFormData] = React.useState({
 		username: "",

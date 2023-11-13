@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 
 const defaultTheme = createTheme();
 
-export default function ForgotPassword() {
+export default function ForgotPasswordAdmin() {
 	const navigate = useNavigate();
 
 	const [isLoading, setIsLoading] = React.useState(false);

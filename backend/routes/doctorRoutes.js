@@ -21,6 +21,7 @@ const {
 	resetPassword,
 	sendOTP,
 	verifyOTP,
+	getDoctor,
 } = require("../controllers/doctorController");
 
 const { protectDoctor } = require("../middleware/doctorMiddleware");
@@ -29,6 +30,8 @@ router.post("/login", loginDoctor);
 router.post("/verify-otp", verifyOTP);
 router.post("/reset-password", resetPassword);
 router.post("/request-otp", sendOTP);
+
+router.post("/get_doctor", getDoctor);
 
 router.post("/filterapp", filterStatus);
 

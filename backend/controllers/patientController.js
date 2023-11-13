@@ -59,7 +59,7 @@ const sendOTP = asyncHandler(async (req, res) => {
 	const patient = await Patient.findOne({ email: req.body.email });
 
 	if (!patient) {
-		res.status(404).json({ message: "Patient Not Found" });
+		res.status(400).json({ message: "Patient Not Found" });
 		return;
 	}
 
@@ -100,8 +100,8 @@ const sendOTP = asyncHandler(async (req, res) => {
 // @route POST /patient/verify-otp
 // @access Private
 const verifyOTP = asyncHandler(async (req, res) => {
+	const patient = await Patient.findOne({ email: req.body.email });
 	const otp = req.body.otp;
-  const patient = await Patient.findOne({ email: req.body.email });
 
 	if (otp === patient.passwordResetOTP) {
 		res.status(200).json({ message: "Correct OTP" });
@@ -116,7 +116,7 @@ const verifyOTP = asyncHandler(async (req, res) => {
 // @access Private
 const resetPassword = asyncHandler(async (req, res) => {
 	try {
-    const patient = await Patient.findOne({ email: req.body.email });
+		const patient = await Patient.findOne({ email: req.body.email });
 		const newPassword = req.body.password;
 
 		const salt = await bcrypt.genSalt(10);
@@ -153,19 +153,20 @@ const getAllPatients = async (req, res) => {
 
 //Get a single patient
 const getPatient = async (req, res) => {
-	const { id } = req.params;
+	const email = req.body.email;
 
-	if (!mongoose.Types.ObjectId.isValid(id)) {
-		return res.status(404).json({ error: "No such patient found" });
+	try {
+		const patient = await Patient.findOne({ email: email });
+
+		if (!patient) {
+			return res.status(404).json({ error: "No such patient found" });
+		}
+
+		return res.status(200).json(patient);
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({ error: "Internal Server Error" });
 	}
-
-	const patient = await Patient.findById(id);
-
-	if (!patient) {
-		return res.status(404).json({ error: "No such patient found" });
-	}
-
-	res.status(200).json(patient);
 };
 
 //Create a patient
