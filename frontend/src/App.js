@@ -26,6 +26,7 @@ import AddSlotsPage from './pages/AddSlots';
 import ViewHealthRecordsPat from './pages/ViewHealthRecordsPat';
 import ViewPackages from './pages/ViewPackages';
 import AddHealthRecordsPatient from './pages/AddHealthRecordsPatient';
+import LinkPatientAsFam from './pages/LinkPatientAsFam';
 
 function App() {
   return (
@@ -50,6 +51,9 @@ function App() {
             </Route>
             <Route path='/linkfammember/:id'>
               <LinkFamMember />
+            </Route>
+            <Route path='/linkpatasfam/:id'>
+              <LinkPatientAsFam />
             </Route>
             <Route path='/addslots/:id'>
               <AddSlotsPage />
