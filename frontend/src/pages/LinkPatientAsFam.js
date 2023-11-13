@@ -22,9 +22,10 @@ const LinkPatientAsFam = () => {
     const handleLink = async () => {
         try {
             const { email, phone, relation } = patientInfo;
-            const isEmptyEmail = email.trim(); // Check if the email field is empty or only whitespace
+            //const isEmptyEmail = email.trim(); // Check if the email field is empty or only whitespace
+            const email2 = email&&email!==''
 
-            await linkPatAsFam(id, email, phone, relation, isEmptyEmail);
+            await linkPatAsFam(id, email, phone, relation, email2);
 
             setPatientInfo({ email: '', phone: '', relation: '' }); // Reset the form after linking
         } catch (error) {

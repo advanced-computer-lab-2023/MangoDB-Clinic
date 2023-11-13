@@ -773,15 +773,18 @@ const deleteDocument = async (req, res) => {
 const linkFamilyMember = async (req, res) => {
   const id = req.params.id;
   const {email, relation, mobile, linkWithEmail} = req.query
-
+  const Boolean =false;
   try {
+    if(email.length>6){
+      Boolean = true;
+    }
     console.log("id:",id)
     const patient = await Patient.findById(id);
 
     console.log(patient)
     if (patient) {
       let member;
-      if(linkWithEmail){
+      if(Boolean){
       console.log("email:", email)
         member = await Patient.findOne({ email: email });}
       else{
