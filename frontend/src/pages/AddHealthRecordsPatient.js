@@ -10,7 +10,7 @@ const AddHealthRecordsPatient = () => {
     const navigate = useNavigate();
 
 
-    const id = '65394ff997fe2d0027faca14'
+    const id = '6526d30a0f83f5e462288354'
 
 
     const handleSubmit = (e) => {
