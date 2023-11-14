@@ -84,7 +84,7 @@ const DoctorDetails = () => {
   const bookAppointmentApi = async (key, nationalID) => {
     try {
       console.log(nationalID, key, id)
-      const response = await fetch(`http://localhost:4000/patient/make_appointment?nationalID=${nationalID}&date=${key}&docid=${id}&patientid=6539500c97fe2d0027faca1d`, {
+      const response = await fetch(`http://localhost:4000/patient/make_appointment?nationalID=${nationalID}&date=${key}&docid=${id}&patientid=6526d30a0f83f5e462288354`, {
         method: 'POST',
       headers: {
         'Content-Type': 'application/json',

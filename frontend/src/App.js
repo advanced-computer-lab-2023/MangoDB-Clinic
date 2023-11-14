@@ -219,8 +219,8 @@ function App() {
 
 				{/* add the rest in the right place */}
 
-				<Route path='/viewappointments/:id' element={<ViewAppointments />} />
-				<Route path='/doctorAppointments/:id' element={<DoctorApps />} />
+				<Route path='/viewappointments' element={<ViewAppointments />} />
+				<Route path='/doctorAppointments' element={<DoctorApps />} />
 
 				<Route path='/viewprofile' element={<ViewProfile />} />
 

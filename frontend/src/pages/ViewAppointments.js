@@ -15,7 +15,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 const ViewAppointments = () => {
-    const { id } = '6526d30a0f83f5e462288354';
+    const id = '6526d30a0f83f5e462288354';
     const [ appointments, setAppointments ] = useState([]);
     const [ isPending, setIsPending ] = useState(true);
     const [ error, setError ] = useState('');
@@ -194,7 +194,7 @@ const ViewAppointments = () => {
                                 <div>
                                        
                                                     <h1 >
-                                                         Doctor Name: {appointment.doctorId.firstName} {appointment.doctorId.lastName}
+                                                        {/* Doctor Name: {appointment.doctorId.firstName} {appointment.doctorId.lastName} */}
                                                     </h1>
                                                     <h2 >
                                                            { `Date: ${new Date(appointment.date).toLocaleDateString()}` }
