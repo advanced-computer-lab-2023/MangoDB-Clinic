@@ -56,7 +56,14 @@ export const mainListItems = (
       </ListItemIcon>
       <ListItemText primary="Profile" />
     </ListItemButton>
+    <ListItemButton component={Link} to="/changePasswordPatient">
+      <ListItemIcon>
+        <AccountCircleIcon />
+      </ListItemIcon>
+      <ListItemText primary="Forget Password" />
+    </ListItemButton>
   </React.Fragment>
+  
 );
 
 // export const secondaryListItems = (

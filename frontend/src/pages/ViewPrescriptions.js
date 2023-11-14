@@ -17,50 +17,47 @@ const ViewPrescriptions = () => {
     const [filterByDoctor, setFilterByDoctor] = useState('');
     const [filterByFilled, setFilterByFilled] = useState(null);
     const filterParams = [];
-    const getID = async () => {
-		try {
-			const response = await axios.post(
-				"http://localhost:4000/Patient/myInfo",
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`,
-					},
-				}
-			);
+    // const getID = async () => {
+	// 	try {
+	// 		const response = await axios.post(
+	// 			"http://localhost:4000/Patient/myInfo",
+	// 			{
+	// 				headers: {
+	// 					Authorization: `Bearer ${localStorage.getItem("token")}`,
+	// 				},
+	// 			}
+	// 		);
 
-			if (response.status === 200) {
-				return response.data._id;
-			}
-		} catch (error) {}
-	};
-    useEffect(async () => {
-        setPrescriptions([]);
-        setIsPending(true);
-        setError(null);
-
-       //  idd = await getID();
-        console.log(isFilterApplied);
-
-        if(!isFilterApplied){
-
-            fetch(`http://localhost:4000/patient/get_prescriptions_of_patient/6526d30a0f83f5e462288354`)
-            .then((res) => {
-                if (!res.ok) {
-                    throw Error('Could not fetch the data for that resource');
-                }
-                return res.json();
-            })
-            .then((data) => {
-                setPrescriptions(data);
-                setIsPending(false);
-                setError(null);
-            })
-            .catch((err) => {
-                setIsPending(false);
-                setError(err.message);
-            });
-        }
-    },  [  isFilterApplied ]);
+	// 		if (response.status === 200) {
+	// 			return response.data._id;
+	// 		}
+	// 	} catch (error) {}
+	// };
+    useEffect(() => {
+        const fetchData = async () => {
+          try {
+            setPrescriptions([]);
+            setIsPending(true);
+            setError(null);
+      
+            if (!isFilterApplied) {
+              const response = await fetch(`http://localhost:4000/patient/get_prescriptions_of_patient/6526d30a0f83f5e462288354`);
+              if (!response.ok) {
+                throw new Error('Could not fetch the data for that resource');
+              }
+              const data = await response.json();
+              setPrescriptions(data);
+              setIsPending(false);
+              setError(null);
+            }
+          } catch (err) {
+            setIsPending(false);
+            setError(err.message);
+          }
+        };
+      
+        fetchData();
+      }, [isFilterApplied]);      
 
     const handleFilter = () => {
         setOpen(false);
@@ -102,9 +99,6 @@ const ViewPrescriptions = () => {
                 setIsPending(false);
                 setError(err.message);
             });
-        
-        
-        
     }
 
     const handleCheckboxChange = (event) => {
