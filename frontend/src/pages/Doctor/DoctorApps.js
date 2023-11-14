@@ -19,7 +19,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const DoctorApps = () => {
-    const { id } = '6526d4fc602e6bd55799cda8';
+    const id = '6526d4fc602e6bd55799cda8';
     const [ appointments, setAppointments ] = useState([]);
     const [ isPending, setIsPending ] = useState(true);
     const [ error, setError ] = useState('');
