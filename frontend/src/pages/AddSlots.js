@@ -6,28 +6,28 @@ import axios from 'axios';
 
 
 const AddSlotsPage = () => {
-    const id = useParams().id
+    const id = '6526d4fc602e6bd55799cda8';
      const [weekday, setWeekday] = useState('');
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
 
 
-    const getID = async () => {
-		try {
-			const response = await axios.post(
-				"http://localhost:4000/doctor/myInfo",
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`,
-					},
-				}
-			);
+    // const getID = async () => {
+	// 	try {
+	// 		const response = await axios.post(
+	// 			"http://localhost:4000/doctor/myInfo",
+	// 			{
+	// 				headers: {
+	// 					Authorization: `Bearer ${localStorage.getItem("token")}`,
+	// 				},
+	// 			}
+	// 		);
 
-			if (response.status === 200) {
-				return response.data._id;
-			}
-		} catch (error) {}
-	};
+	// 		if (response.status === 200) {
+	// 			return response.data._id;
+	// 		}
+	// 	} catch (error) {}
+	// };
 
 
     const handleChange = (field, value) => {
@@ -48,7 +48,7 @@ const AddSlotsPage = () => {
 
     const handleAddSlot = async () => {
         try {
-            await addSlots(getID,weekday,startTime,endTime); // Sending the whole 'newSlot' object to the 'addSlots' function
+            await addSlots(id,weekday,startTime,endTime); // Sending the whole 'newSlot' object to the 'addSlots' function
 
             // Clear fields after successful slot addition
             setWeekday('');
