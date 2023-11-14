@@ -13,12 +13,12 @@ const DoctorSearch = () => {
   const port = 4000
 
   useEffect(() => {
-    const url = `http://localhost:${port}/patient/get_all_doctors/65394ff997fe2d0027faca14`;
+    const url = `http://localhost:${port}/patient/get_all_doctors/6526d30a0f83f5e462288354`;
     setUrl(url);
   }, []);
 
   const handleSearch = () => {
-    let searchUrl = `http://localhost:${port}/patient/search_doctor/65394ff997fe2d0027faca14?`;
+    let searchUrl = `http://localhost:${port}/patient/search_doctor/6526d30a0f83f5e462288354?`;
     if (searchTerm && !speciality) searchUrl += `name=${searchTerm}`;
     else if (speciality && !searchTerm) searchUrl += `speciality=${speciality}`;
     else if (searchTerm && speciality) searchUrl += `name=${searchTerm}&speciality=${speciality}`;
@@ -26,7 +26,7 @@ const DoctorSearch = () => {
   };
 
   const handleFilter = () => {
-    let filterUrl = `http://localhost:${port}/patient/search_doctor/65394ff997fe2d0027faca14?`;
+    let filterUrl = `http://localhost:${port}/patient/search_doctor/6526d30a0f83f5e462288354?`;
     console.log(filterParams.time)
     if(filterParams.speciality)
       filterUrl+= `speciality=${filterParams.speciality}`;
