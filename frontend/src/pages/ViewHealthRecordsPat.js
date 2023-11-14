@@ -30,24 +30,26 @@ const ViewHealthRecordsPat = () => {
     setOpenFile({ open: false, fileContent: '' });
   };
 
-  return (
-    <div>
-      <Button variant="contained" onClick={fetchData}>
-        Fetch Health Records
-      </Button>
 
-      {healthRecords.length > 0 ? (
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Files</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {healthRecords.map((file, fileIndex) => (
-                <TableRow key={fileIndex}>
-                  <TableCell>
+return (
+  <div>
+    <Button variant="contained" onClick={fetchData}>
+      Fetch Health Records
+    </Button>
+
+    {healthRecords.length > 0 ? (
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Files</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {healthRecords.map((file, fileIndex) => (
+              <TableRow key={fileIndex}>
+
+                 <TableCell>
                     <Button
                       variant="contained"
                       onClick={() => handleOpenFile(file.file)}
@@ -55,23 +57,27 @@ const ViewHealthRecordsPat = () => {
                       {file.name}
                     </Button>
                   </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      ) : (
-        <p>No health records found.</p>
-      )}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    ) : (
+      <p>No health records found.</p>
+    )}
 
-      <Dialog open={openFile.open} onClose={handleCloseFile}>
-        <DialogTitle>Health Record File</DialogTitle>
-        <DialogContent>
-          <p>{openFile.fileContent}</p>
-        </DialogContent>
-      </Dialog>
-    </div>
-  );
+    <Dialog open={openFile.open} onClose={handleCloseFile}>
+      <DialogTitle>Health Record File</DialogTitle>
+      <DialogContent>
+        <p>
+          <a href={openFile.fileContent} target="_blank" rel="noopener noreferrer">
+            {openFile.fileContent}
+          </a>
+        </p>
+      </DialogContent>
+    </Dialog>
+  </div>
+);
 };
 
 export default ViewHealthRecordsPat;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button, TextField, FormControl, InputLabel, Grid, Paper, Typography, Input} from '@mui/material';
 import { getHealthRecords, uploadHealthRecord } from '../services/api';
 
@@ -7,7 +7,7 @@ import { getHealthRecords, uploadHealthRecord } from '../services/api';
 const AddHealthRecordsPatient = () => {
     const[documents, setDocuments] = useState();
     const[isPending, setIsPending] = useState(false);
-    const history = useHistory();
+    const navigate = useNavigate();
 
 
     const id = '65394ff997fe2d0027faca14'
@@ -28,7 +28,7 @@ const AddHealthRecordsPatient = () => {
         uploadHealthRecord(id, formData)
             .then(() => {
                 setIsPending(false);
-                history.push('/patientdashboard');
+                navigate('/patientdashboard');
             })
             .catch((error) => {
                 console.error('Error uploading documents:', error);
@@ -39,7 +39,7 @@ const AddHealthRecordsPatient = () => {
     }
 
     const handleViewHealthRecords = () => {
-        history.push(`/viewhealthrecpat/${id}`); // Adjust the route path as needed
+        navigate(`/viewhealthrecpat/${id}`); // Adjust the route path as needed
       };
 
       

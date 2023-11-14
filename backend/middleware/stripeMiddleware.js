@@ -124,7 +124,7 @@ router.post('/create-checkout-session/:id', async (req, res) => {
 
 router.post('/create-checkout-session-packages/:id', async (req, res) => {
     try {
-        const packageType = id;
+        const packageType = req.params.id;
         let paymentAmount = 0;
         
         switch (packageType) {

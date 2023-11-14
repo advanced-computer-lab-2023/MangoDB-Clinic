@@ -9,7 +9,23 @@ const path = require('path');
 
 function generateOTP() {
     return Math.floor(100000 + Math.random() * 900000).toString();
-  }
+}
+
+const getMyInfo = asyncHandler(async (req, res) => {
+	const doctor = await Doctor.findById(req.user.id);
+
+	if (!doctor) {
+		res.status(400);
+		throw new Error("Doctor Does Not Exist");
+	}
+
+	res.status(200).json({
+		_id: doctor.id,
+		name: doctor.firstName + " " + doctor.lastName,
+		username: doctor.username,
+		email: doctor.email,
+	});
+});
 
 
 // FILTER APPOITMENT USING STATUS OR DATE
@@ -885,6 +901,7 @@ const followUp = async (req, res) => {
 
 
 module.exports = {
+    getMyInfo,
     createDoctor,
     updateEmail,
     updateHourlyRate,

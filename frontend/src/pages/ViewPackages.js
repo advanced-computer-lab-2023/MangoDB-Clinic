@@ -15,6 +15,7 @@ import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import Container from '@mui/material/Container';
+import { checkout1 } from '../services/api';
 
 function Copyright(props) {
   return (
@@ -28,6 +29,37 @@ function Copyright(props) {
     </Typography>
   );
 }
+
+
+
+const handleClick = async (e) => {
+    try {
+        const name = e.currentTarget.getAttribute('name');
+        const items = [
+        { id: 1, quantity: 1 },
+      ];
+
+      const response = await checkout1(name, items);
+
+      // Check if the request was successful (status code 2xx)
+      if (response.status === 200) {
+        const { url } = response.data;
+        console.log('Checkout Session:', response.data);
+        // Handle the session object as needed (e.g., redirect to the checkout page)
+        window.location = url;
+      } else {
+        console.error('Failed to create checkout session');
+        // Handle error as needed
+      }
+    } catch (error) {
+      console.error('Error during checkout:', error);
+      // Handle error as needed
+    }
+  };
+
+
+
+
 
 const tiers = [
   {
@@ -162,7 +194,7 @@ export default function Pricing() {
       <Container maxWidth="md" component="main">
         <Grid container spacing={5} alignItems="flex-end">
           {tiers.map((tier) => (
-            // Enterprise card is full width at sm breakpoint
+            
             <Grid
               item
               key={tier.title}
@@ -216,7 +248,7 @@ export default function Pricing() {
                   </ul>
                 </CardContent>
                 <CardActions>
-                  <Button fullWidth variant={tier.buttonVariant}>
+                  <Button name={tier.title} fullWidth variant={tier.buttonVariant} onClick={handleClick}>
                     {tier.buttonText}
                   </Button>
                 </CardActions>
