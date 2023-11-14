@@ -29,8 +29,8 @@ import AddHealthRecordsPatient from './pages/AddHealthRecordsPatient';
 import LinkPatientAsFam from './pages/LinkPatientAsFam';
 import ViewEmploymentContract from './pages/ViewEmploymentContract';
 // import LoginPage from './pages/LoginPage';
-import Login from './components/Login';
-import DoctorDashboard from './pages/DoctorDashboard';
+// import Login from './components/Login';
+import DoctorDashboard from './pages/doctorDashboard';
 
 function App() {
   return (
@@ -38,7 +38,7 @@ function App() {
         <Routes>
             {/* =====================Routes for the HomePage========================== */}
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
+            {/* <Route path="/login" element={<Login />} /> */}
             <Route path="/patientform" element={<PatientForm />} />
             <Route path="/doctorform" element={<DoctorForm />} />
             <Route path="/doctorsTable" element={<DoctorsTable />} />
