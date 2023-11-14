@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { Button, TextField, FormControl, InputLabel, Grid, Paper, Typography, Input} from '@mui/material';
 import { addDoctor } from '../services/api';
 
@@ -17,7 +17,7 @@ const DoctorForm = () => {
     const[documents, setDocuments] = useState();
     const[speciality, setSpeciality] = useState('');
     const[isPending, setIsPending] = useState(false);
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -42,7 +42,7 @@ const DoctorForm = () => {
         addDoctor(formData)
             .then(() => {
                 setIsPending(false);
-                history.push('/');
+                navigate('/doctordashboard');
             })
             .catch((error) => {
                 console.error('Error adding doctor:', error);

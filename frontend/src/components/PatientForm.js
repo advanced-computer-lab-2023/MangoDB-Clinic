@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button, TextField, Select, MenuItem, FormControl, InputLabel, Grid, Paper, Typography } from '@mui/material';
 import { addPatient } from '../services/api';
 
@@ -15,7 +15,7 @@ const PatientForm = () => {
     const[mobile, setMobile] = useState('0102334455');
     const [emergencyContact, setEmergencyContact] = useState({ name: 'ahmed', mobile: '1232132123' });
     const [isPending, setIsPending] = useState(false);
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -40,7 +40,7 @@ const PatientForm = () => {
         addPatient(patient)
             .then(() => {
                 setIsPending(false);
-                history.push('/');
+                navigate('/pateintdashboard');
             })
             .catch((error) => {
                 console.error('Error adding patient:', error);

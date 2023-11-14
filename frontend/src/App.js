@@ -3,7 +3,7 @@ import './App.css';
 import Home from './pages/Home';
 import PatientDashboard from './pages/PatientDashboard';
 import DoctorsTable from './components/DoctorsTable';
-import { BrowserRouter as Router, Switch, Route,  } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route,  } from 'react-router-dom';
 import PatientForm from './components/PatientForm';
 import PatientList from './pages/Doctor/PatientList';
 import PatientDetails from './pages/Doctor/PatientDetails';
@@ -28,97 +28,60 @@ import ViewPackages from './pages/ViewPackages';
 import AddHealthRecordsPatient from './pages/AddHealthRecordsPatient';
 import LinkPatientAsFam from './pages/LinkPatientAsFam';
 import ViewEmploymentContract from './pages/ViewEmploymentContract';
+// import LoginPage from './pages/LoginPage';
+import Login from './components/Login';
+import DoctorDashboard from './pages/DoctorDashboard';
 
 function App() {
   return (
     <Router>
-      <div className="App"> 
-        <div className='content'>
-          <Switch>
-            <Route exact path='/'> 
-              <Home />
-            </Route>
-            <Route path='/patientdashboard'>
-              <PatientDashboard />
-            </Route>
-            <Route path='/patientform'>
-              <PatientForm />
-            </Route>
-            <Route path='/addhealthrecords/:id'>
-              <AddHealthRecordsPatient />
-            </Route>
-            <Route path='/viewfammembers/:id'>
-              <ViewFamilyMembers />
-            </Route>
-            <Route path='/linkfammember/:id'>
-              <LinkFamMember />
-            </Route>
-            <Route path='/linkpatasfam/:id'>
-              <LinkPatientAsFam />
-            </Route>
-            <Route path='/addslots/:id'>
-              <AddSlotsPage />
-            </Route>
-            <Route path='/viewhealthrecpat/:id'>
-              <ViewHealthRecordsPat />
-            </Route>
-            <Route path='/viewemploymentcontract/:id'>
-              <ViewEmploymentContract />
-            </Route>
-            <Route path='/doctorform'>
-              <DoctorForm />
-            </Route>
-            <Route path='/doctorsTable'>
-              <DoctorsTable />
-            </Route>
-            <Route path='/viewAllPatients/:id'>
-              <PatientList />
-            </Route>
-            <Route path='/selectedPatient/:id'>
-              <PatientDetails />
-            </Route>
-            <Route path='/viewappointments/:id'>
-              <ViewAppointments />
-            </Route>
-            <Route path='/viewdoctors'>
-              <ViewDoctors />
-            </Route>
-            <Route path='/viewprescriptions/:patientId'>
-              <ViewPrescriptions />
-            </Route>
-            <Route path='/prescriptiondetials/:prescriptionId'>
-              <PrescriptionDetials />
-            </Route>
-            <Route path='/viewprofile'>
-              <ViewProfile />
-            </Route>
-            <Route path='/editDoctor/:id'>
-              <EditDoctor />
-            </Route>
-            <Route path='/doctorAppointments/:id'>
-              <DoctorApps />
-            </Route>
-            <Route path='/checkout/:id'>
-              <Checkout />
-            </Route>
-            <Route path='/view_wallet/:id'>
-              <ViewWallet />
-            </Route>
-            <Route path='/doctor-details/:id'>
-              <DoctorDetails />
-            </Route>
-            <Route path='/search-doctors'>
-              <DoctorSearch />
-            </Route>
-            <Route path='/filter'>
-              <Filter />
-            </Route>
-             <Route path='/viewpackages'>
-              <ViewPackages />
-            </Route>
-          </Switch>
-        </div>
-      </div>
+        <Routes>
+            {/* =====================Routes for the HomePage========================== */}
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/patientform" element={<PatientForm />} />
+            <Route path="/doctorform" element={<DoctorForm />} />
+            <Route path="/doctorsTable" element={<DoctorsTable />} />
+
+            {/* =====================Routes for the Patient========================== */}
+            <Route path="/patientdashboard" element={<PatientDashboard />} />
+            <Route path="/viewfammembers/:id" element={<ViewFamilyMembers />} />
+            <Route path="/linkfammember/:id" element={<LinkFamMember />} />
+            <Route path="/addhealthrecords/:id" element={<AddHealthRecordsPatient />} />
+            <Route path="/viewprescriptions/:patientId" element={<ViewPrescriptions />} />
+            <Route path="/prescriptiondetials/:prescriptionId" element={<PrescriptionDetials />} />
+            <Route path="/search-doctors" element={<DoctorSearch />} />
+            
+            {/* =====================Routes for the Doctor========================== */}
+            <Route path="/doctordashboard" element={<DoctorDashboard />} />
+            <Route path="/viewAllPatients/:id" element={<PatientList />} />
+            <Route path="/selectedPatient/:id" element={<PatientDetails />} />
+            <Route path="/viewdoctors" element={<ViewDoctors />} />
+            <Route path="/editDoctor/:id" element={<EditDoctor />} />
+            
+            
+            
+            {/* add the rest in the right place */}
+          
+            <Route path="/viewappointments/:id" element={<ViewAppointments />} />
+            <Route path="/doctorAppointments/:id" element={<DoctorApps />} />
+            
+            <Route path="/viewprofile" element={<ViewProfile />} />
+            
+            
+            <Route path="/checkout/:id" element={<Checkout />} />
+            <Route path="/view_wallet/:id" element={<ViewWallet />} />
+            <Route path="/doctor-details/:id" element={<DoctorDetails />} />
+            
+            <Route path="/filter" element={<Filter />} />
+            <Route path="/viewpackages" element={<ViewPackages />} />
+            <Route path="/viewhealthrecpat/:id" element={<ViewHealthRecordsPat />} />
+            <Route path="/linkpatasfam/:id" element={<LinkPatientAsFam />} />
+            <Route path="/addslots/:id" element={<AddSlotsPage />} />
+            <Route path="/viewemploymentcontract/:id" element={<ViewEmploymentContract />} />
+            <Route path="/addhealthrecords/:id" element={<AddHealthRecordsPatient />} />
+
+          </Routes>
     </Router>
   );
 }
