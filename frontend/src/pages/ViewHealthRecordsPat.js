@@ -5,37 +5,40 @@ import { useParams } from 'react-router-dom';
 import { getHealthRecords } from '../services/api';
 import axios from 'axios';
 
-
-const ViewHealthRecordsPat =async () => {
+const ViewHealthRecordsPat = () => {
   const [healthRecords, setHealthRecords] = useState([]);
   const [openFile, setOpenFile] = useState({ open: false, fileContent: '' });
-  //const { id } = useParams();
-  const getID = async () => {
-		try {
-			const response = await axios.post(
-				"http://localhost:4000/Patient/myInfo",
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`,
-					},
-				}
-			);
+  const  id  = '6526d30a0f83f5e462288354';
 
-			if (response.status === 200) {
-				return response.data._id;
-			}
-		} catch (error) {}
-	};
+  // const getID = async () => {
+  //   try {
+  //     const response = await axios.post(
+  //       "http://localhost:4000/Patient/myInfo",
+  //       {},
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       }
+  //     );
 
-  const id = await getID();
+  //     if (response.status === 200) {
+  //       return response.data._id;
+  //     }
+  //   } catch (error) {
+  //     console.error('Error getting ID:', error);
+  //   }
+  // };
+
   const fetchData = useCallback(async () => {
     try {
-      const response = await getHealthRecords(getID);
-      setHealthRecords(response.data.files); // Update to access the files array from the response
+     // const userId = await getID(); // Wait for the ID before making the request
+      const response = await getHealthRecords(id);
+      setHealthRecords(response.data.files);
     } catch (error) {
       console.error('Error fetching health records:', error);
     }
-  }, [id]);
+  }, []);
 
   useEffect(() => {
     fetchData();
@@ -49,26 +52,24 @@ const ViewHealthRecordsPat =async () => {
     setOpenFile({ open: false, fileContent: '' });
   };
 
+  return (
+    <div>
+      <Button variant="contained" onClick={fetchData}>
+        Fetch Health Records
+      </Button>
 
-return (
-  <div>
-    <Button variant="contained" onClick={fetchData}>
-      Fetch Health Records
-    </Button>
-
-    {healthRecords.length > 0 ? (
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Files</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {healthRecords.map((file, fileIndex) => (
-              <TableRow key={fileIndex}>
-
-                 <TableCell>
+      {healthRecords.length > 0 ? (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Files</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {healthRecords.map((file, fileIndex) => (
+                <TableRow key={fileIndex}>
+                  <TableCell>
                     <Button
                       variant="contained"
                       onClick={() => handleOpenFile(file.file)}
@@ -76,27 +77,27 @@ return (
                       {file.name}
                     </Button>
                   </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    ) : (
-      <p>No health records found.</p>
-    )}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <p>No health records found.</p>
+      )}
 
-    <Dialog open={openFile.open} onClose={handleCloseFile}>
-      <DialogTitle>Health Record File</DialogTitle>
-      <DialogContent>
-        <p>
-          <a href={openFile.fileContent} target="_blank" rel="noopener noreferrer">
-            {openFile.fileContent}
-          </a>
-        </p>
-      </DialogContent>
-    </Dialog>
-  </div>
-);
+      <Dialog open={openFile.open} onClose={handleCloseFile}>
+        <DialogTitle>Health Record File</DialogTitle>
+        <DialogContent>
+          <p>
+            <a href={openFile.fileContent} target="_blank" rel="noopener noreferrer">
+              {openFile.fileContent}
+            </a>
+          </p>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
 };
 
 export default ViewHealthRecordsPat;
