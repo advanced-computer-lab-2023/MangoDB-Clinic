@@ -26,7 +26,7 @@ const DoctorSearch = () => {
   };
 
   const handleFilter = () => {
-    let filterUrl = `http://localhost:${port}/patient/search_doctor/6526d30a0f83f5e462288354?`;
+    let filterUrl = `http://localhost:${port}/patient/filter_doctors/6526d30a0f83f5e462288354?`;
     console.log(filterParams.time)
     if(filterParams.speciality)
       filterUrl+= `speciality=${filterParams.speciality}`;
