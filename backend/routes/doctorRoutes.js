@@ -128,13 +128,16 @@ router.post('/viewHealthRecords/:id',protectDoctor, viewHealthRecords);
 
 router.get('/getAllSpecialities', getAllSpecialities)
 
+
 router.get('/view_wallet/:id',protectDoctor, viewWallet)
 router.post('/followUp',protectDoctor, followUpDoc);
 router.get('/getMyAppointments/:id',protectDoctor,getMyAppointments)
 router.get('/getEmploymentContract',protectDoctor,viewEmploymentContract)
 router.patch('/addSlots/:id',protectDoctor, addNewSlots);
 router.patch('/addHealthRecord/:id',protectDoctor, addHealthRecord);
-router.patch('scheduleFollowup/:id',protectDoctor, followUp)
+router.patch('/scheduleFollowup/:doctorId/:patientId/:appointmentId/:followUpDate',protectDoctor, followUp);
+
+
 
 module.exports = router;
 

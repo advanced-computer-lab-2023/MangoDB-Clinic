@@ -29,9 +29,14 @@ import ViewPackages from './pages/ViewPackages';
 import AddHealthRecordsPatient from './pages/AddHealthRecordsPatient';
 import LinkPatientAsFam from './pages/LinkPatientAsFam';
 import ViewEmploymentContract from './pages/ViewEmploymentContract';
+
 // import LoginPage from './pages/LoginPage';
 // import Login from './components/Login';
 import DoctorDashboard from './pages/doctorDashboard';
+
+import Success from './pages/Success';
+import Cancel from './pages/Cancel';
+
 
 function App() {
   return (
@@ -123,6 +128,12 @@ function App() {
              <Route path='/viewpackages'>
               <ViewPackages />
             </Route>
+            <Route path='/success'>
+              <Success />
+            </Route>
+            <Route path='/cancel'>
+              <Cancel />
+            </Route>
           </Switch>
         </div>
       </div> */}
@@ -163,6 +174,8 @@ function App() {
             <Route path="/checkout/:id" element={<Checkout />} />
             <Route path="/view_wallet/:id" element={<ViewWallet />} />
             <Route path="/doctor-details/:id" element={<DoctorDetails />} />
+            <Route path="/success" element={<Success />} />
+            <Route path="/cancel" element={<Cancel />} />
             
             <Route path="/filter" element={<Filter />} />
             <Route path="/viewpackages" element={<ViewPackages />} />
