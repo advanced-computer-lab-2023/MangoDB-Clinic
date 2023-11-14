@@ -530,7 +530,7 @@ const filterStatus = async (req, res) => {
 const viewAllDoctors = asyncHandler(async (req, res) => {
 	try {
 		const doctors = await Doctor.find({
-			/*accountStatus: 'active'*/
+			accountStatus: 'active'
 		}).sort({ createdAt: -1 });
 		if (!doctors) {
 			res.status(400).json({ error: "No Doctors Found" });
