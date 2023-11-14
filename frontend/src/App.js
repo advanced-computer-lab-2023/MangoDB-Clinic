@@ -201,7 +201,7 @@ function App() {
 					element={<AddHealthRecordsPatient />}
 				/>
 				<Route
-					path='/viewprescriptions/:patientId'
+					path='/viewprescriptions'
 					element={<ViewPrescriptions />}
 				/>
 				<Route
