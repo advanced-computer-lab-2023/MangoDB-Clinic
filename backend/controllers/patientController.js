@@ -664,11 +664,11 @@ const viewHealthPackages = asyncHandler(async (req, res) => {
 });
 
 const viewSubscribedhealthPackage = async (req, res) => {
-	const patient = await Patient.findById(req.params.id);
 	try {
+		// const patient = await Patient.findById(req.params.id);
+		const patient = await Patient.findById('6526d30a0f83f5e462288354');
 		if (!patient) {
-			res.status(400);
-			throw new Error("Patient does not exist.");
+			res.status(200).json({ message: 'Patient not found' });
 		} else {
 			const patientsPackage = patient.healthPackage;
 			if (patientsPackage) {
@@ -683,8 +683,7 @@ const viewSubscribedhealthPackage = async (req, res) => {
 
 				res.status(200).json(patientsPackage);
 			} else {
-				res.status(400);
-				throw new Error("Patient has no packages.");
+				res.status(200).json({ message: "Patient has no packages." });
 			}
 		}
 	} catch (error) {
