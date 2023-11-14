@@ -4,6 +4,7 @@ const doctorController = require('../controllers/doctorController');
 const {protectDoctor} = require('../middleware/doctorMiddleware')
 
 const {
+    getMyInfo,
     createDoctor,
     updateEmail,
     updateHourlyRate,
@@ -34,7 +35,7 @@ const {
     getStatusOptions,
 } = require('../controllers/doctorController');
 
-
+router.get('/myInfo', protectDoctor, getMyInfo);
 
 // Extra frontend routes
 router.get('/doctorInfo/:id', getDoctorInfo);
