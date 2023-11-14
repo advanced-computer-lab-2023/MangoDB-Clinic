@@ -212,25 +212,25 @@ const DoctorApps = () => {
                             </MenuItem>
                         ))}
                     </Select> */}
-                    <FormControl fullWidth variant="outlined" size="small" style={{ 'width': 'auto' }}>
-                    <InputLabel id="status-label">Status</InputLabel>
-                    <Select
-                        labelId="status-label"
-                        id="status"
-                        name="status"
-                        label="Status"
-                        variant="outlined"
-                        size="small"
-                        value={status}
-                        onChange={handleChange}
-                    >
-                        {statEnum.map((option) => (
-                            <MenuItem key={option} value={option}>
-                                {option}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
+                    <FormControl fullWidth variant="outlined" size="small" style={{ 'minWidth': '5vw', 'width': 'auto' }}>
+                        <InputLabel id="status-label">Status</InputLabel>
+                        <Select
+                            labelId="status-label"
+                            id="status"
+                            name="status"
+                            label="Status"
+                            variant="outlined"
+                            size="small"
+                            value={status}
+                            onChange={handleChange}
+                        >
+                            {statEnum.map((option) => (
+                                <MenuItem key={option} value={option}>
+                                    {option}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                     <TextField 
                         id="from"
                         name="from"

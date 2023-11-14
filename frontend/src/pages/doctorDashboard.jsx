@@ -19,6 +19,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 // import DoctorsTable from '../components/DoctorsTable';
 import { DoctorListItems } from '../components/DoctorListItems';
+import { useParams } from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -83,6 +84,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const defaultTheme = createTheme();
 
 export default function Dashboard() {
+  const { id } = useParams();
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);

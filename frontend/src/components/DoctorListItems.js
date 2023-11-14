@@ -20,37 +20,19 @@ export const DoctorListItems = (
       </ListItemIcon>
       <ListItemText primary="Dashboard" />
     </ListItemButton>
-    <ListItemButton component={Link} to="/viewdoctors">
+    <ListItemButton component={Link} to={ `/viewAllPatients/:id` }>
       <ListItemIcon>
         <PeopleIcon />
       </ListItemIcon>
-      <ListItemText primary="Doctors" />
+      <ListItemText primary="Patients" />
     </ListItemButton>
-    <ListItemButton component={Link} to="/viewappointments">
+    <ListItemButton component={Link} to={ `/doctorAppointments/:id` }>
       <ListItemIcon>
         <TodayIcon />
       </ListItemIcon>
       <ListItemText primary="Appointments" />
     </ListItemButton>
-    <ListItemButton component={Link} to="/viewprescriptions">
-      <ListItemIcon>
-        <MedicationIcon />
-      </ListItemIcon>
-      <ListItemText primary="Prescriptions" />
-    </ListItemButton>
-    <ListItemButton component={Link} to="/viewpackages">
-      <ListItemIcon>
-        <LoyaltyIcon />
-      </ListItemIcon>
-      <ListItemText primary="Packages" />
-    </ListItemButton>
-    <ListItemButton component={Link} to="/viewwallet">
-      <ListItemIcon>
-        <WalletIcon />
-      </ListItemIcon>
-      <ListItemText primary="Wallet" />
-    </ListItemButton>
-    <ListItemButton component={Link} to="/viewprofile">
+    <ListItemButton component={Link} to={ `/editDoctor/:id` }>
       <ListItemIcon>
         <AccountCircleIcon />
       </ListItemIcon>

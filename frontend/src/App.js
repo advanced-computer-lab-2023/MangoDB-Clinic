@@ -2,6 +2,7 @@ import './App.css';
 // import Navbar from './components/NavBar';
 import Home from './pages/Home';
 import PatientDashboard from './pages/PatientDashboard';
+import Dashboard from './pages/doctorDashboard';
 import DoctorsTable from './components/DoctorsTable';
 import { BrowserRouter as Router, Switch, Route,  } from 'react-router-dom';
 import PatientForm from './components/PatientForm';
@@ -40,6 +41,9 @@ function App() {
             </Route>
             <Route path='/patientdashboard'>
               <PatientDashboard />
+            </Route>
+            <Route path='/doctordashboard'>
+              <Dashboard />
             </Route>
             <Route path='/patientform'>
               <PatientForm />
