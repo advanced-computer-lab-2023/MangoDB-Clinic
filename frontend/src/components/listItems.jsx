@@ -6,6 +6,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import PasswordIcon from "@mui/icons-material/Password";
 
 export const mainListItems = (
 	<React.Fragment>
@@ -23,20 +24,25 @@ export const mainListItems = (
 			<ListItemText primary='Requested Doctors' />
 		</ListItemButton>
 
-		{/* TODO enter link href */}
-		<ListItemButton>
+		<ListItemButton href='/admin/user-management'>
 			<ListItemIcon>
 				<PeopleIcon />
 			</ListItemIcon>
 			<ListItemText primary='User Management' />
 		</ListItemButton>
 
-		{/* TODO enter link href */}
-		<ListItemButton>
+		<ListItemButton href='/admin/health-packs'>
 			<ListItemIcon>
 				<LocalHospitalIcon />
 			</ListItemIcon>
 			<ListItemText primary='Health Packages' />
+		</ListItemButton>
+
+		<ListItemButton href='/admin/change-password'>
+			<ListItemIcon>
+				<PasswordIcon />
+			</ListItemIcon>
+			<ListItemText primary='Change My Password' />
 		</ListItemButton>
 	</React.Fragment>
 );

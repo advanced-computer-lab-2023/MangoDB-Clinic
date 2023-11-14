@@ -402,11 +402,11 @@ const getPackages = asyncHandler(async (req, res) => {
 // @route GET /admin/get-package/:id
 // @access Private
 const getPackage = asyncHandler(async (req, res) => {
-	const package = await Packages.findById(req.params.id);
+	const package = await Packages.findOne({ name: req.body.name });
 
 	if (!package) {
 		res.status(400);
-		throw new Error("No Packages Found");
+		throw new Error("Package Not Found");
 	} else {
 		res.status(200).json(package);
 	}

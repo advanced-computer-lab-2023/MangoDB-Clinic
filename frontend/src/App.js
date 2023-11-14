@@ -8,7 +8,11 @@ import ForgotPasswordUserPage from "./pages/ForgotPasswordUserPage";
 
 import AddAdminPage from "./pages/AddAdminPage";
 import RequestedDoctorsPage from "./pages/RequestedDoctorsPage";
-import LoginUser from "./components/LoginUser";
+import LoginUserPage from "./pages/LoginUserPage";
+import UserManagementPage from "./pages/UserManagementPage";
+import HealthPackagesPage from "./pages/HealthPackagesPage";
+import AddPackagePage from "./pages/AddPackagePage";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
 
 export default function App() {
 	return (
@@ -17,7 +21,7 @@ export default function App() {
 				<Routes>
 					<Route path='/admin' element={<DashboardPage />} />
 					<Route path='/admin/login' element={<LoginPage />} />
-					<Route path='/login' element={<LoginUser />} />
+					<Route path='/login' element={<LoginUserPage />} />
 
 					<Route
 						path='/admin/forgot-password'
@@ -29,6 +33,16 @@ export default function App() {
 					<Route
 						path='/admin/requested-doctors'
 						element={<RequestedDoctorsPage />}
+					/>
+					<Route
+						path='/admin/user-management'
+						element={<UserManagementPage />}
+					/>
+					<Route path='/admin/health-packs' element={<HealthPackagesPage />} />
+					<Route path='/admin/add-health-pack' element={<AddPackagePage />} />
+					<Route
+						path='/admin/change-password'
+						element={<ChangePasswordPage />}
 					/>
 				</Routes>
 			</Router>

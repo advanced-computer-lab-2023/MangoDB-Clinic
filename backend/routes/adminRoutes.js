@@ -33,7 +33,7 @@ router.get("/my-info", protectAdmin, getMyInfo);
 router.get("/view-doctor/:id", protectAdmin, viewDoctorRequest);
 router.get("/view-requested-doctors", protectAdmin, viewAllDoctorRequests);
 router.get("/get-packages", protectAdmin, getPackages);
-router.get("/get-package/:id", protectAdmin, getPackage);
+router.post("/get-package", protectAdmin, getPackage);
 router.get("/get-admins", protectAdmin, getAdmins);
 router.get("/get-doctors", protectAdmin, getDoctors);
 router.get("/get-patients", protectAdmin, getPatients);
