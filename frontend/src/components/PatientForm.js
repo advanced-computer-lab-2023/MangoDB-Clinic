@@ -29,10 +29,7 @@ const PatientForm = () => {
             nationalID,
             gender,
             mobile,
-            emergencyContact: {
-                name: emergencyContact.name || '', // Add a default value to prevent errors
-                mobile: emergencyContact.mobile || '', // Add a default value to prevent errors
-            },
+            emergencyContact
         };
 
         setIsPending(true);
