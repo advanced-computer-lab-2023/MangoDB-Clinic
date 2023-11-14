@@ -45,7 +45,7 @@ const {
 	makeAppointment,
 } = require("../controllers/patientController");
 
-router.get("/myInfo", protectPatient, getMyInfo);
+router.get("/myInfo", getMyInfo);
 
 router.post("/login", loginPatient);
 router.get("/request-otp",  sendOTP);

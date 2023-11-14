@@ -13,6 +13,7 @@ const Home = () => {
             <button onClick={() => navigate('/patientform')}>Patient Registration</button>
             <button onClick={() => navigate('/login')}>Login</button>
             <button onClick={() => navigate('/doctorform')}>Doctor Registration</button>
+            <button onClick={() => navigate('/doctordashboard')}>Doctor Dashboard</button>
 
             {/* <Button component={Link} to="/patientform" variant="contained" color="primary">Patient Registration</Button>
             <Button component={Link} to="/doctorsTable" variant="contained" color="primary">Doctors Table</Button>

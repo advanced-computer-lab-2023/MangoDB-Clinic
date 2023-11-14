@@ -5,35 +5,35 @@ import { viewRegFamMembers } from "../services/api";
 import axios from 'axios';
 
 
-const ViewFamilyMembers = async() => {
+const ViewFamilyMembers = () => {
     const [familyMembers, setFamilyMembers] = useState([]); // Initialize as an empty array
 
-   // const actualPatientId = useParams().patientId || '6526d30a0f83f5e462288354'; // Extract 'patientId' from useParams or use the default value
-    const getID = async () => {
-		try {
-			const response = await axios.post(
-				"http://localhost:4000/Patient/myInfo",
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`,
-					},
-				}
-			);
+   const actualPatientId = '6526d30a0f83f5e462288354'; // Extract 'patientId' from useParams or use the default value
+    // const getID = async () => {
+	// 	try {
+	// 		const response = await axios.post(
+	// 			"http://localhost:4000/Patient/myInfo",
+	// 			{
+	// 				headers: {
+	// 					Authorization: `Bearer ${localStorage.getItem("token")}`,
+	// 				},
+	// 			}
+	// 		);
 
-			if (response.status === 200) {
-				return response.data._id;
-			}
-		} catch (error) {}
-	};
-    const id = await getID();
+	// 		if (response.status === 200) {
+	// 			return response.data._id;
+	// 		}
+	// 	} catch (error) {}
+	// };
+    // const id = await getID();
     const fetchData = useCallback(async () => {
         try {
-            const response = await viewRegFamMembers(getID); // Make sure to use 'await' here
+            const response = await viewRegFamMembers(actualPatientId); // Make sure to use 'await' here
             setFamilyMembers(response.data); // Check the response structure to set the data accordingly
         } catch (error) {
             console.error('Error fetching data:', error);
         }
-    }, [id]);
+    }, [actualPatientId]);
 
     useEffect(() => {
         fetchData(); // No need to check patientId here since it's in the dependency array
