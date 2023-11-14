@@ -20,16 +20,16 @@ export default function Profile() {
     <div style={centerStyle}>
       <h1>My Profile</h1>
       <div style={{ marginTop: '20px' }}>
-        <Link to="/linkfammember/3">
+        <Link to="/linkfammember">
           <button>Link Family Member</button>
         </Link>
-        <Link to="/linkpatasfam/3">
+        <Link to="/linkpatasfam">
           <button>Link Patient as Family Member</button>
         </Link>
-        <Link to="/viewfammembers/3">
+        <Link to="/viewfammembers">
           <button>View Registered Family Members</button>
         </Link>
-        <Link to="/viewhealthrecpat/3">
+        <Link to="/viewhealthrecpat">
           <button>View Health Records</button>
         </Link>
         <Link to="/viewHealthPackageSubscription">
