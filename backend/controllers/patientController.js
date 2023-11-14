@@ -304,7 +304,7 @@ const getAllPrescriptions = async (req, res) => {
 };
 
 const getAllPrescriptionsOfPatient = async (req, res) => {
-	const patientId = req.patientId;
+	const patientId = req.params.id;
 
 	if (!mongoose.Types.ObjectId.isValid(patientId)) {
 		return res.status(404).json({ error: "Id Not Found" });
@@ -317,9 +317,8 @@ const getAllPrescriptionsOfPatient = async (req, res) => {
 			return res.status(404).json({ error: "Patient Not Found" });
 		}
 
-		const prescriptions = await Prescription.find({
-			patientId: patientId,
-		}).populate("doctorId");
+		const prescriptions = await Prescription.find({patientId: patientId}).populate('doctorId')
+		console.log(prescriptions);
 		res.status(200).json(prescriptions);
 	} catch (error) {
 		console.error(error);
@@ -530,7 +529,7 @@ const filterStatus = async (req, res) => {
 const viewAllDoctors = asyncHandler(async (req, res) => {
 	try {
 		const doctors = await Doctor.find({
-			/*accountStatus: 'active'*/
+			accountStatus: 'active'
 		}).sort({ createdAt: -1 });
 		if (!doctors) {
 			res.status(400).json({ error: "No Doctors Found" });
@@ -664,11 +663,11 @@ const viewHealthPackages = asyncHandler(async (req, res) => {
 });
 
 const viewSubscribedhealthPackage = async (req, res) => {
-	const patient = await Patient.findById(req.params.id);
 	try {
+		// const patient = await Patient.findById(req.params.id);
+		const patient = await Patient.findById('6526d30a0f83f5e462288354');
 		if (!patient) {
-			res.status(400);
-			throw new Error("Patient does not exist.");
+			res.status(200).json({ message: 'Patient not found' });
 		} else {
 			const patientsPackage = patient.healthPackage;
 			if (patientsPackage) {
@@ -683,8 +682,7 @@ const viewSubscribedhealthPackage = async (req, res) => {
 
 				res.status(200).json(patientsPackage);
 			} else {
-				res.status(400);
-				throw new Error("Patient has no packages.");
+				res.status(200).json({ message: "Patient has no packages." });
 			}
 		}
 	} catch (error) {

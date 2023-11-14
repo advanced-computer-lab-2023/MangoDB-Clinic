@@ -38,6 +38,12 @@ export const DoctorListItems = (
       </ListItemIcon>
       <ListItemText primary="Profile" />
     </ListItemButton>
+    <ListItemButton component={Link} to={ `/changePasswordDoctor` }>
+      <ListItemIcon>
+        <AccountCircleIcon />
+      </ListItemIcon>
+      <ListItemText primary="Forget Password" />
+    </ListItemButton>
   </React.Fragment>
 );
 
