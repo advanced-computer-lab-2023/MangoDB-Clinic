@@ -16,7 +16,7 @@ import Link from "@mui/material/Link";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import { mainListItems } from "./listItems";
+import { mainListItems } from "./listItems.jsx";
 import { useNavigate } from "react-router-dom";
 
 import Chart from "./Chart";

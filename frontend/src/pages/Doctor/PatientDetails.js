@@ -5,6 +5,7 @@ import { selectPatient } from '../../services/api';
 import { Typography } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { uploadHealthRecord } from '../../services/api';
+import axios from 'axios';
 
 /**
  * TODO: 1-Get the patient using the id param (Done)
@@ -12,13 +13,15 @@ import { uploadHealthRecord } from '../../services/api';
  *       3-View health records
  */
 
-const PatientDetails = () => {
+const PatientDetails = async() => {
     const { id } = useParams();
     const [ patient, setPatient ] = useState('');
     const [ isPending, setIsPending ] = useState(true);
     const [ error, setError ] = useState(null);
     const [open, setOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
+
+   
 
     useEffect(() => {
         setTimeout(() => {

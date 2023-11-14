@@ -3,10 +3,10 @@ import { useParams } from "react-router-dom";
 import { viewWallet } from "../services/api";
 import { useState, useEffect } from "react";
 // import useFetch from "../useFetch";
+import axios from 'axios';
 
-
-const ViewWallet = () => {
-    const { id } = useParams();
+const ViewWallet = async() => {
+   // const { id } = useParams();
     // const { data: wallet, isPending, error } = useFetch(`http://localhost:4000/patient/view_wallet/${id}`);
     // console.log(wallet.balance);
 
@@ -14,11 +14,28 @@ const ViewWallet = () => {
     const [isPending, setIsPending] = useState(true);
     const [error, setError] = useState('');
 
-    useEffect(() => {
+    const getID = async () => {
+		try {
+			const response = await axios.post(
+				"http://localhost:4000/Patient/myInfo",
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				}
+			);
+
+			if (response.status === 200) {
+				return response.data._id;
+			}
+		} catch (error) {}
+	};
+    const idd = await getID();
+    useEffect(async () => {
         setWallet(null);
         setIsPending(true);
 
-        viewWallet(id)
+       await viewWallet(getID)
         
         .then((result) => {
             console.log("Data:", result.data.wallet.balance);
@@ -32,7 +49,7 @@ const ViewWallet = () => {
             setIsPending(false);
             setError(err.message);
         });
-    }, [id]);
+    }, [idd]);
 
 
     return ( 

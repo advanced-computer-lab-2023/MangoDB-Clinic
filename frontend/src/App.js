@@ -42,6 +42,8 @@ import ChangePasswordPage from "./pages/ChangePasswordPage";
 import DoctorDashboard from "./pages/doctorDashboard";
 import Success from "./pages/Success";
 import Cancel from "./pages/Cancel";
+import SuccessfulPackagePayment from './pages/successfulPackagePayment';
+import CancelHealthPackageSubscription from './pages/cancelHealthPackageSubscription'
 
 function App() {
 	return (
@@ -61,25 +63,25 @@ function App() {
             <Route path='/patientform'>
               <PatientForm />
             </Route>
-            <Route path='/addhealthrecords/:id'>
+            <Route path='/addhealthrecords'>
               <AddHealthRecordsPatient />
             </Route>
-            <Route path='/viewfammembers/:id'>
+            <Route path='/viewfammembers'>
               <ViewFamilyMembers />
             </Route>
-            <Route path='/linkfammember/:id'>
+            <Route path='/linkfammember'>
               <LinkFamMember />
             </Route>
-            <Route path='/linkpatasfam/:id'>
+            <Route path='/linkpatasfam'>
               <LinkPatientAsFam />
             </Route>
-            <Route path='/addslots/:id'>
+            <Route path='/addslots'>
               <AddSlotsPage />
             </Route>
-            <Route path='/viewhealthrecpat/:id'>
+            <Route path='/viewhealthrecpat'>
               <ViewHealthRecordsPat />
             </Route>
-            <Route path='/viewemploymentcontract/:id'>
+            <Route path='/viewemploymentcontract'>
               <ViewEmploymentContract />
             </Route>
             <Route path='/doctorform'>
@@ -88,19 +90,19 @@ function App() {
             <Route path='/doctorsTable'>
               <DoctorsTable />
             </Route>
-            <Route path='/viewAllPatients/:id'>
+            <Route path='/viewAllPatients/'>
               <PatientList />
             </Route>
             <Route path='/selectedPatient/:id'>
               <PatientDetails />
             </Route>
-            <Route path='/viewappointments/:id'>
+            <Route path='/viewappointments'>
               <ViewAppointments />
             </Route>
             <Route path='/viewdoctors'>
               <ViewDoctors />
             </Route>
-            <Route path='/viewprescriptions/:patientId'>
+            <Route path='/viewprescriptions'>
               <ViewPrescriptions />
             </Route>
             <Route path='/prescriptiondetials/:prescriptionId'>
@@ -109,16 +111,16 @@ function App() {
             <Route path='/viewprofile'>
               <ViewProfile />
             </Route>
-            <Route path='/editDoctor/:id'>
+            <Route path='/editDoctor'>
               <EditDoctor />
             </Route>
-            <Route path='/doctorAppointments/:id'>
+            <Route path='/doctorAppointments'>
               <DoctorApps />
             </Route>
             <Route path='/checkout/:id'>
               <Checkout />
             </Route>
-            <Route path='/view_wallet/:id'>
+            <Route path='/view_wallet'>
               <ViewWallet />
             </Route>
             <Route path='/doctor-details/:id'>
@@ -150,7 +152,47 @@ function App() {
 				<Route path='/doctorform' element={<DoctorForm />} />
 				<Route path='/doctorsTable' element={<DoctorsTable />} />
 
-				{/* =====================Routes for the Patient========================== */}
+            {/* =====================Routes for the Patient========================== */}
+            <Route path="/patientdashboard" element={<PatientDashboard />} />
+            <Route path="/viewfammembers" element={<ViewFamilyMembers />} />
+            <Route path="/linkfammember" element={<LinkFamMember />} />
+            <Route path="/addhealthrecords" element={<AddHealthRecordsPatient />} />
+            <Route path="/viewprescriptions" element={<ViewPrescriptions />} />
+            <Route path="/prescriptiondetials/:prescriptionId" element={<PrescriptionDetials />} />
+            <Route path="/search-doctors" element={<DoctorSearch />} />
+            <Route path="/viewpackages" element={<ViewPackages />} />
+            <Route path="/successfulPackagePayment" element={<SuccessfulPackagePayment />} />
+            <Route path="/cancelHealthPackageSubscription" element={<CancelHealthPackageSubscription />} />
+
+            
+            {/* =====================Routes for the Doctor========================== */}
+            <Route path="/doctordashboard" element={<DoctorDashboard />} />
+            <Route path="/viewAllPatients" element={<PatientList />} />
+            <Route path="/selectedPatient/:id" element={<PatientDetails />} />
+            <Route path="/viewdoctors" element={<ViewDoctors />} />
+            <Route path="/editDoctor" element={<EditDoctor />} />
+            
+            
+            
+            {/* add the rest in the right place */}
+          
+            <Route path="/viewappointments" element={<ViewAppointments />} />
+            <Route path="/doctorAppointments" element={<DoctorApps />} />
+            
+            <Route path="/viewprofile" element={<ViewProfile />} />
+            
+            
+            <Route path="/checkout/:id" element={<Checkout />} />
+            <Route path="/view_wallet" element={<ViewWallet />} />
+            <Route path="/doctor-details/:id" element={<DoctorDetails />} />
+            
+            <Route path="/filter" element={<Filter />} />
+            <Route path="/viewhealthrecpat" element={<ViewHealthRecordsPat />} />
+            <Route path="/linkpatasfam" element={<LinkPatientAsFam />} />
+            <Route path="/addslots" element={<AddSlotsPage />} />
+            <Route path="/viewemploymentcontract" element={<ViewEmploymentContract />} />
+            <Route path="/addhealthrecords" element={<AddHealthRecordsPatient />} />
+				{/* =====================Routes for the Patient==========================
 				<Route path='/patientdashboard' element={<PatientDashboard />} />
 				<Route path='/viewfammembers/:id' element={<ViewFamilyMembers />} />
 				<Route path='/linkfammember/:id' element={<LinkFamMember />} />
@@ -159,14 +201,14 @@ function App() {
 					element={<AddHealthRecordsPatient />}
 				/>
 				<Route
-					path='/viewprescriptions/:patientId'
+					path='/viewprescriptions'
 					element={<ViewPrescriptions />}
 				/>
 				<Route
 					path='/prescriptiondetials/:prescriptionId'
 					element={<PrescriptionDetials />}
 				/>
-				<Route path='/search-doctors' element={<DoctorSearch />} />
+				<Route path='/search-doctors' element={<DoctorSearch />} /> */}
 
 				{/* =====================Routes for the Doctor========================== */}
 				<Route path='/doctordashboard' element={<DoctorDashboard />} />

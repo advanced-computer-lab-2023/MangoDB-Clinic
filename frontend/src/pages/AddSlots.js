@@ -2,12 +2,33 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, TextField, Grid } from '@mui/material';
 import { addSlots } from '../services/api'; // Ensure you have the 'addSlots' function
+import axios from 'axios';
+
 
 const AddSlotsPage = () => {
     const id = useParams().id
      const [weekday, setWeekday] = useState('');
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
+
+
+    const getID = async () => {
+		try {
+			const response = await axios.post(
+				"http://localhost:4000/doctor/myInfo",
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				}
+			);
+
+			if (response.status === 200) {
+				return response.data._id;
+			}
+		} catch (error) {}
+	};
+
 
     const handleChange = (field, value) => {
         switch (field) {
@@ -27,7 +48,7 @@ const AddSlotsPage = () => {
 
     const handleAddSlot = async () => {
         try {
-            await addSlots(id,weekday,startTime,endTime); // Sending the whole 'newSlot' object to the 'addSlots' function
+            await addSlots(getID,weekday,startTime,endTime); // Sending the whole 'newSlot' object to the 'addSlots' function
 
             // Clear fields after successful slot addition
             setWeekday('');

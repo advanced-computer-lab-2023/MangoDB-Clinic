@@ -42,9 +42,9 @@ router.get("/doctorInfo/:id", getDoctorInfo);
 router.get("/statusOptions", getStatusOptions);
 
 router.post("/login", loginDoctor);
-router.post("/verify-otp", protectDoctor, verifyOTP);
-router.post("/reset-password", protectDoctor, resetPassword);
-router.get("/request-otp", protectDoctor, sendOTP);
+router.post("/verify-otp",  verifyOTP);
+router.post("/reset-password",  resetPassword);
+router.get("/request-otp",  sendOTP);
 
 router.post("/filterapp", filterStatus);
 
@@ -87,24 +87,24 @@ router.get("/viewAllPatients/:doctorId", async (req, res) => {
 	}
 });
 
-router.put("/updateEmail/:id", protectDoctor, updateEmail);
-router.put("/updateHourlyRate/:id", protectDoctor, updateHourlyRate);
-router.put("/updateAffiliation/:id", protectDoctor, updateAffiliation);
+router.put("/updateEmail/:id",  updateEmail);
+router.put("/updateHourlyRate/:id",  updateHourlyRate);
+router.put("/updateAffiliation/:id",  updateAffiliation);
 
-router.post("/searchPatientByName/:id", protectDoctor, searchPatientByName);
-router.post("/viewHealthRecords/:id", protectDoctor, viewHealthRecords);
+router.post("/searchPatientByName/:id",  searchPatientByName);
+router.post("/viewHealthRecords/:id",  viewHealthRecords);
 
 router.get("/getAllSpecialities", getAllSpecialities);
 
-router.get("/view_wallet/:id", protectDoctor, viewWallet);
-router.post("/followUp", protectDoctor, followUpDoc);
-router.get("/getMyAppointments/:id", protectDoctor, getMyAppointments);
-router.get("/getEmploymentContract", protectDoctor, viewEmploymentContract);
-router.patch("/addSlots/:id", protectDoctor, addNewSlots);
-router.patch("/addHealthRecord/:id", protectDoctor, addHealthRecord);
+router.get("/view_wallet/:id", viewWallet);
+router.post("/followUp/:id", followUpDoc);
+router.get("/getMyAppointments/:id", getMyAppointments);
+router.get("/getEmploymentContract:id", viewEmploymentContract);
+router.patch("/addSlots/:id",  addNewSlots);
+router.patch("/addHealthRecord/:id",  addHealthRecord);
 router.patch(
 	"/scheduleFollowup/:doctorId/:patientId/:appointmentId/:followUpDate",
-	protectDoctor,
+	
 	followUp
 );
 

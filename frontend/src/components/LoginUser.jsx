@@ -57,10 +57,10 @@ export default function LoginUser() {
 				localStorage.setItem("token", response.data.token);
 				switch (response.data.type) {
 					case "Patient":
-						navigate("/patientDashboard");
+						navigate("/patientdashboard");
 						break;
 					case "Doctor":
-						navigate("/doctorDashboard");
+						navigate("/doctordashboard");
 						break;
 					default:
 						break;

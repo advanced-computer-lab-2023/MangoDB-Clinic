@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Button, TextField, Grid } from '@mui/material';
 import { linkFam } from '../services/api'; // Assuming you have a function named 'linkFam' in 'services/api'
 import { useParams } from 'react-router-dom'; // Don't forget to import 'useParams'
+import axios from 'axios';
+
 
 const LinkFamMember = () => {
-    const id = useParams().id ; // Extract 'patientId' from useParams or use the default value
+    //const id = useParams().id ; // Extract 'patientId' from useParams or use the default value
 
     const [family, setFamily] = useState({
         name: '',
@@ -20,10 +22,26 @@ const LinkFamMember = () => {
             [field]: value
         }));
     };
+    const getID = async () => {
+		try {
+			const response = await axios.post(
+				"http://localhost:4000/Patient/myInfo",
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				}
+			);
+
+			if (response.status === 200) {
+				return response.data._id;
+			}
+		} catch (error) {}
+	};
 
     const handleLink = async () => {
         try {
-            await linkFam(id, [family]);
+            await linkFam(getID, [family]);
             setFamily({
                 name: '',
                 nationalID: '',

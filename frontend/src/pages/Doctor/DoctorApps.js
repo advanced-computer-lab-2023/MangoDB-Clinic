@@ -8,6 +8,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
+import axios from 'axios';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -17,13 +18,8 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-
-// const handleFollowUpDateChange = (e) => {
-//         setFollowUpDate(e.target.value);
-//     };
-
 const DoctorApps = () => {
-    const { id } = useParams();
+    const { id } = '6526d4fc602e6bd55799cda8';
     const [ appointments, setAppointments ] = useState([]);
     const [ isPending, setIsPending ] = useState(true);
     const [ error, setError ] = useState('');
@@ -34,6 +30,24 @@ const DoctorApps = () => {
 
     const [ statEnum, setStatEnum ] = useState(['All']); 
 
+
+    // const getID = async () => {
+	// 	try {
+	// 		const response = await axios.post(
+	// 			"http://localhost:4000/doctor/myInfo",
+	// 			{
+	// 				headers: {
+	// 					Authorization: `Bearer ${localStorage.getItem("token")}`,
+	// 				},
+	// 			}
+	// 		);
+
+	// 		if (response.status === 200) {
+	// 			return response.data._id;
+	// 		}
+	// 	} catch (error) {}
+	// };
+    // const id = await getID();
     const [followUpDate, setFollowUpDate] = useState('');
 
     const handleFollowUpDateChange = (e) => {
