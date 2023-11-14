@@ -8,16 +8,34 @@ const Appointment = require("../models/appointmentModel");
 const Packages = require("../models/packagesModel");
 const Wallet = require('../models/walletModel')
 
-
 const port = process.env.PORT;
 
-const renderDashboard = (req, res) => {
-  res.status(200).render("patientDashboard");
-};
+// const renderDashboard = (req, res) => {
+//   res.status(200).render("patientDashboard");
+// };
 
-const renderAddFamilyMember = (req, res) => {
-  res.status(200).render("addFamilyMember");
-};
+// const renderAddFamilyMember = (req, res) => {
+//   res.status(200).render("addFamilyMember");
+// };
+
+// @desc Get my (patient) info
+// @route GET /patient/my-info
+// @access Public
+const getMyInfo = asyncHandler(async (req, res) => {
+	const patient = await Patient.findById(req.user.id);
+
+	if (!patient) {
+		res.status(400);
+		throw new Error("Patient Does Not Exist");
+	}
+
+	res.status(200).json({
+		_id: patient.id,
+		name: patient.firstName + " " + patient.lastName,
+		username: patient.username,
+		email: patient.email,
+	});
+});
 
 function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -1234,6 +1252,7 @@ const upcoming = async (req, res) => {
 
 
 module.exports = {
+  getMyInfo,
   getAllPatients,
   getPatient,
   addPatient,
@@ -1253,8 +1272,6 @@ module.exports = {
   addAppointment,
   addPrescription,
   getSpecialities,
-  renderDashboard,
-  renderAddFamilyMember,
   viewHealthRecords,
   viewHealthPackages,
   viewSubscribedhealthPackage,
