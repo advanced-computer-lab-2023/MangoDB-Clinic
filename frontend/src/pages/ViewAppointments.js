@@ -4,6 +4,7 @@ import { viewPatientAppointments, upcomingPatientApp, filterPatientAppointments 
 import { Grid, Paper, Typography, TextField } from "@mui/material";
 import { experimentalStyled as styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
+import axios from 'axios';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -13,8 +14,13 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
+// const getId = async () => {
+  
+	
+
+
 const ViewAppointments = () => {
-    const { id } = useParams();
+    const [ id, setId ] = useState('');
     const [ appointments, setAppointments ] = useState([]);
     const [ isPending, setIsPending ] = useState(true);
     const [ error, setError ] = useState('');
@@ -22,7 +28,18 @@ const ViewAppointments = () => {
     const [ from, setFrom ] = useState('');
     const [ to, setTo ] = useState('');
     const [ upcoming, setUpcoming ] = useState(false);
-
+    useEffect (async()=>{
+        try {
+            const response = await axios.get("http://localhost:4000/patient/myInfo", {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            });
+    
+            // return response.data._id;
+            setId(response.data._id)
+        } catch (error) {}
+    })
     function convertToISOFormat(dateString) {
         // Split the input string into day, month, and year
         const [day, month, year] = dateString.split('/');
