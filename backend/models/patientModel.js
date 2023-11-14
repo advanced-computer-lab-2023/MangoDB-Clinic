@@ -13,6 +13,10 @@ const patientSchema = mongoose.Schema(
       required: true,
       enum: ["male", "female"],
     },
+    passwordResetOTP: {
+        type: String,
+        default: ''
+    },
     mobile: {
       type: String,
       required: true,

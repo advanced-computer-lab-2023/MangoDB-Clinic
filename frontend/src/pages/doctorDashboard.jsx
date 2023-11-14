@@ -19,6 +19,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 // import DoctorsTable from '../components/DoctorsTable';
 import { DoctorListItems } from '../components/DoctorListItems';
+import { useParams } from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -81,6 +82,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
+
 
 export default function DoctorDashboard() {
   const [open, setOpen] = React.useState(true);

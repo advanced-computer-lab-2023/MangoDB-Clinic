@@ -115,6 +115,7 @@ router.post('/create-checkout-session/:id', async (req, res) => {
             cancel_url: 'http://localhost:3000/cancel',
         });
 
+       
         res.json({ url: session.url });
     } catch (err) {
         res.status(500).json({ error: err.message });

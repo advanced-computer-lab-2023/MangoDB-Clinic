@@ -4,7 +4,7 @@ import { linkFam } from '../services/api'; // Assuming you have a function named
 import { useParams } from 'react-router-dom'; // Don't forget to import 'useParams'
 
 const LinkFamMember = () => {
-    const id = useParams().id || '6526d30a0f83f5e462288354'; // Extract 'patientId' from useParams or use the default value
+    const id = useParams().id ; // Extract 'patientId' from useParams or use the default value
 
     const [family, setFamily] = useState({
         name: '',
