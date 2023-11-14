@@ -10,6 +10,7 @@ const centerStyle = {
     justifyContent: 'center',
     height: '20vh',
   };
+
   
   const buttonStyle = {
     margin: '10px',
@@ -31,7 +32,15 @@ export default function Profile() {
         <Link to="/viewhealthrecpat/3">
           <button>View Health Records</button>
         </Link>
+        <Link to="/viewHealthPackageSubscription">
+          <button>View Health Package Subscription</button>
+        </Link>
+        <Link to="/cancelHealthPackageSubscription">
+          <button>Cancel Health Package Subscription</button>
+        </Link>
+       
       </div>
+
       
     </div>
   );
