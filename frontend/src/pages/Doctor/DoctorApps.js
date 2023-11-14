@@ -8,6 +8,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
+import axios from 'axios';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -17,8 +18,8 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-const DoctorApps = () => {
-    const { id } = useParams();
+const DoctorApps = async() => {
+    //const { id } = useParams();
     const [ appointments, setAppointments ] = useState([]);
     const [ isPending, setIsPending ] = useState(true);
     const [ error, setError ] = useState('');
@@ -28,6 +29,24 @@ const DoctorApps = () => {
     const [ upcoming, setUpcoming ] = useState(false);
     const [ statEnum, setStatEnum ] = useState(['All']); 
 
+
+    const getID = async () => {
+		try {
+			const response = await axios.post(
+				"http://localhost:4000/doctor/myInfo",
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				}
+			);
+
+			if (response.status === 200) {
+				return response.data._id;
+			}
+		} catch (error) {}
+	};
+    const id = await getID();
     // function convertToISOFormat(dateString) {
     //     // Split the input string into day, month, and year
     //     const [day, month, year] = dateString.split('/');

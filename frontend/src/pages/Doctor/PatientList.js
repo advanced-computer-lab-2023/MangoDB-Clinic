@@ -4,6 +4,7 @@ import { getPatientsDoctor, searchPatients } from "../../services/api";
 import { Grid, Paper, Typography, TextField } from "@mui/material";
 import { experimentalStyled as styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
+import axios from 'axios';
 // import { makeStyles } from "@mui/styles";
 
 // const useStyles = makeStyles((theme) => ({
@@ -22,13 +23,32 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-const PatientList = () => {
-    const { id } = useParams();
+const PatientList = async() => {
+   // const { id } = useParams();
     const [ patients, setPatients ] = useState([]);
     const [ isPending, setIsPending ] = useState(true);
     const [ error, setError ] = useState(null);
     const [ search, setSearch ] = useState('');
     // const [ upcoming, setUpcoming ] = useState(false);
+
+    const getID = async () => {
+		try {
+			const response = await axios.post(
+				"http://localhost:4000/doctor/myInfo",
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				}
+			);
+
+			if (response.status === 200) {
+				return response.data._id;
+			}
+		} catch (error) {}
+	};
+
+    const id = await getID();
 
     const handleChange = (e) => {
         setSearch(e.target.value);

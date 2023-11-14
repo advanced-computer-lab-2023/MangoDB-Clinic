@@ -4,6 +4,8 @@ import { getEmploymentContract } from '../services/api';
 import { useParams } from 'react-router-dom';
 import { Paper, Button, Grid } from '@mui/material';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'; // Import the necessary CSS
+import axios from 'axios';
+
 
 const ViewEmploymentContract = () => {
     const [numPages, setNumPages] = useState(null);
@@ -11,12 +13,27 @@ const ViewEmploymentContract = () => {
     const [pageNumber, setPageNumber] = useState(1);
     const { id } = useParams(); // Import and retrieve the 'id' from 'react-router-dom'
 
+    const getID = async () => {
+		try {
+			const response = await axios.post(
+				"http://localhost:4000/Patient/myInfo",
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				}
+			);
 
+			if (response.status === 200) {
+				return response.data._id;
+			}
+		} catch (error) {}
+	};
     useEffect(() => {
         const fetchContract = async () => {
             try {
                 // Fetch the employment contract PDF from the server
-                const contract = await getEmploymentContract(id); // Call the API function
+                const contract = await getEmploymentContract(getID); // Call the API function
 
 
                 // Assuming the response returns the PDF file or link

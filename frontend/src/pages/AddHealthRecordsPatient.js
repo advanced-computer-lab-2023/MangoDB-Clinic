@@ -2,16 +2,33 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, TextField, FormControl, InputLabel, Grid, Paper, Typography, Input} from '@mui/material';
 import { getHealthRecords, uploadHealthRecord } from '../services/api';
+import axios from 'axios';
 
-
-const AddHealthRecordsPatient = () => {
+const AddHealthRecordsPatient = async() => {
     const[documents, setDocuments] = useState();
     const[isPending, setIsPending] = useState(false);
     const navigate = useNavigate();
 
 
-    const id = '65394ff997fe2d0027faca14'
+   // const id = '65394ff997fe2d0027faca14'
 
+   const getID = async () => {
+		try {
+			const response = await axios.post(
+				"http://localhost:4000/Patient/myInfo",
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				}
+			);
+
+			if (response.status === 200) {
+				return response.data._id;
+			}
+		} catch (error) {}
+	};
+  const id = await getID();
 
     const handleSubmit = (e) => {
         e.preventDefault();

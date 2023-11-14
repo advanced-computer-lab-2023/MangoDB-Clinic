@@ -12,13 +12,15 @@ import Container from '@mui/material/Container';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import axios from 'axios';
+
 // import FormControlLabel from '@mui/material/FormControlLabel';
 // import Checkbox from '@mui/material/Checkbox';
 // import Link from '@mui/material/Link';
 // import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
-const EditDoctor = () => {
-    const { id } = useParams();
+const EditDoctor = async() => {
+   // const { id } = useParams();
     const [ doctor, setDoctor ] = useState(null);
     const [ isPending, setIsPending ] = useState(true);
     const [ error, setError ] = useState(null);
@@ -26,6 +28,27 @@ const EditDoctor = () => {
 
     const defaultTheme = createTheme();
 
+
+
+    const getID = async () => {
+		try {
+			const response = await axios.post(
+				"http://localhost:4000/doctor/myInfo",
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				}
+			);
+
+			if (response.status === 200) {
+				return response.data._id;
+			}
+		} catch (error) {}
+	};
+
+    const id = await getID();
+    
     const handleChange = (e) => {
         const { name, value } = e.target;
         setDoctor((prev) => ({ ...prev, [name]: value}));

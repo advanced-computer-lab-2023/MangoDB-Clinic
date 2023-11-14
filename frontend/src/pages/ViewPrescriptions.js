@@ -3,8 +3,13 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import FilterListIcon from '@mui/icons-material/FilterList';
 import PrescriptionsTable from "../components/PrescriptionsTable";
+import axios from 'axios';
+
 
 const ViewPrescriptions = () => {
+   
+   
+    const idd = null;
     const { patientId } = useParams();
     const [prescriptions, setPrescriptions] = useState([]);
     const [isPending, setIsPending] = useState(true);
@@ -15,17 +20,34 @@ const ViewPrescriptions = () => {
     const [filterByDoctor, setFilterByDoctor] = useState('');
     const [filterByFilled, setFilterByFilled] = useState(null);
     const filterParams = [];
+    const getID = async () => {
+		try {
+			const response = await axios.post(
+				"http://localhost:4000/Patient/myInfo",
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				}
+			);
 
-    useEffect(() => {
+			if (response.status === 200) {
+				return response.data._id;
+			}
+		} catch (error) {}
+	};
+    useEffect(async () => {
         setPrescriptions([]);
         setIsPending(true);
         setError(null);
 
+         idd = await getID();
         console.log(isFilterApplied);
 
         if(!isFilterApplied){
 
-            fetch(`http://localhost:4000/patient/get_prescriptions_of_patient/${patientId}`)
+
+           await fetch(`http://localhost:4000/patient/get_prescriptions_of_patient/${getID}`)
             .then((res) => {
                 if (!res.ok) {
                     throw Error('Could not fetch the data for that resource');
@@ -42,7 +64,7 @@ const ViewPrescriptions = () => {
                 setError(err.message);
             });
         }
-    }, [patientId, isFilterApplied ]);
+    },  [ idd, isFilterApplied ]);
 
     const handleFilter = () => {
         setOpen(false);

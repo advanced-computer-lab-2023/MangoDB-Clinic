@@ -3,15 +3,34 @@ import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRo
 import { Dialog, DialogTitle, DialogContent } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { getHealthRecords } from '../services/api';
+import axios from 'axios';
 
-const ViewHealthRecordsPat = () => {
+
+const ViewHealthRecordsPat =async () => {
   const [healthRecords, setHealthRecords] = useState([]);
   const [openFile, setOpenFile] = useState({ open: false, fileContent: '' });
-  const { id } = useParams();
+  //const { id } = useParams();
+  const getID = async () => {
+		try {
+			const response = await axios.post(
+				"http://localhost:4000/Patient/myInfo",
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				}
+			);
 
+			if (response.status === 200) {
+				return response.data._id;
+			}
+		} catch (error) {}
+	};
+
+  const id = await getID();
   const fetchData = useCallback(async () => {
     try {
-      const response = await getHealthRecords(id);
+      const response = await getHealthRecords(getID);
       setHealthRecords(response.data.files); // Update to access the files array from the response
     } catch (error) {
       console.error('Error fetching health records:', error);
