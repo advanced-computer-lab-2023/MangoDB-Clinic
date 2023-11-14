@@ -38,7 +38,7 @@ const ViewPrescriptions = () => {
         setIsPending(true);
         setError(null);
 
-         idd = await getID();
+       //  idd = await getID();
         console.log(isFilterApplied);
 
         if(!isFilterApplied){
@@ -60,7 +60,7 @@ const ViewPrescriptions = () => {
                 setError(err.message);
             });
         }
-    },  [ idd, isFilterApplied ]);
+    },  [  isFilterApplied ]);
 
     const handleFilter = () => {
         setOpen(false);

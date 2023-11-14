@@ -6,7 +6,7 @@ import axios from 'axios';
 
 
 const LinkFamMember = () => {
-    //const id = useParams().id ; // Extract 'patientId' from useParams or use the default value
+    const id = '6526d30a0f83f5e462288354' // Extract 'patientId' from useParams or use the default value
 
     const [family, setFamily] = useState({
         name: '',
@@ -41,7 +41,7 @@ const LinkFamMember = () => {
 
     const handleLink = async () => {
         try {
-            await linkFam(getID, [family]);
+            await linkFam(id, [family]);
             setFamily({
                 name: '',
                 nationalID: '',
