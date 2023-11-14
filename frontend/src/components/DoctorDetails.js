@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getSelectedDoctor, checkout } from '../services/api';
+
 // import FileViewer from 'react-file-viewer';
 
 const DoctorDetails = () => {
@@ -37,7 +38,7 @@ const DoctorDetails = () => {
 
   const fetchAvailableSlots = async (doctorId, selectedDate) => {
     try {
-      const response = await fetch(`http://localhost:4000/patient/get_available_slots/${id}?date=${selectedDate}`);
+      const response = await fetch(`http://localhost:4000/patient/get_available_appointments/${id}?date=${selectedDate}`);
       const data = await response.json();
       const formattedSlots = data.map((slot) => ({
         key: new Date(`${selectedDate}T${slot}:00:00`),
@@ -51,9 +52,28 @@ const DoctorDetails = () => {
 
   const bookAppointment = async (key, nationalID) => {
     try {
-      const app= await bookAppointmentApi(key, nationalID);
+      
+     const app=await bookAppointmentApi(key, nationalID);
       fetchAvailableSlots(id, selectedDate);
-      checkout(app.id);
+      console.log(app._id)
+      const items = [
+        { id: 1, quantity: 1 },
+      
+      ];
+      const url =`http://localhost:3000/checkout/${app._id}`
+      window.location= url;
+
+    // const response = await axios.post('/api/checkout', { appointmentId: app.data._id, items });
+    //  const response=await checkout(app._id,items);
+    //  if (response.status === 200) {
+    //   const { url } = response.data;
+    //   console.log('Checkout Session:', response.data);
+    //   // Handle the session object as needed (e.g., redirect to the checkout page)
+    //   window.location = url;
+    // } else {
+    //   console.error('Failed to create checkout session');
+    //   // Handle error as needed
+    // }
 
     } catch (error) {
       console.error('Error booking appointment:', error);
@@ -70,7 +90,13 @@ const DoctorDetails = () => {
         'Content-Type': 'application/json',
       },
     })
-    console.log(response)
+    if (!response.ok) {
+      throw new Error(`Failed to make appointment. Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log(responseData);
+    return responseData; 
     } catch (error) {
       console.error('Error booking an appointment', error);
     }

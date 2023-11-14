@@ -5,7 +5,7 @@ const { registerAsPatient, registerAsDoctor, login, renderPatientRegistration, r
 
 const authenticate = require('../middleware/authMiddleware.js')
 
-router.get('/patientRegistration', renderPatientRegistration)
+// router.get('/patientRegistration', renderPatientRegistration)
 
 router.get('/doctorRegistration', renderDoctorRegistration)
 

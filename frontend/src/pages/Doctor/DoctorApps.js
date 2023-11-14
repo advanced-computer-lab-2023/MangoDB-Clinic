@@ -27,6 +27,7 @@ const DoctorApps = async() => {
     const [ from, setFrom ] = useState('');
     const [ to, setTo ] = useState('');
     const [ upcoming, setUpcoming ] = useState(false);
+
     const [ statEnum, setStatEnum ] = useState(['All']); 
 
 
@@ -47,6 +48,13 @@ const DoctorApps = async() => {
 		} catch (error) {}
 	};
     const id = await getID();
+    const [followUpDate, setFollowUpDate] = useState('');
+
+    const handleFollowUpDateChange = (e) => {
+        setFollowUpDate(e.target.value);
+    };
+
+
     // function convertToISOFormat(dateString) {
     //     // Split the input string into day, month, and year
     //     const [day, month, year] = dateString.split('/');
@@ -79,13 +87,38 @@ const DoctorApps = async() => {
     }
     const scheduleFollowupHandler = async (docotrId, patientId, appointmentId) => {
         try {
-            await scheduleFollowup(docotrId, patientId,appointmentId);
-
-            //reload el 7aga ??
+            if (!followUpDate) {
+                alert('Please select a follow-up date.');
+                return;
+            }
+    
+            const response = await scheduleFollowup(docotrId, patientId, appointmentId, followUpDate);
+    
+            // Check if the response indicates success (adjust this based on your API response structure)
+            if (response && response.status === 200) {
+                // Reload the page on success
+                window.location.reload();
+            } else {
+                console.error('Error scheduling follow-up. Unexpected response:', response);
+            }
         } catch (error) {
-            console.error('Error scheduling follow-up:', error);
+            // Log more details about the Axios error
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.error('Axios error - response data:', error.response.data);
+                console.error('Axios error - response status:', error.response.status);
+                console.error('Axios error - response headers:', error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                console.error('Axios error - no response received:', error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.error('Axios error - request setup:', error.message);
+            }
         }
     };
+    
 
 
     const handleUpcomingClick = () => {
@@ -103,6 +136,7 @@ const DoctorApps = async() => {
             case 'to': value == '' ? setTo('') : setTo(value); break;
         }
     }
+  
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -308,15 +342,26 @@ const DoctorApps = async() => {
                                             <Typography variant="body2" style={{ color: 'black' }}>
                                                 Follow up: { appointment.followUp ? 'Yes' : 'No' }
                                             </Typography>
-                                            {appointment.status === 'confirmed' && (
+                                            {appointment.status === 'confirmed' && !(appointment.followUp)&& (
+                                           <div>
+                                            <TextField
+                                                id={`followUpDate-${appointment._id}`}
+                                                name={`followUpDate-${appointment._id}`}
+                                                label="Follow-up Date"
+                                                type="date"
+                                                value={followUpDate}
+                                                onChange={handleFollowUpDateChange}
+                                                InputLabelProps={{ shrink: true }}
+                                            />
                                             <Button
                                                 variant="outlined"
                                                 size="small"
-                                                onClick={() => scheduleFollowupHandler(appointment.doctorId,appointment.patientId,appointment._id)}
+                                                onClick={() => scheduleFollowupHandler(appointment.doctorId, appointment.patientId, appointment._id,followUpDate)}
                                             >
-                                                Schedule Followup
+                                                Schedule Follow-up
                                             </Button>
-                                        )}
+                                        </div>
+                                           )}
                                         </Item>
                                     {/* </Link> */}
                                 </div>

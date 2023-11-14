@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Link } from 'react-router-dom';
 
-const ReusableTable = ({ data, columns }) => {
+const ReusableTable2 = ({ data, columns, linkPath }) => {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -21,14 +21,10 @@ const ReusableTable = ({ data, columns }) => {
         </TableHead>
         <TableBody>
           {data.map((row) => (
-            <TableRow key={row.id} 
-              // component={Link} 
-              // to={`${linkPath}/${row.id}`}
-              // onClick={() => onRowClick(row.id)}
-            >
+            <TableRow className="trow" key={row.id} component={Link} to={`${linkPath}/${row._id}`}>
               {columns.map((column) => (
-                <TableCell key={column.id} >
-                  {row[column.id]}
+                <TableCell key={column.id}>
+                  {column.format ? column.format(row[column.id]) : row[column.id]}
                 </TableCell>
               ))}
             </TableRow>
@@ -39,4 +35,4 @@ const ReusableTable = ({ data, columns }) => {
   );
 };
 
-export default ReusableTable;
+export default ReusableTable2;
