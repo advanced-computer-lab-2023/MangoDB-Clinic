@@ -1117,8 +1117,9 @@ const payFromWallet = async (req, res) => {
 
       default:
         // Handle the case where an invalid package type is provided
-        console.error('Invalid package type');
-        return res.status(400).json({ error: 'Invalid package type' });
+        // console.error('Invalid package type');
+        // return res.status(400).json({ error: 'Invalid package type' });
+        doctorSessionDiscount=0;
     }
 
     
@@ -1134,27 +1135,23 @@ const payFromWallet = async (req, res) => {
         throw new Error('Wallet not found');
       }
 
-      // Use the calculated discounts and other variables in your payment logic
-      // const paymentAmount = calculatePaymentAmount(drRate, doctorSessionDiscount, familyDiscount);
-
+      //fa2er mafesh felos
       if (wallet.balance < paymentAmount) {
-        throw new Error('Insufficient funds in the wallet');
+        res.json({ success: false, message: 'Insufficient funds in the wallet'});
       }
-
-      // Deduct the payment amount from the wallet balance
       wallet.balance -= paymentAmount;
 
-      // Record the transaction in the wallet
+     
       wallet.transactions.push({
         type: 'debit',
         amount: paymentAmount,
         date: new Date(),
       });
 
-      // Save the updated wallet
+      
       await wallet.save();
 
-      // Respond with success message or other necessary data
+     
       res.json({ success: true, message: 'Payment successful' });
 
     } catch (error) {

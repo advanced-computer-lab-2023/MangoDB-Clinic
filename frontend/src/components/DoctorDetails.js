@@ -60,16 +60,20 @@ const DoctorDetails = () => {
         { id: 1, quantity: 1 },
       
       ];
-     const response=await checkout(app._id,items);
-     if (response.status === 200) {
-      const { url } = response.data;
-      console.log('Checkout Session:', response.data);
-      // Handle the session object as needed (e.g., redirect to the checkout page)
-      window.location = url;
-    } else {
-      console.error('Failed to create checkout session');
-      // Handle error as needed
-    }
+      const url =`http://localhost:3000/checkout/${app._id}`
+      window.location= url;
+
+    // const response = await axios.post('/api/checkout', { appointmentId: app.data._id, items });
+    //  const response=await checkout(app._id,items);
+    //  if (response.status === 200) {
+    //   const { url } = response.data;
+    //   console.log('Checkout Session:', response.data);
+    //   // Handle the session object as needed (e.g., redirect to the checkout page)
+    //   window.location = url;
+    // } else {
+    //   console.error('Failed to create checkout session');
+    //   // Handle error as needed
+    // }
 
     } catch (error) {
       console.error('Error booking appointment:', error);

@@ -28,6 +28,8 @@ import ViewPackages from './pages/ViewPackages';
 import AddHealthRecordsPatient from './pages/AddHealthRecordsPatient';
 import LinkPatientAsFam from './pages/LinkPatientAsFam';
 import ViewEmploymentContract from './pages/ViewEmploymentContract';
+import Success from './pages/Success';
+import Cancel from './pages/Cancel';
 
 function App() {
   return (
@@ -115,6 +117,12 @@ function App() {
             </Route>
              <Route path='/viewpackages'>
               <ViewPackages />
+            </Route>
+            <Route path='/success'>
+              <Success />
+            </Route>
+            <Route path='/cancel'>
+              <Cancel />
             </Route>
           </Switch>
         </div>
