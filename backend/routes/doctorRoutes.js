@@ -46,8 +46,6 @@ router.post("/verify-otp", protectDoctor, verifyOTP);
 router.post("/reset-password", protectDoctor, resetPassword);
 router.get("/request-otp", protectDoctor, sendOTP);
 
-router.post("/get_doctor", getDoctor);
-
 router.post("/filterapp", filterStatus);
 
 router.post("/upcoming", upcoming);
