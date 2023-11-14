@@ -20,7 +20,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import { mainListItems } from "./listItems";
+import { mainListItems } from "./listItems.jsx";
 import MuiDrawer from "@mui/material/Drawer";
 import { useNavigate } from "react-router-dom";
 
