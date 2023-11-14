@@ -6,6 +6,10 @@ const doctorSchema = mongoose.Schema({
     type: String,
     required: true
   },
+  passwordResetOTP: {
+        type: String,
+        default: ''
+  },
   hourlyRate: {
     type: Number,
     required: true
