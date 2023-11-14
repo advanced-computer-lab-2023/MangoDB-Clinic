@@ -7,10 +7,7 @@ import axios from 'axios';
 
 
 const ViewPrescriptions = () => {
-   
-   
-    const idd = null;
-    const { patientId } = useParams();
+    // const { patientId } = useParams();
     const [prescriptions, setPrescriptions] = useState([]);
     const [isPending, setIsPending] = useState(true);
     const [error, setError] = useState(null);
@@ -46,8 +43,7 @@ const ViewPrescriptions = () => {
 
         if(!isFilterApplied){
 
-
-           await fetch(`http://localhost:4000/patient/get_prescriptions_of_patient/${getID}`)
+            fetch(`http://localhost:4000/patient/get_prescriptions_of_patient/6526d30a0f83f5e462288354`)
             .then((res) => {
                 if (!res.ok) {
                     throw Error('Could not fetch the data for that resource');
@@ -88,7 +84,7 @@ const ViewPrescriptions = () => {
 
         console.log(filterParams);
 
-        const url = `http://localhost:4000/patient/filter_prescription/${patientId}?${filterParams.join('&')}`;
+        const url = `http://localhost:4000/patient/filter_prescription/6526d30a0f83f5e462288354?${filterParams.join('&')}`;
 
         fetch(url)
             .then((res) => {
