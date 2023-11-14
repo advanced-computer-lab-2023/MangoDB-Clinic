@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const asyncHandler = require('express-async-handler')
 const Doctor = require('../models/doctorModel')
 
+
 const protectDoctor = asyncHandler( async (req,res, next) => {
     let token
 

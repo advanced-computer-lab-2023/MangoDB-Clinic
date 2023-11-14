@@ -130,7 +130,8 @@ router.get('/getMyAppointments/:id',getMyAppointments)
 router.get('/getEmploymentContract',viewEmploymentContract)
 router.patch('/addSlots/:id', addNewSlots);
 router.patch('/addHealthRecord/:id', addHealthRecord);
-router.patch('scheduleFollowup/:id', followUp)
+router.patch('/scheduleFollowup/:doctorId/:patientId/:appointmentId/:followUpDate', followUp);
+
 
 module.exports = router;
 

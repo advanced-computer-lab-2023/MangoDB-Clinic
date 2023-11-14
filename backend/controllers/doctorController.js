@@ -844,23 +844,31 @@ const getDoctorInfo = (req, res) => {
 
 
 const followUp = async (req, res) => {
-    const doctorId = req.params.id; 
-    const patientId = req.body.patientId;
-    const appointmentId = req.body.appointmentId;
+    const  {doctorId,patientId,appointmentId,followUpDate} = req.params; 
+    // const {patientId,appointmentId} = req.query;
+   
 
     try {
        
+        console.log('Doctor ID:', doctorId);
+        console.log('Patient ID:', patientId);
+        console.log('Appointment ID:', appointmentId);
+
         const updatedAppointment = await Appointment.findOneAndUpdate(
             { _id: appointmentId, doctorId, patientId },
             { $set: { followUp: true } },
             { new: true } 
         );
+        const newAppointment = await Appointment.create({
+            doctorId,
+            patientId,
+            date: new Date(followUpDate), // Convert followUpDate to a Date object
+            status: 'confirmed', // Set the status for the new appointment
+            followUp: false, // Set followUp to false for the new appointment
+        });
 
-        if (!updatedAppointment) {
-            return res.status(404).json({ message: 'Appointment not found or not authorized' });
-        }
-
-        
+        console.log('Updated Appointment:', updatedAppointment);
+  
         res.status(200).json(updatedAppointment);
     } catch (error) {
         console.error('Error updating appointment:', error);
