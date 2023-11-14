@@ -141,17 +141,12 @@ router.post('/create-checkout-session-packages/:id', async (req, res) => {
             default:
                 paymentAmount = 0;
         }
-          
-              
-        // const paymentAmount = (hourlyRate * 1.1) - (hourlyRate * doctorSessionDiscount);
 
         const storeItems = new Map([
             [1, { priceInCents: paymentAmount * 100, name: `${ packageType } Health Package` }], // priceInSharks = pounds * 100
            
         ])
         // END OF PASTE
-
-
 
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
@@ -174,8 +169,8 @@ router.post('/create-checkout-session-packages/:id', async (req, res) => {
                     quantity: item.quantity,
                 };
             }),
-            success_url: 'http://localhost:3000/success',
-            cancel_url: 'http://localhost:3000/cancel',
+            success_url: 'http://localhost:3000/successulPackagePayment',
+            cancel_url: 'http://localhost:3000/viewpackages',
         });
 
         res.json({ url: session.url });

@@ -42,6 +42,8 @@ import ChangePasswordPage from "./pages/ChangePasswordPage";
 import DoctorDashboard from "./pages/doctorDashboard";
 import Success from "./pages/Success";
 import Cancel from "./pages/Cancel";
+import SuccessfulPackagePayment from './pages/successfulPackagePayment';
+import CancelHealthPackageSubscription from './pages/cancelHealthPackageSubscription'
 
 function App() {
 	return (
@@ -158,6 +160,10 @@ function App() {
             <Route path="/viewprescriptions" element={<ViewPrescriptions />} />
             <Route path="/prescriptiondetials/:prescriptionId" element={<PrescriptionDetials />} />
             <Route path="/search-doctors" element={<DoctorSearch />} />
+            <Route path="/viewpackages" element={<ViewPackages />} />
+            <Route path="/successfulPackagePayment" element={<SuccessfulPackagePayment />} />
+            <Route path="/cancelHealthPackageSubscription" element={<CancelHealthPackageSubscription />} />
+
             
             {/* =====================Routes for the Doctor========================== */}
             <Route path="/doctordashboard" element={<DoctorDashboard />} />
@@ -181,7 +187,6 @@ function App() {
             <Route path="/doctor-details/:id" element={<DoctorDetails />} />
             
             <Route path="/filter" element={<Filter />} />
-            <Route path="/viewpackages" element={<ViewPackages />} />
             <Route path="/viewhealthrecpat" element={<ViewHealthRecordsPat />} />
             <Route path="/linkpatasfam" element={<LinkPatientAsFam />} />
             <Route path="/addslots" element={<AddSlotsPage />} />

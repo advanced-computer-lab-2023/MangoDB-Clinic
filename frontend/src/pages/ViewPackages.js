@@ -141,9 +141,9 @@ export default function Pricing() {
         sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
       >
         <Toolbar sx={{ flexWrap: 'wrap' }}>
-          <Typography variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
+          <Link variant="h6" href="/patientdashboard"  color="inherit" noWrap sx={{ flexGrow: 1 }}>
             El7a2ny
-          </Typography>
+          </Link>
           <nav>
             <Link
               variant="button"
