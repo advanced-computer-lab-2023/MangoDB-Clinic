@@ -1,5 +1,5 @@
 import useFetch from '../useFetch';
-import ReusableTable from './ReusableTable';
+import ReusableTable2 from './ReusableTable2';
 
 
 
@@ -22,7 +22,7 @@ const DoctorsTable = ({url}) => {
             { isPending && (<div>Loading...</div>) }
             {( error && <div>{ error }</div> )}
             { doctors && (
-                <ReusableTable data={modifiedDoctors} columns={columns} linkPath="/doctor-details"/>
+                <ReusableTable2 data={modifiedDoctors} columns={columns} linkPath="/doctor-details"/>
             )}
             
         </div>

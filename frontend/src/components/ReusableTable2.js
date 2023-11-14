@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Link } from 'react-router-dom';
 
-const ReusableTable = ({ data, columns, linkPath }) => {
+const ReusableTable22 = ({ data, columns, linkPath }) => {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -35,4 +35,4 @@ const ReusableTable = ({ data, columns, linkPath }) => {
   );
 };
 
-export default ReusableTable;
+export default ReusableTable2;
