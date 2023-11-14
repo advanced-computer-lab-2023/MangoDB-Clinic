@@ -88,15 +88,37 @@ const Checkout = () => {
 
 
 
-
-
   return (
-    <div>
-      <h1>Checkout</h1>
-      <button onClick={handleCheckoutClick}>pay using credit card</button>
-      <button onClick={handleWallet}>pay using wallet </button>
+    <div style={styles.container}>
+      <h1 style={styles.heading}>Choose your payment method</h1>
+      <button style={styles.button} onClick={handleCheckoutClick}>
+       Pay using Credit Card
+      </button>
+      <button style={styles.button} onClick={handleWallet}>
+      Pay using Wallet
+      </button>
     </div>
   );
+};
+
+const styles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '20px',
+  },
+  heading: {
+    fontSize: '24px',
+    marginBottom: '20px',
+  },
+  button: {
+    padding: '10px',
+    margin: '10px',
+    fontSize: '16px',
+    cursor: 'pointer',
+  },
+
 };
 
 export default Checkout;
