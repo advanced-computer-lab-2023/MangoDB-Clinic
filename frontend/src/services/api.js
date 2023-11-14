@@ -78,9 +78,11 @@ export const addAppointment =(patientId, doctorId,date)  => API.get(`/patient/ad
 
 export const scheduleFollowup =(doctorId, patientId, appointmentId,followUpDate) => API.patch(`/doctor/scheduleFollowup/${ doctorId }/${ patientId }/${ appointmentId }/${ followUpDate}`);
 
-export const subscribeToHealthPackage = (patientId,packageId) => API.put(`/subscribe_to_health_package/${ patientId }/${packageId}`);
+export const subscribeToHealthPackage = (patientId,packageId) => API.put(`/subscribe_to_health_package/6526d30a0f83f5e462288354/65536787d4bd759f882271de`);
 
-export const cancelHealthPackage=(patientId) => API.put(`/cancel_health_package/${ patientId }`);
+export const cancelHealthPackage=(patientId) => API.put(`/cancel_health_package/6526d30a0f83f5e462288354`);
+
+export const viewSubscribedhealthPackage = () => API.get(`/viewHealthPackageSubscription/6526d30a0f83f5e462288354`)
 
 const API2 = axios.create({
     baseURL: `http://localhost:${port}`,

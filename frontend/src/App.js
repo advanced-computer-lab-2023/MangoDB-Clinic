@@ -44,6 +44,7 @@ import Success from "./pages/Success";
 import Cancel from "./pages/Cancel";
 import SuccessfulPackagePayment from './pages/successfulPackagePayment';
 import CancelHealthPackageSubscription from './pages/cancelHealthPackageSubscription'
+import ViewHealthPackageSubscription from './pages/viewHealthPackageSubscription';
 
 function App() {
 	return (
@@ -163,6 +164,7 @@ function App() {
             <Route path="/viewpackages" element={<ViewPackages />} />
             <Route path="/successfulPackagePayment" element={<SuccessfulPackagePayment />} />
             <Route path="/cancelHealthPackageSubscription" element={<CancelHealthPackageSubscription />} />
+            <Route path="/viewHealthPackageSubscription" element={<ViewHealthPackageSubscription />} />
 
             
             {/* =====================Routes for the Doctor========================== */}
@@ -219,8 +221,8 @@ function App() {
 
 				{/* add the rest in the right place */}
 
-				<Route path='/viewappointments/:id' element={<ViewAppointments />} />
-				<Route path='/doctorAppointments/:id' element={<DoctorApps />} />
+				<Route path='/viewappointments' element={<ViewAppointments />} />
+				<Route path='/doctorAppointments' element={<DoctorApps />} />
 
 				<Route path='/viewprofile' element={<ViewProfile />} />
 

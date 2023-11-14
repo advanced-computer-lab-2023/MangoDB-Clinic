@@ -12,7 +12,7 @@ export default function ViewProfile() {
     const [error,setError] = useState(null);
   
     useEffect(() => {
-        //Runs only on the first render
+        
         cancelHealthPackage().then((result)=>{
         setSuccess(true)  
         }).catch((err)=>{
