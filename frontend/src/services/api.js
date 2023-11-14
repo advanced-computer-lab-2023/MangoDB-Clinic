@@ -68,6 +68,8 @@ export const filterPatientAppointments = (query) => API.post('/patient/filterapp
 
 // payments
 export const checkout = (id, items) => API.post(`/payments/create-checkout-session/${ id }`, { items });
+export const checkout1 = (id, items) => API.post(`/payments/create-checkout-session-packages/${ id }`, { items });
+
 export const wallet = (appointmentId) => API.post(`/patient/payFromWallet/${ appointmentId }`);
 
 export const getSelectedDoctor = (id) => API.get(`/patient/get_selected_doctor/${ id }`);
