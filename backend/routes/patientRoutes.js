@@ -45,7 +45,7 @@ const {
 	makeAppointment,
 } = require("../controllers/patientController");
 
-router.get("/myInfo", protectPatient, getMyInfo);
+router.get("/myInfo", getMyInfo);
 
 router.post("/login", loginPatient);
 router.get("/request-otp",  sendOTP);
@@ -76,11 +76,7 @@ router.get("/get_selected_doctor/:id",  getSelectedDoctor);
 router.get("/get_all_prescriptions/:id",  getAllPrescriptions);
 
 //GET all prescriptions of a single patient
-router.get(
-	"/get_prescriptions_of_patient/",
-	
-	getAllPrescriptionsOfPatient
-);
+router.get("/get_prescriptions_of_patient/:id", getAllPrescriptionsOfPatient);
 
 //filter prescriptions
 router.get(
