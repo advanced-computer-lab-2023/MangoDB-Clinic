@@ -27,6 +27,8 @@ import ViewPackages from "./pages/ViewPackages";
 import AddHealthRecordsPatient from "./pages/AddHealthRecordsPatient";
 import LinkPatientAsFam from "./pages/LinkPatientAsFam";
 import ViewEmploymentContract from "./pages/ViewEmploymentContract";
+import ChangePasswordDoctorPage from "./pages/ChangePasswordDoctorPage";
+import ChangePasswordPatientPage from "./pages/ChangePasswordPatientPage";
 
 import LoginPage from "./pages/LoginAdminPage";
 import DashboardPage from "./pages/DashboardPage";
@@ -165,6 +167,7 @@ function App() {
             <Route path="/successfulPackagePayment" element={<SuccessfulPackagePayment />} />
             <Route path="/cancelHealthPackageSubscription" element={<CancelHealthPackageSubscription />} />
             <Route path="/viewHealthPackageSubscription" element={<ViewHealthPackageSubscription />} />
+            <Route path="/changePasswordPatient" element={<ChangePasswordPatientPage />} />
 
             
             {/* =====================Routes for the Doctor========================== */}
@@ -173,6 +176,8 @@ function App() {
             <Route path="/selectedPatient/:id" element={<PatientDetails />} />
             <Route path="/viewdoctors" element={<ViewDoctors />} />
             <Route path="/editDoctor" element={<EditDoctor />} />
+            <Route path="/changePasswordDoctor" element={<ChangePasswordDoctorPage />} />
+
             
             
             
