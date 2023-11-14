@@ -12,7 +12,7 @@ export default function SuccessfulPackagePayment() {
   const [error,setError] = useState(null);
   
   useEffect(() => {
-    //Runs only on the first render
+    
     subscribeToHealthPackage().then((result)=>{
       setSuccess(true)  
     }).catch((err)=>{
