@@ -4,6 +4,7 @@ const upload = require("../middleware/upload");
 const {protectPatient} = require('../middleware/patientMiddleware')
 
 const {
+  getMyInfo,
   getAllPatients,
   getPatient,
   addPatient,
@@ -47,10 +48,12 @@ const {
 
 } = require("../controllers/patientController");
 
-//Renders the patient Dashboard
-router.get("/", renderDashboard);
+// //Renders the patient Dashboard
+// router.get("/", renderDashboard);
 
-router.get("/addFamilyMember", renderAddFamilyMember);
+// router.get("/addFamilyMember", renderAddFamilyMember);
+
+router.get("/myInfo", protectPatient, getMyInfo);
 
 router.post('/login', loginPatient)
 router.get('/request-otp', protectPatient, sendOTP)
