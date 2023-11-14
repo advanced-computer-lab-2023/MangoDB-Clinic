@@ -745,7 +745,7 @@ const viewWallet = async (req, res) => {
 			res.status(404).json({ error: "Not Found" });
 		}
 	} catch (err) {
-		res.status(500).json({ error: err.message });
+		//res.status(500).json({ error: err.message });
 	}
 };
 

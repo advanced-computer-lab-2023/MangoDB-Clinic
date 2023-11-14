@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 const LinkPatientAsFam = () => {
-   // const id = useParams().id || 'defaultPatientId'; // Extract 'patientId' from useParams or use a default value
+    const id = '6526d30a0f83f5e462288354'; // Extract 'patientId' from useParams or use a default value
 
     const [patientInfo, setPatientInfo] = useState({
         email: '',
@@ -20,29 +20,29 @@ const LinkPatientAsFam = () => {
         }));
     };
 
-    const getID = async () => {
-		try {
-			const response = await axios.post(
-				"http://localhost:4000/Patient/myInfo",
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`,
-					},
-				}
-			);
+    // const getID = async () => {
+	// 	try {
+	// 		const response = await axios.post(
+	// 			"http://localhost:4000/Patient/myInfo",
+	// 			{
+	// 				headers: {
+	// 					Authorization: `Bearer ${localStorage.getItem("token")}`,
+	// 				},
+	// 			}
+	// 		);
 
-			if (response.status === 200) {
-				return response.data._id;
-			}
-		} catch (error) {}
-	};
+	// 		if (response.status === 200) {
+	// 			return response.data._id;
+	// 		}
+	// 	} catch (error) {}
+	// };
     const handleLink = async () => {
         try {
             const { email, phone, relation } = patientInfo;
             //const isEmptyEmail = email.trim(); // Check if the email field is empty or only whitespace
             const email2 = email&&email!==''
 
-            await linkPatAsFam(getID, email, phone, relation, email2);
+            await linkPatAsFam(id, email, phone, relation, email2);
 
             setPatientInfo({ email: '', phone: '', relation: '' }); // Reset the form after linking
         } catch (error) {
