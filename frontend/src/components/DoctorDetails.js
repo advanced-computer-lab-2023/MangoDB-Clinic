@@ -53,14 +53,14 @@ const DoctorDetails = () => {
   const bookAppointment = async (key, nationalID) => {
     try {
       
-     const app=await bookAppointmentApi(key, nationalID);
-      fetchAvailableSlots(id, selectedDate);
-      console.log(app._id)
+    //  const app=await bookAppointmentApi(key, nationalID);
+    //   fetchAvailableSlots(id, selectedDate);
+    //   console.log(app._id)
       const items = [
         { id: 1, quantity: 1 },
       
       ];
-      const url =`http://localhost:3000/checkout/${app._id}`
+      const url ='http://localhost:3000/checkout/65390c8a85e114d6cb5d5b34'
       window.location= url;
 
     // const response = await axios.post('/api/checkout', { appointmentId: app.data._id, items });
