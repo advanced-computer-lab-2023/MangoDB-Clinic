@@ -1,20 +1,19 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import PasswordIcon from "@mui/icons-material/Password";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-import Spinner from "./Spinner";
-import { useNavigate } from "react-router-dom";
-
-import axios from "axios";
+import Spinner from "../GeneralComponents/Spinner";
 
 function Copyright(props) {
 	return (
@@ -25,7 +24,7 @@ function Copyright(props) {
 			{...props}
 		>
 			{"Copyright © "}
-			<Link color='inherit' href='https://www.google.com'>
+			<Link color='inherit' href='https://mui.com/'>
 				El7a2ny
 			</Link>{" "}
 			{new Date().getFullYear()}
@@ -36,43 +35,65 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function LoginAdmin() {
+export default function ChangePassword() {
 	const navigate = useNavigate();
 	const [formData, setFormData] = React.useState({
-		username: "",
+		oldPassword: "",
 		password: "",
+		confirmPassword: "",
 	});
 
 	const [isLoading, setIsLoading] = React.useState(false);
 
-	const handleLogin = async () => {
+	const getEmail = async () => {
+		try {
+			const response = await axios.get("http://localhost:4000/admin/my-info", {
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
+				},
+			});
+
+			return response.data.email;
+		} catch (error) {}
+	};
+
+	const handleChange = async () => {
 		try {
 			setIsLoading(true);
+
 			const response = await axios.post(
-				`http://localhost:4000/admin/login`,
-				formData
+				"http://localhost:4000/admin/reset-password",
+				{
+					email: await getEmail(),
+					password: formData.password,
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				}
 			);
 
 			if (response.status === 200) {
-				localStorage.setItem("token", response.data.token);
-				navigate("/admin");
+				alert("Password Changed Successfully");
+				navigate("/admin/login");
 			}
 		} catch (error) {
-			alert("Invalid Credentials");
+			alert("Error Changing Password");
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
+	const handleSubmit = async (event) => {
+		event.preventDefault();
+
+		handleChange();
+	};
+
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
 		setFormData({ ...formData, [name]: value });
-	};
-
-	const handleSubmit = (event) => {
-		event.preventDefault();
-
-		handleLogin();
 	};
 
 	return (
@@ -92,16 +113,11 @@ export default function LoginAdmin() {
 							}}
 						>
 							<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-								<LockOutlinedIcon />
+								<PasswordIcon />
 							</Avatar>
 							<Typography component='h1' variant='h5'>
-								Welcome Back Admin 👋🏽
+								Change Password
 							</Typography>
-
-							<Typography component='h4' variant='h5'>
-								Login To Use The Dashboard
-							</Typography>
-
 							<Box
 								component='form'
 								onSubmit={handleSubmit}
@@ -112,12 +128,12 @@ export default function LoginAdmin() {
 									margin='normal'
 									required
 									fullWidth
-									id='username'
-									label='Username'
-									name='username'
-									value={formData.username}
+									id='oldPassword'
+									label='Old Password'
+									name='oldPassword'
+									type='password'
+									value={formData.oldPassword}
 									onChange={handleInputChange}
-									autoComplete='username'
 									autoFocus
 								/>
 								<TextField
@@ -125,12 +141,22 @@ export default function LoginAdmin() {
 									required
 									fullWidth
 									name='password'
-									label='Password'
+									label='New Password'
+									value={formData.password}
+									onChange={handleInputChange}
 									type='password'
 									id='password'
+								/>
+								<TextField
+									margin='normal'
+									required
+									fullWidth
+									name='confirmPassword'
+									label='Confirm Password'
+									value={formData.confirmPassword}
 									onChange={handleInputChange}
-									value={formData.password}
-									autoComplete='current-password'
+									type='password'
+									id='confirmPassword'
 								/>
 								<Button
 									type='submit'
@@ -138,20 +164,13 @@ export default function LoginAdmin() {
 									variant='contained'
 									sx={{ mt: 3, mb: 2 }}
 								>
-									Login
+									Change Password
 								</Button>
-								<Grid container>
-									<Grid item xs>
-										<Link href='/admin/forgot-password' variant='body2'>
-											Forgot password?
-										</Link>
-									</Grid>
-								</Grid>
 							</Box>
 						</Box>
-						<Copyright sx={{ mt: 8, mb: 4 }} />
 					</>
 				)}
+				<Copyright sx={{ mt: 8, mb: 4 }} />
 			</Container>
 		</ThemeProvider>
 	);

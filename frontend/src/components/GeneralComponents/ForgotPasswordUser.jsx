@@ -1,4 +1,7 @@
 import * as React from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -10,16 +13,15 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import Spinner from "./Spinner";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 const defaultTheme = createTheme();
 
-export default function ForgotPasswordAdmin() {
+let entity = null;
+
+export default function ForgotPasswordUser() {
 	const navigate = useNavigate();
 
 	const [isLoading, setIsLoading] = React.useState(false);
-
 	const [requestOTP, setRequestOTP] = React.useState(true);
 	const [verifyOTP, setVerifyOTP] = React.useState(false);
 	const [resetPassword, setResetPassword] = React.useState(false);
@@ -60,11 +62,60 @@ export default function ForgotPasswordAdmin() {
 		}
 	};
 
+	const checkIfDoctor = async () => {
+		try {
+			const res = await axios.post(
+				"http://localhost:4000/doctor/get_doctor",
+				formDataRequest
+			);
+
+			console.log("Response: " + res.status);
+
+			if (res.status === 200) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (error) {
+			// alert(error);
+		}
+	};
+
+	const checkIfPatient = async () => {
+		try {
+			const res = await axios.post(
+				"http://localhost:4000/patient/get_patient",
+				formDataRequest
+			);
+
+			console.log("Response: " + res.status);
+
+			if (res.status === 200) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (error) {
+			// alert(error);
+		}
+	};
+
 	const handleRequest = async () => {
+		if (await checkIfDoctor()) {
+			entity = "doctor";
+		} else if (await checkIfPatient()) {
+			entity = "patient";
+		} else {
+			alert("Invalid Email");
+			return;
+		}
+
 		try {
 			setIsLoading(true);
 			const response = await axios.post(
-				`http://localhost:4000/admin/request-otp`,
+				entity === "doctor"
+					? `http://localhost:4000/doctor/request-otp`
+					: `http://localhost:4000/patient/request-otp`,
 				formDataRequest
 			);
 
@@ -76,6 +127,7 @@ export default function ForgotPasswordAdmin() {
 		} catch (error) {
 			alert(error.response.data.message);
 		} finally {
+			console.log("Entity: " + entity);
 			setIsLoading(false);
 		}
 	};
@@ -83,8 +135,11 @@ export default function ForgotPasswordAdmin() {
 	const handleVerify = async () => {
 		try {
 			setIsLoading(true);
+			console.log("Entity Verify: " + entity);
 			const response = await axios.post(
-				`http://localhost:4000/admin/verify-otp`,
+				entity === "doctor"
+					? `http://localhost:4000/doctor/verify-otp`
+					: `http://localhost:4000/patient/verify-otp`,
 				{
 					email: formDataRequest.email,
 					otp: formDataVerify.otp,
@@ -107,7 +162,9 @@ export default function ForgotPasswordAdmin() {
 		try {
 			setIsLoading(true);
 			const response = await axios.post(
-				`http://localhost:4000/admin/reset-password`,
+				entity === "doctor"
+					? `http://localhost:4000/doctor/reset-password`
+					: `http://localhost:4000/patient/reset-password`,
 				{
 					email: formDataRequest.email,
 					password: formDataReset.password,
@@ -117,7 +174,7 @@ export default function ForgotPasswordAdmin() {
 			if (response.status === 200) {
 				alert(response.data.message);
 				setResetPassword(false);
-				navigate("/admin/login");
+				navigate("/login");
 			}
 		} catch (error) {
 			alert("New Password Cannot Be The Same As The Old One");

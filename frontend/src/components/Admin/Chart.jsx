@@ -1,7 +1,9 @@
 import * as React from "react";
-import { useTheme } from "@mui/material/styles";
-import Title from "./Title";
 import axios from "axios";
+
+import { useTheme } from "@mui/material/styles";
+
+import Title from "./Title";
 
 const getName = async () => {
 	try {

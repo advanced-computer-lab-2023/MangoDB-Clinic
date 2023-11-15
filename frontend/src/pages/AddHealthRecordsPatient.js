@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, TextField, FormControl, InputLabel, Grid, Paper, Typography, Input} from '@mui/material';
-import { getHealthRecords, uploadHealthRecord } from '../services/api';
-import axios from 'axios';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const AddHealthRecordsPatient = async() => {
-    const[documents, setDocuments] = useState();
-    const[isPending, setIsPending] = useState(false);
-    const navigate = useNavigate();
+import { Button, FormControl, Grid, Paper, Input } from "@mui/material";
 
+import { uploadHealthRecord } from "../services/api";
 
-   // const id = '65394ff997fe2d0027faca14'
+const AddHealthRecordsPatient = async () => {
+	const [documents, setDocuments] = useState();
+	const [isPending, setIsPending] = useState(false);
+	const navigate = useNavigate();
 
-   const getID = async () => {
+	// const id = '65394ff997fe2d0027faca14'
+
+	const getID = async () => {
 		try {
 			const response = await axios.post(
 				"http://localhost:4000/Patient/myInfo",
@@ -28,79 +29,82 @@ const AddHealthRecordsPatient = async() => {
 			}
 		} catch (error) {}
 	};
-  const id = await getID();
+	const id = await getID();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const formData = new FormData();
-        documents.forEach((file) => {
-            formData.append(`document`, file);
-        });
-      
-        console.log(formData)
-        console.log(formData.getAll('document'))
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		const formData = new FormData();
+		documents.forEach((file) => {
+			formData.append(`document`, file);
+		});
 
-        setIsPending(true);           
+		console.log(formData);
+		console.log(formData.getAll("document"));
 
-        uploadHealthRecord(id, formData)
-            .then(() => {
-                setIsPending(false);
-                navigate('/patientdashboard');
-            })
-            .catch((error) => {
-                console.error('Error uploading documents:', error);
-                setIsPending(false);
-            });
+		setIsPending(true);
 
-        //getHealthRecords(id)
-    }
+		uploadHealthRecord(id, formData)
+			.then(() => {
+				setIsPending(false);
+				navigate("/patientdashboard");
+			})
+			.catch((error) => {
+				console.error("Error uploading documents:", error);
+				setIsPending(false);
+			});
 
-    const handleViewHealthRecords = () => {
-        navigate(`/viewhealthrecpat/${id}`); // Adjust the route path as needed
-      };
+		//getHealthRecords(id)
+	};
 
-      
-      return (
-        <div>
-          <Grid container justifyContent="center" style={{ padding: '2rem' }}>
-            <Grid item xs={6}>
-              <Paper elevation={3} style={{ padding: '2rem' }}>
-                <h2>Upload Documents</h2>
-                <form onSubmit={handleSubmit}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <FormControl fullWidth>
-                        <Input
-                          type="file"
-                          onChange={(e) => setDocuments(Array.from(e.target.files))}
-                          style={{ marginBottom: '5rem' }}
-                          inputProps={{ multiple: true }}
-                        />
-                      </FormControl>
-                    </Grid>
-                  </Grid>
-    
-                  {!isPending ? (
-                    <Button variant="contained" type="submit" fullWidth>
-                      Upload
-                    </Button>
-                  ) : (
-                    <Button variant="contained" disabled fullWidth>
-                      Uploading
-                    </Button>
-                  )}
-                </form>
-    
-                {/* Add the button to redirect to ViewHealthRecordsPat */}
-                <Button variant="contained" onClick={handleViewHealthRecords} fullWidth style={{marginTop:'10px'}}>
-                  View Health Records
-                </Button>
-              </Paper>
-            </Grid>
-          </Grid>
-        </div>
-      );
-    };
-    
- 
+	const handleViewHealthRecords = () => {
+		navigate(`/viewhealthrecpat/${id}`); // Adjust the route path as needed
+	};
+
+	return (
+		<div>
+			<Grid container justifyContent='center' style={{ padding: "2rem" }}>
+				<Grid item xs={6}>
+					<Paper elevation={3} style={{ padding: "2rem" }}>
+						<h2>Upload Documents</h2>
+						<form onSubmit={handleSubmit}>
+							<Grid container spacing={2}>
+								<Grid item xs={6}>
+									<FormControl fullWidth>
+										<Input
+											type='file'
+											onChange={(e) => setDocuments(Array.from(e.target.files))}
+											style={{ marginBottom: "5rem" }}
+											inputProps={{ multiple: true }}
+										/>
+									</FormControl>
+								</Grid>
+							</Grid>
+
+							{!isPending ? (
+								<Button variant='contained' type='submit' fullWidth>
+									Upload
+								</Button>
+							) : (
+								<Button variant='contained' disabled fullWidth>
+									Uploading
+								</Button>
+							)}
+						</form>
+
+						{/* Add the button to redirect to ViewHealthRecordsPat */}
+						<Button
+							variant='contained'
+							onClick={handleViewHealthRecords}
+							fullWidth
+							style={{ marginTop: "10px" }}
+						>
+							View Health Records
+						</Button>
+					</Paper>
+				</Grid>
+			</Grid>
+		</div>
+	);
+};
+
 export default AddHealthRecordsPatient;

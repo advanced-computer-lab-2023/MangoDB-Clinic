@@ -2,7 +2,7 @@ import React from "react";
 
 import { HelmetProvider, Helmet } from "react-helmet-async";
 
-import AddAdmin from "../components/AddAdmin";
+import AddAdmin from "../../components/Admin/AddAdmin";
 
 export default function AddAdminPage() {
 	return (

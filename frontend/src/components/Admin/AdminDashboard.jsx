@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
+
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
@@ -11,14 +13,16 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
 import Link from "@mui/material/Link";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+
 import { mainListItems } from "./listItems.jsx";
-import { useNavigate } from "react-router-dom";
-import GlobalStyles from "@mui/material/GlobalStyles";
-import Button from "@mui/material/Button";
+import Chart from "./Chart.jsx";
+import DateCard from "./DateCard.jsx";
+import RequestedDoctors from "./RequestedDoctorsTable.jsx";
 
 function Copyright(props) {
 	return (
@@ -29,7 +33,7 @@ function Copyright(props) {
 			{...props}
 		>
 			{"Copyright © "}
-			<Link color='inherit' href='https://mui.com/'>
+			<Link color='inherit' href='#'>
 				El7a2ni
 			</Link>{" "}
 			{new Date().getFullYear()}
@@ -84,49 +88,9 @@ const Drawer = styled(MuiDrawer, {
 	},
 }));
 
-const tiers = [
-	{
-		title: "Free",
-		price: "0",
-		description: [
-			"10 users included",
-			"2 GB of storage",
-			"Help center access",
-			"Email support",
-		],
-		buttonText: "Sign up for free",
-		buttonVariant: "outlined",
-	},
-	{
-		title: "Pro",
-		subheader: "Most popular",
-		price: "15",
-		description: [
-			"20 users included",
-			"10 GB of storage",
-			"Help center access",
-			"Priority email support",
-		],
-		buttonText: "Get started",
-		buttonVariant: "contained",
-	},
-	{
-		title: "Enterprise",
-		price: "30",
-		description: [
-			"50 users included",
-			"30 GB of storage",
-			"Help center access",
-			"Phone & email support",
-		],
-		buttonText: "Contact us",
-		buttonVariant: "outlined",
-	},
-];
-
 const defaultTheme = createTheme();
 
-export default function UserManagement() {
+export default function Dashboard() {
 	const [open, setOpen] = React.useState(true);
 	const navigate = useNavigate();
 
@@ -141,10 +105,7 @@ export default function UserManagement() {
 
 	return (
 		<ThemeProvider theme={defaultTheme}>
-			<GlobalStyles
-				styles={{ ul: { margin: 0, padding: 0, listStyle: "none" } }}
-			/>
-			<Box sx={{ display: "inline" }}>
+			<Box sx={{ display: "flex" }}>
 				<CssBaseline />
 				<AppBar position='absolute' open={open}>
 					<Toolbar
@@ -194,55 +155,57 @@ export default function UserManagement() {
 					<Divider />
 					<List component='nav'>{mainListItems}</List>
 				</Drawer>
-
-				<Container
-					disableGutters
-					maxWidth='sm'
+				<Box
 					component='main'
-					sx={{ pt: 8, pb: 6 }}
-				>
-					<Typography
-						component='h1'
-						variant='h3'
-						align='center'
-						color='text.primary'
-					>
-						Select An Action
-					</Typography>
-				</Container>
-
-				<Container maxWidth='md' component='main'>
-					<Grid container spacing={5} alignItems='flex-end'>
-						<Grid item key={"addAdmin"} xs={12} sm={12} md={4}>
-							<Button variant='contained'>Add Admin</Button>
-						</Grid>
-
-						<Grid item key={"removeAdmin"} xs={12} sm={12} md={4}>
-							<Button variant='contained'>Remove Admin</Button>
-						</Grid>
-
-						<Grid item key={"removePatient"} xs={12} sm={12} md={4}>
-							<Button variant='contained'>Remove Patient</Button>
-						</Grid>
-
-						<Grid item key={"removeDoctor"} xs={12} sm={12} md={4}>
-							<Button variant='contained'>Remove Doctor</Button>
-						</Grid>
-					</Grid>
-				</Container>
-				{/* Footer */}
-				<Container
-					maxWidth='md'
-					component='footer'
 					sx={{
-						borderTop: (theme) => `1px solid ${theme.palette.divider}`,
-						mt: 8,
-						py: [3, 6],
+						backgroundColor: (theme) =>
+							theme.palette.mode === "light"
+								? theme.palette.grey[100]
+								: theme.palette.grey[900],
+						flexGrow: 1,
+						height: "100vh",
+						overflow: "auto",
 					}}
 				>
-					<Copyright sx={{ mt: 5 }} />
-				</Container>
-				{/* End footer */}
+					<Toolbar />
+					<Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
+						<Grid container spacing={3}>
+							{/* Chart */}
+							<Grid item xs={12} md={8} lg={9}>
+								<Paper
+									sx={{
+										p: 2,
+										display: "flex",
+										flexDirection: "column",
+										height: 240,
+									}}
+								>
+									<Chart />
+								</Paper>
+							</Grid>
+							{/* Recent Deposits */}
+							<Grid item xs={12} md={4} lg={3}>
+								<Paper
+									sx={{
+										p: 2,
+										display: "flex",
+										flexDirection: "column",
+										height: 240,
+									}}
+								>
+									<DateCard />
+								</Paper>
+							</Grid>
+							{/* Recent Orders */}
+							<Grid item xs={12}>
+								<Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+									<RequestedDoctors />
+								</Paper>
+							</Grid>
+						</Grid>
+						<Copyright sx={{ pt: 4 }} />
+					</Container>
+				</Box>
 			</Box>
 		</ThemeProvider>
 	);

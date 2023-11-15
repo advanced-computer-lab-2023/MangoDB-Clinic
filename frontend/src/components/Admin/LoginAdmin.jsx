@@ -1,4 +1,7 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -11,10 +14,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-import Spinner from "./Spinner";
-import { useNavigate } from "react-router-dom";
-
-import axios from "axios";
+import Spinner from "../GeneralComponents/Spinner";
 
 function Copyright(props) {
 	return (
@@ -25,7 +25,7 @@ function Copyright(props) {
 			{...props}
 		>
 			{"Copyright © "}
-			<Link color='inherit' href='#'>
+			<Link color='inherit' href='https://www.google.com'>
 				El7a2ny
 			</Link>{" "}
 			{new Date().getFullYear()}
@@ -36,7 +36,7 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function LoginUser() {
+export default function LoginAdmin() {
 	const navigate = useNavigate();
 	const [formData, setFormData] = React.useState({
 		username: "",
@@ -49,22 +49,13 @@ export default function LoginUser() {
 		try {
 			setIsLoading(true);
 			const response = await axios.post(
-				`http://localhost:4000/login`,
+				`http://localhost:4000/admin/login`,
 				formData
 			);
 
 			if (response.status === 200) {
 				localStorage.setItem("token", response.data.token);
-				switch (response.data.type) {
-					case "Patient":
-						navigate("/patientdashboard");
-						break;
-					case "Doctor":
-						navigate("/doctordashboard");
-						break;
-					default:
-						break;
-				}
+				navigate("/admin");
 			}
 		} catch (error) {
 			alert("Invalid Credentials");
@@ -104,7 +95,7 @@ export default function LoginUser() {
 								<LockOutlinedIcon />
 							</Avatar>
 							<Typography component='h1' variant='h5'>
-								Welcome Back 👋🏽
+								Welcome Back Admin 👋🏽
 							</Typography>
 
 							<Typography component='h4' variant='h5'>
@@ -151,7 +142,7 @@ export default function LoginUser() {
 								</Button>
 								<Grid container>
 									<Grid item xs>
-										<Link href='/forgot-password' variant='body2'>
+										<Link href='/admin/forgot-password' variant='body2'>
 											Forgot password?
 										</Link>
 									</Grid>

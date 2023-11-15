@@ -1,4 +1,6 @@
 import * as React from "react";
+import axios from "axios";
+
 import Link from "@mui/material/Link";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,10 +9,9 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import Title from "./Title";
-import Spinner from "./Spinner";
 
-import axios from "axios";
+import Title from "./Title";
+import Spinner from "../GeneralComponents/Spinner";
 
 export default function RequestedDoctors({ maxRows, seeMore }) {
 	const [rows, setRows] = React.useState([]);

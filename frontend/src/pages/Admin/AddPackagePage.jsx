@@ -2,18 +2,18 @@ import React from "react";
 
 import { HelmetProvider, Helmet } from "react-helmet-async";
 
-import ChangePassword from "../components/ChangePassword";
+import AddPackage from "../../components/Admin/AddPackage";
 
-export default function ChangePasswordPage() {
+export default function AddPackagePage() {
 	return (
 		<>
 			<HelmetProvider>
 				<Helmet>
-					<title>Reset Password | Admin</title>
+					<title>Add Health Package | Admin</title>
 				</Helmet>
 			</HelmetProvider>
 
-			<ChangePassword />
+			<AddPackage />
 		</>
 	);
 }

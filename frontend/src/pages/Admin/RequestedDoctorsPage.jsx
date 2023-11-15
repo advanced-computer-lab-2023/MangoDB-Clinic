@@ -2,7 +2,7 @@ import React from "react";
 
 import { HelmetProvider, Helmet } from "react-helmet-async";
 
-import RequestedDoctors from "../components/RequestedDoctors";
+import RequestedDoctors from "../../components/Admin/RequestedDoctors";
 
 export default function DashboardPage() {
 	return (

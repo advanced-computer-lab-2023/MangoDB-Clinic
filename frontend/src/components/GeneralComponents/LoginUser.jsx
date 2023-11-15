@@ -1,18 +1,20 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import PasswordIcon from "@mui/icons-material/Password";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import Spinner from "./Spinner";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 function Copyright(props) {
 	return (
@@ -23,7 +25,7 @@ function Copyright(props) {
 			{...props}
 		>
 			{"Copyright © "}
-			<Link color='inherit' href='https://mui.com/'>
+			<Link color='inherit' href='#'>
 				El7a2ny
 			</Link>{" "}
 			{new Date().getFullYear()}
@@ -34,65 +36,52 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function ChangePassword() {
+export default function LoginUser() {
 	const navigate = useNavigate();
 	const [formData, setFormData] = React.useState({
-		oldPassword: "",
+		username: "",
 		password: "",
-		confirmPassword: "",
 	});
 
 	const [isLoading, setIsLoading] = React.useState(false);
 
-	const getEmail = async () => {
-		try {
-			const response = await axios.get("http://localhost:4000/admin/my-info", {
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem("token")}`,
-				},
-			});
-
-			return response.data.email;
-		} catch (error) {}
-	};
-
-	const handleChange = async () => {
+	const handleLogin = async () => {
 		try {
 			setIsLoading(true);
-
 			const response = await axios.post(
-				"http://localhost:4000/admin/reset-password",
-				{
-					email: await getEmail(),
-					password: formData.password,
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`,
-					},
-				}
+				`http://localhost:4000/login`,
+				formData
 			);
 
 			if (response.status === 200) {
-				alert("Password Changed Successfully");
-				navigate("/admin/login");
+				localStorage.setItem("token", response.data.token);
+				switch (response.data.type) {
+					case "Patient":
+						navigate("/patientdashboard");
+						break;
+					case "Doctor":
+						navigate("/doctordashboard");
+						break;
+					default:
+						break;
+				}
 			}
 		} catch (error) {
-			alert("Error Changing Password");
+			alert("Invalid Credentials");
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
-	const handleSubmit = async (event) => {
-		event.preventDefault();
-
-		handleChange();
-	};
-
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
 		setFormData({ ...formData, [name]: value });
+	};
+
+	const handleSubmit = (event) => {
+		event.preventDefault();
+
+		handleLogin();
 	};
 
 	return (
@@ -112,11 +101,16 @@ export default function ChangePassword() {
 							}}
 						>
 							<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-								<PasswordIcon />
+								<LockOutlinedIcon />
 							</Avatar>
 							<Typography component='h1' variant='h5'>
-								Change Password
+								Welcome Back 👋🏽
 							</Typography>
+
+							<Typography component='h4' variant='h5'>
+								Login To Use The Dashboard
+							</Typography>
+
 							<Box
 								component='form'
 								onSubmit={handleSubmit}
@@ -127,12 +121,12 @@ export default function ChangePassword() {
 									margin='normal'
 									required
 									fullWidth
-									id='oldPassword'
-									label='Old Password'
-									name='oldPassword'
-									type='password'
-									value={formData.oldPassword}
+									id='username'
+									label='Username'
+									name='username'
+									value={formData.username}
 									onChange={handleInputChange}
+									autoComplete='username'
 									autoFocus
 								/>
 								<TextField
@@ -140,22 +134,12 @@ export default function ChangePassword() {
 									required
 									fullWidth
 									name='password'
-									label='New Password'
-									value={formData.password}
-									onChange={handleInputChange}
+									label='Password'
 									type='password'
 									id='password'
-								/>
-								<TextField
-									margin='normal'
-									required
-									fullWidth
-									name='confirmPassword'
-									label='Confirm Password'
-									value={formData.confirmPassword}
 									onChange={handleInputChange}
-									type='password'
-									id='confirmPassword'
+									value={formData.password}
+									autoComplete='current-password'
 								/>
 								<Button
 									type='submit'
@@ -163,13 +147,20 @@ export default function ChangePassword() {
 									variant='contained'
 									sx={{ mt: 3, mb: 2 }}
 								>
-									Change Password
+									Login
 								</Button>
+								<Grid container>
+									<Grid item xs>
+										<Link href='/forgot-password' variant='body2'>
+											Forgot password?
+										</Link>
+									</Grid>
+								</Grid>
 							</Box>
 						</Box>
+						<Copyright sx={{ mt: 8, mb: 4 }} />
 					</>
 				)}
-				<Copyright sx={{ mt: 8, mb: 4 }} />
 			</Container>
 		</ThemeProvider>
 	);

@@ -1,46 +1,36 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { getPatientsDoctor, searchPatients } from "../../services/api";
-import { Grid, Paper, Typography, TextField } from "@mui/material";
-import { experimentalStyled as styled } from '@mui/material/styles';
-import Button from '@mui/material/Button';
-import axios from 'axios';
-// import { makeStyles } from "@mui/styles";
+import { Link } from "react-router-dom";
+import axios from "axios";
 
-// const useStyles = makeStyles((theme) => ({
-//     patientPreview: {
-//         padding: theme.spacing(2),
-//         display: "flex",
-//         flexDirection: "column",
-//         alignItems: "center",
-//     },
-// }));
+import { Grid, Paper, Typography, TextField } from "@mui/material";
+import { experimentalStyled as styled } from "@mui/material/styles";
+import Button from "@mui/material/Button";
+
+import { getPatientsDoctor, searchPatients } from "../../services/api";
+
 const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
+	backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+	...theme.typography.body2,
+	padding: theme.spacing(2),
+	textAlign: "center",
+	color: theme.palette.text.secondary,
 }));
 
-const PatientList = async() => {
-   // const { id } = useParams();
-    const [ patients, setPatients ] = useState([]);
-    const [ isPending, setIsPending ] = useState(true);
-    const [ error, setError ] = useState(null);
-    const [ search, setSearch ] = useState('');
-    // const [ upcoming, setUpcoming ] = useState(false);
+const PatientList = async () => {
+	// const { id } = useParams();
+	const [patients, setPatients] = useState([]);
+	const [isPending, setIsPending] = useState(true);
+	const [error, setError] = useState(null);
+	const [search, setSearch] = useState("");
+	// const [ upcoming, setUpcoming ] = useState(false);
 
-    const getID = async () => {
+	const getID = async () => {
 		try {
-			const response = await axios.post(
-				"http://localhost:4000/doctor/myInfo",
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`,
-					},
-				}
-			);
+			const response = await axios.post("http://localhost:4000/doctor/myInfo", {
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
+				},
+			});
 
 			if (response.status === 200) {
 				return response.data._id;
@@ -48,111 +38,111 @@ const PatientList = async() => {
 		} catch (error) {}
 	};
 
-    const id = await getID();
+	const id = await getID();
 
-    const handleChange = (e) => {
-        setSearch(e.target.value);
-    };
+	const handleChange = (e) => {
+		setSearch(e.target.value);
+	};
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+	const handleSubmit = (e) => {
+		e.preventDefault();
 
-        if (search) {
-            setIsPending(true);
-            setPatients([]);
-    
-            searchPatients(id, search)
-                .then((result) => {
-                    setPatients(result.data);
-                    setIsPending(false);
-                })
-                .catch(err => {
-                    setError(err.message);
-                    setIsPending(false);
-                });
-        }
-    }
+		if (search) {
+			setIsPending(true);
+			setPatients([]);
 
+			searchPatients(id, search)
+				.then((result) => {
+					setPatients(result.data);
+					setIsPending(false);
+				})
+				.catch((err) => {
+					setError(err.message);
+					setIsPending(false);
+				});
+		}
+	};
 
-    useEffect(() => {
-        if (search == '') {
-            setIsPending(true);
-            setPatients([]);
+	useEffect(() => {
+		if (search == "") {
+			setIsPending(true);
+			setPatients([]);
 
-            getPatientsDoctor(id)
-                .then((res) => {
-                    setPatients(res.data);
-                    setIsPending(false);
-                })
-                .catch((err) => {
-                    setError(err.message);
-                    setIsPending(false);
-                });
-        }
-    }, [id, search]);
+			getPatientsDoctor(id)
+				.then((res) => {
+					setPatients(res.data);
+					setIsPending(false);
+				})
+				.catch((err) => {
+					setError(err.message);
+					setIsPending(false);
+				});
+		}
+	}, [id, search]);
 
+	// const handleUpcomingClick = () => {
+	//     setUpcoming(!upcoming);
+	// }
 
-    // const handleUpcomingClick = () => {
-    //     setUpcoming(!upcoming);
-    // }
+	// useEffect(() => {
+	//     if (search == '' && !upcoming) {
+	//         setIsPending(true);
+	//         setPatients([]);
 
-    // useEffect(() => {
-    //     if (search == '' && !upcoming) {
-    //         setIsPending(true);
-    //         setPatients([]);
+	//         getPatientsDoctor(id)
+	//             .then((res) => {
+	//                 setPatients(res.data);
+	//                 setIsPending(false);
+	//             })
+	//             .catch((err) => {
+	//                 setError(err.message);
+	//                 setIsPending(false);
+	//             });
+	//     }
+	// }, [id, search, upcoming]);
 
-    //         getPatientsDoctor(id)
-    //             .then((res) => {
-    //                 setPatients(res.data);
-    //                 setIsPending(false);
-    //             })
-    //             .catch((err) => {
-    //                 setError(err.message);
-    //                 setIsPending(false);
-    //             });
-    //     }
-    // }, [id, search, upcoming]);
+	// useEffect(() => {
+	//     setIsPending(true);
+	//     setPatients([]);
 
-    // useEffect(() => {
-    //     setIsPending(true);
-    //     setPatients([]);
+	//     if (upcoming) {
+	//         upcomingApp(id)
+	//             .then((result) => {
+	//                 setIsPending(false);
+	//                 setPatients(result.data);
+	//             })
+	//             .catch((err) => {
+	//                 setIsPending(false);
+	//                 setError(err.message);
+	//             })
+	//     }
+	// }, [upcoming])
 
-    //     if (upcoming) {
-    //         upcomingApp(id)
-    //             .then((result) => {
-    //                 setIsPending(false);
-    //                 setPatients(result.data);
-    //             })
-    //             .catch((err) => {
-    //                 setIsPending(false);
-    //                 setError(err.message);
-    //             })
-    //     }
-    // }, [upcoming])
+	return (
+		<div className='patient-list'>
+			{
+				<>
+					<Grid item xs={12} style={{ padding: "5px" }}>
+						<Typography variant='h5'>Patient List</Typography>
+					</Grid>
 
-    return (
-        <div className='patient-list'>
-            {
-                <>
-                    <Grid item xs={ 12 } style={{ padding: '5px' }}>
-                        <Typography variant="h5">Patient List</Typography>
-                    </Grid>
-
-                    <form onSubmit={ handleSubmit }>
-                        <Grid item xs={ 12 } style={{ padding: '5px' }}>
-                            <TextField 
-                                label="Search"
-                                type="text"
-                                size="small"
-                                value={ search }
-                                onChange={ handleChange }
-                            />
-                            <Button variant="contained"  type="submit">Search</Button>
-                        </Grid>
-                    </form>
-                </>
-            }
-            {/* { !upcoming &&
+					<form onSubmit={handleSubmit}>
+						<Grid item xs={12} style={{ padding: "5px" }}>
+							<TextField
+								label='Search'
+								type='text'
+								size='small'
+								value={search}
+								onChange={handleChange}
+							/>
+							<Button variant='contained' type='submit'>
+								Search
+							</Button>
+						</Grid>
+					</form>
+				</>
+			}
+			{/* { !upcoming &&
                 <Button
                     disabled={false}
                     size="medium"
@@ -174,59 +164,72 @@ const PatientList = async() => {
                     Upcoming Appointments
                 </Button> 
             } */}
-            {
-                <Button
-                    component={Link}
-                    disabled={ false }
-                    size="medium"
-                    variant="outlined"
-                    style={{ margin: '10px', color: 'white', background: '#1976d2' }}
-                    to="/doctorAppointments/6526de95033c945b74c32d7d"    
-                >
-                    Appointments
-                </Button>
-            }
-            { isPending && <div>Loading...</div> }
-            { error && <div>{ error }</div> }
-            { !isPending && !error && patients.length < 1 && <div>No patients to display...</div> }
-            { patients.length > 0 && (
-                // <>
-                //     <label>Search: </label>
-                //     <input 
-                //         type="text" 
-                //         value={ search }
-                //         onChange={ handleChange }
-                //     />
+			{
+				<Button
+					component={Link}
+					disabled={false}
+					size='medium'
+					variant='outlined'
+					style={{ margin: "10px", color: "white", background: "#1976d2" }}
+					to='/doctorAppointments/6526de95033c945b74c32d7d'
+				>
+					Appointments
+				</Button>
+			}
+			{isPending && <div>Loading...</div>}
+			{error && <div>{error}</div>}
+			{!isPending && !error && patients.length < 1 && (
+				<div>No patients to display...</div>
+			)}
+			{patients.length > 0 && (
+				// <>
+				//     <label>Search: </label>
+				//     <input
+				//         type="text"
+				//         value={ search }
+				//         onChange={ handleChange }
+				//     />
 
-                //     { patients.map((patient) => (
-                //         <div className='patient-preview' key={ patient._id }>
-                //             <Link to={ `/selectedPatient/${ patient._id }` }>
-                //                 <h2>{ patient.firstName + " " + patient.lastName }</h2>
-                //                 <p>{ patient.email }</p>
-                //             </Link>
-                //         </div>
-                //     )) }
-                // </>
+				//     { patients.map((patient) => (
+				//         <div className='patient-preview' key={ patient._id }>
+				//             <Link to={ `/selectedPatient/${ patient._id }` }>
+				//                 <h2>{ patient.firstName + " " + patient.lastName }</h2>
+				//                 <p>{ patient.email }</p>
+				//             </Link>
+				//         </div>
+				//     )) }
+				// </>
 
-                <Grid 
-                    container 
-                    direction="column" 
-                    justifyContent="center"
-                    alignItems="flex-start" spacing={ 3 }
-                >
-
-                    { patients.map((patient, index) => (
-                        <Grid item xs={ 12 } sm={ 6 } md={ 4 } key={ patient.appointmentId ? `${ patient.appointmentId }-${ patient._id }` : patient._id  }>
-                            <div>
-                                <Link to={`/selectedPatient/${patient._id}`} style={{ textDecoration: 'none' }}>
-                                    <Item>
-                                        <Typography variant="h6" style={{ color: 'black' }}>
-                                            { patient.firstName + " " + patient.lastName }
-                                        </Typography>
-                                        <Typography variant="body2">
-                                            { patient.email }
-                                        </Typography>
-                                        {/* { upcoming &&
+				<Grid
+					container
+					direction='column'
+					justifyContent='center'
+					alignItems='flex-start'
+					spacing={3}
+				>
+					{patients.map((patient, index) => (
+						<Grid
+							item
+							xs={12}
+							sm={6}
+							md={4}
+							key={
+								patient.appointmentId
+									? `${patient.appointmentId}-${patient._id}`
+									: patient._id
+							}
+						>
+							<div>
+								<Link
+									to={`/selectedPatient/${patient._id}`}
+									style={{ textDecoration: "none" }}
+								>
+									<Item>
+										<Typography variant='h6' style={{ color: "black" }}>
+											{patient.firstName + " " + patient.lastName}
+										</Typography>
+										<Typography variant='body2'>{patient.email}</Typography>
+										{/* { upcoming &&
                                             <>
                                                 <Typography variant="body2">
                                                     { `Date: ${new Date(patient.date).toLocaleDateString()}` }
@@ -239,18 +242,18 @@ const PatientList = async() => {
                                                 </Typography>
                                             </>
                                         } */}
-                                    </Item>
-                                </Link>
-                            </div>
-                        </Grid>
-                        // <Grid item xs={2} sm={4} md={4} key={index}>
-                        //     <Item>xs=2</Item>
-                        // </Grid>
-                    )) }
-                </Grid>
-            ) }   
-        </div>
-    );
-}
+									</Item>
+								</Link>
+							</div>
+						</Grid>
+						// <Grid item xs={2} sm={4} md={4} key={index}>
+						//     <Item>xs=2</Item>
+						// </Grid>
+					))}
+				</Grid>
+			)}
+		</div>
+	);
+};
 
 export default PatientList;

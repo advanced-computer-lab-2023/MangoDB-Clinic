@@ -2,18 +2,18 @@ import React from "react";
 
 import { HelmetProvider, Helmet } from "react-helmet-async";
 
-import UserManagement from "../components/UserManagement";
+import LoginUser from "../../components/GeneralComponents/LoginUser";
 
-export default function UserManagementPage() {
+export default function LoginUserPage() {
 	return (
 		<>
 			<HelmetProvider>
 				<Helmet>
-					<title>User Management | Admin</title>
+					<title>Login | Dashboard</title>
 				</Helmet>
 			</HelmetProvider>
 
-			<UserManagement />
+			<LoginUser />
 		</>
 	);
 }

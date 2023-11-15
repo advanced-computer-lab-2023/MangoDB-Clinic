@@ -2,18 +2,18 @@ import React from "react";
 
 import { HelmetProvider, Helmet } from "react-helmet-async";
 
-import Dashboard from "../components/Dashboard.jsx";
+import HealthPackages from "../../components/Admin/HealthPackages";
 
-export default function DashboardPage() {
+export default function HealthPackagesPage() {
 	return (
 		<>
 			<HelmetProvider>
 				<Helmet>
-					<title> Admin Dashboard</title>
+					<title>Health Packages | Admin</title>
 				</Helmet>
 			</HelmetProvider>
 
-			<Dashboard />
+			<HealthPackages />
 		</>
 	);
 }

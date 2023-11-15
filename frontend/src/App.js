@@ -1,8 +1,9 @@
 import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
 import Home from "./pages/Home";
 import PatientDashboard from "./pages/PatientDashboard";
 import DoctorsTable from "./components/DoctorsTable";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PatientForm from "./components/PatientForm";
 import PatientList from "./pages/Doctor/PatientList";
 import PatientDetails from "./pages/Doctor/PatientDetails";
@@ -29,24 +30,26 @@ import LinkPatientAsFam from "./pages/LinkPatientAsFam";
 import ViewEmploymentContract from "./pages/ViewEmploymentContract";
 import ChangePasswordDoctorPage from "./pages/ChangePasswordDoctorPage";
 import ChangePasswordPatientPage from "./pages/ChangePasswordPatientPage";
-
-import LoginPage from "./pages/LoginAdminPage";
-import DashboardPage from "./pages/DashboardPage";
-import ForgotPasswordAdminPage from "./pages/ForgotPasswordAdminPage";
-import ForgotPasswordUserPage from "./pages/ForgotPasswordUserPage";
-import AddAdminPage from "./pages/AddAdminPage";
-import RequestedDoctorsPage from "./pages/RequestedDoctorsPage";
-import LoginUserPage from "./pages/LoginUserPage";
-import UserManagementPage from "./pages/UserManagementPage";
-import HealthPackagesPage from "./pages/HealthPackagesPage";
-import AddPackagePage from "./pages/AddPackagePage";
-import ChangePasswordPage from "./pages/ChangePasswordPage";
+import ForgotPasswordUserPage from "./pages/General/ForgotPasswordUserPage";
+import LoginUserPage from "./pages/General/LoginUserPage";
 import DoctorDashboard from "./pages/doctorDashboard";
+
+// Admin Imports
+import LoginAdminPage from "./pages/Admin/LoginAdminPage";
+import DashboardPage from "./pages/Admin/DashboardPage";
+import ForgotPasswordAdminPage from "./pages/Admin/ForgotPasswordAdminPage";
+import AddAdminPage from "./pages/Admin/AddAdminPage";
+import RequestedDoctorsPage from "./pages/Admin/RequestedDoctorsPage";
+import UserManagementPage from "./pages/Admin/UserManagementPage";
+import HealthPackagesPage from "./pages/Admin/HealthPackagesPage";
+import AddPackagePage from "./pages/Admin/AddPackagePage";
+import ChangePasswordPage from "./pages/Admin/ChangePasswordPage";
+
 import Success from "./pages/Success";
 import Cancel from "./pages/Cancel";
-import SuccessfulPackagePayment from './pages/successfulPackagePayment';
-import CancelHealthPackageSubscription from './pages/cancelHealthPackageSubscription'
-import ViewHealthPackageSubscription from './pages/viewHealthPackageSubscription';
+import SuccessfulPackagePayment from "./pages/successfulPackagePayment";
+import CancelHealthPackageSubscription from "./pages/cancelHealthPackageSubscription";
+import ViewHealthPackageSubscription from "./pages/viewHealthPackageSubscription";
 
 function App() {
 	return (
@@ -155,50 +158,66 @@ function App() {
 				<Route path='/doctorform' element={<DoctorForm />} />
 				<Route path='/doctorsTable' element={<DoctorsTable />} />
 
-            {/* =====================Routes for the Patient========================== */}
-            <Route path="/patientdashboard" element={<PatientDashboard />} />
-            <Route path="/viewfammembers" element={<ViewFamilyMembers />} />
-            <Route path="/linkfammember" element={<LinkFamMember />} />
-            <Route path="/addhealthrecords" element={<AddHealthRecordsPatient />} />
-            <Route path="/viewprescriptions" element={<ViewPrescriptions />} />
-            <Route path="/prescriptiondetials/:prescriptionId" element={<PrescriptionDetials />} />
-            <Route path="/search-doctors" element={<DoctorSearch />} />
-            <Route path="/viewpackages" element={<ViewPackages />} />
-            <Route path="/successfulPackagePayment" element={<SuccessfulPackagePayment />} />
-            <Route path="/cancelHealthPackageSubscription" element={<CancelHealthPackageSubscription />} />
-            <Route path="/viewHealthPackageSubscription" element={<ViewHealthPackageSubscription />} />
-            <Route path="/changePasswordPatient" element={<ChangePasswordPatientPage />} />
+				{/* =====================Routes for the Patient========================== */}
+				<Route path='/patientdashboard' element={<PatientDashboard />} />
+				<Route path='/viewfammembers' element={<ViewFamilyMembers />} />
+				<Route path='/linkfammember' element={<LinkFamMember />} />
+				<Route path='/addhealthrecords' element={<AddHealthRecordsPatient />} />
+				<Route path='/viewprescriptions' element={<ViewPrescriptions />} />
+				<Route
+					path='/prescriptiondetials/:prescriptionId'
+					element={<PrescriptionDetials />}
+				/>
+				<Route path='/search-doctors' element={<DoctorSearch />} />
+				<Route path='/viewpackages' element={<ViewPackages />} />
+				<Route
+					path='/successfulPackagePayment'
+					element={<SuccessfulPackagePayment />}
+				/>
+				<Route
+					path='/cancelHealthPackageSubscription'
+					element={<CancelHealthPackageSubscription />}
+				/>
+				<Route
+					path='/viewHealthPackageSubscription'
+					element={<ViewHealthPackageSubscription />}
+				/>
+				<Route
+					path='/changePasswordPatient'
+					element={<ChangePasswordPatientPage />}
+				/>
 
-            
-            {/* =====================Routes for the Doctor========================== */}
-            <Route path="/doctordashboard" element={<DoctorDashboard />} />
-            <Route path="/viewAllPatients" element={<PatientList />} />
-            <Route path="/selectedPatient/:id" element={<PatientDetails />} />
-            <Route path="/viewdoctors" element={<ViewDoctors />} />
-            <Route path="/editDoctor" element={<EditDoctor />} />
-            <Route path="/changePasswordDoctor" element={<ChangePasswordDoctorPage />} />
+				{/* =====================Routes for the Doctor========================== */}
+				<Route path='/doctordashboard' element={<DoctorDashboard />} />
+				<Route path='/viewAllPatients' element={<PatientList />} />
+				<Route path='/selectedPatient/:id' element={<PatientDetails />} />
+				<Route path='/viewdoctors' element={<ViewDoctors />} />
+				<Route path='/editDoctor' element={<EditDoctor />} />
+				<Route
+					path='/changePasswordDoctor'
+					element={<ChangePasswordDoctorPage />}
+				/>
 
-            
-            
-            
-            {/* add the rest in the right place */}
-          
-            <Route path="/viewappointments" element={<ViewAppointments />} />
-            <Route path="/doctorAppointments" element={<DoctorApps />} />
-            
-            <Route path="/viewprofile" element={<ViewProfile />} />
-            
-            
-            <Route path="/checkout/:id" element={<Checkout />} />
-            <Route path="/view_wallet" element={<ViewWallet />} />
-            <Route path="/doctor-details/:id" element={<DoctorDetails />} />
-            
-            <Route path="/filter" element={<Filter />} />
-            <Route path="/viewhealthrecpat" element={<ViewHealthRecordsPat />} />
-            <Route path="/linkpatasfam" element={<LinkPatientAsFam />} />
-            <Route path="/addslots" element={<AddSlotsPage />} />
-            <Route path="/viewemploymentcontract" element={<ViewEmploymentContract />} />
-            <Route path="/addhealthrecords" element={<AddHealthRecordsPatient />} />
+				{/* add the rest in the right place */}
+
+				<Route path='/viewappointments' element={<ViewAppointments />} />
+				<Route path='/doctorAppointments' element={<DoctorApps />} />
+
+				<Route path='/viewprofile' element={<ViewProfile />} />
+
+				<Route path='/checkout/:id' element={<Checkout />} />
+				<Route path='/view_wallet' element={<ViewWallet />} />
+				<Route path='/doctor-details/:id' element={<DoctorDetails />} />
+
+				<Route path='/filter' element={<Filter />} />
+				<Route path='/viewhealthrecpat' element={<ViewHealthRecordsPat />} />
+				<Route path='/linkpatasfam' element={<LinkPatientAsFam />} />
+				<Route path='/addslots' element={<AddSlotsPage />} />
+				<Route
+					path='/viewemploymentcontract'
+					element={<ViewEmploymentContract />}
+				/>
+				<Route path='/addhealthrecords' element={<AddHealthRecordsPatient />} />
 				{/* =====================Routes for the Patient==========================
 				<Route path='/patientdashboard' element={<PatientDashboard />} />
 				<Route path='/viewfammembers/:id' element={<ViewFamilyMembers />} />
@@ -257,7 +276,7 @@ function App() {
 				<Route path='/login' element={<LoginUserPage />} />
 
 				<Route path='/admin' element={<DashboardPage />} />
-				<Route path='/admin/login' element={<LoginPage />} />
+				<Route path='/admin/login' element={<LoginAdminPage />} />
 				<Route
 					path='/admin/forgot-password'
 					element={<ForgotPasswordAdminPage />}

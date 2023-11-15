@@ -2,18 +2,18 @@ import React from "react";
 
 import { HelmetProvider, Helmet } from "react-helmet-async";
 
-import ForgotPasswordUser from "../components/ForgotPasswordUser";
+import Dashboard from "../../components/Admin/AdminDashboard";
 
-export default function ForgotPasswordUserPage() {
+export default function DashboardPage() {
 	return (
 		<>
 			<HelmetProvider>
 				<Helmet>
-					<title>Reset Password</title>
+					<title> Admin Dashboard</title>
 				</Helmet>
 			</HelmetProvider>
 
-			<ForgotPasswordUser />
+			<Dashboard />
 		</>
 	);
 }
