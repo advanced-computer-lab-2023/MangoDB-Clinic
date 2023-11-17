@@ -6,6 +6,9 @@ const Doctor = require("../models/doctorModel");
 const Appointment = require("../models/appointmentModel");
 const Packages = require("../models/packagesModel");
 const Wallet = require("../models/walletModel");
+const bcrypt = require("bcryptjs");
+const nodemailer = require("nodemailer");
+const jwt = require("jsonwebtoken");
 
 const port = process.env.PORT;
 
@@ -317,7 +320,9 @@ const getAllPrescriptionsOfPatient = async (req, res) => {
 			return res.status(404).json({ error: "Patient Not Found" });
 		}
 
-		const prescriptions = await Prescription.find({patientId: patientId}).populate('doctorId')
+		const prescriptions = await Prescription.find({
+			patientId: patientId,
+		}).populate("doctorId");
 		console.log(prescriptions);
 		res.status(200).json(prescriptions);
 	} catch (error) {
@@ -529,7 +534,7 @@ const filterStatus = async (req, res) => {
 const viewAllDoctors = asyncHandler(async (req, res) => {
 	try {
 		const doctors = await Doctor.find({
-			accountStatus: 'active'
+			accountStatus: "active",
 		}).sort({ createdAt: -1 });
 		if (!doctors) {
 			res.status(400).json({ error: "No Doctors Found" });
@@ -665,9 +670,9 @@ const viewHealthPackages = asyncHandler(async (req, res) => {
 const viewSubscribedhealthPackage = async (req, res) => {
 	try {
 		// const patient = await Patient.findById(req.params.id);
-		const patient = await Patient.findById('6526d30a0f83f5e462288354');
+		const patient = await Patient.findById("6526d30a0f83f5e462288354");
 		if (!patient) {
-			res.status(200).json({ message: 'Patient not found' });
+			res.status(200).json({ message: "Patient not found" });
 		} else {
 			const patientsPackage = patient.healthPackage;
 			if (patientsPackage) {

@@ -76,7 +76,7 @@ export default function ChangePasswordDoctor() {
 
 			if (response.status === 200) {
 				alert("Password Changed Successfully");
-				navigate("/doctor/login");
+				navigate("/login");
 			}
 		} catch (error) {
 			alert("Error Changing Password");

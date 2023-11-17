@@ -48,9 +48,9 @@ const {
 router.get("/myInfo", getMyInfo);
 
 router.post("/login", loginPatient);
-router.get("/request-otp",  sendOTP);
-router.post("/verify-otp",  verifyOTP);
-router.post("/reset-password",  resetPassword);
+router.post("/request-otp", sendOTP);
+router.post("/verify-otp", verifyOTP);
+router.post("/reset-password", resetPassword);
 
 //GET all patients
 router.get("/get_all_patients", getAllPatients);

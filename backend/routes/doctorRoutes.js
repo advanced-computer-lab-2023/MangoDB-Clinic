@@ -32,6 +32,7 @@ const {
 	sendOTP,
 	verifyOTP,
 	followUp,
+	getDoctor,
 	getStatusOptions,
 } = require("../controllers/doctorController");
 
@@ -42,11 +43,13 @@ router.get("/doctorInfo/:id", getDoctorInfo);
 router.get("/statusOptions", getStatusOptions);
 
 router.post("/login", loginDoctor);
-router.post("/verify-otp",  verifyOTP);
-router.post("/reset-password",  resetPassword);
-router.get("/request-otp",  sendOTP);
+router.post("/verify-otp", verifyOTP);
+router.post("/reset-password", resetPassword);
+router.post("/request-otp", sendOTP);
 
 router.post("/filterapp", filterStatus);
+
+router.post("/get_doctor", getDoctor);
 
 router.post("/upcoming", upcoming);
 
@@ -87,12 +90,12 @@ router.get("/viewAllPatients/:doctorId", async (req, res) => {
 	}
 });
 
-router.put("/updateEmail/:id",  updateEmail);
-router.put("/updateHourlyRate/:id",  updateHourlyRate);
-router.put("/updateAffiliation/:id",  updateAffiliation);
+router.put("/updateEmail/:id", updateEmail);
+router.put("/updateHourlyRate/:id", updateHourlyRate);
+router.put("/updateAffiliation/:id", updateAffiliation);
 
-router.post("/searchPatientByName/:id",  searchPatientByName);
-router.post("/viewHealthRecords/:id",  viewHealthRecords);
+router.post("/searchPatientByName/:id", searchPatientByName);
+router.post("/viewHealthRecords/:id", viewHealthRecords);
 
 router.get("/getAllSpecialities", getAllSpecialities);
 
@@ -100,11 +103,11 @@ router.get("/view_wallet/:id", viewWallet);
 router.post("/followUp/:id", followUpDoc);
 router.get("/getMyAppointments/:id", getMyAppointments);
 router.get("/getEmploymentContract:id", viewEmploymentContract);
-router.patch("/addSlots/:id",  addNewSlots);
-router.patch("/addHealthRecord/:id",  addHealthRecord);
+router.patch("/addSlots/:id", addNewSlots);
+router.patch("/addHealthRecord/:id", addHealthRecord);
 router.patch(
 	"/scheduleFollowup/:doctorId/:patientId/:appointmentId/:followUpDate",
-	
+
 	followUp
 );
 

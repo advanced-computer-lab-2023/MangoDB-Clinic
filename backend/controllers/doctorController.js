@@ -204,7 +204,7 @@ const loginDoctor = asyncHandler(async (req, res) => {
 });
 
 // @desc Request
-// @route GET /doctor/request-otp
+// @route POST /doctor/request-otp
 // @access Private
 const sendOTP = asyncHandler(async (req, res) => {
 	const doctor = await Doctor.findOne({ email: req.body.email });
@@ -896,4 +896,5 @@ module.exports = {
 	resetPassword,
 	followUp,
 	getStatusOptions,
+	getDoctor
 };
