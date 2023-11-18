@@ -25,11 +25,11 @@ export const getDoctor = () => API.get(`/doctor/doctorInfo`, {headers: { Authori
 
 export const statusEnum = () => API.get("/doctor/statusOptions");
 
-export const getPatientsDoctor = (id) =>
-	API.get(`/doctor/viewAllPatients/${id}`);
+export const getPatientsDoctor = () =>
+	API.get(`/doctor/viewAllPatients`, {headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }});
 
-export const searchPatients = (id, firstName) =>
-	API.post(`/doctor/searchPatientByName/${id}`, { firstName });
+export const searchPatients = (firstName) =>
+	API.post(`/doctor/searchPatientByName`, { firstName }, {headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }});
 
 export const upcomingApp = (doctorId) =>
 	API.post("/doctor/upcoming/", { doctorId });

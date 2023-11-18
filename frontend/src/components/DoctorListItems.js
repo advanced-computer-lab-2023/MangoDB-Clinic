@@ -17,7 +17,7 @@ export const DoctorListItems = (
 			</ListItemIcon>
 			<ListItemText primary='Dashboard' />
 		</ListItemButton>
-		<ListItemButton component={Link} to={`/viewAllPatients/:id`}>
+		<ListItemButton component={Link} to={`/viewAllPatients`}>
 			<ListItemIcon>
 				<PeopleIcon />
 			</ListItemIcon>

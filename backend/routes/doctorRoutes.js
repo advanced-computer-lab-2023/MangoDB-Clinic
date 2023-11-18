@@ -74,7 +74,7 @@ router.get("/selectedPatient/:id", async (req, res) => {
 		console.error("Error retrieving patient:", error);
 	}
 });
-router.get("/viewAllPatients", async (req, res) => {
+router.get("/viewAllPatients", protectDoctor, async (req, res) => {
 	try {
 		// const doctorId = req.params.doctorId;
 		const doctorId = req.user._id;
@@ -99,7 +99,7 @@ router.put("/updateEmail", protectDoctor, updateEmail);
 router.put("/updateHourlyRate", protectDoctor, updateHourlyRate);
 router.put("/updateAffiliation", protectDoctor, updateAffiliation);
 
-router.post("/searchPatientByName", searchPatientByName);
+router.post("/searchPatientByName", protectDoctor, searchPatientByName);
 router.post("/viewHealthRecords", viewHealthRecords);
 
 router.get("/getAllSpecialities", getAllSpecialities);

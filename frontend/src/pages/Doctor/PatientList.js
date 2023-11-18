@@ -16,7 +16,7 @@ const Item = styled(Paper)(({ theme }) => ({
 	color: theme.palette.text.secondary,
 }));
 
-const PatientList = async () => {
+const PatientList = () => {
 	// const { id } = useParams();
 	const [patients, setPatients] = useState([]);
 	const [isPending, setIsPending] = useState(true);
@@ -24,21 +24,21 @@ const PatientList = async () => {
 	const [search, setSearch] = useState("");
 	// const [ upcoming, setUpcoming ] = useState(false);
 
-	const getID = async () => {
-		try {
-			const response = await axios.post("http://localhost:4000/doctor/myInfo", {
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem("token")}`,
-				},
-			});
+	// const getID = async () => {
+	// 	try {
+	// 		const response = await axios.post("http://localhost:4000/doctor/myInfo", {
+	// 			headers: {
+	// 				Authorization: `Bearer ${localStorage.getItem("token")}`,
+	// 			},
+	// 		});
 
-			if (response.status === 200) {
-				return response.data._id;
-			}
-		} catch (error) {}
-	};
+	// 		if (response.status === 200) {
+	// 			return response.data._id;
+	// 		}
+	// 	} catch (error) {}
+	// };
 
-	const id = await getID();
+	// const id = await getID();
 
 	const handleChange = (e) => {
 		setSearch(e.target.value);
@@ -51,7 +51,7 @@ const PatientList = async () => {
 			setIsPending(true);
 			setPatients([]);
 
-			searchPatients(id, search)
+			searchPatients(search)
 				.then((result) => {
 					setPatients(result.data);
 					setIsPending(false);
@@ -68,7 +68,7 @@ const PatientList = async () => {
 			setIsPending(true);
 			setPatients([]);
 
-			getPatientsDoctor(id)
+			getPatientsDoctor()
 				.then((res) => {
 					setPatients(res.data);
 					setIsPending(false);
@@ -78,7 +78,7 @@ const PatientList = async () => {
 					setIsPending(false);
 				});
 		}
-	}, [id, search]);
+	}, [search]);
 
 	// const handleUpcomingClick = () => {
 	//     setUpcoming(!upcoming);
