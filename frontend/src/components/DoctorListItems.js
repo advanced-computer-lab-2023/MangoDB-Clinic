@@ -29,7 +29,7 @@ export const DoctorListItems = (
 			</ListItemIcon>
 			<ListItemText primary='Appointments' />
 		</ListItemButton>
-		<ListItemButton component={Link} to={`/editDoctor/:id`}>
+		<ListItemButton component={Link} to={`/editDoctor`}>
 			<ListItemIcon>
 				<AccountCircleIcon />
 			</ListItemIcon>

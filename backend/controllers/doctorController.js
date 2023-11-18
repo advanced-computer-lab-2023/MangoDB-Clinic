@@ -31,7 +31,9 @@ const getMyInfo = asyncHandler(async (req, res) => {
 
 // FILTER APPOITMENT USING STATUS OR DATE
 const filterStatus = async (req, res) => {
-	const { status, date_1, date_2, doctor } = req.body;
+	// const { status, date_1, date_2, doctor } = req.body;
+	const { status, date_1, date_2 } = req.body;
+	const doctor = req.user._id;
 	console.log(status, date_1, date_2, doctor);
 	if (!status) {
 		return res.status(400).json({ message: "Please enter status" });
@@ -132,7 +134,8 @@ const filterStatus = async (req, res) => {
 
 // filter patients by upcoming appointments
 const upcoming = async (req, res) => {
-	const { doctorId } = req.body;
+	// const { doctorId } = req.body;
+	const doctorId = req.user._id;
 
 	try {
 		const upappoint = await Appointment.find({ doctorId: doctorId });
@@ -306,7 +309,8 @@ const getDoctors = async (req, res) => {
 const updateEmail = async (req, res) => {
 	console.log("Update email request received");
 	const { email } = req.body;
-	const doctorId = req.params.id;
+	// const doctorId = req.params.id;
+	const doctorId = req.user._id;
 	console.log("Doctor ID:", doctorId);
 	console.log("New Email:", email);
 
@@ -332,7 +336,8 @@ const updateEmail = async (req, res) => {
 
 const updateHourlyRate = async (req, res) => {
 	const { hourlyRate } = req.body;
-	const doctorId = req.params.id;
+	// const doctorId = req.params.id;
+	const doctorId = req.user._id;
 
 	try {
 		const doctor = await Doctor.findByIdAndUpdate(
@@ -350,7 +355,8 @@ const updateHourlyRate = async (req, res) => {
 
 const updateAffiliation = async (req, res) => {
 	const { affiliation } = req.body;
-	const doctorId = req.params.id;
+	// const doctorId = req.params.id;
+	const doctorId = req.user._id;
 
 	try {
 		const doctor = await Doctor.findByIdAndUpdate(
@@ -368,7 +374,8 @@ const updateAffiliation = async (req, res) => {
 
 const searchPatientByName = async (req, res) => {
 	try {
-		const doctorId = req.params.id;
+		// const doctorId = req.params.id;
+		const doctorId = req.user._id;
 		const { firstName } = req.body;
 
 		console.log("Doctor ID:", doctorId);
@@ -607,7 +614,8 @@ const getPatients = async (req, res) => {
 // UPDATED viewHealthRecords
 const viewHealthRecords = async (req, res) => {
 	// const patient = await Patient.findById(req.params.id);
-	const doctorId = req.params.id;
+	// const doctorId = req.params.id;
+	const doctorId = req.user._id;
 	const { patientId } = req.body;
 
 	const patient = await Patient.findById(patientId);
@@ -641,7 +649,8 @@ const getAllSpecialities = async (req, res) => {
 };
 
 const viewWallet = async (req, res) => {
-	const id = req.params.id;
+	// const id = req.params.id;
+	const id = req.user._id;
 	try {
 		const doctor = await Doctor.findById(id).populate("wallet");
 
@@ -689,7 +698,8 @@ const followUpDoc = async (req, res) => {
 
 const addNewSlots = async (req, res) => {
 	try {
-		const doctorId = req.params.id;
+		// const doctorId = req.params.id;
+		const doctorId = req.user._id;
 		console.log(doctorId);
 		const { weekday, startTime, endTime } = req.body;
 		const newSlots = { weekday, startTime, endTime };
@@ -716,7 +726,8 @@ const addNewSlots = async (req, res) => {
 
 const getMyAppointments = async (req, res) => {
 	try {
-		const doctorId = req.params.id;
+		// const doctorId = req.params.id;
+		const doctorId = req.user._id;
 
 		const appointments = await Appointment.find({ doctorId });
 
@@ -755,7 +766,7 @@ const getMyAppointments = async (req, res) => {
 
 const viewEmploymentContract = async (req, res) => {
 	try {
-		const doctorId = req.user.id;
+		const doctorId = req.user._id;
 
 		const doctor = await Doctor.findById(doctorId);
 
@@ -815,7 +826,8 @@ const addHealthRecord = async (req, res) => {
 
 // Extra frontend methods
 const getDoctorInfo = (req, res) => {
-	const doctorId = req.params.id;
+	// const doctorId = req.params.id;
+	const doctorId = req.user._id;
 	Doctor.findById(doctorId)
 		.then((result) => res.json(result))
 		.catch((err) => res.status(404).json());
@@ -836,8 +848,10 @@ const getStatusOptions = async (req, res) => {
 };
 
 const followUp = async (req, res) => {
-	const { doctorId, patientId, appointmentId, followUpDate } = req.params;
+	// const { doctorId, patientId, appointmentId, followUpDate } = req.params;
 	// const {patientId,appointmentId} = req.query;
+	const { patientId, appointmentId, followUpDate } = req.params;
+	const doctorId = req.user._id;
 
 	try {
 		console.log("Doctor ID:", doctorId);

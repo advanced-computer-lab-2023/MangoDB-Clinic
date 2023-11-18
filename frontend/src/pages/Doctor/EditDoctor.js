@@ -20,7 +20,7 @@ import {
 	updateDoctorRate,
 } from "../../services/api";
 
-const EditDoctor = async () => {
+const EditDoctor = () => {
 	// const { id } = useParams();
 	const [doctor, setDoctor] = useState(null);
 	const [isPending, setIsPending] = useState(true);
@@ -29,21 +29,21 @@ const EditDoctor = async () => {
 
 	const defaultTheme = createTheme();
 
-	const getID = async () => {
-		try {
-			const response = await axios.post("http://localhost:4000/doctor/myInfo", {
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem("token")}`,
-				},
-			});
+	// const getID = async () => {
+	// 	try {
+	// 		const response = await axios.post("http://localhost:4000/doctor/myInfo", {
+	// 			headers: {
+	// 				Authorization: `Bearer ${localStorage.getItem("token")}`,
+	// 			},
+	// 		});
 
-			if (response.status === 200) {
-				return response.data._id;
-			}
-		} catch (error) {}
-	};
+	// 		if (response.status === 200) {
+	// 			return response.data._id;
+	// 		}
+	// 	} catch (error) {}
+	// };
 
-	const id = await getID();
+	// const id = await getID();
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -52,9 +52,9 @@ const EditDoctor = async () => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		updateDoctorEmail(id, doctor);
-		updateDoctorRate(id, doctor);
-		updateDoctorAffiliation(id, doctor);
+		updateDoctorEmail(doctor);
+		updateDoctorRate(doctor);
+		updateDoctorAffiliation(doctor);
 		setSuccess(true);
 
 		setTimeout(() => {
@@ -63,13 +63,13 @@ const EditDoctor = async () => {
 	};
 
 	useEffect(() => {
-		getDoctor(id)
+		getDoctor()
 			.then((res) => {
 				setDoctor(res.data);
 				setIsPending(false);
 			})
 			.catch((err) => setError(err.message));
-	}, [id]);
+	}, []);
 
 	return (
 		<div>

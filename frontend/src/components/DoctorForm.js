@@ -23,7 +23,7 @@ const DoctorForm = () => {
 	const [affiliation, setAffiliation] = useState("");
 	const [hourlyRate, setHourlyRate] = useState("");
 	const [educationalBackground, setEducationalBackground] = useState("");
-	const [documents, setDocuments] = useState();
+	const [documents, setDocuments] = useState([]);
 	const [speciality, setSpeciality] = useState("");
 	const [isPending, setIsPending] = useState(false);
 	const navigate = useNavigate();

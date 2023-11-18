@@ -39,7 +39,7 @@ const {
 router.get("/myInfo", protectDoctor, getMyInfo);
 
 // Extra frontend routes
-router.get("/doctorInfo/:id", getDoctorInfo);
+router.get("/doctorInfo", protectDoctor, getDoctorInfo);
 router.get("/statusOptions", getStatusOptions);
 
 router.post("/login", loginDoctor);
@@ -47,11 +47,12 @@ router.post("/verify-otp", verifyOTP);
 router.post("/reset-password", resetPassword);
 router.post("/request-otp", sendOTP);
 
-router.post("/filterapp", filterStatus);
+router.post("/filterapp", protectDoctor, filterStatus);
 
 router.post("/get_doctor", getDoctor);
 
-router.post("/upcoming", upcoming);
+// router.post("/upcoming", upcoming);
+router.post("/upcoming", protectDoctor, upcoming);
 
 router.post("/CreateDoctor", createDoctor);
 router.post("/CreatePatient", createPatient);
@@ -73,9 +74,10 @@ router.get("/selectedPatient/:id", async (req, res) => {
 		console.error("Error retrieving patient:", error);
 	}
 });
-router.get("/viewAllPatients/:doctorId", async (req, res) => {
+router.get("/viewAllPatients", async (req, res) => {
 	try {
-		const doctorId = req.params.doctorId;
+		// const doctorId = req.params.doctorId;
+		const doctorId = req.user._id;
 		const patientsData = await viewAllPatients(doctorId);
 
 		res.json(patientsData);
@@ -90,23 +92,32 @@ router.get("/viewAllPatients/:doctorId", async (req, res) => {
 	}
 });
 
-router.put("/updateEmail/:id", updateEmail);
-router.put("/updateHourlyRate/:id", updateHourlyRate);
-router.put("/updateAffiliation/:id", updateAffiliation);
+// router.put("/updateEmail/:id", updateEmail);
+// router.put("/updateHourlyRate/:id", updateHourlyRate);
+// router.put("/updateAffiliation/:id", updateAffiliation);
+router.put("/updateEmail", protectDoctor, updateEmail);
+router.put("/updateHourlyRate", protectDoctor, updateHourlyRate);
+router.put("/updateAffiliation", protectDoctor, updateAffiliation);
 
-router.post("/searchPatientByName/:id", searchPatientByName);
-router.post("/viewHealthRecords/:id", viewHealthRecords);
+router.post("/searchPatientByName", searchPatientByName);
+router.post("/viewHealthRecords", viewHealthRecords);
 
 router.get("/getAllSpecialities", getAllSpecialities);
 
-router.get("/view_wallet/:id", viewWallet);
+router.get("/view_wallet", protectDoctor, viewWallet);
 router.post("/followUp/:id", followUpDoc);
-router.get("/getMyAppointments/:id", getMyAppointments);
-router.get("/getEmploymentContract:id", viewEmploymentContract);
-router.patch("/addSlots/:id", addNewSlots);
-router.patch("/addHealthRecord/:id", addHealthRecord);
+
+// router.get("/getMyAppointments/:id", getMyAppointments);
+// router.get("/getEmploymentContract:id", viewEmploymentContract);
+// router.patch("/addSlots/:id", addNewSlots);
+// router.patch("/addHealthRecord/:id", addHealthRecord);
+router.get("/getMyAppointments", protectDoctor, getMyAppointments);
+router.get("/getEmploymentContract", protectDoctor, viewEmploymentContract);
+router.patch("/addSlots", protectDoctor, addNewSlots);
+router.patch("/addHealthRecord/:id", protectDoctor, addHealthRecord);
 router.patch(
-	"/scheduleFollowup/:doctorId/:patientId/:appointmentId/:followUpDate",
+	// "/scheduleFollowup/:doctorId/:patientId/:appointmentId/:followUpDate",
+	"/scheduleFollowup/:patientId/:appointmentId/:followUpDate",
 
 	followUp
 );
