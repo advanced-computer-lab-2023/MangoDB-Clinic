@@ -25,7 +25,6 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const DoctorApps = () => {
-	const id = "6526d4fc602e6bd55799cda8";
 	const [appointments, setAppointments] = useState([]);
 	const [isPending, setIsPending] = useState(true);
 	const [error, setError] = useState("");
@@ -166,7 +165,7 @@ const DoctorApps = () => {
 		setIsPending(true);
 		setAppointments([]);
 
-		const query = { status, date_1: from, date_2: to, doctor: id };
+		const query = { status, date_1: from, date_2: to };
 
 		if (!query["status"]) {
 			query["status"] = "All";
@@ -210,7 +209,7 @@ const DoctorApps = () => {
 		if (!upcoming) {
 			setAppointments([]);
 			setIsPending(true);
-			getMyAppointments(id)
+			getMyAppointments()
 				.then((result) => {
 					setAppointments(result.data);
 					setIsPending(false);
@@ -220,13 +219,13 @@ const DoctorApps = () => {
 					setIsPending(false);
 				});
 		}
-	}, [id, upcoming]);
+	}, [upcoming]);
 
 	useEffect(() => {
 		if (upcoming) {
 			setIsPending(true);
 			setAppointments([]);
-			upcomingApp(id)
+			upcomingApp()
 				.then((result) => {
 					setIsPending(false);
 					setAppointments(result.data);

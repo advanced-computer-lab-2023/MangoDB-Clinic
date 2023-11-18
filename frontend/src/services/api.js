@@ -21,29 +21,29 @@ export const uploadHealthRecord = (id, files) =>
 		headers: { "Content-Type": "multipart/form-data" },
 	});
 
-export const getDoctor = () => API.get(`/doctor/doctorInfo`, {headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }});
+export const getDoctor = () => API.get(`/doctor/doctorInfo`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export const statusEnum = () => API.get("/doctor/statusOptions");
 
 export const getPatientsDoctor = () =>
-	API.get(`/doctor/viewAllPatients`, {headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }});
+	API.get(`/doctor/viewAllPatients`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export const searchPatients = (firstName) =>
-	API.post(`/doctor/searchPatientByName`, { firstName }, {headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }});
+	API.post(`/doctor/searchPatientByName`, { firstName }, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
-export const upcomingApp = (doctorId) =>
-	API.post("/doctor/upcoming/", { doctorId });
+export const upcomingApp = () =>
+	API.post("/doctor/upcoming", {}, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export const selectPatient = (id) => API.get(`/doctor/selectedPatient/${id}`);
 
 export const updateDoctorEmail = (doctor) =>
-	API.put(`/doctor/updateEmail`, doctor, {headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }});
+	API.put(`/doctor/updateEmail`, doctor, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export const updateDoctorRate = (doctor) =>
-	API.put(`/doctor/updateHourlyRate`, doctor, {headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }});
+	API.put(`/doctor/updateHourlyRate`, doctor, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export const updateDoctorAffiliation = (doctor) =>
-	API.put(`/doctor/updateAffiliation`, doctor, {headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }});
+	API.put(`/doctor/updateAffiliation`, doctor, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export const viewRegFamMembers = (id) =>
 	API.get(`/Patient/get_family_members/${id}`);
@@ -84,11 +84,11 @@ export const getEmploymentContract = async (id) => {
 	}
 };
 
-export const getMyAppointments = (id) =>
-	API.get(`/doctor/getMyAppointments/${id}`);
+export const getMyAppointments = () =>
+	API.get(`/doctor/getMyAppointments`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export const filterAppointments = (query) =>
-	API.post("/doctor/filterapp", query);
+	API.post("/doctor/filterapp", query, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export const viewWallet = (id) => API.get(`/patient/view_wallet/${id}`);
 
