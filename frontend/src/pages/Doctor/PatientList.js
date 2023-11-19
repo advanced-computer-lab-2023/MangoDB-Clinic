@@ -171,7 +171,7 @@ const PatientList = () => {
 					size='medium'
 					variant='outlined'
 					style={{ margin: "10px", color: "white", background: "#1976d2" }}
-					to='/doctorAppointments/6526de95033c945b74c32d7d'
+					to='/doctorAppointments'
 				>
 					Appointments
 				</Button>

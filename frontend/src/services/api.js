@@ -34,7 +34,7 @@ export const searchPatients = (firstName) =>
 export const upcomingApp = () =>
 	API.post("/doctor/upcoming", {}, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
-export const selectPatient = (id) => API.get(`/doctor/selectedPatient/${id}`);
+export const selectPatient = (id) => API.get(`/doctor/selectedPatient/${id}`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export const updateDoctorEmail = (doctor) =>
 	API.put(`/doctor/updateEmail`, doctor, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });

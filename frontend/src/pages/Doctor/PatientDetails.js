@@ -26,7 +26,7 @@ import { uploadHealthRecord, selectPatient } from "../../services/api";
  *       3-View health records
  */
 
-const PatientDetails = async () => {
+const PatientDetails = () => {
 	const { id } = useParams();
 	const [patient, setPatient] = useState("");
 	const [isPending, setIsPending] = useState(true);

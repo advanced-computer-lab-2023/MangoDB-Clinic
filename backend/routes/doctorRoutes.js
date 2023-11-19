@@ -61,7 +61,7 @@ router.get("/getdoctors", getDoctors);
 router.get("/getPatients", getPatients);
 // router.get('/filterapp/:id', filterStatus);
 // router.get('/upcoming/:id', upcoming);
-router.get("/selectedPatient/:id", async (req, res) => {
+router.get("/selectedPatient/:id", protectDoctor, async (req, res) => {
 	try {
 		const patientId = req.params.id;
 		const patient = await selectPatient(patientId);
