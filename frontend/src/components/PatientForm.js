@@ -52,7 +52,7 @@ const PatientForm = () => {
 		addPatient(patient)
 			.then(() => {
 				setIsPending(false);
-				navigate("/pateintdashboard");
+				navigate("/patientdashboard");
 			})
 			.catch((error) => {
 				console.error("Error adding patient:", error);
