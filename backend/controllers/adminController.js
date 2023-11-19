@@ -588,6 +588,42 @@ const resetPassword = asyncHandler(async (req, res) => {
 	}
 });
 
+// @desc Change Password
+// @route POST /admin/change-password
+// @access Private
+const changePassword = asyncHandler(async (req, res) => {
+	try {
+		const admin = req.user;
+		const oldPassword = req.body.oldPassword;
+		const newPassword = req.body.newPassword;
+		const confirmPassword = req.body.confirmPassword;
+
+		const salt = await bcrypt.genSalt(10);
+
+		if (!(await bcrypt.compare(oldPassword, admin.password))) {
+			res.status(400).json({ message: "Invalid Password" });
+		}
+
+		if (newPassword !== confirmPassword) {
+			res.status(400).json({ message: "Passwords Do Not Match" });
+		} else {
+			if (await bcrypt.compare(newPassword, admin.password)) {
+				res.status(400).json({
+					message: "New Password Cannot Be The Same As Old Password",
+				});
+			} else {
+				admin.password = await bcrypt.hash(newPassword, salt);
+				await admin.save();
+				res.status(200).json({
+					message: "Password Changed Successfuly",
+				});
+			}
+		}
+	} catch (error) {
+		res.status(500).json({ message: "Internal Server Error", error });
+	}
+});
+
 // Generate Token
 const generateToken = (id) => {
 	return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -618,4 +654,5 @@ module.exports = {
 	sendOTP,
 	verifyOTP,
 	resetPassword,
+	changePassword,
 };

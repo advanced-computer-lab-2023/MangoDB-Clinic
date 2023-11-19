@@ -29,6 +29,42 @@ const getMyInfo = asyncHandler(async (req, res) => {
 	});
 });
 
+// @desc Change Password
+// @route POST /doctor/change-password
+// @access Private
+const changePassword = asyncHandler(async (req, res) => {
+	try {
+		const doctor = req.user;
+		const oldPassword = req.body.oldPassword;
+		const newPassword = req.body.newPassword;
+		const confirmPassword = req.body.confirmPassword;
+
+		const salt = await bcrypt.genSalt(10);
+
+		if (!(await bcrypt.compare(oldPassword, doctor.password))) {
+			res.status(400).json({ message: "Invalid Password" });
+		}
+
+		if (newPassword !== confirmPassword) {
+			res.status(400).json({ message: "Passwords Do Not Match" });
+		} else {
+			if (await bcrypt.compare(newPassword, doctor.password)) {
+				res.status(400).json({
+					message: "New Password Cannot Be The Same As Old Password",
+				});
+			} else {
+				doctor.password = await bcrypt.hash(newPassword, salt);
+				await doctor.save();
+				res.status(200).json({
+					message: "Password Changed Successfuly",
+				});
+			}
+		}
+	} catch (error) {
+		res.status(500).json({ message: "Internal Server Error", error });
+	}
+});
+
 // FILTER APPOITMENT USING STATUS OR DATE
 const filterStatus = async (req, res) => {
 	// const { status, date_1, date_2, doctor } = req.body;
@@ -910,5 +946,6 @@ module.exports = {
 	resetPassword,
 	followUp,
 	getStatusOptions,
-	getDoctor
+	getDoctor,
+	changePassword,
 };
