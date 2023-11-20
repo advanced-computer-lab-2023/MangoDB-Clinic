@@ -6,7 +6,7 @@ import { Button, TextField, Grid } from "@mui/material";
 import { addSlots } from "../services/api";
 
 const AddSlotsPage = () => {
-	const id = "6526d4fc602e6bd55799cda8";
+	//const id = "6526d4fc602e6bd55799cda8";
 	const [weekday, setWeekday] = useState("");
 	const [startTime, setStartTime] = useState("");
 	const [endTime, setEndTime] = useState("");
@@ -46,7 +46,7 @@ const AddSlotsPage = () => {
 
 	const handleAddSlot = async () => {
 		try {
-			await addSlots(id, weekday, startTime, endTime); // Sending the whole 'newSlot' object to the 'addSlots' function
+			await addSlots( weekday, startTime, endTime); // Sending the whole 'newSlot' object to the 'addSlots' function
 
 			// Clear fields after successful slot addition
 			setWeekday("");

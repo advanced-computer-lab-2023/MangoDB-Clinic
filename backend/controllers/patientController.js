@@ -11,6 +11,8 @@ const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 
 const port = process.env.PORT;
+const JWT_SECRET = 'abc123';
+const SECRET = 'abc123';
 
 // @desc Get my (patient) info
 // @route GET /patient/my-info
@@ -51,6 +53,7 @@ const loginPatient = asyncHandler(async (req, res) => {
 
 	// Check for username
 	const patient = await Patient.findOne({ username });
+	console.log(patient);
 
 	if (patient && (await bcrypt.compare(password, patient.password))) {
 		res.status(200).json({
@@ -155,7 +158,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 
 // Generate Token
 const generateToken = (id) => {
-	return jwt.sign({ id }, process.env.JWT_SECRET, {
+	return jwt.sign({ id }, JWT_SECRET, {
 		expiresIn: "30d",
 	});
 };
@@ -252,7 +255,7 @@ const deletePatient = async (req, res) => {
 
 //Add family member
 const addFamilyMember = asyncHandler(async (req, res) => {
-	const id = req.params.id;
+	const id = req.user._id;
 
 	try {
 		const patient = await Patient.findById(id);
@@ -267,7 +270,10 @@ const addFamilyMember = asyncHandler(async (req, res) => {
 });
 
 const getFamilyMembers = asyncHandler(async (req, res) => {
-	const id = req.params.id;
+	console.log("hena 273");
+	const id = req.user._id;
+
+	console.log("hena 276");
 
 	try {
 		const patient = await Patient.findById(id);
@@ -633,7 +639,7 @@ const filterDoctors = async (req, res) => {
 };
 
 const viewHealthRecords = async (req, res) => {
-	const patient = await Patient.findById(req.params.id);
+	const patient = await Patient.findById(req.user._id);
 	try {
 		if (!patient) {
 			res.status(400);
@@ -810,14 +816,17 @@ const deleteDocument = async (req, res) => {
 };
 
 const linkFamilyMember = async (req, res) => {
-	const id = req.params.id;
-	const { email, relation, mobile, linkWithEmail } = req.query;
-	const Boolean = false;
+	console.log("hena819");
+	const id = req.user._id;
+	const { email, relation, mobile } = req.body;
+	let Boolean = false;
+	console.log(email);
 	try {
+		console.log("825");
 		if (email.length > 6) {
 			Boolean = true;
 		}
-		console.log("id:", id);
+		//console.log("id:", id);
 		const patient = await Patient.findById(id);
 
 		console.log(patient);

@@ -5,7 +5,7 @@ import { Button, TextField, Grid } from "@mui/material";
 import { linkPatAsFam } from "../services/api";
 
 const LinkPatientAsFam = () => {
-	const id = "6526d30a0f83f5e462288354"; // Extract 'patientId' from useParams or use a default value
+	//const id = "6526d30a0f83f5e462288354"; // Extract 'patientId' from useParams or use a default value
 
 	const [patientInfo, setPatientInfo] = useState({
 		email: "",
@@ -40,9 +40,9 @@ const LinkPatientAsFam = () => {
 		try {
 			const { email, phone, relation } = patientInfo;
 			//const isEmptyEmail = email.trim(); // Check if the email field is empty or only whitespace
-			const email2 = email && email !== "";
+			//const email2 = email && email !== "";
 
-			await linkPatAsFam(id, email, phone, relation, email2);
+			await linkPatAsFam( email, phone, relation);
 
 			setPatientInfo({ email: "", phone: "", relation: "" }); // Reset the form after linking
 		} catch (error) {

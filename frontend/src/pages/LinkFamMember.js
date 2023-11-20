@@ -6,7 +6,7 @@ import { Button, TextField, Grid } from "@mui/material";
 import { linkFam } from "../services/api";
 
 const LinkFamMember = () => {
-	const id = "6526d30a0f83f5e462288354"; // Extract 'patientId' from useParams or use the default value
+	//const id = "6526d30a0f83f5e462288354"; // Extract 'patientId' from useParams or use the default value
 
 	const [family, setFamily] = useState({
 		name: "",
@@ -41,7 +41,7 @@ const LinkFamMember = () => {
 
 	const handleLink = async () => {
 		try {
-			await linkFam(id, [family]);
+			await linkFam( [family]);
 			setFamily({
 				name: "",
 				nationalID: "",

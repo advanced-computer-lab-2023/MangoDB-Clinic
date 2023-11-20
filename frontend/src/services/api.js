@@ -45,10 +45,10 @@ export const updateDoctorRate = (doctor) =>
 export const updateDoctorAffiliation = (doctor) =>
 	API.put(`/doctor/updateAffiliation`, doctor, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
-export const viewRegFamMembers = (id) =>
-	API.get(`/Patient/get_family_members/${id}`);
+export const viewRegFamMembers = () =>
+	API.get(`/patient/get_family_members`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
-export const linkFam = (id, family) => {
+export const linkFam = ( family) => {
 	const familyData = family.map((member) => ({
 		name: member.name,
 		nationalID: member.nationalID,
@@ -58,26 +58,25 @@ export const linkFam = (id, family) => {
 		// Add other fields as needed
 	}));
 
-	return API.put(`/Patient/add_family_member/${id}`, { family: familyData });
+	return API.put(`/Patient/add_family_member`, { family: familyData }, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 };
 
-export const linkPatAsFam = (id, email, mobile, relation, linkWithEmail) => {
-	const queryParams = linkWithEmail
-		? `?mobile=${mobile}&email=${email}&relation=${relation}&linkWithEmail=true`
-		: `?mobile=${mobile}&email=${email}&relation=${relation}&linkWithEmail=false`;
+export const linkPatAsFam = ( email, mobile, relation) => {
+	
 
-	return API.put(`/Patient/link_family_member/${id}${queryParams}`);
+		console.log("hena68");
+	return API.put(`/Patient/link_family_member`,{email,mobile,relation}, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 };
+// export const addSlots = (id, weekday, startTime, endTime) =>
+// 	API.patch(`/doctor/addSlots/${id}`, { weekday, startTime, endTime });
+	export const addSlots = (weekday, startTime, endTime) =>
+	API.patch(`/doctor/addSlots`, { weekday, startTime, endTime }, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+export const getHealthRecords = () =>
+	API.get(`/Patient/view_health_records`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
-export const addSlots = (id, weekday, startTime, endTime) =>
-	API.patch(`/doctor/addSlots/${id}`, { weekday, startTime, endTime });
-
-export const getHealthRecords = (id) =>
-	API.get(`/Patient/view_health_records/${id}`);
-
-export const getEmploymentContract = async (id) => {
+export const getEmploymentContract = async () => {
 	try {
-		const response = await API.get(`/doctor/viewEmploymentContract/${id}`);
+		const response = await API.get(`/doctor/viewEmploymentContract`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 		return response.data; // You might receive the PDF blob or link here
 	} catch (error) {
 		throw new Error("Failed to fetch employment contract");

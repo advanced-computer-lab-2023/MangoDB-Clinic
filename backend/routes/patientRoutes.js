@@ -44,6 +44,7 @@ const {
 	getAvailableAppointments,
 	makeAppointment,
 } = require("../controllers/patientController");
+const { protectDoctor } = require("../middleware/doctorMiddleware");
 
 router.get("/myInfo", getMyInfo);
 
@@ -67,9 +68,9 @@ router.delete("/delet_patient/:id",  deletePatient);
 //UPDATE a single patient
 router.put("/update_patient/:id",  updatePatient);
 
-router.put("/add_family_member/:id",  addFamilyMember);
+router.put("/add_family_member/",protectPatient,  addFamilyMember);
 
-router.get("/get_family_members/:id",  getFamilyMembers);
+router.get("/get_family_members/",protectPatient,  getFamilyMembers);
 
 router.get("/get_selected_doctor/:id",  getSelectedDoctor);
 
@@ -102,7 +103,7 @@ router.get("/filter_appointments/:id",  filterAppointments);
 
 router.get("/search_doctor/:id",  searchDoctor);
 
-router.get("/view_health_records/:id",  viewHealthRecords);
+router.get("/view_health_records/",protectPatient,  viewHealthRecords);
 
 router.get("/view_health_packages", viewHealthPackages);
 
@@ -129,7 +130,7 @@ router.delete(
 	deleteDocument
 );
 
-router.put("/link_family_member/:id",  linkFamilyMember);
+router.put("/link_family_member/",protectPatient,  linkFamilyMember);
 
 router.put(
 	"/subscribe_to_health_package/:patientId/:packageId",
