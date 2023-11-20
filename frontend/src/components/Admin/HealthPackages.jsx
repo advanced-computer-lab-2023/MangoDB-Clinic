@@ -90,7 +90,7 @@ const defaultTheme = createTheme();
 export default function HealthPackages() {
 	const [cards, setCards] = React.useState([1, 2, 3]);
 	const [packages, setPackages] = React.useState([]);
-	const [open, setOpen] = React.useState(true);
+	const [open, setOpen] = React.useState(false);
 	let packID = null;
 	const navigate = useNavigate();
 

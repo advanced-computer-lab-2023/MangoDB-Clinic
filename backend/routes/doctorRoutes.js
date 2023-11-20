@@ -34,6 +34,7 @@ const {
 	followUp,
 	getDoctor,
 	getStatusOptions,
+	changePassword,
 } = require("../controllers/doctorController");
 
 router.get("/myInfo", protectDoctor, getMyInfo);
@@ -46,6 +47,7 @@ router.post("/login", loginDoctor);
 router.post("/verify-otp", verifyOTP);
 router.post("/reset-password", resetPassword);
 router.post("/request-otp", sendOTP);
+router.post("/change-password", protectDoctor, changePassword);
 
 router.post("/filterapp", protectDoctor, filterStatus);
 

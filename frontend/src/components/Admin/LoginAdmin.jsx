@@ -42,6 +42,7 @@ export default function LoginAdmin() {
 		username: "",
 		password: "",
 	});
+	const [error, setError] = React.useState(null);
 
 	const [isLoading, setIsLoading] = React.useState(false);
 
@@ -55,10 +56,11 @@ export default function LoginAdmin() {
 
 			if (response.status === 200) {
 				localStorage.setItem("token", response.data.token);
+				setError(null);
 				navigate("/admin");
 			}
 		} catch (error) {
-			alert("Invalid Credentials");
+			setError("Invalid Credentials");
 		} finally {
 			setIsLoading(false);
 		}
@@ -108,6 +110,18 @@ export default function LoginAdmin() {
 								noValidate
 								sx={{ mt: 1 }}
 							>
+								{error && (
+									<div
+										style={{
+											color: "red",
+											marginBottom: "1rem",
+											textAlign: "center",
+											fontWeight: "bold",
+										}}
+									>
+										{error}
+									</div>
+								)}
 								<TextField
 									margin='normal'
 									required
