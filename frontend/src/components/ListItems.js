@@ -60,7 +60,7 @@ export const mainListItems = (
 			<ListItemIcon>
 				<AccountCircleIcon />
 			</ListItemIcon>
-			<ListItemText primary='Forget Password' />
+			<ListItemText primary='Change Password' />
 		</ListItemButton>
 	</React.Fragment>
 );

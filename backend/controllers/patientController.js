@@ -349,7 +349,7 @@ const getAllPrescriptions = async (req, res) => {
 };
 
 const getAllPrescriptionsOfPatient = async (req, res) => {
-	const patientId = req.params.id;
+	const patientId = req.user.id;
 
 	if (!mongoose.Types.ObjectId.isValid(patientId)) {
 		return res.status(404).json({ error: "Id Not Found" });
@@ -397,9 +397,9 @@ const selectPrescription = async (req, res) => {
 };
 
 const filterPrescription = async (req, res) => {
-	const patient = await Patient.findById(req.params.patientId);
+	const patientId = req.user.id;
 
-	if (!patient) {
+	if (!patientId) {
 		return res.status(404).json({ error: "Patient Id Not Found" });
 	}
 
@@ -407,7 +407,7 @@ const filterPrescription = async (req, res) => {
 		const { doctor, filled, date } = req.query;
 		const query = {};
 
-		query["patientId"] = req.params.patientId;
+		query["patientId"] = patientId;
 
 		if (doctor) {
 			const doc = await Doctor.findOne({
@@ -437,6 +437,7 @@ const filterPrescription = async (req, res) => {
 		}).populate("doctorId");
 
 		res.status(200).json(filteredPrescriptions);
+		
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ error: "Internal Server Error" });

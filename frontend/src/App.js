@@ -2,14 +2,14 @@ import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
-import PatientDashboard from "./pages/PatientDashboard";
+import PatientDashboard from "./pages/Patient/PatientDashboard";
 import DoctorsTable from "./components/DoctorsTable";
 import PatientForm from "./components/PatientForm";
 import PatientList from "./pages/Doctor/PatientList";
 import PatientDetails from "./pages/Doctor/PatientDetails";
 import ViewAppointments from "./pages/ViewAppointments";
 import ViewDoctors from "./pages/ViewDoctors";
-import ViewPrescriptions from "./pages/ViewPrescriptions";
+import ViewPrescriptions from "./pages/Patient/ViewPrescriptionsPatient";
 import ViewProfile from "./pages/ViewProfile";
 import ViewWallet from "./pages/ViewWallet";
 import EditDoctor from "./pages/Doctor/EditDoctor";
@@ -28,11 +28,11 @@ import ViewPackages from "./pages/ViewPackages";
 import AddHealthRecordsPatient from "./pages/AddHealthRecordsPatient";
 import LinkPatientAsFam from "./pages/LinkPatientAsFam";
 import ViewEmploymentContract from "./pages/ViewEmploymentContract";
-import ChangePasswordDoctorPage from "./pages/ChangePasswordDoctorPage";
-import ChangePasswordPatientPage from "./pages/ChangePasswordPatientPage";
+import ChangePasswordDoctorPage from "./pages/Doctor/ChangePasswordDoctorPage";
+import ChangePasswordPatientPage from "./pages/Patient/ChangePasswordPatientPage";
 import ForgotPasswordUserPage from "./pages/General/ForgotPasswordUserPage";
 import LoginUserPage from "./pages/General/LoginUserPage";
-import DoctorDashboard from "./pages/doctorDashboard";
+import DoctorDashboard from "./pages/Doctor/doctorDashboard";
 
 // Admin Imports
 import LoginAdminPage from "./pages/Admin/LoginAdminPage";
