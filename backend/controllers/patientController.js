@@ -436,11 +436,12 @@ const filterPrescription = async (req, res) => {
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 };
-
+// const doctorId = req.user._id;
 const getAllAppointments = async (req, res) => {
 	try {
 		const appointments = await Appointment.find({
-			patientId: req.params.id,
+			// patientId: req.params.id,
+			patientId:req.user._id,
 		}).populate({
 			path: "doctorId",
 			select: "firstName lastName",
@@ -455,7 +456,8 @@ const getAllAppointments = async (req, res) => {
 const filterAppointments = async (req, res) => {
 	let { status, date_1, date_2 } = req.query;
 
-	const patient = await Patient.findById(req.params.id);
+	// const patient = await Patient.findById(req.params.id);
+	const patient = req.user._id;
 	const appoint = await Appointment.find({ patientId: req.params.id }).populate(
 		{
 			path: "doctorId",
@@ -1245,7 +1247,7 @@ const payFromWallet = async (req, res) => {
 
 // filter patients by upcoming appointments
 const upcoming = async (req, res) => {
-	const { patientId } = req.body;
+	const patientId = req.user._id;
 	try {
 		const upcomingAppointments = await Appointment.find({
 			patientId,

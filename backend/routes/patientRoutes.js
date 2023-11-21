@@ -98,9 +98,9 @@ router.get("/get_all_doctors/:id", viewAllDoctors);
 
 router.get("/filter_doctors/:id", filterDoctors);
 
-router.get("/get_all_appointments/:id", getAllAppointments);
+router.get("/get_all_appointments", protectPatient,getAllAppointments);
 
-router.get("/filter_appointments/:id", filterAppointments);
+router.get("/filter_appointments", protectPatient,filterAppointments);
 
 router.get("/search_doctor/:id", searchDoctor);
 
@@ -161,7 +161,7 @@ router.get(
 
 router.post("/make_appointment/:id", makeAppointment);
 
-router.post("/upcoming", upcoming);
+router.post("/upcoming", protectPatient,upcoming);
 
 router.post("/filterapp/:id", filterStatus);
 

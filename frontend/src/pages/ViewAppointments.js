@@ -9,6 +9,7 @@ import {
 	upcomingPatientApp,
 	filterPatientAppointments,
 } from "../services/api";
+import { response } from "express";
 
 const Item = styled(Paper)(({ theme }) => ({
 	backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -19,7 +20,8 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const ViewAppointments = () => {
-	const id = "6526d30a0f83f5e462288354";
+	
+	// const id = "6526d30a0f83f5e462288354";
 	const [appointments, setAppointments] = useState([]);
 	const [isPending, setIsPending] = useState(true);
 	const [error, setError] = useState("");
@@ -27,6 +29,8 @@ const ViewAppointments = () => {
 	const [from, setFrom] = useState("");
 	const [to, setTo] = useState("");
 	const [upcoming, setUpcoming] = useState(false);
+
+	const [statEnum, setStatEnum] = useState(["All"]);
 
 	function convertToISOFormat(dateString) {
 		// Split the input string into day, month, and year
@@ -69,7 +73,7 @@ const ViewAppointments = () => {
 		setIsPending(true);
 		setAppointments([]);
 
-		const query = { status, date_1: from, date_2: to, patient: id };
+		const query = { status, date_1: from, date_2: to};
 
 		if (!query[status]) {
 			query[status] = "All";
@@ -99,8 +103,9 @@ const ViewAppointments = () => {
 		if (!upcoming) {
 			setAppointments([]);
 			setIsPending(true);
-			viewPatientAppointments(id)
+			viewPatientAppointments()
 				.then((result) => {
+					setStatEnum(result.data);
 					setAppointments(result.data);
 					setIsPending(false);
 				})
@@ -109,14 +114,14 @@ const ViewAppointments = () => {
 					setIsPending(false);
 				});
 		}
-	}, [id, upcoming]);
+	}, []);
 
 	useEffect(() => {
 		setIsPending(true);
 		setAppointments([]);
 
 		if (upcoming) {
-			upcomingPatientApp(id)
+			upcomingPatientApp()
 				.then((result) => {
 					setIsPending(false);
 					setAppointments(result.data);

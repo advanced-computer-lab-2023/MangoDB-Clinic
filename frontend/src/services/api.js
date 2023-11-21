@@ -92,14 +92,14 @@ export const filterAppointments = (query) =>
 
 export const viewWallet = (id) => API.get(`/patient/view_wallet/${id}`);
 
-export const viewPatientAppointments = (id) =>
-	API.get(`/patient/get_all_appointments/${id}`);
+export const viewPatientAppointments = () =>
+	API.get('/patient/get_all_appointments',{ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
-export const upcomingPatientApp = (patientId) =>
-	API.post("/patient/upcoming/", { patientId });
+export const upcomingPatientApp = () =>
+	API.post("/patient/upcoming/", {}, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export const filterPatientAppointments = (query) =>
-	API.post("/patient/filterapp", query);
+	API.post("/patient/filterapp", query,{ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 // payments
 export const checkout = (id, items) =>
