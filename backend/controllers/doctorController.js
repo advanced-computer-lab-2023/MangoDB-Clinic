@@ -916,6 +916,27 @@ const followUp = async (req, res) => {
 	}
 };
 
+// Sprint 3
+// reschedule an appointment for a patient
+const rescheduleApp = async (req, res) => {
+	try {
+		const { appointmentId, newDate } = req.body;
+		const appointment = await Appointment.findById(appointmentId);
+		if (!appointment) {
+			res.status(404).json({ message: "Appointment does not exist."});
+		}
+
+		appointment.date = newDate;
+
+		await appointment.save();
+	
+		res.status(200).json({ message: "Appointment rescheduled successfully." });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: "Error rescheduling appointment." });
+	}
+};
+
 module.exports = {
 	getMyInfo,
 	createDoctor,
@@ -948,4 +969,5 @@ module.exports = {
 	getStatusOptions,
 	getDoctor,
 	changePassword,
+	rescheduleApp,
 };
