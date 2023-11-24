@@ -137,6 +137,17 @@ export const cancelHealthPackage = (patientId) =>
 export const viewSubscribedhealthPackage = () =>
 	API.get(`/patient/view_subscribed_health_package/6526d30a0f83f5e462288354`);
 
+//////////////////////////////////////////////////////////// sprint 3 ////////////////////////////////////////////////////////////
+export const doctorRescheduleApp = (appointment) =>
+	API.patch(`doctor/rescheduleApp`, appointment, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+
+export const doctorCancelApp = (appointment) =>
+	API.delete(`doctor/cancelApp`, appointment, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+
+export const patientCancelApp = (appointment) =>
+	API.delete(`patient/cancelApp`, appointment, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 const API2 = axios.create({
 	baseURL: `http://localhost:${port}`,
 	timeout: 5000,
