@@ -3,11 +3,16 @@ import { useEffect, useState } from "react";
 import { Grid, Paper, Typography, TextField } from "@mui/material";
 import { experimentalStyled as styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
 
 import {
 	viewPatientAppointments,
 	upcomingPatientApp,
 	filterPatientAppointments,
+	statusEnum,
 } from "../services/api";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -19,7 +24,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const ViewAppointments = () => {
-	const id = "6526d30a0f83f5e462288354";
+	// const id = "6526d30a0f83f5e462288354";
 	const [appointments, setAppointments] = useState([]);
 	const [isPending, setIsPending] = useState(true);
 	const [error, setError] = useState("");
@@ -27,6 +32,7 @@ const ViewAppointments = () => {
 	const [from, setFrom] = useState("");
 	const [to, setTo] = useState("");
 	const [upcoming, setUpcoming] = useState(false);
+	const [statEnum, setStatEnum] = useState(["All"]);
 
 	function convertToISOFormat(dateString) {
 		// Split the input string into day, month, and year
@@ -69,7 +75,7 @@ const ViewAppointments = () => {
 		setIsPending(true);
 		setAppointments([]);
 
-		const query = { status, date_1: from, date_2: to, patient: id };
+		const query = { status, date_1: from, date_2: to  };
 
 		if (!query[status]) {
 			query[status] = "All";
@@ -94,12 +100,25 @@ const ViewAppointments = () => {
 				setIsPending(false);
 			});
 	};
-
+	useEffect(() => {
+		setIsPending(true);
+		statusEnum()
+			.then((result) => {
+				setStatEnum(result.data);
+				console.log(result.data);
+				setIsPending(false);
+			})
+			.catch((err) => {
+				setError(err.message);
+				setIsPending(false);
+			});
+	}, []);
+	
 	useEffect(() => {
 		if (!upcoming) {
 			setAppointments([]);
 			setIsPending(true);
-			viewPatientAppointments(id)
+			viewPatientAppointments()
 				.then((result) => {
 					setAppointments(result.data);
 					setIsPending(false);
@@ -109,14 +128,14 @@ const ViewAppointments = () => {
 					setIsPending(false);
 				});
 		}
-	}, [id, upcoming]);
+	}, [ upcoming]);
 
 	useEffect(() => {
 		setIsPending(true);
 		setAppointments([]);
 
 		if (upcoming) {
-			upcomingPatientApp(id)
+			upcomingPatientApp()
 				.then((result) => {
 					setIsPending(false);
 					setAppointments(result.data);
@@ -161,16 +180,31 @@ const ViewAppointments = () => {
 
 				<br />
 				<form onSubmit={handleSubmit}>
-					<Grid>
-						<TextField
-							id='status'
-							name='status'
-							label='Status'
+				<Grid>
+						<FormControl
+							fullWidth
 							variant='outlined'
-							value={status}
-							onChange={handleChange}
 							size='small'
-						/>
+							style={{ minWidth: "5vw", width: "auto" }}
+						>
+							<InputLabel id='status-label'>Status</InputLabel>
+							<Select
+								labelId='status-label'
+								id='status'
+								name='status'
+								label='Status'
+								variant='outlined'
+								size='small'
+								value={status}
+								onChange={handleChange}
+							>
+								{statEnum.map((option) => (
+									<MenuItem key={option} value={option}>
+										{option}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
 						<TextField
 							id='from'
 							name='from'

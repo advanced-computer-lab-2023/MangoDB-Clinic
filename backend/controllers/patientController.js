@@ -446,9 +446,10 @@ const filterPrescription = async (req, res) => {
 
 const getAllAppointments = async (req, res) => {
 	try {
-		const appointments = await Appointment.find({
-			patientId: req.params.id,
-		}).populate({
+		const patientId = req.user._id;
+		const appointments = await Appointment.find(
+			patientId
+		).populate({
 			path: "doctorId",
 			select: "firstName lastName",
 		});
@@ -461,8 +462,9 @@ const getAllAppointments = async (req, res) => {
 //Filter appointments by Date/Status
 const filterAppointments = async (req, res) => {
 	let { status, date_1, date_2 } = req.query;
-
-	const patient = await Patient.findById(req.params.id);
+	const patientId = req.user._id;
+	// const patient = await Patient.findById(req.params.id);
+	const patient = await Patient.findById(patientId);
 	const appoint = await Appointment.find({ patientId: req.params.id }).populate(
 		{
 			path: "doctorId",
@@ -526,7 +528,8 @@ const filterAppointments = async (req, res) => {
 
 // FILTER APPOITMENT USING STATUS OR DATE
 const filterStatus = async (req, res) => {
-	const { status, date_1, date_2, patient } = req.body;
+	const patient = req.user._id;
+	const { status, date_1, date_2 } = req.body;
 	console.log(status, date_1, date_2, patient);
 	if (!status) {
 		return res.status(400).json({ message: "Please enter status" });
@@ -1255,7 +1258,8 @@ const payFromWallet = async (req, res) => {
 
 // filter patients by upcoming appointments
 const upcoming = async (req, res) => {
-	const { patientId } = req.body;
+	// const { patientId } = req.body;
+	const patientId = req.user._id;
 	try {
 		const upcomingAppointments = await Appointment.find({
 			patientId,

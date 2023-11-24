@@ -93,7 +93,7 @@ router.get("/filter_doctors/:id", filterDoctors);
 
 router.get("/get_all_appointments/:id", getAllAppointments);
 
-router.get("/filter_appointments/:id", filterAppointments);
+router.get("/filter_appointments",protectPatient, filterAppointments);
 
 router.get("/search_doctor/:id", searchDoctor);
 
@@ -144,19 +144,19 @@ router.post(
 	addAppointment
 );
 router.get("/get_specialities", getSpecialities);
-router.get("/getAvailableAppointments", getAvailableAppointments);
+router.get("/getAvailableAppointments",protectPatient, getAvailableAppointments);
 
 router.get(
-	"/get_available_appointments/:id",
+	"/get_available_appointments",protectPatient,
 
 	getAvailableAppointments
 );
 
 router.post("/make_appointment/:id", makeAppointment);
 
-router.post("/upcoming", upcoming);
+router.post("/upcoming",protectPatient, upcoming);
 
-router.post("/filterapp/:id", filterStatus);
+router.post("/filterapp",protectPatient, filterStatus);
 
 router.post("/payFromWallet/:appointmentId", payFromWallet);
 
