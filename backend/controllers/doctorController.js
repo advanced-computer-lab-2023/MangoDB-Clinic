@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const Doctor = require("../models/doctorModel");
 const Patient = require("../models/patientModel.js");
 const Appointment = require("../models/appointmentModel");
+const Prescription = require("../models/prescriptionModel")
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
@@ -633,6 +634,7 @@ const createAppointment = async (req, res) => {
 		res.status(500).json({ error: error.message });
 	}
 };
+
 const selectPatient = async (patientId) => {
 	try {
 		const patient = await Patient.findById(patientId).exec();
@@ -953,6 +955,77 @@ const cancelApp = async (req, res) => {
 	}
 }
 
+// Sprint 3 Requirement:
+// view all new and old prescriptions and their statuses
+const viewPrescriptionsByDoctor = async (req, res) => {
+	const doctorId = req.user.id;
+
+	try {
+		const prescriptions = await Prescription.find({ doctorId: doctorId }).populate("patientId");
+		res.status(200).json(prescriptions);
+	} catch (error) {
+		res.status(500).json({ error: "Failed to fetch prescriptions" });
+	}
+};
+
+// Sprint 3 Requirement:
+// add a patient's prescription
+const addPrescription = async (req, res) => {
+	const doctorId = req.user.id;
+	const { patientName, date, medications } = req.body;
+
+	if(!patientName || !date) {
+		return res.status(400).json({ message: "Please enter patient name and date." });
+	}
+	try{
+		const patient = await Patient.findOne({ username: patientName });
+		if(!patient) {
+			return res.status(404).json({ message: "Patient not found." });
+		}
+		const prescription = await Prescription.create({
+			patientId: patient._id,
+			doctorId: doctorId,
+			medications: medications,
+			date: date
+		});
+		res.status(201).json(prescription);
+
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: "Error adding prescription." });
+	}
+}
+
+// Sprint 3 Requirement:
+// add/update dosage for each medicine added to the prescription
+const addOrUpdateDosage = async (req, res) => {
+	try {
+	  const { prescriptionId, medicationName, frequency } = req.body;
+  
+	  const updatedPrescription = await Prescription.findOneAndUpdate(
+		{
+		  _id: prescriptionId,
+		  'medications.medicationName': medicationName,
+		},
+		{
+		  $set: {
+			'medications.$.frequency': frequency || null,
+		  },
+		},
+		{ new: true }
+	  );
+  
+	  if (!updatedPrescription) {
+		return res.status(404).json({ message: "Prescription or Medicine not found." });
+	  }
+  
+	  res.status(200).json({ message: "Frequency updated successfully.", prescription: updatedPrescription });
+	} catch (error) {
+	  console.error(error);
+	  res.status(500).json({ message: "Error updating dosage." });
+	}
+};
+
 module.exports = {
 	getMyInfo,
 	createDoctor,
@@ -987,4 +1060,7 @@ module.exports = {
 	changePassword,
 	rescheduleApp,
 	cancelApp,
+	viewPrescriptionsByDoctor,
+	addOrUpdateDosage,
+	addPrescription
 };
