@@ -1331,6 +1331,83 @@ const rescheduleAppointment = async (req, res) => {
         console.error(error);
     }
 };
+//sprint3 
+//pay prescription from wallet
+const payPescriptionWallet = async (req, res) => {
+	const patient = await Patient.findById(req.user.id);
+	const {totalPirce }= req.body;
+
+	const packageType = patient.healthPackage
+			? patient.healthPackage.name
+			: null;
+
+		// if (!packageType) {
+		// 	return res
+		// 		.status(404)
+		// 		.json({ error: "Package not found for the patient" });
+		// }
+
+		// Initialize discount values
+		let Discount = 0;
+
+		// Calculate discounts based on the packageType
+		switch (packageType) {
+			case "Silver":
+				Discount = 0.2;
+
+				break;
+
+			case "Gold":
+				Discount = 0.3;
+
+				break;
+
+			case "Platinum":
+				Discount = 0.4;
+
+				break;
+
+			default:
+				// Handle the case where an invalid package type is provided
+				// console.error('Invalid package type');
+				// return res.status(400).json({ error: 'Invalid package type' });
+				Discount = 0;
+		}
+
+
+		const paymentAmount = totalPirce  - totalPirce * Discount;
+
+		try {
+			const wallet = await Wallet.findById(patient.wallet);
+
+			if (!wallet) {
+				throw new Error("Wallet not found");
+			}
+
+			//fa2er mafesh felos
+			if (wallet.balance < paymentAmount) {
+				res.json({
+					success: false,
+					message: "Insufficient funds in the wallet",
+				});
+			}
+			wallet.balance -= paymentAmount;
+
+			wallet.transactions.push({
+				type: "debit",
+				amount: paymentAmount,
+				date: new Date(),
+			});
+
+			await wallet.save();
+
+			res.json({ success: true, message: "Payment successful" });
+		} catch (error) {
+			console.error("Error processing payment:", error);
+			res.status(500).json({ error: "Internal server error during payment" });
+		}
+
+}
 
 module.exports = {
 	getMyInfo,
@@ -1375,4 +1452,5 @@ module.exports = {
 	changePassword,
 	cancelApp,
 	rescheduleAppointment,
+	payPescriptionWallet,
 };

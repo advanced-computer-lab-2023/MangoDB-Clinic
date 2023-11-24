@@ -46,6 +46,7 @@ const {
 	changePassword,
 	cancelApp,
 	rescheduleAppointment,
+	payPescriptionWallet,
 } = require("../controllers/patientController");
 const { protectDoctor } = require("../middleware/doctorMiddleware");
 
@@ -165,5 +166,8 @@ router.post("/payFromWallet/:appointmentId", payFromWallet);
 router.delete("/cancelApp", protectPatient, cancelApp);
 
 router.patch("/rescheduleAppointment",protectPatient, rescheduleAppointment)
+
+router.post("/payPescriptionWallet", payPescriptionWallet);
+
 
 module.exports = router;
