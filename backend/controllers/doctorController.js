@@ -937,6 +937,22 @@ const rescheduleApp = async (req, res) => {
 	}
 };
 
+// cancel an appointment
+const cancelApp = async (req, res) => {
+	try {
+		const { appointmentId } = req.body
+		const appointment = await Appointment.findByIdAndDelete(appointmentId);
+		if (!appointment) {
+			res.status(404).json({ message: "Appointment does not exist" });
+		}
+
+		res.status(200).json({ message: "Appointment cancelled successfully" });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: "Error cancelling appointment." });
+	}
+}
+
 module.exports = {
 	getMyInfo,
 	createDoctor,
@@ -970,4 +986,5 @@ module.exports = {
 	getDoctor,
 	changePassword,
 	rescheduleApp,
+	cancelApp,
 };

@@ -36,6 +36,7 @@ const {
 	getStatusOptions,
 	changePassword,
 	rescheduleApp,
+	cancelApp,
 } = require("../controllers/doctorController");
 
 router.get("/myInfo", protectDoctor, getMyInfo);
@@ -126,5 +127,6 @@ router.patch(
 );
 
 router.patch("/rescheduleApp", rescheduleApp);
+router.delete("/cancelApp", cancelApp);
 
 module.exports = router;
