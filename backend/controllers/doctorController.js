@@ -948,6 +948,27 @@ const cancelApp = async (req, res) => {
 			res.status(404).json({ message: "Appointment does not exist" });
 		}
 
+		// REFUND SHOULD BE DONE HERE (Stripe?)
+		const patient = await Patient.findById(appointment.patientId);
+		const doctor = await Doctor.findById(appointment.doctorId);
+		const wallet = await Wallet.findOne({ user: appointment.patientId });
+
+		const packageType = patient.healthPackage ? patient.healthPackage.name : null;
+		let doctorSessionDiscount = 0;
+		switch (packageType) {
+			case 'Silver':
+				doctorSessionDiscount = 0.4; break;			
+			case 'Gold':
+				doctorSessionDiscount = 0.6; break;			
+			case 'Platinum':
+				doctorSessionDiscount = 0.8; break;			
+			default:
+				doctorSessionDiscount = 0;
+		}
+		wallet.balance += (doctor.hourlyRate * 1.1) - (doctor.hourlyRate * doctorSessionDiscount);
+
+		await wallet.save();
+
 		res.status(200).json({ message: "Appointment cancelled successfully" });
 	} catch (error) {
 		console.error(error);

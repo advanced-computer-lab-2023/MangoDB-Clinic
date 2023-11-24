@@ -1273,6 +1273,47 @@ const upcoming = async (req, res) => {
 	}
 };
 
+// sprint 3
+// cancel an appointment
+const cancelApp = async (req, res) => {
+	try {
+		const { appointmentId } = req.body
+		const appointment = await Appointment.findByIdAndDelete(appointmentId);
+		if (!appointment) {
+			res.status(404).json({ message: "Appointment does not exist" });
+		}
+
+		currDate = Date.now().toISOString();
+		if ((Math.abs(currDate - appointmentDate) / 36e5) > 24) {
+			// REFUND SHOULD BE DONE HERE (Stripe?)
+			const patient = await Patient.findById(appointment.patientId);
+			const doctor = await Doctor.findById(appointment.doctorId);
+			const wallet = await Wallet.findOne({ user: appointment.patientId });
+
+			const packageType = patient.healthPackage ? patient.healthPackage.name : null;
+			let doctorSessionDiscount = 0;
+			switch (packageType) {
+				case 'Silver':
+					doctorSessionDiscount = 0.4; break;			
+				case 'Gold':
+					doctorSessionDiscount = 0.6; break;			
+				case 'Platinum':
+					doctorSessionDiscount = 0.8; break;			
+				default:
+					doctorSessionDiscount = 0;
+			}
+			wallet.balance += (doctor.hourlyRate * 1.1) - (doctor.hourlyRate * doctorSessionDiscount);
+
+			await wallet.save();
+		}
+
+		res.status(200).json({ message: "Appointment cancelled successfully" });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: "Error cancelling appointment." });
+	}
+}
+
 module.exports = {
 	getMyInfo,
 	getAllPatients,
@@ -1314,4 +1355,5 @@ module.exports = {
 	verifyOTP,
 	resetPassword,
 	changePassword,
+	cancelApp,
 };

@@ -129,8 +129,9 @@ router.patch(
 	followUp
 );
 
-router.patch("/rescheduleApp", rescheduleApp);
-router.delete("/cancelApp", cancelApp);
+router.patch("/rescheduleApp", protectDoctor, rescheduleApp);
+router.delete("/cancelApp", protectDoctor, cancelApp);
+
 router.get("/viewAllPrescriptionsByDoctor", protectDoctor, viewPrescriptionsByDoctor)
 router.post("/addPrescription", protectDoctor, addPrescription);
 router.put("/addOrUpdateDosage", addOrUpdateDosage);
