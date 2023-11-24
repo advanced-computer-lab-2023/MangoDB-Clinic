@@ -1313,6 +1313,24 @@ const cancelApp = async (req, res) => {
 		res.status(500).json({ message: "Error cancelling appointment." });
 	}
 }
+//sprint3 
+//reschedule appointment
+const rescheduleAppointment = async (req, res) => {
+	const { appointmentId, newDate } = req.body;
+    try {
+        const appointment = await Appointment.findById(appointmentId);
+        if (!appointment) {
+            throw new Error('Appointment not found');
+        }
+
+        appointment.date = newDate;
+        await appointment.save();
+
+		res.status(200).json({ message: "Appointment rescheduled successfully" });
+    } catch (error) {
+        console.error(error);
+    }
+};
 
 module.exports = {
 	getMyInfo,
@@ -1356,4 +1374,5 @@ module.exports = {
 	resetPassword,
 	changePassword,
 	cancelApp,
+	rescheduleAppointment,
 };

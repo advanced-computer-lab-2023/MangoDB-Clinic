@@ -147,6 +147,8 @@ export const doctorCancelApp = (appointment) =>
 export const patientCancelApp = (appointment) =>
 	API.delete(`patient/cancelApp`, appointment, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+export const patientReschuleApp = (appointment,newDate) =>
+	API.delete(`patient/rescheduleAppointment`, appointment,newDate, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 const API2 = axios.create({
 	baseURL: `http://localhost:${port}`,
