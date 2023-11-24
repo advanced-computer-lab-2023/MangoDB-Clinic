@@ -16,10 +16,10 @@ import {
 } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 
-import PrescriptionsTable from "../../components/PrescriptionsTable";
+import PrescriptionsTable from "../../components/GeneralComponents/PrescriptionsTable";
 
 const ViewPrescriptions = () => {
-	// const { patientId } = useParams();
+
 	const [prescriptions, setPrescriptions] = useState([]);
 	const [isPending, setIsPending] = useState(true);
 	const [error, setError] = useState(null);
@@ -30,22 +30,6 @@ const ViewPrescriptions = () => {
 	const [filterByFilled, setFilterByFilled] = useState(null);
 	const filterParams = [];
 
-	// const getID = async () => {
-	// 	try {
-	// 		const response = await axios.post(
-	// 			"http://localhost:4000/Patient/myInfo",
-	// 			{
-	// 				headers: {
-	// 					Authorization: `Bearer ${localStorage.getItem("token")}`,
-	// 				},
-	// 			}
-	// 		);
-
-	// 		if (response.status === 200) {
-	// 			return response.data._id;
-	// 		}
-	// 	} catch (error) {}
-	// };
 	useEffect(() => {
   	const fetchData = async () => {
 		try {

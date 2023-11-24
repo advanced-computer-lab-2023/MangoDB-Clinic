@@ -13,7 +13,7 @@ import {
 	Typography,
 } from "@mui/material";
 
-import { addPatient } from "../services/api";
+import { addPatient } from "../../services/api";
 
 const PatientForm = () => {
 	const [username, setUserName] = useState("karimgabr100");
