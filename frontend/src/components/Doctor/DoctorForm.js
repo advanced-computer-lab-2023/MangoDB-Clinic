@@ -11,7 +11,7 @@ import {
 	Input,
 } from "@mui/material";
 
-import { addDoctor } from "../services/api";
+import { addDoctor } from "../../services/api";
 
 const DoctorForm = () => {
 	const [username, setUserName] = useState("");

@@ -9,11 +9,12 @@ import PatientList from "./pages/Doctor/PatientList";
 import PatientDetails from "./pages/Doctor/PatientDetails";
 import ViewAppointments from "./pages/ViewAppointments";
 import ViewDoctors from "./pages/ViewDoctors";
-import ViewPrescriptions from "./pages/Patient/ViewPrescriptionsPatient";
+import ViewPrescriptionsPatient from "./pages/Patient/ViewPrescriptionsPatient";
+import ViewPrescriptionsDoctor from "./pages/Doctor/ViewPrescriptionsDoctor";
 import ViewProfile from "./pages/ViewProfile";
 import ViewWallet from "./pages/ViewWallet";
 import EditDoctor from "./pages/Doctor/EditDoctor";
-import DoctorForm from "./components/DoctorForm";
+import DoctorForm from "./components/Doctor/DoctorForm";
 import DoctorDetails from "./components/DoctorDetails";
 import DoctorSearch from "./components/DoctorSearch";
 import Filter from "./components/Filter";
@@ -67,7 +68,7 @@ function App() {
 				<Route path='/viewfammembers' element={<ViewFamilyMembers />} />
 				<Route path='/linkfammember' element={<LinkFamMember />} />
 				<Route path='/addhealthrecords' element={<AddHealthRecordsPatient />} />
-				<Route path='/viewprescriptions' element={<ViewPrescriptions />} />
+				<Route path='/viewPrescriptionsOfPatient' element={<ViewPrescriptionsPatient />} />
 				<Route
 					path='/prescriptiondetials/:prescriptionId'
 					element={<PrescriptionDetials />}
@@ -101,6 +102,7 @@ function App() {
 					path='/changePasswordDoctor'
 					element={<ChangePasswordDoctorPage />}
 				/>
+				<Route path='/viewPrescriptionsByDoctor' element={<ViewPrescriptionsDoctor />} />
 
 				{/* add the rest in the right place */}
 

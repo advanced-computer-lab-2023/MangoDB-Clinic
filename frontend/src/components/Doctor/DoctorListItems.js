@@ -7,12 +7,10 @@ import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import TodayIcon from "@mui/icons-material/Today";
 import PeopleIcon from "@mui/icons-material/People";
-import MedicationIcon from "@mui/icons-material/Medication";
-import LoyaltyIcon from "@mui/icons-material/Loyalty";
-import WalletIcon from "@mui/icons-material/Wallet";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import MedicationIcon from "@mui/icons-material/Medication";
 
-export const mainListItems = (
+export const DoctorListItems = (
 	<React.Fragment>
 		<ListItemButton component={Link} to='/'>
 			<ListItemIcon>
@@ -20,47 +18,35 @@ export const mainListItems = (
 			</ListItemIcon>
 			<ListItemText primary='Dashboard' />
 		</ListItemButton>
-		<ListItemButton component={Link} to='/viewdoctors'>
+		<ListItemButton component={Link} to={`/viewAllPatients`}>
 			<ListItemIcon>
 				<PeopleIcon />
 			</ListItemIcon>
-			<ListItemText primary='Doctors' />
+			<ListItemText primary='Patients' />
 		</ListItemButton>
-		<ListItemButton component={Link} to='/viewappointments'>
+		<ListItemButton component={Link} to={`/doctorAppointments`}>
 			<ListItemIcon>
 				<TodayIcon />
 			</ListItemIcon>
 			<ListItemText primary='Appointments' />
 		</ListItemButton>
-		<ListItemButton component={Link} to='/viewprescriptions'>
+		<ListItemButton component={Link} to='/viewPrescriptionsByDoctor'>
 			<ListItemIcon>
 				<MedicationIcon />
 			</ListItemIcon>
 			<ListItemText primary='Prescriptions' />
 		</ListItemButton>
-		<ListItemButton component={Link} to='/viewpackages'>
-			<ListItemIcon>
-				<LoyaltyIcon />
-			</ListItemIcon>
-			<ListItemText primary='Packages' />
-		</ListItemButton>
-		<ListItemButton component={Link} to='/viewwallet'>
-			<ListItemIcon>
-				<WalletIcon />
-			</ListItemIcon>
-			<ListItemText primary='Wallet' />
-		</ListItemButton>
-		<ListItemButton component={Link} to='/viewprofile'>
+		<ListItemButton component={Link} to={`/editDoctor`}>
 			<ListItemIcon>
 				<AccountCircleIcon />
 			</ListItemIcon>
 			<ListItemText primary='Profile' />
 		</ListItemButton>
-		<ListItemButton component={Link} to='/changePasswordPatient'>
+		<ListItemButton component={Link} to={`/changePasswordDoctor`}>
 			<ListItemIcon>
 				<AccountCircleIcon />
 			</ListItemIcon>
-			<ListItemText primary='Change Password' />
+			<ListItemText primary='Forget Password' />
 		</ListItemButton>
 	</React.Fragment>
 );

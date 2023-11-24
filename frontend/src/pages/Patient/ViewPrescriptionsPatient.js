@@ -18,7 +18,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 
 import PrescriptionsTable from "../../components/GeneralComponents/PrescriptionsTable";
 
-const ViewPrescriptions = () => {
+const ViewPrescriptionsPatient = () => {
 
 	const [prescriptions, setPrescriptions] = useState([]);
 	const [isPending, setIsPending] = useState(true);
@@ -127,7 +127,7 @@ const ViewPrescriptions = () => {
 
 	const formatDateForBackend = (dateString) => {
 		const dateObject = new Date(dateString);
-		return dateObject.toISOString(); // Converts the date to the ISO format
+		return dateObject.toISOString();
 	};
 
 	const handleClearFilter = () => {
@@ -214,4 +214,4 @@ const ViewPrescriptions = () => {
 	);
 };
 
-export default ViewPrescriptions;
+export default ViewPrescriptionsPatient;
