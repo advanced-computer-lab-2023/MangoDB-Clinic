@@ -1073,8 +1073,8 @@ const addPrescription = async (req, res) => {
 	}
 	try {
 		const patient = await Patient.findOne({ username: patientName });
-		if (!patient) {
-			return res.status(404).json({ message: "Patient not found." });
+		if(!patient) {
+			return res.status(400).json({ message: "Patient not found." });
 		}
 		const prescription = await Prescription.create({
 			patientId: patient._id,

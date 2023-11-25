@@ -29,7 +29,13 @@ const MedicationCard = ({ medication }) => (
 	</Card>
 );
 
-const PrescriptionsTable = ({ data, firstColumnName, userType, onAddPrescription }) => {
+const PrescriptionsTable = ({ data, firstColumnName, userType, onOpenDialog }) => {
+	console.log('Data:', data); // Add this line for logging
+
+    if (!Array.isArray(data)) {
+        console.error('Invalid data format. Expected an array.');
+        return null;
+    }
 	return (
 		<TableContainer component={Paper} xs={8}>
 			<Table sx={{ minWidth: 650 }} aria-label='simple table'>
@@ -47,9 +53,8 @@ const PrescriptionsTable = ({ data, firstColumnName, userType, onAddPrescription
 						data.map((prescription) => (
 							<TableRow key={prescription._id}>
 								<TableCell component='th' scope='row'>
-									{prescription.patientId.firstName +
-										" " +
-										prescription.patientId.lastName}
+								{prescription.patientId && prescription.patientId.firstName && prescription.patientId.lastName &&
+                    				prescription.patientId.firstName + " " + prescription.patientId.lastName}
 								</TableCell>
 								<TableCell align='left'>
 									{prescription.medications.map((medication, index) => (
@@ -78,8 +83,8 @@ const PrescriptionsTable = ({ data, firstColumnName, userType, onAddPrescription
 						<TableRow>
 							<TableCell align="left" colSpan={5}>
 								<Tooltip title="Add Prescription">
-									<ListItemButton onClick={onAddPrescription}>
-									<AddIcon />
+									<ListItemButton onClick={() => {onOpenDialog();}}>
+										<AddIcon />
 									</ListItemButton>
 								</Tooltip>
 							</TableCell>
