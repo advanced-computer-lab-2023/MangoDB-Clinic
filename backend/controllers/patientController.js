@@ -768,14 +768,15 @@ const cancelHealthPackage = async (req, res) => {
 					.json({ error: "You are not subscribed to a Health Package." });
 			}
 
-			patient.healthPackage = null;
+			// patient.healthPackage = null;
 			patient.healthPackage.status = "Cancelled";
 
 			for (const familyMember of patient.family) {
 				if (familyMember.userId) {
 					const member = await Patient.findById(familyMember.userId);
 					if (member) {
-						member.healthPackage = null;
+						// member.healthPackage = null;
+						member.healthPackage.status = "Cancelled";
 						await member.save();
 					}
 				}
