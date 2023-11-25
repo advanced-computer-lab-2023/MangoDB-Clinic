@@ -1082,7 +1082,9 @@ const addPrescription = async (req, res) => {
 			medications: medications,
 			date: date,
 		});
-		res.status(201).json(prescription);
+		const updatedPrescription = await prescription.populate("patientId");
+		console.log(updatedPrescription);
+		res.status(201).json(updatedPrescription);
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ message: "Error adding prescription." });
