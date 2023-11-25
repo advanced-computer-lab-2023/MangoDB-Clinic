@@ -105,7 +105,7 @@ router.get("/filter_doctors", protectPatient, filterDoctors);
 
 router.get("/get_all_appointments/:id", getAllAppointments);
 
-router.get("/filter_appointments/:id", filterAppointments);
+router.get("/filter_appointments/",protectPatient, filterAppointments);
 
 router.get("/search_doctor", protectPatient, searchDoctor);
 
@@ -113,13 +113,9 @@ router.get("/view_health_records/", protectPatient, viewHealthRecords);
 
 router.get("/view_health_packages", viewHealthPackages);
 
-router.get(
-	"/view_subscribed_health_package/:id",
+router.get("/view_subscribed_health_package/",protectPatient,viewSubscribedhealthPackage);
 
-	viewSubscribedhealthPackage
-);
-
-router.put("/cancel_health_package/:id", cancelHealthPackage);
+router.put("/cancel_health_package/",protectPatient, cancelHealthPackage);
 
 router.get("/view_wallet/:id", viewWallet);
 

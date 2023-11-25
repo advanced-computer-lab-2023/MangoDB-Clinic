@@ -480,8 +480,8 @@ const getAllAppointments = async (req, res) => {
 const filterAppointments = async (req, res) => {
 	let { status, date_1, date_2 } = req.query;
 
-	const patient = await Patient.findById(req.params.id);
-	const appoint = await Appointment.find({ patientId: req.params.id }).populate(
+	const patient = req.user;
+	const appoint = await Appointment.find({ patientId: patient._id }).populate(
 		{
 			path: "doctorId",
 			select: "firstName lastName",
@@ -539,7 +539,7 @@ const filterAppointments = async (req, res) => {
 			}
 		});
 		res.status(200).json({ filteredAppointments });
-	} else res.status(404).json({ message: "Doctor not found" });
+	} else res.status(404).json({ message: "Patient not found" });
 };
 
 // FILTER APPOITMENT USING STATUS OR DATE
@@ -600,11 +600,12 @@ const viewAllDoctors = asyncHandler(async (req, res) => {
 		if (!doctors) {
 			res.status(400).json({ error: "No Doctors Found" });
 		} else {
-			const patient = await Patient.findById(req.user.id).populate(
+			const patient =req.user
+			if (!patient) res.status(400).json({ error: "Patient does not exist" });
+			let discount;
+			patient.populate(
 				"healthPackage"
 			);
-			if (!patient) res.status(400).json({ error: "An error occured" });
-			let discount;
 			if (patient.healthPackage)
 				discount = patient.healthPackage.doctorSessionDiscount / 100;
 			const doctorsWithPrices = doctors.map((doctor) => {
@@ -637,11 +638,12 @@ const searchDoctor = asyncHandler(async (req, res) => {
 		if (speciality) query.speciality = { $regex: speciality, $options: "i" };
 
 		const doctor = await Doctor.find(query);
-		const patient = await Patient.findById(req.user.id).populate(
+		const patient = req.user;
+		if (!patient) res.status(400).json({ error: "Patient does not exist" });
+		let discount;
+		patient.populate(
 			"healthPackage"
 		);
-		if (!patient) res.status(400).json({ error: "An error occured" });
-		let discount;
 		if (patient.healthPackage)
 			discount = patient.healthPackage.doctorSessionDiscount / 100;
 		const doctorsWithPrices = doctor.map((doctor) => {
@@ -673,11 +675,12 @@ const filterDoctors = async (req, res) => {
 			query._id = { $nin: doctorIdsWithAppointments };
 		}
 		const filteredDoctors = await Doctor.find(query);
-		const patient = await Patient.findById(req.user.id).populate(
+		const patient = req.user;
+		if (!patient) res.status(400).json({ error: "Patient does not exist" });
+		let discount;
+		patient.populate(
 			"healthPackage"
 		);
-		if (!patient) res.status(400).json({ error: "An error occured" });
-		let discount;
 		if (patient.healthPackage)
 			discount = patient.healthPackage.doctorSessionDiscount / 100;
 		const doctorsWithPrices = filteredDoctors.map((doctor) => {
@@ -730,8 +733,7 @@ const viewHealthPackages = asyncHandler(async (req, res) => {
 
 const viewSubscribedhealthPackage = async (req, res) => {
 	try {
-		// const patient = await Patient.findById(req.params.id);
-		const patient = await Patient.findById("6526d30a0f83f5e462288354");
+		const patient = req.user;
 		if (!patient) {
 			res.status(200).json({ message: "Patient not found" });
 		} else {
@@ -759,7 +761,7 @@ const viewSubscribedhealthPackage = async (req, res) => {
 
 const cancelHealthPackage = async (req, res) => {
 	try {
-		const patient = await Patient.findById(req.params.patientId);
+		const patient = req.user;
 
 		if (patient) {
 			if (!patient.healthPackage) {

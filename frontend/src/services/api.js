@@ -129,16 +129,16 @@ export const scheduleFollowup = (
 		`/doctor/scheduleFollowup/${doctorId}/${patientId}/${appointmentId}/${followUpDate}`
 	);
 
-export const subscribeToHealthPackage = (patientId, packageId) =>
+export const subscribeToHealthPackage = (packageId) =>
 	API.put(
-		`/subscribe_to_health_package/6526d30a0f83f5e462288354/65536787d4bd759f882271de`
+		`/subscribe_to_health_package/`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
 	);
 
-export const cancelHealthPackage = (patientId) =>
-	API.put(`/patient/cancel_health_package/6526d30a0f83f5e462288354`);
+export const cancelHealthPackage = () =>
+	API.put(`/patient/cancel_health_package/`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export const viewSubscribedhealthPackage = () =>
-	API.get(`/patient/view_subscribed_health_package/6526d30a0f83f5e462288354`);
+	API.get(`/patient/view_subscribed_health_package/`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 //////////////////////////////////////////////////////////// sprint 3 ////////////////////////////////////////////////////////////
 export const doctorRescheduleApp = (appointment) =>
