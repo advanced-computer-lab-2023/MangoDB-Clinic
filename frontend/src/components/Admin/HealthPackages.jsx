@@ -2,6 +2,7 @@ import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -13,9 +14,7 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Link from "@mui/material/Link";
 import MuiAppBar from "@mui/material/AppBar";
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -26,20 +25,30 @@ import MuiDrawer from "@mui/material/Drawer";
 
 import { mainListItems } from "./listItems";
 
-function Copyright() {
-	return (
-		<Typography variant='body2' color='text.secondary' align='center'>
-			{"Copyright © "}
-			<Link color='inherit' href='https://mui.com/'>
-				Your Website
-			</Link>{" "}
-			{new Date().getFullYear()}
-			{"."}
-		</Typography>
-	);
-}
-
 const drawerWidth = 240;
+
+const MainContent = styled("main", {
+	shouldForwardProp: (prop) => prop !== "open",
+})(({ theme, open }) => ({
+	flexGrow: 1,
+	height: "100vh",
+	display: "flex",
+	flexDirection: "column",
+	justifyContent: "center",
+	alignItems: "center",
+	transition: theme.transitions.create("margin", {
+		easing: theme.transitions.easing.sharp,
+		duration: theme.transitions.duration.leavingScreen,
+	}),
+	marginLeft: -drawerWidth,
+	...(open && {
+		marginLeft: 0,
+		transition: theme.transitions.create("margin", {
+			easing: theme.transitions.easing.sharp,
+			duration: theme.transitions.duration.enteringScreen,
+		}),
+	}),
+}));
 
 const AppBar = styled(MuiAppBar, {
 	shouldForwardProp: (prop) => prop !== "open",
@@ -90,7 +99,7 @@ const defaultTheme = createTheme();
 export default function HealthPackages() {
 	const [cards, setCards] = React.useState([1, 2, 3]);
 	const [packages, setPackages] = React.useState([]);
-	const [open, setOpen] = React.useState(true);
+	const [open, setOpen] = React.useState(false);
 	let packID = null;
 	const navigate = useNavigate();
 
@@ -211,61 +220,63 @@ export default function HealthPackages() {
 					</IconButton>
 				</Toolbar>
 			</AppBar>
-			<Drawer variant='permanent' open={open}>
-				<Toolbar
-					sx={{
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "flex-end",
-						px: [1],
-					}}
-				>
-					<IconButton onClick={toggleDrawer}>
-						<ChevronLeftIcon />
-					</IconButton>
-				</Toolbar>
-				<Divider />
-				<List component='nav'>{mainListItems}</List>
-			</Drawer>
-			<main>
-				<Box
-					sx={{
-						bgcolor: "background.paper",
-						pt: 8,
-						pb: 6,
-					}}
-				>
-					<Container maxWidth='sm'>
-						<Typography
-							component='h1'
-							variant='h2'
-							align='center'
-							color='text.primary'
-							gutterBottom
-						>
-							System Packages
-						</Typography>
-						<Typography
-							variant='h5'
-							align='center'
-							color='text.secondary'
-							paragraph
-						>
-							Add, Edit, or Delete Packages
-						</Typography>
-						<Stack
-							sx={{ pt: 4 }}
-							direction='row'
-							spacing={2}
-							justifyContent='center'
-						>
-							<Button variant='contained' href='/admin/add-health-pack'>
-								Add Package
-							</Button>
-						</Stack>
-					</Container>
-				</Box>
+
+			<div style={{ display: "flex" }}>
+				<Drawer variant='permanent' open={open}>
+					<Toolbar
+						sx={{
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "flex-end",
+							px: [1],
+						}}
+					>
+						<IconButton onClick={toggleDrawer}>
+							<ChevronLeftIcon />
+						</IconButton>
+					</Toolbar>
+					<Divider />
+					<List component='nav'>{mainListItems}</List>
+				</Drawer>
+
+				<Container maxWidth='sm'>
+					<br />
+					<br />
+					<br />
+					<br />
+
+					<Typography
+						component='h1'
+						variant='h2'
+						align='center'
+						color='text.primary'
+						gutterBottom
+					>
+						Health Packages
+					</Typography>
+					<Typography
+						variant='h5'
+						align='center'
+						color='text.secondary'
+						paragraph
+					>
+						Add, Edit, or Delete Packages
+					</Typography>
+					<Stack
+						sx={{ pt: 4 }}
+						direction='row'
+						spacing={2}
+						justifyContent='center'
+					>
+						<Button variant='contained' href='/admin/add-health-pack'>
+							Add Package
+						</Button>
+					</Stack>
+				</Container>
+
 				<Container sx={{ py: 8 }} maxWidth='md'>
+					<br />
+					<br />
 					<Typography
 						variant='h5'
 						align='center'
@@ -306,7 +317,7 @@ export default function HealthPackages() {
 						))}
 					</Grid>
 				</Container>
-			</main>
+			</div>
 		</ThemeProvider>
 	);
 }

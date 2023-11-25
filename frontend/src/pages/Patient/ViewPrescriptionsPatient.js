@@ -16,10 +16,10 @@ import {
 } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 
-import PrescriptionsTable from "../components/PrescriptionsTable";
+import PrescriptionsTable from "../../components/GeneralComponents/PrescriptionsTable";
 
-const ViewPrescriptions = () => {
-	// const { patientId } = useParams();
+const ViewPrescriptionsPatient = () => {
+
 	const [prescriptions, setPrescriptions] = useState([]);
 	const [isPending, setIsPending] = useState(true);
 	const [error, setError] = useState(null);
@@ -29,56 +29,54 @@ const ViewPrescriptions = () => {
 	const [filterByDoctor, setFilterByDoctor] = useState("");
 	const [filterByFilled, setFilterByFilled] = useState(null);
 	const filterParams = [];
-	// const getID = async () => {
-	// 	try {
-	// 		const response = await axios.post(
-	// 			"http://localhost:4000/Patient/myInfo",
-	// 			{
-	// 				headers: {
-	// 					Authorization: `Bearer ${localStorage.getItem("token")}`,
-	// 				},
-	// 			}
-	// 		);
 
-	// 		if (response.status === 200) {
-	// 			return response.data._id;
-	// 		}
-	// 	} catch (error) {}
-	// };
 	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				setPrescriptions([]);
-				setIsPending(true);
-				setError(null);
+  	const fetchData = async () => {
+		try {
+			setPrescriptions([]);
+			setIsPending(true);
+			setError(null);
 
-				if (!isFilterApplied) {
-					const response = await fetch(
-						`http://localhost:4000/patient/get_prescriptions_of_patient/6526d30a0f83f5e462288354`
-					);
-					if (!response.ok) {
-						throw new Error("Could not fetch the data for that resource");
-					}
-					const data = await response.json();
-					setPrescriptions(data);
-					setIsPending(false);
-					setError(null);
+			if (!isFilterApplied) {
+				const token = localStorage.getItem("token");
+
+				const response = await fetch(
+				"http://localhost:4000/patient/get_prescriptions_of_patient",
+				{
+					method: "GET",
+					headers: {
+					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json",
+					},
 				}
-			} catch (err) {
-				setIsPending(false);
-				setError(err.message);
-			}
-		};
+				);
 
-		fetchData();
+				if (!response.ok) {
+				throw new Error("Could not fetch the data for that resource");
+				}
+
+				const data = await response.json();
+				setPrescriptions(data);
+				setIsPending(false);
+				setError(null);
+			}
+		} catch (err) {
+		setIsPending(false);
+		setError(err.message);
+		}
+	};
+
+	fetchData();
 	}, [isFilterApplied]);
 
-	const handleFilter = () => {
+	const handleFilter = async () => {
 		setOpen(false);
 		setIsFilterApplied(true);
 		setIsPending(true);
 		setPrescriptions([]);
 		setError(null);
+
+		const token = localStorage.getItem("token");
 
 		if (filterByDoctor) {
 			filterParams.push(`doctor=${encodeURIComponent(filterByDoctor)}`);
@@ -95,26 +93,32 @@ const ViewPrescriptions = () => {
 
 		console.log(filterParams);
 
-		const url = `http://localhost:4000/patient/filter_prescription/6526d30a0f83f5e462288354?${filterParams.join(
+		const url = `http://localhost:4000/patient/filter_prescription?${filterParams.join(
 			"&"
 		)}`;
 
-		fetch(url)
-			.then((res) => {
-				if (!res.ok) {
-					throw Error("Could not fetch the data for that resource");
-				}
-				return res.json();
-			})
-			.then((data) => {
-				setPrescriptions(data);
-				setIsPending(false);
-				setError(null);
-			})
-			.catch((err) => {
-				setIsPending(false);
-				setError(err.message);
+		try {
+			const response = await fetch(url, {
+			  method: "GET",
+			  headers: {
+				Authorization: `Bearer ${token}`,
+				"Content-Type": "application/json",
+			  },
 			});
+		
+			if (!response.ok) {
+			  throw new Error("Could not fetch the data for that resource");
+			}
+		
+			const data = await response.json();
+			setPrescriptions(data);
+			setIsPending(false);
+			setError(null);
+			
+		  } catch (err) {
+			setIsPending(false);
+			setError(err.message);
+		  }
 	};
 
 	const handleCheckboxChange = (event) => {
@@ -123,7 +127,7 @@ const ViewPrescriptions = () => {
 
 	const formatDateForBackend = (dateString) => {
 		const dateObject = new Date(dateString);
-		return dateObject.toISOString(); // Converts the date to the ISO format
+		return dateObject.toISOString();
 	};
 
 	const handleClearFilter = () => {
@@ -210,4 +214,4 @@ const ViewPrescriptions = () => {
 	);
 };
 
-export default ViewPrescriptions;
+export default ViewPrescriptionsPatient;

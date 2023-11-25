@@ -19,7 +19,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 
-import { DoctorListItems } from "../components/DoctorListItems";
+import { PatientListItems } from "../../components/Patient/patientListItems";
 
 function Copyright(props) {
 	return (
@@ -88,7 +88,7 @@ const Drawer = styled(MuiDrawer, {
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export default function DoctorDashboard() {
+export default function Dashboard() {
 	const [open, setOpen] = React.useState(true);
 	const toggleDrawer = () => {
 		setOpen(!open);
@@ -123,7 +123,7 @@ export default function DoctorDashboard() {
 							noWrap
 							sx={{ flexGrow: 1 }}
 						>
-							Doctor Dashboard
+							Patient Dashboard
 						</Typography>
 						<IconButton color='inherit'>
 							<Badge badgeContent={4} color='secondary'>
@@ -147,7 +147,7 @@ export default function DoctorDashboard() {
 					</Toolbar>
 					<Divider />
 					<List component='nav'>
-						{DoctorListItems}
+						{PatientListItems}
 						<Divider sx={{ my: 1 }} />
 					</List>
 				</Drawer>
@@ -166,7 +166,7 @@ export default function DoctorDashboard() {
 					<Toolbar />
 					<Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
 						<Grid container spacing={3}>
-							Doctor Dashboard
+							PatientDashboard
 							<Grid item xs={12} md={8} lg={9}>
 								<Paper
 									sx={{

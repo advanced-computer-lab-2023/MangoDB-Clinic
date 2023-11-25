@@ -2,12 +2,14 @@ const asyncHandler = require("express-async-handler");
 const Doctor = require("../models/doctorModel");
 const Patient = require("../models/patientModel.js");
 const Appointment = require("../models/appointmentModel");
+const Prescription = require("../models/prescriptionModel");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const fs = require("fs");
 const path = require("path");
+// const Pharmacist = require("../models/pharmacistModel");
 
 function generateOTP() {
 	return Math.floor(100000 + Math.random() * 900000).toString();
@@ -27,6 +29,42 @@ const getMyInfo = asyncHandler(async (req, res) => {
 		username: doctor.username,
 		email: doctor.email,
 	});
+});
+
+// @desc Change Password
+// @route POST /doctor/change-password
+// @access Private
+const changePassword = asyncHandler(async (req, res) => {
+	try {
+		const doctor = req.user;
+		const oldPassword = req.body.oldPassword;
+		const newPassword = req.body.newPassword;
+		const confirmPassword = req.body.confirmPassword;
+
+		const salt = await bcrypt.genSalt(10);
+
+		if (!(await bcrypt.compare(oldPassword, doctor.password))) {
+			res.status(400).json({ message: "Invalid Password" });
+		}
+
+		if (newPassword !== confirmPassword) {
+			res.status(400).json({ message: "Passwords Do Not Match" });
+		} else {
+			if (await bcrypt.compare(newPassword, doctor.password)) {
+				res.status(400).json({
+					message: "New Password Cannot Be The Same As Old Password",
+				});
+			} else {
+				doctor.password = await bcrypt.hash(newPassword, salt);
+				await doctor.save();
+				res.status(200).json({
+					message: "Password Changed Successfuly",
+				});
+			}
+		}
+	} catch (error) {
+		res.status(500).json({ message: "Internal Server Error", error });
+	}
 });
 
 // FILTER APPOITMENT USING STATUS OR DATE
@@ -289,6 +327,63 @@ const resetPassword = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		res.status(500).json({ message: "Error resetting password" });
+	}
+});
+
+// @desc Accept a follow up session request
+// @route POST /doctor/acceptFollowUpSession/:id
+// @access Private
+const acceptFollowUpSession = asyncHandler(async (req, res) => {
+	const doctor = req.user;
+	const appointment = await Appointment.findOne({
+		_id: req.params.id,
+	}).populate("patientId");
+
+	if (!appointment) {
+		res.status(400);
+		throw new Error("Appointment Not Found");
+	} else {
+		if (!appointment.followUp) {
+			res.status(400);
+			throw new Error("Appointment is not a follow up session");
+		} else {
+			if (appointment.status === "confirmed") {
+				res.status(400);
+				throw new Error("Appointment is already confirmed");
+			} else {
+				appointment.status = "confirmed";
+				await appointment.save();
+				res.status(200).json({ message: "Appointment confirmed successfully" });
+			}
+		}
+	}
+});
+
+// @desc Decline a follow up session request
+// @route POST /doctor/revokeFollowUpSession/:id
+// @access Private
+const revokeFollowUpSession = asyncHandler(async (req, res) => {
+	const appointment = await Appointment.findOne({
+		_id: req.params.id,
+	}).populate("patientId");
+
+	if (!appointment) {
+		res.status(400);
+		throw new Error("Appointment Not Found");
+	} else {
+		if (!appointment.followUp) {
+			res.status(400);
+			throw new Error("Appointment is not a follow up session");
+		} else {
+			if (appointment.status === "declined") {
+				res.status(400);
+				throw new Error("Appointment is already declined");
+			} else {
+				appointment.status = "declined";
+				await appointment.save();
+				res.status(200).json({ message: "Appointment Revoked Successfully" });
+			}
+		}
 	}
 });
 
@@ -597,6 +692,7 @@ const createAppointment = async (req, res) => {
 		res.status(500).json({ error: error.message });
 	}
 };
+
 const selectPatient = async (patientId) => {
 	try {
 		const patient = await Patient.findById(patientId).exec();
@@ -880,6 +976,149 @@ const followUp = async (req, res) => {
 	}
 };
 
+// Sprint 3
+// reschedule an appointment for a patient
+const rescheduleApp = async (req, res) => {
+	try {
+		const { appointmentId, newDate } = req.body;
+		const appointment = await Appointment.findById(appointmentId);
+		if (!appointment) {
+			res.status(404).json({ message: "Appointment does not exist." });
+		}
+
+		appointment.date = newDate;
+
+		await appointment.save();
+
+		res.status(200).json({ message: "Appointment rescheduled successfully." });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: "Error rescheduling appointment." });
+	}
+};
+
+// cancel an appointment
+const cancelApp = async (req, res) => {
+	try {
+		const { appointmentId } = req.body;
+		const appointment = await Appointment.findByIdAndDelete(appointmentId);
+		if (!appointment) {
+			res.status(404).json({ message: "Appointment does not exist" });
+		}
+
+		// REFUND SHOULD BE DONE HERE (Stripe?)
+		const patient = await Patient.findById(appointment.patientId);
+		const doctor = await Doctor.findById(appointment.doctorId);
+		const wallet = await Wallet.findOne({ user: appointment.patientId });
+
+		const packageType = patient.healthPackage
+			? patient.healthPackage.name
+			: null;
+		let doctorSessionDiscount = 0;
+		switch (packageType) {
+			case "Silver":
+				doctorSessionDiscount = 0.4;
+				break;
+			case "Gold":
+				doctorSessionDiscount = 0.6;
+				break;
+			case "Platinum":
+				doctorSessionDiscount = 0.8;
+				break;
+			default:
+				doctorSessionDiscount = 0;
+		}
+		wallet.balance +=
+			doctor.hourlyRate * 1.1 - doctor.hourlyRate * doctorSessionDiscount;
+
+		await wallet.save();
+
+		res.status(200).json({ message: "Appointment cancelled successfully" });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: "Error cancelling appointment." });
+	}
+};
+
+// Sprint 3 Requirement:
+// view all new and old prescriptions and their statuses
+const viewPrescriptionsByDoctor = async (req, res) => {
+	const doctorId = req.user.id;
+
+	try {
+		const prescriptions = await Prescription.find({
+			doctorId: doctorId,
+		}).populate("patientId");
+		res.status(200).json(prescriptions);
+	} catch (error) {
+		res.status(500).json({ error: "Failed to fetch prescriptions" });
+	}
+};
+
+// Sprint 3 Requirement:
+// add a patient's prescription
+const addPrescription = async (req, res) => {
+	const doctorId = req.user.id;
+	const { patientName, date, medications } = req.body;
+
+	if (!patientName || !date) {
+		return res
+			.status(400)
+			.json({ message: "Please enter patient name and date." });
+	}
+	try {
+		const patient = await Patient.findOne({ username: patientName });
+		if (!patient) {
+			return res.status(404).json({ message: "Patient not found." });
+		}
+		const prescription = await Prescription.create({
+			patientId: patient._id,
+			doctorId: doctorId,
+			medications: medications,
+			date: date,
+		});
+		res.status(201).json(prescription);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: "Error adding prescription." });
+	}
+};
+
+// Sprint 3 Requirement:
+// add/update dosage for each medicine added to the prescription
+const addOrUpdateDosage = async (req, res) => {
+	try {
+		const { prescriptionId, medicationName, frequency } = req.body;
+
+		const updatedPrescription = await Prescription.findOneAndUpdate(
+			{
+				_id: prescriptionId,
+				"medications.medicationName": medicationName,
+			},
+			{
+				$set: {
+					"medications.$.frequency": frequency || null,
+				},
+			},
+			{ new: true }
+		);
+
+		if (!updatedPrescription) {
+			return res
+				.status(404)
+				.json({ message: "Prescription or Medicine not found." });
+		}
+
+		res.status(200).json({
+			message: "Frequency updated successfully.",
+			prescription: updatedPrescription,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: "Error updating dosage." });
+	}
+};
+
 module.exports = {
 	getMyInfo,
 	createDoctor,
@@ -910,5 +1149,13 @@ module.exports = {
 	resetPassword,
 	followUp,
 	getStatusOptions,
-	getDoctor
+	getDoctor,
+	changePassword,
+	rescheduleApp,
+	cancelApp,
+	viewPrescriptionsByDoctor,
+	addOrUpdateDosage,
+	addPrescription,
+	acceptFollowUpSession,
+	revokeFollowUpSession,
 };

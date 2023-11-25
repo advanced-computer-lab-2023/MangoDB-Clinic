@@ -16,6 +16,7 @@ import {
 	Typography,
 } from "@mui/material";
 import MedicationIcon from "@mui/icons-material/Medication";
+import AddIcon from "@mui/icons-material/Add";
 
 const MedicationCard = ({ medication }) => (
 	<Card style={{ marginBottom: "8px" }}>
@@ -28,13 +29,13 @@ const MedicationCard = ({ medication }) => (
 	</Card>
 );
 
-const PrescriptionsTable = ({ data }) => {
+const PrescriptionsTable = ({ data, firstColumnName, userType, onAddPrescription }) => {
 	return (
 		<TableContainer component={Paper} xs={8}>
 			<Table sx={{ minWidth: 650 }} aria-label='simple table'>
 				<TableHead>
 					<TableRow>
-						<TableCell>Doctor</TableCell>
+						<TableCell>{firstColumnName}</TableCell>
 						<TableCell align='center'>Medications & Frequency</TableCell>
 						<TableCell align='center'>Date</TableCell>
 						<TableCell align='left'>Filled</TableCell>
@@ -46,9 +47,9 @@ const PrescriptionsTable = ({ data }) => {
 						data.map((prescription) => (
 							<TableRow key={prescription._id}>
 								<TableCell component='th' scope='row'>
-									{prescription.doctorId.firstName +
+									{prescription.patientId.firstName +
 										" " +
-										prescription.doctorId.lastName}
+										prescription.patientId.lastName}
 								</TableCell>
 								<TableCell align='left'>
 									{prescription.medications.map((medication, index) => (
@@ -73,6 +74,17 @@ const PrescriptionsTable = ({ data }) => {
 								</TableCell>
 							</TableRow>
 						))}
+					{userType === "doctor" && (
+						<TableRow>
+							<TableCell align="left" colSpan={5}>
+								<Tooltip title="Add Prescription">
+									<ListItemButton onClick={onAddPrescription}>
+									<AddIcon />
+									</ListItemButton>
+								</Tooltip>
+							</TableCell>
+						</TableRow>
+    				)}
 				</TableBody>
 			</Table>
 		</TableContainer>

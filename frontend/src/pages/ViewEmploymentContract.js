@@ -12,29 +12,29 @@ const ViewEmploymentContract = () => {
 	const [numPages, setNumPages] = useState(null);
 	const [pdf, setPdf] = useState(null);
 	const [pageNumber, setPageNumber] = useState(1);
-	const { id } = useParams(); // Import and retrieve the 'id' from 'react-router-dom'
+	//const { id } = useParams(); // Import and retrieve the 'id' from 'react-router-dom'
 
-	const getID = async () => {
-		try {
-			const response = await axios.post(
-				"http://localhost:4000/Patient/myInfo",
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`,
-					},
-				}
-			);
+	// const getID = async () => {
+	// 	try {
+	// 		const response = await axios.post(
+	// 			"http://localhost:4000/Patient/myInfo",
+	// 			{
+	// 				headers: {
+	// 					Authorization: `Bearer ${localStorage.getItem("token")}`,
+	// 				},
+	// 			}
+	// 		);
 
-			if (response.status === 200) {
-				return response.data._id;
-			}
-		} catch (error) {}
-	};
+	// 		if (response.status === 200) {
+	// 			return response.data._id;
+	// 		}
+	// 	} catch (error) {}
+	// };
 	useEffect(() => {
 		const fetchContract = async () => {
 			try {
 				// Fetch the employment contract PDF from the server
-				const contract = await getEmploymentContract(getID); // Call the API function
+				const contract = await getEmploymentContract(); // Call the API function
 
 				// Assuming the response returns the PDF file or link
 				//const contract = await response.blob();

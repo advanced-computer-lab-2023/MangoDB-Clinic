@@ -16,7 +16,7 @@ import { viewRegFamMembers } from "../services/api";
 const ViewFamilyMembers = () => {
 	const [familyMembers, setFamilyMembers] = useState([]); // Initialize as an empty array
 
-	const actualPatientId = "6526d30a0f83f5e462288354"; // Extract 'patientId' from useParams or use the default value
+	//const actualPatientId = "6526d30a0f83f5e462288354"; // Extract 'patientId' from useParams or use the default value
 	// const getID = async () => {
 	// 	try {
 	// 		const response = await axios.post(
@@ -36,12 +36,13 @@ const ViewFamilyMembers = () => {
 	// const id = await getID();
 	const fetchData = useCallback(async () => {
 		try {
-			const response = await viewRegFamMembers(actualPatientId); // Make sure to use 'await' here
+			const response = await viewRegFamMembers(); // Make sure to use 'await' here
+			console.log("hena");
 			setFamilyMembers(response.data); // Check the response structure to set the data accordingly
 		} catch (error) {
 			console.error("Error fetching data:", error);
 		}
-	}, [actualPatientId]);
+	}, []);
 
 	useEffect(() => {
 		fetchData(); // No need to check patientId here since it's in the dependency array

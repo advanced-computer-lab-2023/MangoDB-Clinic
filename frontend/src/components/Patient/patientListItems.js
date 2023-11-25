@@ -12,7 +12,7 @@ import LoyaltyIcon from "@mui/icons-material/Loyalty";
 import WalletIcon from "@mui/icons-material/Wallet";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
-export const mainListItems = (
+export const PatientListItems = (
 	<React.Fragment>
 		<ListItemButton component={Link} to='/'>
 			<ListItemIcon>
@@ -32,7 +32,7 @@ export const mainListItems = (
 			</ListItemIcon>
 			<ListItemText primary='Appointments' />
 		</ListItemButton>
-		<ListItemButton component={Link} to='/viewprescriptions'>
+		<ListItemButton component={Link} to='/viewPrescriptionsOfPatient'>
 			<ListItemIcon>
 				<MedicationIcon />
 			</ListItemIcon>
@@ -60,7 +60,7 @@ export const mainListItems = (
 			<ListItemIcon>
 				<AccountCircleIcon />
 			</ListItemIcon>
-			<ListItemText primary='Forget Password' />
+			<ListItemText primary='Change Password' />
 		</ListItemButton>
 	</React.Fragment>
 );

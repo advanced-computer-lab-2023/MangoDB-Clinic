@@ -17,7 +17,7 @@ import { getHealthRecords } from "../services/api";
 const ViewHealthRecordsPat = () => {
 	const [healthRecords, setHealthRecords] = useState([]);
 	const [openFile, setOpenFile] = useState({ open: false, fileContent: "" });
-	const id = "6526d30a0f83f5e462288354";
+	//const id = "6526d30a0f83f5e462288354";
 
 	// const getID = async () => {
 	//   try {
@@ -42,7 +42,7 @@ const ViewHealthRecordsPat = () => {
 	const fetchData = useCallback(async () => {
 		try {
 			// const userId = await getID(); // Wait for the ID before making the request
-			const response = await getHealthRecords(id);
+			const response = await getHealthRecords();
 			setHealthRecords(response.data.files);
 		} catch (error) {
 			console.error("Error fetching health records:", error);

@@ -39,33 +39,24 @@ export default function ChangePassword() {
 	const navigate = useNavigate();
 	const [formData, setFormData] = React.useState({
 		oldPassword: "",
-		password: "",
+		newPassword: "",
 		confirmPassword: "",
 	});
+	const [error, setError] = React.useState(null);
+	
 
 	const [isLoading, setIsLoading] = React.useState(false);
-
-	const getEmail = async () => {
-		try {
-			const response = await axios.get("http://localhost:4000/admin/my-info", {
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem("token")}`,
-				},
-			});
-
-			return response.data.email;
-		} catch (error) {}
-	};
 
 	const handleChange = async () => {
 		try {
 			setIsLoading(true);
 
 			const response = await axios.post(
-				"http://localhost:4000/admin/reset-password",
+				"http://localhost:4000/admin/change-password",
 				{
-					email: await getEmail(),
-					password: formData.password,
+					oldPassword: formData.oldPassword,
+					newPassword: formData.newPassword,
+					confirmPassword: formData.confirmPassword,
 				},
 				{
 					headers: {
@@ -76,10 +67,24 @@ export default function ChangePassword() {
 
 			if (response.status === 200) {
 				alert("Password Changed Successfully");
+				setError(null);
+				localStorage.removeItem("token");
 				navigate("/admin/login");
 			}
 		} catch (error) {
-			alert("Error Changing Password");
+			if (error.response) {
+				const responseData = error.response.data;
+
+				if (responseData.message) {
+					setError(responseData.message);
+				} else {
+					setError("An error occurred on the server.");
+				}
+			} else if (error.request) {
+				setError("No response from the server.");
+			} else {
+				setError("Error setting up the request.");
+			}
 		} finally {
 			setIsLoading(false);
 		}
@@ -124,6 +129,18 @@ export default function ChangePassword() {
 								noValidate
 								sx={{ mt: 1 }}
 							>
+								{error && (
+									<div
+										style={{
+											color: "red",
+											marginBottom: "1rem",
+											textAlign: "center",
+											fontWeight: "bold",
+										}}
+									>
+										{error}
+									</div>
+								)}
 								<TextField
 									margin='normal'
 									required
@@ -140,12 +157,12 @@ export default function ChangePassword() {
 									margin='normal'
 									required
 									fullWidth
-									name='password'
+									name='newPassword'
 									label='New Password'
-									value={formData.password}
+									value={formData.newPassword}
 									onChange={handleInputChange}
 									type='password'
-									id='password'
+									id='newPassword'
 								/>
 								<TextField
 									margin='normal'

@@ -85,6 +85,8 @@ const registerAsDoctor = asyncHandler(async (req, res) => {
 	]);
 });
 
+
+JWT_SECRET = 'abc123';
 const login = asyncHandler(async (req, res) => {
 	const { username, password } = req.body;
 
@@ -104,7 +106,7 @@ const login = asyncHandler(async (req, res) => {
 });
 
 const genToken = (id) => {
-	return jwt.sign({ id }, process.env.JWT_SECRET);
+	return jwt.sign({ id }, JWT_SECRET);
 };
 
 module.exports = {

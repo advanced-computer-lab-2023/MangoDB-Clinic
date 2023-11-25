@@ -11,6 +11,8 @@ const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 
 const port = process.env.PORT;
+const JWT_SECRET = "abc123";
+const SECRET = "abc123";
 
 // @desc Get my (patient) info
 // @route GET /patient/my-info
@@ -29,6 +31,42 @@ const getMyInfo = asyncHandler(async (req, res) => {
 		username: patient.username,
 		email: patient.email,
 	});
+});
+
+// @desc Change Password
+// @route POST /patient/change-password
+// @access Private
+const changePassword = asyncHandler(async (req, res) => {
+	try {
+		const patient = req.user;
+		const oldPassword = req.body.oldPassword;
+		const newPassword = req.body.newPassword;
+		const confirmPassword = req.body.confirmPassword;
+
+		const salt = await bcrypt.genSalt(10);
+
+		if (!(await bcrypt.compare(oldPassword, patient.password))) {
+			res.status(400).json({ message: "Invalid Password" });
+		}
+
+		if (newPassword !== confirmPassword) {
+			res.status(400).json({ message: "Passwords Do Not Match" });
+		} else {
+			if (await bcrypt.compare(newPassword, patient.password)) {
+				res.status(400).json({
+					message: "New Password Cannot Be The Same As Old Password",
+				});
+			} else {
+				patient.password = await bcrypt.hash(newPassword, salt);
+				await patient.save();
+				res.status(200).json({
+					message: "Password Changed Successfuly",
+				});
+			}
+		}
+	} catch (error) {
+		res.status(500).json({ message: "Internal Server Error", error });
+	}
 });
 
 function generateOTP() {
@@ -51,6 +89,7 @@ const loginPatient = asyncHandler(async (req, res) => {
 
 	// Check for username
 	const patient = await Patient.findOne({ username });
+	console.log(patient);
 
 	if (patient && (await bcrypt.compare(password, patient.password))) {
 		res.status(200).json({
@@ -153,9 +192,28 @@ const resetPassword = asyncHandler(async (req, res) => {
 	}
 });
 
+// @desc View Details Of Selected Prescription
+// @route GET /patient/viewSelectedPrescription/:prescriptionId
+// @access Private
+const viewSelectedPrescription = asyncHandler(async (req, res) => {
+	const prescription = await Prescription.findById(
+		req.params.prescriptionId
+	).populate({
+		path: "doctorId",
+		select: "firstName lastName -_id -__t",
+	});
+
+	if (!prescription) {
+		res.status(400);
+		throw new Error("Prescription Not Found");
+	} else {
+		res.status(200).json(prescription);
+	}
+});
+
 // Generate Token
 const generateToken = (id) => {
-	return jwt.sign({ id }, process.env.JWT_SECRET, {
+	return jwt.sign({ id }, JWT_SECRET, {
 		expiresIn: "30d",
 	});
 };
@@ -252,7 +310,7 @@ const deletePatient = async (req, res) => {
 
 //Add family member
 const addFamilyMember = asyncHandler(async (req, res) => {
-	const id = req.params.id;
+	const id = req.user._id;
 
 	try {
 		const patient = await Patient.findById(id);
@@ -267,7 +325,10 @@ const addFamilyMember = asyncHandler(async (req, res) => {
 });
 
 const getFamilyMembers = asyncHandler(async (req, res) => {
-	const id = req.params.id;
+	console.log("hena 273");
+	const id = req.user._id;
+
+	console.log("hena 276");
 
 	try {
 		const patient = await Patient.findById(id);
@@ -307,7 +368,7 @@ const getAllPrescriptions = async (req, res) => {
 };
 
 const getAllPrescriptionsOfPatient = async (req, res) => {
-	const patientId = req.params.id;
+	const patientId = req.user.id;
 
 	if (!mongoose.Types.ObjectId.isValid(patientId)) {
 		return res.status(404).json({ error: "Id Not Found" });
@@ -355,9 +416,9 @@ const selectPrescription = async (req, res) => {
 };
 
 const filterPrescription = async (req, res) => {
-	const patient = await Patient.findById(req.params.patientId);
+	const patientId = req.user.id;
 
-	if (!patient) {
+	if (!patientId) {
 		return res.status(404).json({ error: "Patient Id Not Found" });
 	}
 
@@ -365,7 +426,7 @@ const filterPrescription = async (req, res) => {
 		const { doctor, filled, date } = req.query;
 		const query = {};
 
-		query["patientId"] = req.params.patientId;
+		query["patientId"] = patientId;
 
 		if (doctor) {
 			const doc = await Doctor.findOne({
@@ -633,7 +694,7 @@ const filterDoctors = async (req, res) => {
 };
 
 const viewHealthRecords = async (req, res) => {
-	const patient = await Patient.findById(req.params.id);
+	const patient = req.user;
 	try {
 		if (!patient) {
 			res.status(400);
@@ -810,14 +871,17 @@ const deleteDocument = async (req, res) => {
 };
 
 const linkFamilyMember = async (req, res) => {
-	const id = req.params.id;
-	const { email, relation, mobile, linkWithEmail } = req.query;
-	const Boolean = false;
+	console.log("hena819");
+	const id = req.user._id;
+	const { email, relation, mobile } = req.body;
+	let Boolean = false;
+	console.log(email);
 	try {
+		console.log("825");
 		if (email.length > 6) {
 			Boolean = true;
 		}
-		console.log("id:", id);
+		//console.log("id:", id);
 		const patient = await Patient.findById(id);
 
 		console.log(patient);
@@ -1227,6 +1291,144 @@ const upcoming = async (req, res) => {
 	}
 };
 
+// sprint 3
+// cancel an appointment
+const cancelApp = async (req, res) => {
+	try {
+		const { appointmentId } = req.body;
+		const appointment = await Appointment.findByIdAndDelete(appointmentId);
+		if (!appointment) {
+			res.status(404).json({ message: "Appointment does not exist" });
+		}
+
+		currDate = Date.now().toISOString();
+		if (Math.abs(currDate - appointmentDate) / 36e5 > 24) {
+			// REFUND SHOULD BE DONE HERE (Stripe?)
+			const patient = await Patient.findById(appointment.patientId);
+			const doctor = await Doctor.findById(appointment.doctorId);
+			const wallet = await Wallet.findOne({ user: appointment.patientId });
+
+			const packageType = patient.healthPackage
+				? patient.healthPackage.name
+				: null;
+			let doctorSessionDiscount = 0;
+			switch (packageType) {
+				case "Silver":
+					doctorSessionDiscount = 0.4;
+					break;
+				case "Gold":
+					doctorSessionDiscount = 0.6;
+					break;
+				case "Platinum":
+					doctorSessionDiscount = 0.8;
+					break;
+				default:
+					doctorSessionDiscount = 0;
+			}
+			wallet.balance +=
+				doctor.hourlyRate * 1.1 - doctor.hourlyRate * doctorSessionDiscount;
+
+			await wallet.save();
+		}
+
+		res.status(200).json({ message: "Appointment cancelled successfully" });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: "Error cancelling appointment." });
+	}
+};
+//sprint3
+//reschedule appointment
+const rescheduleAppointment = async (req, res) => {
+	const { appointmentId, newDate } = req.body;
+	try {
+		const appointment = await Appointment.findById(appointmentId);
+		if (!appointment) {
+			throw new Error("Appointment not found");
+		}
+
+		appointment.date = newDate;
+		await appointment.save();
+
+		res.status(200).json({ message: "Appointment rescheduled successfully" });
+	} catch (error) {
+		console.error(error);
+	}
+};
+//sprint3
+//pay prescription from wallet
+const payPescriptionWallet = async (req, res) => {
+	const patient = await Patient.findById(req.user.id);
+	const { totalPirce } = req.body;
+
+	const packageType = patient.healthPackage ? patient.healthPackage.name : null;
+
+	// if (!packageType) {
+	// 	return res
+	// 		.status(404)
+	// 		.json({ error: "Package not found for the patient" });
+	// }
+
+	// Initialize discount values
+	let Discount = 0;
+
+	// Calculate discounts based on the packageType
+	switch (packageType) {
+		case "Silver":
+			Discount = 0.2;
+
+			break;
+
+		case "Gold":
+			Discount = 0.3;
+
+			break;
+
+		case "Platinum":
+			Discount = 0.4;
+
+			break;
+
+		default:
+			// Handle the case where an invalid package type is provided
+			// console.error('Invalid package type');
+			// return res.status(400).json({ error: 'Invalid package type' });
+			Discount = 0;
+	}
+
+	const paymentAmount = totalPirce - totalPirce * Discount;
+
+	try {
+		const wallet = await Wallet.findById(patient.wallet);
+
+		if (!wallet) {
+			throw new Error("Wallet not found");
+		}
+
+		//fa2er mafesh felos
+		if (wallet.balance < paymentAmount) {
+			res.json({
+				success: false,
+				message: "Insufficient funds in the wallet",
+			});
+		}
+		wallet.balance -= paymentAmount;
+
+		wallet.transactions.push({
+			type: "debit",
+			amount: paymentAmount,
+			date: new Date(),
+		});
+
+		await wallet.save();
+
+		res.json({ success: true, message: "Payment successful" });
+	} catch (error) {
+		console.error("Error processing payment:", error);
+		res.status(500).json({ error: "Internal server error during payment" });
+	}
+};
+
 module.exports = {
 	getMyInfo,
 	getAllPatients,
@@ -1267,4 +1469,9 @@ module.exports = {
 	sendOTP,
 	verifyOTP,
 	resetPassword,
+	changePassword,
+	cancelApp,
+	rescheduleAppointment,
+	payPescriptionWallet,
+	viewSelectedPrescription,
 };

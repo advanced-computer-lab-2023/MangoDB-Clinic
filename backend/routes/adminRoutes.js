@@ -23,6 +23,7 @@ const {
 	resetPassword,
 	sendOTP,
 	verifyOTP,
+	changePassword,
 } = require("../controllers/adminController");
 
 const { protectAdmin } = require("../middleware/adminMiddleware");
@@ -44,6 +45,7 @@ router.post("/add-packages", protectAdmin, addPackages);
 router.post("/request-otp", sendOTP);
 router.post("/verify-otp", verifyOTP);
 router.post("/reset-password", resetPassword);
+router.post("/change-password", protectAdmin, changePassword);
 
 router.delete("/remove-doctor/:id", protectAdmin, removeDoctor);
 router.delete("/remove-patient/:id", protectAdmin, removePatient);

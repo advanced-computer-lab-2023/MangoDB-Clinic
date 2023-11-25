@@ -178,6 +178,86 @@ router.post('/create-checkout-session-packages/:id', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+router.post('/create-checkout-session-prescription/:id', async (req, res) => {
+    try {
+        const {totalPirce }= req.body;
+        const prescriptionId = req.params.id;
+
+        const prescription = await Appointment.findById(prescriptionId);
+        if (!prescription) {
+            return res.status(404).json({ error: 'prescription not found' });
+        }
+        //patient
+        const patientId = prescription.patientId; 
+          
+        if (!patientId) {
+            return res.status(404).json({ error: 'Patient ID not found for the appointment' });
+        }
+          
+        // Retrieve the patient from the database and populate the healthPackage field
+        const patient = await Patient.findById(patientId).populate('healthPackage');
+        // const patientName = patient.firstName;
+          
+        if (!patient) {
+            return res.status(404).json({ error: 'Patient not found' });
+        }
+
+        const packageType = patient.healthPackage ? patient.healthPackage.name : null;
+
+        let discount = 0;
+        
+        switch (packageType) {
+            case 'Silver':
+                discount = 0.2; break;
+          
+            case 'Gold':
+                discount = 0.3; break;
+          
+            case 'Platinum':
+                discount = 0.4; break;
+          
+            default:
+                discount = 0;
+        }
+
+        const paymentAmount = totalPirce  - totalPirce * Discount;
+        const storeItems = new Map([
+            [1, { priceInCents: paymentAmount * 100, name: 'prescription' }], // priceInSharks = pounds * 100
+           
+        ])
+        // END OF PASTE
+
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            mode: 'payment',
+            line_items: req.body.items.map(item => {
+                const storeItem = storeItems.get(item.id);
+
+                if (!storeItem) {
+                    throw new Error("Item does not exists");
+                }
+
+                return {
+                    price_data: {
+                        currency: 'egp',
+                        product_data: {
+                            name: storeItem.name,
+                        },
+                        unit_amount: storeItem.priceInCents,
+                    },
+                    quantity: item.quantity,
+                };
+            }),
+            success_url: 'http://localhost:3000/successulPackagePayment',
+            cancel_url: 'http://localhost:3000/viewpackages',
+        });
+
+        res.json({ url: session.url });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 
 
 // app.post("/create-checkout-session", async (req, res) => {

@@ -8,6 +8,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import TodayIcon from "@mui/icons-material/Today";
 import PeopleIcon from "@mui/icons-material/People";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import MedicationIcon from "@mui/icons-material/Medication";
 
 export const DoctorListItems = (
 	<React.Fragment>
@@ -28,6 +29,12 @@ export const DoctorListItems = (
 				<TodayIcon />
 			</ListItemIcon>
 			<ListItemText primary='Appointments' />
+		</ListItemButton>
+		<ListItemButton component={Link} to='/viewPrescriptionsByDoctor'>
+			<ListItemIcon>
+				<MedicationIcon />
+			</ListItemIcon>
+			<ListItemText primary='Prescriptions' />
 		</ListItemButton>
 		<ListItemButton component={Link} to={`/editDoctor`}>
 			<ListItemIcon>
