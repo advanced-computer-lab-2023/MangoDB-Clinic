@@ -39,7 +39,9 @@ const {
 	cancelApp,
 	addOrUpdateDosage,
 	viewPrescriptionsByDoctor,
-	addPrescription
+	addPrescription,
+	acceptFollowUpSession,
+	revokeFollowUpSession,
 } = require("../controllers/doctorController");
 
 router.get("/myInfo", protectDoctor, getMyInfo);
@@ -57,6 +59,9 @@ router.post("/change-password", protectDoctor, changePassword);
 router.post("/filterapp", protectDoctor, filterStatus);
 
 router.post("/get_doctor", getDoctor);
+ 
+router.post("/acceptFollowUpSession/:id", acceptFollowUpSession);
+router.post("/revokeFollowUpSession/:id", revokeFollowUpSession);
 
 // router.post("/upcoming", upcoming);
 router.post("/upcoming", protectDoctor, upcoming);
@@ -132,7 +137,11 @@ router.patch(
 router.patch("/rescheduleApp", protectDoctor, rescheduleApp);
 router.delete("/cancelApp", protectDoctor, cancelApp);
 
-router.get("/viewAllPrescriptionsByDoctor", protectDoctor, viewPrescriptionsByDoctor)
+router.get(
+	"/viewAllPrescriptionsByDoctor",
+	protectDoctor,
+	viewPrescriptionsByDoctor
+);
 router.post("/addPrescription", protectDoctor, addPrescription);
 router.put("/addOrUpdateDosage", addOrUpdateDosage);
 
