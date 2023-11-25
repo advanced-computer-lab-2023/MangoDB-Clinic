@@ -1009,7 +1009,8 @@ const cancelApp = async (req, res) => {
 		// REFUND SHOULD BE DONE HERE (Stripe?)
 		const patient = await Patient.findById(appointment.patientId);
 		const doctor = await Doctor.findById(appointment.doctorId);
-		const wallet = await Wallet.findOne({ user: appointment.patientId });
+		const patientWallet = await Wallet.findOne({ user: appointment.patientId });
+		const doctorWallet = await Wallet.findOne({ user: appointment.doctorId });
 
 		const packageType = patient.healthPackage
 			? patient.healthPackage.name
@@ -1028,10 +1029,14 @@ const cancelApp = async (req, res) => {
 			default:
 				doctorSessionDiscount = 0;
 		}
-		wallet.balance +=
-			doctor.hourlyRate * 1.1 - doctor.hourlyRate * doctorSessionDiscount;
 
-		await wallet.save();
+		const amount = doctor.hourlyRate * 1.1 - doctor.hourlyRate * doctorSessionDiscount;
+
+		patientWallet.balance += amount;
+		doctorWallet.balance -= amount;
+
+		await patientWallet.save();
+		await doctorWallet.save();
 
 		res.status(200).json({ message: "Appointment cancelled successfully" });
 	} catch (error) {
