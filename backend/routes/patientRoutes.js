@@ -92,15 +92,15 @@ router.get(
 	selectPrescription
 );
 
-router.get("/get_all_doctors/:id",  viewAllDoctors);
+router.get("/get_all_doctors", protectPatient, viewAllDoctors);
 
-router.get("/filter_doctors/:id",  filterDoctors);
+router.get("/filter_doctors", protectPatient, filterDoctors);
 
 router.get("/get_all_appointments/:id",  getAllAppointments);
 
 router.get("/filter_appointments/:id",  filterAppointments);
 
-router.get("/search_doctor/:id",  searchDoctor);
+router.get("/search_doctor", protectPatient, searchDoctor);
 
 router.get("/view_health_records/:id",  viewHealthRecords);
 

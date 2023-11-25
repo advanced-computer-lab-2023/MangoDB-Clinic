@@ -104,7 +104,7 @@ const login = asyncHandler(async (req, res) => {
 });
 
 const genToken = (id) => {
-	return jwt.sign({ id }, process.env.SECRET);
+	return jwt.sign({ id }, process.env.JWT_SECRET);
 };
 
 module.exports = {

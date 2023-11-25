@@ -539,7 +539,7 @@ const viewAllDoctors = asyncHandler(async (req, res) => {
 		if (!doctors) {
 			res.status(400).json({ error: "No Doctors Found" });
 		} else {
-			const patient = await Patient.findById(req.params.id).populate(
+			const patient = await Patient.findById(req.user.id).populate(
 				"healthPackage"
 			);
 			if (!patient) res.status(400).json({ error: "An error occured" });
@@ -565,7 +565,7 @@ const viewAllDoctors = asyncHandler(async (req, res) => {
 const searchDoctor = asyncHandler(async (req, res) => {
 	try {
 		const { name, speciality } = req.query;
-		const query = { accountStats: "active" };
+		const query = { accountStatus: "active" };
 		if (name) {
 			firstName = name.split(" ")[0];
 			query.firstName = { $regex: firstName, $options: "i" };
@@ -576,7 +576,7 @@ const searchDoctor = asyncHandler(async (req, res) => {
 		if (speciality) query.speciality = { $regex: speciality, $options: "i" };
 
 		const doctor = await Doctor.find(query);
-		const patient = await Patient.findById(req.params.id).populate(
+		const patient = await Patient.findById(req.user.id).populate(
 			"healthPackage"
 		);
 		if (!patient) res.status(400).json({ error: "An error occured" });
@@ -598,7 +598,7 @@ const searchDoctor = asyncHandler(async (req, res) => {
 const filterDoctors = async (req, res) => {
 	const { datetime, speciality } = req.query;
 	try {
-		const query = { accountStats: "active" };
+		const query = { accountStatus: "active" };
 
 		if (speciality) query.speciality = speciality;
 
@@ -612,7 +612,7 @@ const filterDoctors = async (req, res) => {
 			query._id = { $nin: doctorIdsWithAppointments };
 		}
 		const filteredDoctors = await Doctor.find(query);
-		const patient = await Patient.findById(req.params.id).populate(
+		const patient = await Patient.findById(req.user.id).populate(
 			"healthPackage"
 		);
 		if (!patient) res.status(400).json({ error: "An error occured" });
