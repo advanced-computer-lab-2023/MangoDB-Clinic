@@ -107,6 +107,9 @@ export const checkout = (id, items) =>
 
 export const checkout1 = (id, items) =>
 	API.post(`/payments/create-checkout-session-packages/${id}`, { items });
+//payment sprint3
+export const checkout2 = (id, totalPirce) =>
+API.post(`/payments/create-checkout-session/${id}`, { totalPirce });
 
 export const wallet = (appointmentId) =>
 	API.post(`/patient/payFromWallet/${appointmentId}`);
@@ -127,16 +130,35 @@ export const scheduleFollowup = (
 		`/doctor/scheduleFollowup/${doctorId}/${patientId}/${appointmentId}/${followUpDate}`
 	);
 
-export const subscribeToHealthPackage = (patientId, packageId) =>
+export const subscribeToHealthPackage = (packageId) =>
 	API.put(
-		`/subscribe_to_health_package/6526d30a0f83f5e462288354/65536787d4bd759f882271de`
+		`/subscribe_to_health_package/${packageId}`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
 	);
 
-export const cancelHealthPackage = (patientId) =>
-	API.put(`/patient/cancel_health_package/6526d30a0f83f5e462288354`);
+export const viewAllDoctors = () =>
+	API.put(`/patient/get_all_doctors/`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+
+export const cancelHealthPackage = () =>
+	API.put(`/patient/cancel_health_package/`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export const viewSubscribedhealthPackage = () =>
-	API.get(`/patient/view_subscribed_health_package/6526d30a0f83f5e462288354`);
+	API.get(`/patient/view_subscribed_health_package/`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+
+//////////////////////////////////////////////////////////// sprint 3 ////////////////////////////////////////////////////////////
+export const doctorRescheduleApp = (appointment) =>
+	API.patch(`doctor/rescheduleApp`, appointment, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+
+export const doctorCancelApp = (appointment) =>
+	API.delete(`doctor/cancelApp`, appointment, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+
+export const patientCancelApp = (appointment) =>
+	API.delete(`patient/cancelApp`, appointment, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+export const patientReschuleApp = (appointment,newDate) =>
+	API.delete(`patient/rescheduleAppointment`, appointment,newDate, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+
+export const patientPayPrescription = (totalPirce) =>
+API.delete(`patient/payPescriptionWallet`, totalPirce, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });	
 
 const API2 = axios.create({
 	baseURL: `http://localhost:${port}`,

@@ -19,7 +19,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 
-import { DoctorListItems } from "../../components/DoctorListItems";
+import { DoctorListItems } from "../../components/Doctor/DoctorListItems";
 
 function Copyright(props) {
 	return (

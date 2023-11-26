@@ -4,29 +4,46 @@ import AccountBalance from "../components/AccountBalance";
 import { viewWallet } from "../services/api";
 
 const ViewWallet = () => {
-	const id = "6526d30a0f83f5e462288354";
+	
 	const [wallet, setWallet] = useState(null);
 	const [isPending, setIsPending] = useState(true);
 	const [error, setError] = useState("");
 
 	useEffect(() => {
-		setWallet(null);
-		setIsPending(true);
+        const fetchData = async () => {
+          try {
+                setIsPending(true);
+                setError(null);
 
-		viewWallet(id)
-			.then((result) => {
-				console.log("Data:", result.data.wallet.balance);
-
-				setWallet(result.data.wallet);
-				setIsPending(false);
-			})
-			.catch((err) => {
-				console.error("Error:", err);
-
-				setIsPending(false);
-				setError(err.message);
-			});
-	}, [id]);
+                const token = localStorage.getItem("token");
+                // setTimeout(async () => {
+                    const response = await fetch(
+                    "http://localhost:4000/patient/view_wallet",
+                    {
+                        method: "GET",
+                        headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                        },
+                    }
+                    );
+    
+                    if (!response.ok) {
+                    throw new Error("Could not fetch the data for that resource");
+                    }
+    
+                    const data = await response.json();
+					setWallet(data);
+                    setIsPending(false);
+                    setError(null);
+                // }, 10000);
+            } catch (err) {
+            setIsPending(false);
+            setError(err.message);
+            }
+        };
+      fetchData();
+    }, []);
 
 	return (
 		<div>

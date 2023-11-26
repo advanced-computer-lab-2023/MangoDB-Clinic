@@ -19,7 +19,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 
-import { mainListItems } from "../../components/ListItems";
+import { PatientListItems } from "../../components/Patient/patientListItems";
 
 function Copyright(props) {
 	return (
@@ -147,7 +147,7 @@ export default function Dashboard() {
 					</Toolbar>
 					<Divider />
 					<List component='nav'>
-						{mainListItems}
+						{PatientListItems}
 						<Divider sx={{ my: 1 }} />
 					</List>
 				</Drawer>

@@ -44,8 +44,12 @@ const {
 	getAvailableAppointments,
 	makeAppointment,
 	changePassword,
+	cancelApp,
+	rescheduleAppointment,
+	payPescriptionWallet,
+	viewSelectedPrescription,
+	requestFollowUp
 } = require("../controllers/patientController");
-const { protectDoctor } = require("../middleware/doctorMiddleware");
 
 router.get("/myInfo", getMyInfo);
 
@@ -57,6 +61,11 @@ router.post("/change-password", protectPatient, changePassword);
 
 //GET all patients
 router.get("/get_all_patients", getAllPatients);
+
+router.get(
+	"/viewSelectedPrescription/:prescriptionId",
+	viewSelectedPrescription
+);
 
 //GET a single patient
 router.post("/get_patient", getPatient);
@@ -70,16 +79,20 @@ router.delete("/delet_patient/:id", deletePatient);
 //UPDATE a single patient
 router.put("/update_patient/:id", updatePatient);
 
-router.put("/add_family_member/",protectPatient,  addFamilyMember);
+router.put("/add_family_member/", protectPatient, addFamilyMember);
 
-router.get("/get_family_members/",protectPatient,  getFamilyMembers);
+router.get("/get_family_members/", protectPatient, getFamilyMembers);
 
 router.get("/get_selected_doctor/:id", getSelectedDoctor);
 
 router.get("/get_all_prescriptions/:id", getAllPrescriptions);
 
 //GET all prescriptions of a single patient
-router.get("/get_prescriptions_of_patient", protectPatient, getAllPrescriptionsOfPatient);
+router.get(
+	"/get_prescriptions_of_patient",
+	protectPatient,
+	getAllPrescriptionsOfPatient
+);
 
 //filter prescriptions
 router.get("/filter_prescription", protectPatient, filterPrescription);
@@ -87,29 +100,29 @@ router.get("/filter_prescription", protectPatient, filterPrescription);
 //select a prescription from my list of prescriptions
 router.get("/select_prescription", protectPatient, selectPrescription);
 
-router.get("/get_all_doctors/:id", viewAllDoctors);
+router.get("/get_all_doctors", protectPatient, viewAllDoctors);
 
-router.get("/filter_doctors/:id", filterDoctors);
+router.get("/filter_doctors", protectPatient, filterDoctors);
 
 router.get("/get_all_appointments",protectPatient, getAllAppointments);
 
+
 router.get("/filter_appointments",protectPatient, filterAppointments);
+// =======
+// router.get("/filter_appointments/",protectPatient, filterAppointments);
+// >>>>>>> frontend
 
-router.get("/search_doctor/:id", searchDoctor);
+router.get("/search_doctor", protectPatient, searchDoctor);
 
-router.get("/view_health_records/",protectPatient,  viewHealthRecords);
+router.get("/view_health_records/", protectPatient, viewHealthRecords);
 
 router.get("/view_health_packages", viewHealthPackages);
 
-router.get(
-	"/view_subscribed_health_package/:id",
+router.get("/view_subscribed_health_package/",protectPatient,viewSubscribedhealthPackage);
 
-	viewSubscribedhealthPackage
-);
+router.put("/cancel_health_package/",protectPatient, cancelHealthPackage);
 
-router.put("/cancel_health_package/:id", cancelHealthPackage);
-
-router.get("/view_wallet/:id", viewWallet);
+router.get("/view_wallet",protectPatient, viewWallet);
 
 router.put(
 	"/add_documents/:id",
@@ -124,7 +137,7 @@ router.delete(
 	deleteDocument
 );
 
-router.put("/link_family_member/",protectPatient,  linkFamilyMember);
+router.put("/link_family_member/", protectPatient, linkFamilyMember);
 
 router.put(
 	"/subscribe_to_health_package/:patientId/:packageId",
@@ -159,5 +172,13 @@ router.post("/upcoming",protectPatient, upcoming);
 router.post("/filterapp",protectPatient, filterStatus);
 
 router.post("/payFromWallet/:appointmentId", payFromWallet);
+
+router.delete("/cancelApp", protectPatient, cancelApp);
+
+router.patch("/rescheduleAppointment", protectPatient, rescheduleAppointment);
+
+router.post("/payPescriptionWallet", payPescriptionWallet);
+
+router.post("/requestFollowUp/:doctorId", protectPatient, requestFollowUp);
 
 module.exports = router;

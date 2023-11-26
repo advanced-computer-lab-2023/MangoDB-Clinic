@@ -16,11 +16,9 @@ const prescriptionSchema = mongoose.Schema({
         {
             medicationName: {
                 type: String,
-                required: true
             },
             frequency: {
                 type: String,
-                required: true
             }
         }
     ],

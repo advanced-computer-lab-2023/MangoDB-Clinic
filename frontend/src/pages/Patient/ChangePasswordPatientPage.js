@@ -2,7 +2,7 @@ import React from "react";
 
 import { HelmetProvider, Helmet } from "react-helmet-async";
 
-import ChangePasswordPatient from "../../components/ChangePasswordPatient";
+import ChangePasswordPatient from "../../components/Patient/ChangePasswordPatient";
 
 export default function ChangePasswordPatientPage() {
 	return (

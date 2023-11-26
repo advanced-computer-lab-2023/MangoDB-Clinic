@@ -73,13 +73,7 @@ export default function ViewHealthPackageSubscription() {
 			{!success && !error && <div>Loading...</div>}
 			{success && !error && <div>You have no packages...</div>}
 			{error && <div> {error} </div>}
-			{/* {success && 
-    <div>
-        <h1>Your package has been cancelled successfully. You will be redirected to the patient dashboard in a few seconds, or you can skip the wait and
-                click on the button on the Navigation Bar.
-        </h1>
-    </div>
-    } */}
+			
 		</div>
 		//</ThemeProvider>
 	);
