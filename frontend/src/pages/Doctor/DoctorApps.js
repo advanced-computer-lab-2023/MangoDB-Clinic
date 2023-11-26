@@ -33,6 +33,7 @@ const DoctorApps = () => {
 	const [from, setFrom] = useState("");
 	const [to, setTo] = useState("");
 	const [upcoming, setUpcoming] = useState(false);
+	const [reload, setReload] = useState(false);
 
 	const [statEnum, setStatEnum] = useState(["All"]);
 
@@ -206,21 +207,21 @@ const DoctorApps = () => {
 			});
 	}, []);
 
-	useEffect(() => {
-		if (!upcoming) {
-			setAppointments([]);
-			setIsPending(true);
-			getMyAppointments()
-				.then((result) => {
-					setAppointments(result.data);
-					setIsPending(false);
-				})
-				.catch((err) => {
-					setError(err.message);
-					setIsPending(false);
-				});
-		}
-	}, [upcoming]);
+	// useEffect(() => {
+	// 	if (!upcoming) {
+	// 		setAppointments([]);
+	// 		setIsPending(true);
+	// 		getMyAppointments()
+	// 			.then((result) => {
+	// 				setAppointments(result.data);
+	// 				setIsPending(false);
+	// 			})
+	// 			.catch((err) => {
+	// 				setError(err.message);
+	// 				setIsPending(false);
+	// 			});
+	// 	}
+	// }, [upcoming]);
 
 	useEffect(() => {
 		if (upcoming) {
@@ -235,8 +236,20 @@ const DoctorApps = () => {
 					setIsPending(false);
 					setError(err.message);
 				});
+		} else if (!upcoming) {
+			setAppointments([]);
+			setIsPending(true);
+			getMyAppointments()
+				.then((result) => {
+					setAppointments(result.data);
+					setIsPending(false);
+				})
+				.catch((err) => {
+					setError(err.message);
+					setIsPending(false);
+				});
 		}
-	}, [upcoming]);
+	}, [upcoming, reload]);
 
 	useEffect(() => {
 		console.log(appointments);
@@ -426,7 +439,7 @@ const DoctorApps = () => {
 													e.preventDefault()
 													doctorCancelApp({ appointmentId: appointment._id })
 														.then((result) => {
-															window.location.reload(); 
+															setReload(!reload);
 														})
 														.catch((err) => setError(err.message));
 												}}
