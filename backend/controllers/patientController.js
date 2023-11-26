@@ -446,9 +446,11 @@ const filterPrescription = async (req, res) => {
 
 const getAllAppointments = async (req, res) => {
 	try {
-		const patientId = req.user._id;
+		// console.log(req.user);
+		const patientId = req.user._id.toHexString();
+		console.log(req.user._id.toHexString())
 		const appointments = await Appointment.find(
-			patientId
+			{ patientId: patientId }
 		).populate({
 			path: "doctorId",
 			select: "firstName lastName",
@@ -458,6 +460,7 @@ const getAllAppointments = async (req, res) => {
 		res.status(400).json({ error: error.message });
 	}
 };
+
 
 //Filter appointments by Date/Status
 const filterAppointments = async (req, res) => {

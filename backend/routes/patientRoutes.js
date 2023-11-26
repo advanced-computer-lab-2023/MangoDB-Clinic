@@ -91,7 +91,7 @@ router.get("/get_all_doctors/:id", viewAllDoctors);
 
 router.get("/filter_doctors/:id", filterDoctors);
 
-router.get("/get_all_appointments/:id", getAllAppointments);
+router.get("/get_all_appointments",protectPatient, getAllAppointments);
 
 router.get("/filter_appointments",protectPatient, filterAppointments);
 

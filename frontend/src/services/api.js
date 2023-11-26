@@ -96,7 +96,7 @@ export const viewPatientAppointments = () =>
 	API.get(`/patient/get_all_appointments`,{ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export const upcomingPatientApp = () =>
-	API.post("/patient/upcoming/", {}, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+	API.post("/patient/upcoming", {}, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export const filterPatientAppointments = (query) =>
 	API.post("/patient/filterapp", query, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
