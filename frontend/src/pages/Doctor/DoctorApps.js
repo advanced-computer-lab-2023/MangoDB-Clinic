@@ -227,8 +227,8 @@ const DoctorApps = () => {
 			setAppointments([]);
 			upcomingApp()
 				.then((result) => {
+					setAppointments(result.data.finalup);
 					setIsPending(false);
-					setAppointments(result.data);
 				})
 				.catch((err) => {
 					setIsPending(false);

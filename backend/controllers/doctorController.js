@@ -99,27 +99,29 @@ const filterStatus = async (req, res) => {
 					return true;
 				}
 			}
-		} else if (status === "All") {
-			const Date_1 = new Date(date_1);
-			const Date_2 = new Date(date_2);
+		} 
+		// else if (status === "All") {
+		// 	const Date_1 = new Date(date_1);
+		// 	const Date_2 = new Date(date_2);
 
-			if (Date_1 && Date_2) {
-				if (
-					appointment.date >= Date_1 &&
-					appointment.date <= Date_2 &&
-					appointment.status === status
-				) {
-					return true;
-				}
-			} else if (Date_1 && !date_2) {
-				if (
-					appointment.date.toDateString() === Date_1.toDateString() &&
-					appointment.status === status
-				) {
-					return true;
-				}
-			}
-		} else if (status === "All") {
+		// 	if (Date_1 && Date_2) {
+		// 		if (
+		// 			appointment.date >= Date_1 &&
+		// 			appointment.date <= Date_2 &&
+		// 			appointment.status === status
+		// 		) {
+		// 			return true;
+		// 		}
+		// 	} else if (Date_1 && !date_2) {
+		// 		if (
+		// 			appointment.date.toDateString() === Date_1.toDateString() &&
+		// 			appointment.status === status
+		// 		) {
+		// 			return true;
+		// 		}
+		// 	}
+		// } 
+		else if (status === "All") {
 			const Date_1 = new Date(date_1);
 			const Date_2 = new Date(date_2);
 
