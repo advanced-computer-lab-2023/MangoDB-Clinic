@@ -480,8 +480,8 @@ const getAllAppointments = async (req, res) => {
 const filterAppointments = async (req, res) => {
 	let { status, date_1, date_2 } = req.query;
 
-	const patient = await Patient.findById(req.params.id);
-	const appoint = await Appointment.find({ patientId: req.params.id }).populate(
+	const patient = req.user;
+	const appoint = await Appointment.find({ patientId: patient._id }).populate(
 		{
 			path: "doctorId",
 			select: "firstName lastName",
@@ -539,7 +539,7 @@ const filterAppointments = async (req, res) => {
 			}
 		});
 		res.status(200).json({ filteredAppointments });
-	} else res.status(404).json({ message: "Doctor not found" });
+	} else res.status(404).json({ message: "Patient not found" });
 };
 
 // FILTER APPOITMENT USING STATUS OR DATE
@@ -600,11 +600,12 @@ const viewAllDoctors = asyncHandler(async (req, res) => {
 		if (!doctors) {
 			res.status(400).json({ error: "No Doctors Found" });
 		} else {
-			const patient = await Patient.findById(req.user.id).populate(
+			const patient =req.user
+			if (!patient) res.status(400).json({ error: "Patient does not exist" });
+			let discount;
+			patient.populate(
 				"healthPackage"
 			);
-			if (!patient) res.status(400).json({ error: "An error occured" });
-			let discount;
 			if (patient.healthPackage)
 				discount = patient.healthPackage.doctorSessionDiscount / 100;
 			const doctorsWithPrices = doctors.map((doctor) => {
@@ -637,11 +638,12 @@ const searchDoctor = asyncHandler(async (req, res) => {
 		if (speciality) query.speciality = { $regex: speciality, $options: "i" };
 
 		const doctor = await Doctor.find(query);
-		const patient = await Patient.findById(req.user.id).populate(
+		const patient = req.user;
+		if (!patient) res.status(400).json({ error: "Patient does not exist" });
+		let discount;
+		patient.populate(
 			"healthPackage"
 		);
-		if (!patient) res.status(400).json({ error: "An error occured" });
-		let discount;
 		if (patient.healthPackage)
 			discount = patient.healthPackage.doctorSessionDiscount / 100;
 		const doctorsWithPrices = doctor.map((doctor) => {
@@ -673,11 +675,12 @@ const filterDoctors = async (req, res) => {
 			query._id = { $nin: doctorIdsWithAppointments };
 		}
 		const filteredDoctors = await Doctor.find(query);
-		const patient = await Patient.findById(req.user.id).populate(
+		const patient = req.user;
+		if (!patient) res.status(400).json({ error: "Patient does not exist" });
+		let discount;
+		patient.populate(
 			"healthPackage"
 		);
-		if (!patient) res.status(400).json({ error: "An error occured" });
-		let discount;
 		if (patient.healthPackage)
 			discount = patient.healthPackage.doctorSessionDiscount / 100;
 		const doctorsWithPrices = filteredDoctors.map((doctor) => {
@@ -730,8 +733,7 @@ const viewHealthPackages = asyncHandler(async (req, res) => {
 
 const viewSubscribedhealthPackage = async (req, res) => {
 	try {
-		// const patient = await Patient.findById(req.params.id);
-		const patient = await Patient.findById("6526d30a0f83f5e462288354");
+		const patient = req.user;
 		if (!patient) {
 			res.status(200).json({ message: "Patient not found" });
 		} else {
@@ -759,7 +761,7 @@ const viewSubscribedhealthPackage = async (req, res) => {
 
 const cancelHealthPackage = async (req, res) => {
 	try {
-		const patient = await Patient.findById(req.params.patientId);
+		const patient = req.user;
 
 		if (patient) {
 			if (!patient.healthPackage) {
@@ -768,14 +770,15 @@ const cancelHealthPackage = async (req, res) => {
 					.json({ error: "You are not subscribed to a Health Package." });
 			}
 
-			patient.healthPackage = null;
+			// patient.healthPackage = null;
 			patient.healthPackage.status = "Cancelled";
 
 			for (const familyMember of patient.family) {
 				if (familyMember.userId) {
 					const member = await Patient.findById(familyMember.userId);
 					if (member) {
-						member.healthPackage = null;
+						// member.healthPackage = null;
+						member.healthPackage.status = "Cancelled";
 						await member.save();
 					}
 				}
@@ -1306,7 +1309,8 @@ const cancelApp = async (req, res) => {
 			// REFUND SHOULD BE DONE HERE (Stripe?)
 			const patient = await Patient.findById(appointment.patientId);
 			const doctor = await Doctor.findById(appointment.doctorId);
-			const wallet = await Wallet.findOne({ user: appointment.patientId });
+			const patientWallet = await Wallet.findOne({ user: appointment.patientId });
+			const doctorWallet = await Wallet.findOne({ user: appointment.doctorId });
 
 			const packageType = patient.healthPackage
 				? patient.healthPackage.name
@@ -1325,10 +1329,14 @@ const cancelApp = async (req, res) => {
 				default:
 					doctorSessionDiscount = 0;
 			}
-			wallet.balance +=
-				doctor.hourlyRate * 1.1 - doctor.hourlyRate * doctorSessionDiscount;
 
-			await wallet.save();
+			const amount = doctor.hourlyRate * 1.1 - doctor.hourlyRate * doctorSessionDiscount;
+
+			patientWallet.balance += amount;
+			doctorWallet.balance -= amount;
+
+			await patientWallet.save();
+			await doctorWallet.save();
 		}
 
 		res.status(200).json({ message: "Appointment cancelled successfully" });

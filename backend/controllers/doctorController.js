@@ -1009,7 +1009,8 @@ const cancelApp = async (req, res) => {
 		// REFUND SHOULD BE DONE HERE (Stripe?)
 		const patient = await Patient.findById(appointment.patientId);
 		const doctor = await Doctor.findById(appointment.doctorId);
-		const wallet = await Wallet.findOne({ user: appointment.patientId });
+		const patientWallet = await Wallet.findOne({ user: appointment.patientId });
+		const doctorWallet = await Wallet.findOne({ user: appointment.doctorId });
 
 		const packageType = patient.healthPackage
 			? patient.healthPackage.name
@@ -1028,10 +1029,14 @@ const cancelApp = async (req, res) => {
 			default:
 				doctorSessionDiscount = 0;
 		}
-		wallet.balance +=
-			doctor.hourlyRate * 1.1 - doctor.hourlyRate * doctorSessionDiscount;
 
-		await wallet.save();
+		const amount = doctor.hourlyRate * 1.1 - doctor.hourlyRate * doctorSessionDiscount;
+
+		patientWallet.balance += amount;
+		doctorWallet.balance -= amount;
+
+		await patientWallet.save();
+		await doctorWallet.save();
 
 		res.status(200).json({ message: "Appointment cancelled successfully" });
 	} catch (error) {
@@ -1068,8 +1073,8 @@ const addPrescription = async (req, res) => {
 	}
 	try {
 		const patient = await Patient.findOne({ username: patientName });
-		if (!patient) {
-			return res.status(404).json({ message: "Patient not found." });
+		if(!patient) {
+			return res.status(400).json({ message: "Patient not found." });
 		}
 		const prescription = await Prescription.create({
 			patientId: patient._id,
@@ -1077,7 +1082,9 @@ const addPrescription = async (req, res) => {
 			medications: medications,
 			date: date,
 		});
-		res.status(201).json(prescription);
+		const updatedPrescription = await prescription.populate("patientId");
+		console.log(updatedPrescription);
+		res.status(201).json(updatedPrescription);
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ message: "Error adding prescription." });
