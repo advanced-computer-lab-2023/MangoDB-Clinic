@@ -1429,6 +1429,20 @@ const payPescriptionWallet = async (req, res) => {
 	}
 };
 
+const requestFollowUp = async (req, res) => {
+	const doctorId = req.params.doctorId
+	const patientId = req.user.id
+	const date = req.body.date
+	
+	try {
+		const app = await Appointment.create({doctorId: doctorId, patientId: patientId, followUp: true, status: "requested", date: date})
+
+		res.status(200).json(app)
+	} catch (error) {
+		res.status(500).json({ error: error.message})
+	}
+}
+
 module.exports = {
 	getMyInfo,
 	getAllPatients,
@@ -1474,4 +1488,5 @@ module.exports = {
 	rescheduleAppointment,
 	payPescriptionWallet,
 	viewSelectedPrescription,
+	requestFollowUp
 };

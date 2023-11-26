@@ -1084,6 +1084,24 @@ const addPrescription = async (req, res) => {
 	}
 };
 
+const updatePrescription = async (req, res) => {
+	const id = req.params.id
+
+	try {
+		const prescription = await Prescription.findOneAndUpdate({_id: id}, req.body, { new: true })
+
+
+		if(!prescription) {
+			res.status(404).json({ message: "Prescription not found." });
+		}
+
+		res.status(200).json(prescription);
+
+	} catch (error) {
+		res.status(500).json({ message: error.message});
+	}
+}
+
 // Sprint 3 Requirement:
 // add/update dosage for each medicine added to the prescription
 const addOrUpdateDosage = async (req, res) => {
@@ -1158,4 +1176,5 @@ module.exports = {
 	addPrescription,
 	acceptFollowUpSession,
 	revokeFollowUpSession,
+	updatePrescription
 };

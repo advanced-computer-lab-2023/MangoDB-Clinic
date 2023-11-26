@@ -48,6 +48,7 @@ const {
 	rescheduleAppointment,
 	payPescriptionWallet,
 	viewSelectedPrescription,
+	requestFollowUp
 } = require("../controllers/patientController");
 
 router.get("/myInfo", getMyInfo);
@@ -177,5 +178,7 @@ router.delete("/cancelApp", protectPatient, cancelApp);
 router.patch("/rescheduleAppointment", protectPatient, rescheduleAppointment);
 
 router.post("/payPescriptionWallet", payPescriptionWallet);
+
+router.post("/requestFollowUp/:doctorId", protectPatient, requestFollowUp);
 
 module.exports = router;

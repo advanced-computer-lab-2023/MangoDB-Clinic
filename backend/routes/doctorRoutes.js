@@ -42,6 +42,7 @@ const {
 	addPrescription,
 	acceptFollowUpSession,
 	revokeFollowUpSession,
+	updatePrescription
 } = require("../controllers/doctorController");
 
 router.get("/myInfo", protectDoctor, getMyInfo);
@@ -144,5 +145,7 @@ router.get(
 );
 router.post("/addPrescription", protectDoctor, addPrescription);
 router.put("/addOrUpdateDosage", addOrUpdateDosage);
+
+router.patch("/updatePrescription/:id", protectDoctor, updatePrescription);
 
 module.exports = router;
