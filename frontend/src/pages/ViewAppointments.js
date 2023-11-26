@@ -13,6 +13,7 @@ import {
 	upcomingPatientApp,
 	filterPatientAppointments,
 	statusEnum,
+	patientReschuleApp,
 } from "../services/api";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -33,6 +34,8 @@ const ViewAppointments = () => {
 	const [to, setTo] = useState("");
 	const [upcoming, setUpcoming] = useState(false);
 	const [statEnum, setStatEnum] = useState(["All"]);
+	const [newDateTime, setNewDateTime] = useState('');
+	const [toReschdule, setToReschdule] = useState('');
 
 	function convertToISOFormat(dateString) {
 		// Split the input string into day, month, and year
@@ -68,7 +71,26 @@ const ViewAppointments = () => {
 				break;
 		}
 	};
+	// const handleChangee = (appointmentId) => (event) => {
+	// 	const newDate = event.target.value;
+	// 	console.log(appointmentId)
+	// 	patientReschuleApp(appointmentId,newDate).then(() => {
+	// 		window.location.reload();
+	// 	});
+		
+	// };
 
+	const handleChangee = (event) => {
+		const newDateTime = event.target.value;
+		setToReschdule(event.target.value);
+		setNewDateTime(newDateTime);
+	};
+	// const handleReschedule = (appointmentId) => {
+	// 	// console.log(appointment._id)
+	// 	patientReschuleApp(appointmentId, newDateTime).then(() => {
+	// 		window.location.reload();
+	// 	});
+	// };
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
@@ -259,6 +281,36 @@ const ViewAppointments = () => {
 
 								<h4>Status: {appointment.status}</h4>
 								<h5>Follow up: {appointment.followUp ? "Yes" : "No"}</h5>
+								{appointment.status === "confirmed" || appointment.status === "requested" ?
+										(
+											<div>			
+								<TextField
+								id='to'
+								name='to'
+								label='To'
+								variant='outlined'
+								value={toReschdule}
+								onChange={handleChangee}
+								size='small'
+								type='datetime-local'
+								InputLabelProps={{ shrink: true }}
+							/>
+							
+											<Button
+												variant='outlined'
+												size='small'
+												onClick={(e) => {
+													e.preventDefault()
+													patientReschuleApp(appointment._id, newDateTime).then(() => {
+															window.location.reload();})
+														.catch((err) => setError(err.message));
+												}}
+											>
+													Reschdule
+											</Button>
+										
+							</div>
+							): null}
 							</div>
 						</Grid>
 					))}

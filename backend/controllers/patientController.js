@@ -1359,21 +1359,28 @@ const cancelApp = async (req, res) => {
 //sprint3
 //reschedule appointment
 const rescheduleAppointment = async (req, res) => {
-	const { appointmentId, newDate } = req.body;
-	try {
-		const appointment = await Appointment.findById(appointmentId);
-		if (!appointment) {
-			throw new Error("Appointment not found");
+    const { appointmentId, newDate } = req.body; // Destructure appointmentId directly
+	console.log(req.body)
+    try {
+        const appointment = await Appointment.findById(appointmentId);
+        if (!appointment) {
+            return res.status(404).json({ error: "Appointment not found" });
+        }
+
+        appointment.date = newDate;
+		if(appointment.status=="confirmed")
+		{
+			appointment.status = "requested";
 		}
+        await appointment.save();
 
-		appointment.date = newDate;
-		await appointment.save();
-
-		res.status(200).json({ message: "Appointment rescheduled successfully" });
-	} catch (error) {
-		console.error(error);
-	}
+        return res.status(200).json({ message: "Appointment rescheduled successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
 };
+
 //sprint3
 //pay prescription from wallet
 const payPescriptionWallet = async (req, res) => {
