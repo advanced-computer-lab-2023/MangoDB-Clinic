@@ -131,8 +131,11 @@ export const scheduleFollowup = (
 
 export const subscribeToHealthPackage = (packageId) =>
 	API.put(
-		`/subscribe_to_health_package/`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+		`/subscribe_to_health_package/${packageId}`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
 	);
+
+export const viewAllDoctors = () =>
+	API.put(`/patient/get_all_doctors/`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export const cancelHealthPackage = () =>
 	API.put(`/patient/cancel_health_package/`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
