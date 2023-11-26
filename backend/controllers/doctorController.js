@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const Doctor = require("../models/doctorModel");
 const Patient = require("../models/patientModel.js");
 const Appointment = require("../models/appointmentModel");
+const Wallet = require('../models/walletModel.js');
 const Prescription = require("../models/prescriptionModel");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
@@ -1003,11 +1004,12 @@ const rescheduleApp = async (req, res) => {
 const cancelApp = async (req, res) => {
 	try {
 		const { appointmentId } = req.body;
-		const appointment = await Appointment.findByIdAndDelete(appointmentId);
+		const appointment = await Appointment.findById(appointmentId);
 		if (!appointment) {
 			res.status(404).json({ message: "Appointment does not exist" });
 		}
 
+		console.log(appointment);
 		// REFUND SHOULD BE DONE HERE (Stripe?)
 		const patient = await Patient.findById(appointment.patientId);
 		const doctor = await Doctor.findById(appointment.doctorId);
@@ -1039,6 +1041,9 @@ const cancelApp = async (req, res) => {
 
 		await patientWallet.save();
 		await doctorWallet.save();
+
+		appointment.status = 'cancelled';
+		await appointment.save();
 
 		res.status(200).json({ message: "Appointment cancelled successfully" });
 	} catch (error) {

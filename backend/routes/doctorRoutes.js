@@ -136,7 +136,7 @@ router.patch(
 );
 
 router.patch("/rescheduleApp", protectDoctor, rescheduleApp);
-router.delete("/cancelApp", protectDoctor, cancelApp);
+router.patch("/cancelApp", protectDoctor, cancelApp);
 
 router.get(
 	"/viewAllPrescriptionsByDoctor",

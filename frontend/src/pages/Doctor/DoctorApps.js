@@ -14,6 +14,7 @@ import {
 	filterAppointments,
 	scheduleFollowup,
 	statusEnum,
+	doctorCancelApp,
 } from "../../services/api";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -415,6 +416,25 @@ const DoctorApps = () => {
 												</Button>
 											</div>
 										)}
+
+									{ appointment.status !== 'cancelled' && (
+										<div>
+											<Button
+												variant='outlined'
+												size='small'
+												onClick={(e) => {
+													e.preventDefault()
+													doctorCancelApp({ appointmentId: appointment._id })
+														.then((result) => {
+															window.location.reload(); 
+														})
+														.catch((err) => setError(err.message));
+												}}
+											>
+													Cancel Appointment
+											</Button>
+										</div>
+									) }
 								</Item>
 								{/* </Link> */}
 							</div>

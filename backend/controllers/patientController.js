@@ -1307,7 +1307,7 @@ const upcoming = async (req, res) => {
 const cancelApp = async (req, res) => {
 	try {
 		const { appointmentId } = req.body;
-		const appointment = await Appointment.findByIdAndDelete(appointmentId);
+		const appointment = await Appointment.findById(appointmentId);
 		if (!appointment) {
 			res.status(404).json({ message: "Appointment does not exist" });
 		}
@@ -1346,6 +1346,9 @@ const cancelApp = async (req, res) => {
 			await patientWallet.save();
 			await doctorWallet.save();
 		}
+
+		appointment.status = 'cancelled';
+		await appointment.save();
 
 		res.status(200).json({ message: "Appointment cancelled successfully" });
 	} catch (error) {
