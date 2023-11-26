@@ -44,7 +44,7 @@ export const PatientListItems = (
 			</ListItemIcon>
 			<ListItemText primary='Packages' />
 		</ListItemButton>
-		<ListItemButton component={Link} to='/viewwallet'>
+		<ListItemButton component={Link} to='/view_wallet'>
 			<ListItemIcon>
 				<WalletIcon />
 			</ListItemIcon>

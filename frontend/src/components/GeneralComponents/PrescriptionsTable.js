@@ -14,23 +14,41 @@ import {
 	Card,
 	CardContent,
 	Typography,
+	Box,
 } from "@mui/material";
+import EditIcon from '@mui/icons-material/Edit';
 import MedicationIcon from "@mui/icons-material/Medication";
 import AddIcon from "@mui/icons-material/Add";
 
-const MedicationCard = ({ medication }) => (
-	<Card style={{ marginBottom: "8px" }}>
-		<CardContent>
-			<Typography variant='subtitle1'>{medication.medicationName}</Typography>
-			<Typography variant='body2' color='textSecondary'>
-				{medication.frequency}
-			</Typography>
+const MedicationCard = ({ medication, userType, onOpenFreqDialog }) => (
+	<Card style={{ display: "flex", marginBottom: "8px" }}>
+		<CardContent style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+			<Box>
+				<Typography variant='subtitle1'>{medication.medicationName}</Typography>
+				<Typography variant='body2' color='textSecondary'>
+					{medication.frequency}
+				</Typography>
+			</Box>
+			{userType === "doctor" && (
+				<Tooltip title="Edit Dosage">
+					<ListItemButton onClick={() => {onOpenFreqDialog();}}>
+						<EditIcon />
+					</ListItemButton>
+				</Tooltip>
+			)}
 		</CardContent>
 	</Card>
 );
 
-const PrescriptionsTable = ({ data, firstColumnName, userType, onOpenDialog }) => {
-	console.log('Data:', data); // Add this line for logging
+const PrescriptionsTable = ({ 
+	data, 
+	firstColumnName, 
+	userType, 
+	onOpenDialog, 
+	onOpenFreqDialog 
+}) => {
+
+	console.log('Data:', data);
 
     if (!Array.isArray(data)) {
         console.error('Invalid data format. Expected an array.');
@@ -55,10 +73,17 @@ const PrescriptionsTable = ({ data, firstColumnName, userType, onOpenDialog }) =
 								<TableCell component='th' scope='row'>
 								{prescription.patientId && prescription.patientId.firstName && prescription.patientId.lastName &&
                     				prescription.patientId.firstName + " " + prescription.patientId.lastName}
+								{prescription.doctorId && prescription.doctorId.firstName && prescription.doctorId.lastName &&
+                    				prescription.doctorId.firstName + " " + prescription.doctorId.lastName}
 								</TableCell>
 								<TableCell align='left'>
 									{prescription.medications.map((medication, index) => (
-										<MedicationCard key={index} medication={medication} />
+										<MedicationCard 
+											key={index} 
+											medication={medication} 
+											userType={userType}
+                      						onOpenFreqDialog={onOpenFreqDialog}
+										/>
 									))}
 								</TableCell>
 								<TableCell align='center'>

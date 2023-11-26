@@ -118,7 +118,7 @@ router.get("/view_subscribed_health_package/",protectPatient,viewSubscribedhealt
 
 router.put("/cancel_health_package/",protectPatient, cancelHealthPackage);
 
-router.get("/view_wallet/:id", viewWallet);
+router.get("/view_wallet",protectPatient, viewWallet);
 
 router.put(
 	"/add_documents/:id",

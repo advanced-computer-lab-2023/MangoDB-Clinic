@@ -20,6 +20,7 @@ import PrescriptionsTable from "../../components/GeneralComponents/Prescriptions
 
 const ViewPrescriptionsPatient = () => {
 
+	const firstColumnName = "Doctor";
 	const [prescriptions, setPrescriptions] = useState([]);
 	const [isPending, setIsPending] = useState(true);
 	const [error, setError] = useState(null);
@@ -151,7 +152,7 @@ const ViewPrescriptionsPatient = () => {
 							</Button>
 						</Tooltip>
 					</Grid>
-					<PrescriptionsTable data={prescriptions} />
+					<PrescriptionsTable data={prescriptions} firstColumnName={firstColumnName} />
 					{isPending && <div>Loading...</div>}
 					{error && <div>{error}</div>}
 				</Paper>

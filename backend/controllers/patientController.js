@@ -796,7 +796,7 @@ const cancelHealthPackage = async (req, res) => {
 };
 
 const viewWallet = async (req, res) => {
-	const id = req.params.id;
+	const id = req.user.id;
 	try {
 		const patient = await Patient.findById(id).populate("wallet");
 
@@ -812,7 +812,7 @@ const viewWallet = async (req, res) => {
 			res.status(404).json({ error: "Not Found" });
 		}
 	} catch (err) {
-		//res.status(500).json({ error: err.message });
+		res.status(500).json({ error: err.message });
 	}
 };
 

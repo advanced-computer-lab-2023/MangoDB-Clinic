@@ -15,8 +15,6 @@ import {
 } from "@mui/material";
 
 import PrescriptionsTable from "../../components/GeneralComponents/PrescriptionsTable";
-import { set } from "mongoose";
-
 const ViewPrescriptionsDoctor = () => {
 
     const firstColumnName = "Patient";
@@ -27,6 +25,7 @@ const ViewPrescriptionsDoctor = () => {
     const [date, setDate] = useState("");
     const [filled, setFilled] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
+    const [openFreqDialog, setOpenFreqDialog] = useState(false);
     // const [prescriptionAdded, setPrescriptionAdded] = useState(false);
 
     useEffect(() => {
@@ -103,11 +102,19 @@ const ViewPrescriptionsDoctor = () => {
 			setIsPending(false);
 			setError(err.message);
 		  }
-        // setPatientUsername("");
-        // setDate("");
-        // setFilled(false);
+        setPatientUsername("");
+        setDate("");
+        setFilled(false);
         alert("Prescription added successfully!");
     };
+
+    const handleEditDosage = async () => {
+        setOpenFreqDialog(false);
+        setIsPending(true);
+        setError(null);
+
+
+    }
 
     const handleCheckboxChange = (event) => {
 		setFilled(event.target.checked);
@@ -115,6 +122,10 @@ const ViewPrescriptionsDoctor = () => {
 
     const handleOpenDialog = () => {
         setOpenDialog(true);
+    };
+
+    const handleOpenFreqDialog = () => {
+        setOpenFreqDialog(true);
     };
 
     return ( 
@@ -131,6 +142,7 @@ const ViewPrescriptionsDoctor = () => {
                         data={prescriptions} 
                         userType="doctor"
                         onOpenDialog={handleOpenDialog}
+                        onOpenFreqDialog={handleOpenFreqDialog}
                     />
                     {isPending && <div>Loading...</div>}
                     {error && <div>{error}</div>}
@@ -184,6 +196,32 @@ const ViewPrescriptionsDoctor = () => {
 						</Card>
 					</DialogContent>
 				</Dialog>
+                <Dialog open={openFreqDialog} onClose={() => setOpenFreqDialog(false)}>
+                    <DialogContent>
+                        <Card variant='outlined'>
+                            <CardContent>
+                                <Typography variant='h6' component='div'>
+                                    Edit Dosage
+                                    {/* <Typography variant='body2' component='div'>
+                                        Select only one option
+                                    </Typography> */}
+                                </Typography>
+                                <TextField
+                                    id='frequency'
+                                    label='Frequency'
+                                    variant='outlined'
+                                    required
+                                    value={patientUsername}
+                                    onChange={(e) => setPatientUsername(e.target.value)}
+                                    style={{ margin: "1rem" }}
+                                />
+                                <Button variant='contained' onClick={() => {}}>
+                                    Edit
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    </DialogContent>
+                </Dialog>
             </Grid>
         </Grid>
     );
