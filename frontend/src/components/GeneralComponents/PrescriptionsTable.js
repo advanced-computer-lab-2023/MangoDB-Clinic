@@ -18,9 +18,9 @@ import {
 } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import MedicationIcon from "@mui/icons-material/Medication";
-import AddIcon from "@mui/icons-material/Add";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
-const MedicationCard = ({ medication, userType, onOpenFreqDialog }) => (
+const MedicationCard = ({prescription,  medication, userType, onOpenFreqDialog }) => (
 	<Card style={{ display: "flex", marginBottom: "8px" }}>
 		<CardContent style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
 			<Box>
@@ -31,7 +31,7 @@ const MedicationCard = ({ medication, userType, onOpenFreqDialog }) => (
 			</Box>
 			{userType === "doctor" && (
 				<Tooltip title="Edit Dosage">
-					<ListItemButton onClick={() => {onOpenFreqDialog();}}>
+					<ListItemButton onClick={() => {onOpenFreqDialog(prescription, medication);}}>
 						<EditIcon />
 					</ListItemButton>
 				</Tooltip>
@@ -60,10 +60,10 @@ const PrescriptionsTable = ({
 				<TableHead>
 					<TableRow>
 						<TableCell>{firstColumnName}</TableCell>
-						<TableCell align='center'>Medications & Frequency</TableCell>
+						<TableCell align='center'>Medications & Dosage</TableCell>
 						<TableCell align='center'>Date</TableCell>
 						<TableCell align='left'>Filled</TableCell>
-						<TableCell align='left'>Details</TableCell>
+						<TableCell align='left'>Edit</TableCell>
 					</TableRow>
 				</TableHead>
 				<TableBody>
@@ -80,11 +80,17 @@ const PrescriptionsTable = ({
 									{prescription.medications.map((medication, index) => (
 										<MedicationCard 
 											key={index} 
+											prescription={prescription}
 											medication={medication} 
 											userType={userType}
                       						onOpenFreqDialog={onOpenFreqDialog}
 										/>
 									))}
+									<Tooltip title="Add Medication">
+									<ListItemButton onClick={() => {}}>
+										<AddCircleOutlineIcon />
+									</ListItemButton>
+								</Tooltip>
 								</TableCell>
 								<TableCell align='center'>
 									{new Date(prescription.date).toLocaleDateString()}
@@ -106,10 +112,10 @@ const PrescriptionsTable = ({
 						))}
 					{userType === "doctor" && (
 						<TableRow>
-							<TableCell align="left" colSpan={5}>
+							<TableCell align="center" colSpan={5}>
 								<Tooltip title="Add Prescription">
 									<ListItemButton onClick={() => {onOpenDialog();}}>
-										<AddIcon />
+										<AddCircleOutlineIcon />
 									</ListItemButton>
 								</Tooltip>
 							</TableCell>

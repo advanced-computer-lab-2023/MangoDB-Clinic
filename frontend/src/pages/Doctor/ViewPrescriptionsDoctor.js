@@ -26,7 +26,9 @@ const ViewPrescriptionsDoctor = () => {
     const [filled, setFilled] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
     const [openFreqDialog, setOpenFreqDialog] = useState(false);
-    // const [prescriptionAdded, setPrescriptionAdded] = useState(false);
+    const [prescriptionToBeUpdated, setPrescriptionToBeUpdated] = useState("");
+    const [medicationToBeUpdated, setMedicationToBeUpdated] = useState("");
+    const [freqToBeUpdated, setFreqToBeUpdated] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -113,8 +115,54 @@ const ViewPrescriptionsDoctor = () => {
         setIsPending(true);
         setError(null);
 
+        try {
+            const { _id } = prescriptionToBeUpdated;
+            const frequency = freqToBeUpdated;
+            const medicationName = medicationToBeUpdated ? medicationToBeUpdated.medicationName : '';
 
-    }
+            if (!_id || !frequency) {
+                console.error("Invalid request parameters");
+                console.log("_id:", _id);
+                console.log("frequency:", frequency);
+                return;
+            }
+
+            const updatedPrescription = await fetch(`http://localhost:4000/doctor/addOrUpdateDosage`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    prescriptionId: _id,
+                    medicationName: medicationName,
+                    frequency: frequency,
+                }),
+            });
+
+            if (!updatedPrescription.ok) {
+                throw new Error("Could not update dosage");
+            }
+
+            const updatedPrescriptionData = await updatedPrescription.json();
+            console.log('Updated Prescription:', updatedPrescriptionData);
+
+            // Now update the state with the new prescription data
+            setPrescriptions((prevPrescriptions) =>
+                prevPrescriptions.map((prescription) =>
+                    prescription._id === updatedPrescriptionData.prescription._id
+                        ? updatedPrescriptionData.prescription
+                        : prescription
+                )
+            );
+            setIsPending(false);
+			setError(null);
+
+        } catch (err) {
+            setIsPending(false);
+            setError(err.message);
+        }
+        alert("Dosage Updated successfully!");
+    };
 
     const handleCheckboxChange = (event) => {
 		setFilled(event.target.checked);
@@ -124,7 +172,11 @@ const ViewPrescriptionsDoctor = () => {
         setOpenDialog(true);
     };
 
-    const handleOpenFreqDialog = () => {
+    const handleOpenFreqDialog = (prescription, medication) => {
+        console.log('Medication:', medication);
+        console.log('Prescription:', prescription);
+        setMedicationToBeUpdated(medication);
+        setPrescriptionToBeUpdated(prescription);
         setOpenFreqDialog(true);
     };
 
@@ -211,11 +263,11 @@ const ViewPrescriptionsDoctor = () => {
                                     label='Frequency'
                                     variant='outlined'
                                     required
-                                    value={patientUsername}
-                                    onChange={(e) => setPatientUsername(e.target.value)}
+                                    value={freqToBeUpdated}
+                                    onChange={(e) => setFreqToBeUpdated(e.target.value)}
                                     style={{ margin: "1rem" }}
                                 />
-                                <Button variant='contained' onClick={() => {}}>
+                                <Button variant='contained' onClick={handleEditDosage}>
                                     Edit
                                 </Button>
                             </CardContent>

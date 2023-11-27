@@ -1141,9 +1141,10 @@ const addOrUpdateDosage = async (req, res) => {
 				.json({ message: "Prescription or Medicine not found." });
 		}
 
+
 		res.status(200).json({
 			message: "Frequency updated successfully.",
-			prescription: updatedPrescription,
+			prescription: await updatedPrescription.populate("patientId"),
 		});
 	} catch (error) {
 		console.error(error);
