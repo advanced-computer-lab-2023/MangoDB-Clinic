@@ -48,7 +48,8 @@ const {
 	rescheduleAppointment,
 	payPescriptionWallet,
 	viewSelectedPrescription,
-	requestFollowUp
+	requestFollowUp,
+	downloadPrescription
 } = require("../controllers/patientController");
 
 router.get("/myInfo", getMyInfo);
@@ -118,9 +119,11 @@ router.get("/view_health_records/", protectPatient, viewHealthRecords);
 
 router.get("/view_health_packages", viewHealthPackages);
 
-router.get("/view_subscribed_health_package/",protectPatient,viewSubscribedhealthPackage);
+router.get("/view_subscribed_health_package/", protectPatient , viewSubscribedhealthPackage);
 
-router.put("/cancel_health_package/",protectPatient, cancelHealthPackage);
+router.put("/cancel_health_package/", protectPatient, cancelHealthPackage);
+
+router.get('/downloadPrescription/', protectPatient , downloadPrescription);
 
 router.get("/view_wallet",protectPatient, viewWallet);
 

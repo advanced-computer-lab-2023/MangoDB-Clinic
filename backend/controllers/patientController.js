@@ -9,6 +9,8 @@ const Wallet = require("../models/walletModel");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
 
 const port = process.env.PORT;
 const JWT_SECRET = "abc123";
@@ -748,20 +750,13 @@ const viewSubscribedhealthPackage = async (req, res) => {
 		if (!patient) {
 			res.status(200).json({ message: "Patient not found" });
 		} else {
-			const patientsPackage = patient.healthPackage;
-			if (patientsPackage) {
-				for (const familyMember of patient.family) {
-					if (familyMember.userId) {
-						const member = await Patient.findById(familyMember.userId);
-						if (member) {
-							patientsPackage += member.healthPackage;
-						}
-					}
-				}
-
+			if(patient.healthPackage.status === 'Subscribed'){
+				
+				const patientsPackage = patient.healthPackage.status + ": " + patient.healthPackage.name;
 				res.status(200).json(patientsPackage);
+			
 			} else {
-				res.status(200).json({ message: "Patient has no packages." });
+				res.status(200).json(patient.healthPackage.status + ": " + "Patient has no packages." );
 			}
 		}
 	} catch (error) {
@@ -775,21 +770,25 @@ const cancelHealthPackage = async (req, res) => {
 		const patient = req.user;
 
 		if (patient) {
-			if (!patient.healthPackage) {
+			if (!patient.healthPackage || patient.healthPackage.status !== 'Subscribed') {
 				return res
 					.status(400)
 					.json({ error: "You are not subscribed to a Health Package." });
 			}
 
-			// patient.healthPackage = null;
-			patient.healthPackage.status = "Cancelled";
+			patient.healthPackage.status = 'Cancelled';
+			patient.healthPackage.cancellationDate = new Date();
+			patient.healthPackage.renewalDate = null;
+			patient.healthPackage = null;
 
 			for (const familyMember of patient.family) {
 				if (familyMember.userId) {
 					const member = await Patient.findById(familyMember.userId);
 					if (member) {
-						// member.healthPackage = null;
-						member.healthPackage.status = "Cancelled";
+						member.healthPackage.status = 'Cancelled';
+						member.healthPackage.cancellationDate = new Date();
+						member.healthPackage.renewalDate = null;
+						member.healthPackage = null;
 						await member.save();
 					}
 				}
@@ -798,13 +797,40 @@ const cancelHealthPackage = async (req, res) => {
 			await patient.save();
 
 			res.status(200).json({
-				message: "Successfully canceled health package subscription.",
+				message: "Successfully cancelled health package subscription.",
 			});
 		}
 	} catch (err) {
 		res.status(200).json({ error: err.message });
 	}
 };
+
+const downloadPrescription = asyncHandler(async (req, res) => {
+	const patient = req.user;
+    const prescription = await Prescription.findById(req.params.id).populate('doctorId');
+
+    if (!prescription) {
+        res.status(404);
+        throw new Error('Prescription not found');
+    }
+
+    const doc = new PDFDocument;
+
+    doc.pipe(fs.createWriteStream('prescription.pdf'));
+
+    doc.text(`Prescription for patient: ${patient.firstName + " " + patient.lastName}`);
+    doc.text(`Prescribed by: ${prescription.doctorId.username}`);
+    doc.text(`Date: ${prescription.date}`);
+    doc.text('Medications:');
+
+    prescription.medications.forEach(medication => {
+        doc.text(`- ${medication.medicationName}, Frequency: ${medication.frequency}`);
+    });
+
+    doc.end();
+
+    res.download('prescription.pdf');
+});
 
 const viewWallet = async (req, res) => {
 	const id = req.user.id;
@@ -947,26 +973,35 @@ const linkFamilyMember = async (req, res) => {
 };
 
 const subscribeToHealthPackage = async (req, res) => {
-	const patientId = req.params.patientId;
+
 	const packageId = req.params.packageId;
 
 	try {
-		const patient = await Patient.findById(patientId);
+		const patient = req.user;
 
 		if (patient) {
-			if (patient.healthPackage) {
+			if (patient.healthPackage && patient.healthPackage.status === 'Subscribed') {
 				return res.status(400).json({
 					error:
 						"You are already subscribed to a health package. Cancel your subscription first",
 				});
 			}
 
+			const renewal = new Date();
+			renewal.setFullYear(renewal.getFullYear() + 1);
+
+			patient.healthPackage.status = 'Subscribed';
+			patient.healthPackage.cancellationDate = null;
+			patient.healthPackage.renewalDate = renewal;
 			patient.healthPackage = packageId;
 
 			for (const familyMember of patient.family) {
 				if (familyMember.userId) {
 					const member = await Patient.findById(familyMember.userId);
 					if (member) {
+						member.healthPackage.status = 'Subscribed';
+						member.healthPackage.cancellationDate = null;
+						member.healthPackage.renewalDate = renewal;
 						member.healthPackage = packageId;
 						await member.save();
 					}
@@ -1521,5 +1556,7 @@ module.exports = {
 	rescheduleAppointment,
 	payPescriptionWallet,
 	viewSelectedPrescription,
-	requestFollowUp
+	requestFollowUp,
+	downloadPrescription,
+	
 };
