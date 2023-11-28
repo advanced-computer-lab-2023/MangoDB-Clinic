@@ -68,9 +68,12 @@ function App() {
 				<Route path='/viewfammembers' element={<ViewFamilyMembers />} />
 				<Route path='/linkfammember' element={<LinkFamMember />} />
 				<Route path='/addhealthrecords' element={<AddHealthRecordsPatient />} />
-				<Route path='/viewPrescriptionsOfPatient' element={<ViewPrescriptionsPatient />} />
 				<Route
-					path='/prescriptiondetials/:prescriptionId'
+					path='/viewPrescriptionsOfPatient'
+					element={<ViewPrescriptionsPatient />}
+				/>
+				<Route
+					path='/prescriptiondetails/:id'
 					element={<PrescriptionDetials />}
 				/>
 				<Route path='/search-doctors' element={<DoctorSearch />} />
@@ -102,7 +105,10 @@ function App() {
 					path='/changePasswordDoctor'
 					element={<ChangePasswordDoctorPage />}
 				/>
-				<Route path='/viewPrescriptionsByDoctor' element={<ViewPrescriptionsDoctor />} />
+				<Route
+					path='/viewPrescriptionsByDoctor'
+					element={<ViewPrescriptionsDoctor />}
+				/>
 
 				{/* add the rest in the right place */}
 
@@ -123,8 +129,6 @@ function App() {
 					path='/viewemploymentcontract'
 					element={<ViewEmploymentContract />}
 				/>
-				
-				
 
 				{/* =====================Routes for the Doctor========================== */}
 				<Route path='/doctordashboard' element={<DoctorDashboard />} />

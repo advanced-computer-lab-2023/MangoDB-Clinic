@@ -196,18 +196,22 @@ const resetPassword = asyncHandler(async (req, res) => {
 // @route GET /patient/viewSelectedPrescription/:prescriptionId
 // @access Private
 const viewSelectedPrescription = asyncHandler(async (req, res) => {
-	const prescription = await Prescription.findById(
-		req.params.prescriptionId
-	).populate({
-		path: "doctorId",
-		select: "firstName lastName -_id -__t",
-	});
+	try {
+		const prescription = await Prescription.findById(
+			req.params.prescriptionId
+		).populate({
+			path: "doctorId",
+			select: "firstName lastName -_id -__t",
+		});
 
-	if (!prescription) {
-		res.status(400);
-		throw new Error("Prescription Not Found");
-	} else {
-		res.status(200).json(prescription);
+		if (!prescription) {
+			res.status(400);
+			throw new Error("Prescription Not Found");
+		} else {
+			res.status(200).json(prescription);
+		}
+	} catch (error) {
+		res.status(500).json({ message: `Error: ${error.message}` });
 	}
 });
 
@@ -1317,7 +1321,9 @@ const cancelApp = async (req, res) => {
 			// REFUND SHOULD BE DONE HERE (Stripe?)
 			const patient = await Patient.findById(appointment.patientId);
 			const doctor = await Doctor.findById(appointment.doctorId);
-			const patientWallet = await Wallet.findOne({ user: appointment.patientId });
+			const patientWallet = await Wallet.findOne({
+				user: appointment.patientId,
+			});
 			const doctorWallet = await Wallet.findOne({ user: appointment.doctorId });
 
 			const packageType = patient.healthPackage
@@ -1338,7 +1344,8 @@ const cancelApp = async (req, res) => {
 					doctorSessionDiscount = 0;
 			}
 
-			const amount = doctor.hourlyRate * 1.1 - doctor.hourlyRate * doctorSessionDiscount;
+			const amount =
+				doctor.hourlyRate * 1.1 - doctor.hourlyRate * doctorSessionDiscount;
 
 			patientWallet.balance += amount;
 			doctorWallet.balance -= amount;

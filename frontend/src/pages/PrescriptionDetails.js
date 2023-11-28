@@ -1,7 +1,19 @@
+import React from "react";
+
+import { HelmetProvider, Helmet } from "react-helmet-async";
+
+import PrescriptionDetails from "../components/PrescriptionDetails";
+
 export default function PrescriptionDetials() {
 	return (
-		<div>
-			<h2>Prescription Details</h2>
-		</div>
+		<>
+			<HelmetProvider>
+				<Helmet>
+					<title>Prescription Details | Patient</title>
+				</Helmet>
+			</HelmetProvider>
+
+			<PrescriptionDetails />
+		</>
 	);
 }

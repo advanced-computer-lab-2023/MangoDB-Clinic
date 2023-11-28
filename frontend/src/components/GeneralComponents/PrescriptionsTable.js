@@ -16,13 +16,24 @@ import {
 	Typography,
 	Box,
 } from "@mui/material";
-import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from "@mui/icons-material/Edit";
 import MedicationIcon from "@mui/icons-material/Medication";
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
-const MedicationCard = ({prescription,  medication, userType, onOpenFreqDialog }) => (
+const MedicationCard = ({
+	prescription,
+	medication,
+	userType,
+	onOpenFreqDialog,
+}) => (
 	<Card style={{ display: "flex", marginBottom: "8px" }}>
-		<CardContent style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+		<CardContent
+			style={{
+				display: "flex",
+				justifyContent: "space-between",
+				alignItems: "center",
+			}}
+		>
 			<Box>
 				<Typography variant='subtitle1'>{medication.medicationName}</Typography>
 				<Typography variant='body2' color='textSecondary'>
@@ -30,8 +41,12 @@ const MedicationCard = ({prescription,  medication, userType, onOpenFreqDialog }
 				</Typography>
 			</Box>
 			{userType === "doctor" && (
-				<Tooltip title="Edit Dosage">
-					<ListItemButton onClick={() => {onOpenFreqDialog(prescription, medication);}}>
+				<Tooltip title='Edit Dosage'>
+					<ListItemButton
+						onClick={() => {
+							onOpenFreqDialog(prescription, medication);
+						}}
+					>
 						<EditIcon />
 					</ListItemButton>
 				</Tooltip>
@@ -40,28 +55,27 @@ const MedicationCard = ({prescription,  medication, userType, onOpenFreqDialog }
 	</Card>
 );
 
-const PrescriptionsTable = ({ 
-	data, 
-	firstColumnName, 
-	userType, 
-	onOpenDialog, 
-	onOpenFreqDialog 
+const PrescriptionsTable = ({
+	data,
+	firstColumnName,
+	userType,
+	onOpenDialog,
+	onOpenFreqDialog,
 }) => {
+	console.log("Data:", data);
 
-	console.log('Data:', data);
-
-    if (!Array.isArray(data)) {
-        console.error('Invalid data format. Expected an array.');
-        return null;
-    }
+	if (!Array.isArray(data)) {
+		console.error("Invalid data format. Expected an array.");
+		return null;
+	}
 	return (
 		<TableContainer component={Paper} xs={8}>
 			<Table sx={{ minWidth: 650 }} aria-label='simple table'>
 				<TableHead>
 					<TableRow>
 						<TableCell>{firstColumnName}</TableCell>
-						<TableCell align='center'>Medications & Dosage</TableCell>
-						<TableCell align='center'>Date</TableCell>
+						<TableCell align='center'>Medications & Frequency</TableCell>
+						<TableCell align='center'>Date Issued</TableCell>
 						<TableCell align='left'>Filled</TableCell>
 						<TableCell align='left'>Edit</TableCell>
 					</TableRow>
@@ -71,34 +85,36 @@ const PrescriptionsTable = ({
 						data.map((prescription) => (
 							<TableRow key={prescription._id}>
 								<TableCell component='th' scope='row'>
-								{prescription.patientId && prescription.patientId.firstName && prescription.patientId.lastName &&
-                    				prescription.patientId.firstName + " " + prescription.patientId.lastName}
-								{prescription.doctorId && prescription.doctorId.firstName && prescription.doctorId.lastName &&
-                    				prescription.doctorId.firstName + " " + prescription.doctorId.lastName}
+									{prescription.patientId &&
+										prescription.patientId.firstName &&
+										prescription.patientId.lastName &&
+										prescription.patientId.firstName +
+											" " +
+											prescription.patientId.lastName}
 								</TableCell>
 								<TableCell align='left'>
 									{prescription.medications.map((medication, index) => (
-										<MedicationCard 
-											key={index} 
+										<MedicationCard
+											key={index}
 											prescription={prescription}
-											medication={medication} 
+											medication={medication}
 											userType={userType}
-                      						onOpenFreqDialog={onOpenFreqDialog}
+											onOpenFreqDialog={onOpenFreqDialog}
 										/>
 									))}
-									<Tooltip title="Add Medication">
-									<ListItemButton onClick={() => {}}>
-										<AddCircleOutlineIcon />
-									</ListItemButton>
-								</Tooltip>
+									<Tooltip title='Add Medication'>
+										<ListItemButton onClick={() => {}}>
+											<AddCircleOutlineIcon />
+										</ListItemButton>
+									</Tooltip>
 								</TableCell>
 								<TableCell align='center'>
 									{new Date(prescription.date).toLocaleDateString()}
 								</TableCell>
 								<TableCell align='left'>
-									{prescription.filled.toString()}
+									{prescription.filled ? "Yes" : "No"}
 								</TableCell>
-								<TableCell align='left'>
+								<TableCell align='center'>
 									<Tooltip title='View Details'>
 										<ListItemButton
 											component={RouterLink}
@@ -112,15 +128,19 @@ const PrescriptionsTable = ({
 						))}
 					{userType === "doctor" && (
 						<TableRow>
-							<TableCell align="center" colSpan={5}>
-								<Tooltip title="Add Prescription">
-									<ListItemButton onClick={() => {onOpenDialog();}}>
-										<AddCircleOutlineIcon />
+							<TableCell align='left' colSpan={5}>
+								<Tooltip title='Add Prescription'>
+									<ListItemButton
+										onClick={() => {
+											onOpenDialog();
+										}}
+									>
+										<AddIcon />
 									</ListItemButton>
 								</Tooltip>
 							</TableCell>
 						</TableRow>
-    				)}
+					)}
 				</TableBody>
 			</Table>
 		</TableContainer>
