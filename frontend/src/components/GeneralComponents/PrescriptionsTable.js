@@ -17,6 +17,7 @@ import {
 	Box,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
 import MedicationIcon from "@mui/icons-material/Medication";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
