@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -10,14 +11,13 @@ import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import Badge from "@mui/material/Badge";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import NotificationsIcon from "@mui/icons-material/Notifications";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 import { DoctorListItems } from "../../components/Doctor/DoctorListItems";
 
@@ -85,13 +85,18 @@ const Drawer = styled(MuiDrawer, {
 	},
 }));
 
-// TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function DoctorDashboard() {
+	const navigate = useNavigate();
 	const [open, setOpen] = React.useState(true);
 	const toggleDrawer = () => {
 		setOpen(!open);
+	};
+
+	const handleLogout = () => {
+		localStorage.clear();
+		navigate("/");
 	};
 
 	return (
@@ -126,9 +131,7 @@ export default function DoctorDashboard() {
 							Doctor Dashboard
 						</Typography>
 						<IconButton color='inherit'>
-							<Badge badgeContent={4} color='secondary'>
-								<NotificationsIcon />
-							</Badge>
+							<LogoutIcon onClick={handleLogout} />
 						</IconButton>
 					</Toolbar>
 				</AppBar>

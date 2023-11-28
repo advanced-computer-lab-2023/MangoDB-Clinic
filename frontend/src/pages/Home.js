@@ -1,30 +1,64 @@
 import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
+import Typography from "@mui/material/Typography";
 
 const Home = () => {
 	const navigate = useNavigate();
 
 	return (
-		<div className='home'>
-			<h2>Home</h2>
-			<p>Welcome to the Home Page</p>
-			<button onClick={() => navigate("/")}>Home</button>
-			<button onClick={() => navigate("/patientform")}>
-				Patient Registration
-			</button>
-			<button onClick={() => navigate("/login")}>Login</button>
-			<button onClick={() => navigate("/doctorform")}>
-				Doctor Registration
-			</button>
-			<button onClick={() => navigate("/patientdashboard")}>
-				Patient Dashboard
-			</button>
-			<button onClick={() => navigate("/doctordashboard")}>
-				Doctor Dashboard
-			</button>
+		<div className='home-container'>
+			<Typography variant='h1'>El7a2ni ⛑️</Typography>
+			<Typography variant='h3'>Your Health, Our Priority</Typography>
 
-			{/* <Button component={Link} to="/patientform" variant="contained" color="primary">Patient Registration</Button>
-            <Button component={Link} to="/doctorsTable" variant="contained" color="primary">Doctors Table</Button>
-            <Button component={Link} to="/patientdashboard" variant="contained" color="primary">Patient Dashboard</Button> */}
+			<div style={{ marginTop: "20px" }}>
+				<Button
+					variant='contained'
+					onClick={() => navigate("/patientform")}
+					style={{ margin: "10px" }}
+				>
+					Patient Registration
+				</Button>
+				{localStorage.getItem("token") ? (
+					<></>
+				) : (
+					<Button
+						variant='contained'
+						onClick={() => navigate("/login")}
+						style={{ margin: "10px" }}
+					>
+						Login
+					</Button>
+				)}
+				<Button
+					variant='contained'
+					onClick={() => navigate("/doctorform")}
+					style={{ margin: "10px" }}
+				>
+					Doctor Registration
+				</Button>
+
+				{localStorage.getItem("token") ? (
+					<>
+						<Button
+							variant='contained'
+							style={{ margin: "10px" }}
+							onClick={() => navigate("/patientdashboard")}
+						>
+							Patient Dashboard
+						</Button>
+
+						<Button
+							variant='contained'
+							style={{ margin: "10px" }}
+							onClick={() => navigate("/doctordashboard")}
+						>
+							Doctor Dashboard
+						</Button>
+					</>
+				) : (
+					<></>
+				)}
+			</div>
 		</div>
 	);
 };

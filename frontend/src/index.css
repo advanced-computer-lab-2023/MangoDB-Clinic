@@ -103,3 +103,26 @@
 }
 
 /* ------------------------------------------------------------------------------------------------ */
+
+.home-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	background: linear-gradient(45deg, #234fd5, #4897f9, #234fd5, #4897f9);
+	background-size: 400% 400%;
+	animation: gradientAnimation 8s ease infinite;
+}
+
+@keyframes gradientAnimation {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
