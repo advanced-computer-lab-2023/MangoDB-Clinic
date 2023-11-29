@@ -45,12 +45,15 @@ import UserManagementPage from "./pages/Admin/UserManagementPage";
 import HealthPackagesPage from "./pages/Admin/HealthPackagesPage";
 import AddPackagePage from "./pages/Admin/AddPackagePage";
 import ChangePasswordPage from "./pages/Admin/ChangePasswordPage";
+import RemoveAdminPage from "./pages/Admin/RemoveAdminPage";
 
 import Success from "./pages/Success";
 import Cancel from "./pages/Cancel";
 import SuccessfulPackagePayment from "./pages/successfulPackagePayment";
 import CancelHealthPackageSubscription from "./pages/cancelHealthPackageSubscription";
 import ViewHealthPackageSubscription from "./pages/viewHealthPackageSubscription";
+import RemovePatientPage from "./pages/Admin/RemovePatientPage";
+import RemoveDoctorPage from "./pages/Admin/RemoveDoctorPage";
 
 function App() {
 	return (
@@ -177,6 +180,10 @@ function App() {
 				/>
 
 				<Route path='/admin/add-admin' element={<AddAdminPage />} />
+				<Route path='/admin/remove-admin' element={<RemoveAdminPage />} />
+				<Route path='/admin/remove-patient' element={<RemovePatientPage />} />
+				<Route path='/admin/remove-doctor' element={<RemoveDoctorPage />} />
+
 				<Route
 					path='/admin/requested-doctors'
 					element={<RequestedDoctorsPage />}

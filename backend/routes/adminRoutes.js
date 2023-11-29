@@ -40,7 +40,7 @@ router.get("/get-doctors", protectAdmin, getDoctors);
 router.get("/get-patients", protectAdmin, getPatients);
 
 router.post("/login", loginAdmin);
-router.post("/create-admin", createAdmin);
+router.post("/create-admin", protectAdmin, createAdmin);
 router.post("/add-packages", protectAdmin, addPackages);
 router.post("/request-otp", sendOTP);
 router.post("/verify-otp", verifyOTP);

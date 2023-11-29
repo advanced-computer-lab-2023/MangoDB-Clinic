@@ -37,27 +37,21 @@ const Home = () => {
 					Doctor Registration
 				</Button>
 
-				{localStorage.getItem("token") ? (
-					<>
-						<Button
-							variant='contained'
-							style={{ margin: "10px" }}
-							onClick={() => navigate("/patientdashboard")}
-						>
-							Patient Dashboard
-						</Button>
+				<Button
+					variant='contained'
+					style={{ margin: "10px" }}
+					onClick={() => navigate("/patientdashboard")}
+				>
+					Patient Dashboard
+				</Button>
 
-						<Button
-							variant='contained'
-							style={{ margin: "10px" }}
-							onClick={() => navigate("/doctordashboard")}
-						>
-							Doctor Dashboard
-						</Button>
-					</>
-				) : (
-					<></>
-				)}
+				<Button
+					variant='contained'
+					style={{ margin: "10px" }}
+					onClick={() => navigate("/doctordashboard")}
+				>
+					Doctor Dashboard
+				</Button>
 			</div>
 		</div>
 	);
