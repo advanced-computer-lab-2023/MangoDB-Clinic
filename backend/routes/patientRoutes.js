@@ -180,7 +180,7 @@ router.delete("/cancelApp", protectPatient, cancelApp);
 
 router.patch("/rescheduleAppointment", protectPatient, rescheduleAppointment);
 
-router.post("/payPescriptionWallet", payPescriptionWallet);
+router.post("/payPescriptionWallet/:totalPrice", protectPatient,payPescriptionWallet);
 
 router.post("/requestFollowUp/:doctorId", protectPatient, requestFollowUp);
 

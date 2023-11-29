@@ -158,7 +158,7 @@ export const patientReschuleApp = (appointmentId, newDate) =>
 	API.patch(`patient/rescheduleAppointment`, {appointmentId, newDate}, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export const patientPayPrescription = (totalPirce) =>
-API.delete(`patient/payPescriptionWallet`, totalPirce, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });	
+API.post(`patient/payPescriptionWallet ${totalPirce}`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });	
 
 const API2 = axios.create({
 	baseURL: `http://localhost:${port}`,

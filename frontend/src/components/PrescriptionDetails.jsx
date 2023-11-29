@@ -7,6 +7,7 @@ import { Typography, Card, CardContent, Button } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import Spinner from "./GeneralComponents/Spinner";
+import { checkout2, patientPayPrescription } from "../services/api";
 
 const defaultTheme = createTheme();
 
@@ -54,6 +55,63 @@ export default function PrescriptionDetails() {
 	const handleGoBack = () => {
 		navigate(-1);
 	};
+	const handleWallet = async() => {
+		try {
+			let totalPrice=50;
+			// Call your backend API endpoint for wallet payment
+			const response = await axios.post(
+				`http://localhost:4000/patient/payPescriptionWallet/${totalPrice}`,
+				null,
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your actual token
+					},
+				}
+			);
+
+
+			// Check if the request was successful (status code 2xx)
+			if (response.status === 200) {
+				const { success, message } = response.data;
+				console.log("Wallet Payment:", response.data);
+
+				if (success) {
+					// Handle success as needed
+					alert(message);
+				} else {
+					alert("Insufficient funds in the wallet");
+				}
+			} else {
+				console.error(
+					"Failed to process wallet payment. Status:",
+					response.status
+				);
+				// Log the full response for debugging purposes
+				console.error("Full response:", response);
+
+				// Handle error as needed
+			}
+		} catch (error) {
+			// Log the details of the AxiosError
+			console.error("Error during wallet payment:", error);
+			if (error.response) {
+				// The request was made and the server responded with a status code
+				// that falls out of the range of 2xx
+				console.error("Server responded with status:", error.response.status);
+				console.error("Response data:", error.response.data);
+			} else if (error.request) {
+				// The request was made but no response was received
+				console.error("No response received");
+			} else {
+				// Something happened in setting up the request that triggered an Error
+				console.error("Error message:", error.message);
+			}
+			// Handle error as needed
+		}
+	};
+	const handleCredit= () => {
+		navigate(-1);
+	};
 
 	return (
 		<>
@@ -98,6 +156,12 @@ export default function PrescriptionDetails() {
 									<Typography variant='body1'>
 										Filled: {data.filled ? "Yes" : "No"}
 									</Typography>
+									<Button variant='outlined' onClick={handleWallet}>
+										Pay using wallet
+									</Button>
+									<Button variant='outlined' onClick={handleGoBack}>
+										Pay using credit card
+									</Button>
 								</CardContent>
 							</Card>
 							<div
