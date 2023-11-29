@@ -82,7 +82,7 @@ const PrescriptionsTable = ({
 							<TableCell align='center'>Medications & Frequency</TableCell>
 							<TableCell align='center'>Date Issued</TableCell>
 							<TableCell align='left'>Filled</TableCell>
-							<TableCell align='left'>Edit</TableCell>
+							<TableCell align='left'>{userType === "doctor" ? "Edit" : "Detials"}</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -96,6 +96,12 @@ const PrescriptionsTable = ({
 											prescription.patientId.firstName +
 												" " +
 												prescription.patientId.lastName}
+										{prescription.doctorId &&
+											prescription.doctorId.firstName &&
+											prescription.doctorId.lastName &&
+											prescription.doctorId.firstName +
+												" " +
+												prescription.doctorId.lastName}
 									</TableCell>
 									<TableCell align='left'>
 										{prescription.medications.map((medication, index) => (
@@ -107,11 +113,13 @@ const PrescriptionsTable = ({
 												onOpenFreqDialog={onOpenFreqDialog}
 											/>
 										))}
-										<Tooltip title='Add Medication'>
-											<ListItemButton onClick={() => {}}>
-												<AddCircleOutlineIcon />
-											</ListItemButton>
-										</Tooltip>
+										{userType === "doctor" && (
+											<Tooltip title='Add Medication'>
+												<ListItemButton onClick={() => {}}>
+													<AddCircleOutlineIcon />
+												</ListItemButton>
+											</Tooltip>
+										)}
 									</TableCell>
 									<TableCell align='center'>
 										{new Date(prescription.date).toLocaleDateString()}

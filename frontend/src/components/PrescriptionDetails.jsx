@@ -92,7 +92,7 @@ export default function PrescriptionDetails() {
 									</Typography>
 
 									<Typography variant='body1'>
-										Date Issued: {data.date}
+										Date Issued: {new Date(data.date).toLocaleDateString()}
 									</Typography>
 
 									<Typography variant='body1'>

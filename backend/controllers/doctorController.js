@@ -899,7 +899,7 @@ const viewEmploymentContract = async (req, res) => {
 
 const addHealthRecord = async (req, res) => {
 	try {
-		const patientId = req.params.id;
+		const patientId = req.user.id;
 		const patient = await Patient.findOne({ _id: patientId });
 
 		if (!patient) {

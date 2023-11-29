@@ -127,7 +127,7 @@ router.post("/followUp/:id", followUpDoc);
 router.get("/getMyAppointments", protectDoctor, getMyAppointments);
 router.get("/getEmploymentContract", protectDoctor, viewEmploymentContract);
 router.patch("/addSlots", protectDoctor, addNewSlots);
-router.patch("/addHealthRecord/:id", protectDoctor, addHealthRecord);
+router.patch("/addHealthRecord", protectDoctor, addHealthRecord);
 router.patch(
 	// "/scheduleFollowup/:doctorId/:patientId/:appointmentId/:followUpDate",
 	"/scheduleFollowup/:patientId/:appointmentId/:followUpDate",
