@@ -983,13 +983,27 @@ const followUp = async (req, res) => {
 // reschedule an appointment for a patient
 const rescheduleApp = async (req, res) => {
 	try {
-		const { appointmentId, newDate } = req.body;
+		const { appointmentId, newDate, newTime } = req.body;
 		const appointment = await Appointment.findById(appointmentId);
 		if (!appointment) {
 			res.status(404).json({ message: "Appointment does not exist." });
 		}
 
-		appointment.date = newDate;
+		console.log(newDate);
+		console.log(newTime);
+
+		// Extract time part from the existing appointment date
+		// const timeAfterT = new Date(appointment.date).toISOString();
+
+		// Create a new Date object with the combined date and time
+		// const finalDate = new Date(`${newDate}${timeAfterT.substring(timeAfterT.indexOf('T'))}`);
+		const finalDate = new Date(`${newDate}T${newTime}`).toISOString();
+
+		console.log("finalDate: " + finalDate);
+
+		appointment.date = finalDate;
+
+		console.log(appointment);
 
 		await appointment.save();
 

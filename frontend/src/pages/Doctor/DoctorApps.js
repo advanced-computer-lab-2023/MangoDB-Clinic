@@ -15,7 +15,9 @@ import {
 	scheduleFollowup,
 	statusEnum,
 	doctorCancelApp,
+	doctorRescheduleApp,
 } from "../../services/api";
+import Reschedule from "../../components/Doctor/Reschedule";
 
 const Item = styled(Paper)(({ theme }) => ({
 	backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -33,6 +35,7 @@ const DoctorApps = () => {
 	const [from, setFrom] = useState("");
 	const [to, setTo] = useState("");
 	const [upcoming, setUpcoming] = useState(false);
+	const [reschedule, setReschedule] = useState("");
 	const [reload, setReload] = useState(false);
 
 	const [statEnum, setStatEnum] = useState(["All"]);
@@ -159,6 +162,14 @@ const DoctorApps = () => {
 				value == "" ? setTo("") : setTo(value);
 				break;
 		}
+	};
+
+	const handleReload = () => {
+		setReload(!reload);
+	};
+	
+	const handleError = (errorMessage) => {
+		setError(errorMessage);
 	};
 
 	const handleSubmit = (e) => {
@@ -431,22 +442,52 @@ const DoctorApps = () => {
 										)}
 
 									{ appointment.status !== 'cancelled' && (
-										<div>
-											<Button
-												variant='outlined'
-												size='small'
-												onClick={(e) => {
-													e.preventDefault()
-													doctorCancelApp({ appointmentId: appointment._id })
-														.then((result) => {
-															setReload(!reload);
-														})
-														.catch((err) => setError(err.message));
-												}}
-											>
-													Cancel Appointment
-											</Button>
-										</div>
+										<>
+											{/* <div style={{ "margin": "10px 0" }}>
+												<TextField
+													id={`reschedule-${appointment._id}`}
+													name={`reschedule-${appointment._id}`}
+													label='reschedule'
+													type='date'
+													size="small"
+													value={ reschedule }
+													onChange={ (e) => setReschedule(e.target.value)}
+													InputLabelProps={{ shrink: true }}
+												/>
+												<Button
+													disabled={ !reschedule }
+													variant='outlined'
+													size='large'
+													onClick={(e) => {
+														e.preventDefault();
+														doctorRescheduleApp({ appointmentId: appointment._id, newDate: reschedule })
+															.then((result) => {
+																setReload(!reload);
+															})
+															.catch((err) => setError(err.message));
+													}}
+												>
+													Schedule Follow-up
+												</Button>
+											</div> */}
+											<Reschedule appointment={appointment} onReload={ handleReload } onError={ handleError } />
+											<div>
+												<Button
+													variant='outlined'
+													size='small'
+													onClick={(e) => {
+														e.preventDefault()
+														doctorCancelApp({ appointmentId: appointment._id })
+															.then((result) => {
+																setReload(!reload);
+															})
+															.catch((err) => setError(err.message));
+													}}
+												>
+														Cancel Appointment
+												</Button>
+											</div>
+										</>
 									) }
 								</Item>
 								{/* </Link> */}
