@@ -59,7 +59,7 @@ const [time, setTime] = useState(localTime);
                 size='large'
                 onClick={ handleReschedule }
             >
-                Schedule Follow-up
+                Reschedule
             </Button>
         </div>
     );

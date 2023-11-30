@@ -1351,8 +1351,8 @@ const cancelApp = async (req, res) => {
 			res.status(404).json({ message: "Appointment does not exist" });
 		}
 
-		currDate = Date.now().toISOString();
-		if (Math.abs(currDate - appointmentDate) / 36e5 > 24) {
+		const currDate = Date.now().toISOString();
+		if (Math.abs(currDate - appointment.date) / 36e5 > 24) {
 			// REFUND SHOULD BE DONE HERE (Stripe?)
 			const patient = await Patient.findById(appointment.patientId);
 			const doctor = await Doctor.findById(appointment.doctorId);
@@ -1384,9 +1384,19 @@ const cancelApp = async (req, res) => {
 
 			patientWallet.balance += amount;
 			doctorWallet.balance -= amount;
+			
+			if (!doctor.notifications) {
+				doctor.notifications = [];
+			}
+
+			doctor.notifications.push({
+				title: "Appointment Cancelled",
+				body: `Kindly note that ${patient.firstName} ${patient.lastName} cancelled his/her appointment which was scheduled on ${new Date(appointment.date).toLocaleDateString()} at ${new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+			});
 
 			await patientWallet.save();
 			await doctorWallet.save();
+			await doctor.save();
 		}
 
 		appointment.status = 'cancelled';

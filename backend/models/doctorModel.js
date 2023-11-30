@@ -60,7 +60,19 @@ const doctorSchema = mongoose.Schema({
       type: String,
       required: false 
     }
-  }
+  },
+  notifications: [
+    {
+      title: {
+          type: String,
+          required: true
+      },
+      body: {
+        type: String,
+        required: true
+      },
+    }
+  ],
 },
 {
   timestamps: true

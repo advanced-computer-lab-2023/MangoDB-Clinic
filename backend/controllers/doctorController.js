@@ -989,6 +989,9 @@ const rescheduleApp = async (req, res) => {
 			res.status(404).json({ message: "Appointment does not exist." });
 		}
 
+		const patient = await Patient.findById(appointment.patientId);
+		const doctor = await Doctor.findById(appointment.doctorId);
+
 		console.log(newDate);
 		console.log(newTime);
 
@@ -1001,11 +1004,21 @@ const rescheduleApp = async (req, res) => {
 
 		console.log("finalDate: " + finalDate);
 
+		
+		// console.log(appointment);
+		
+		if (!patient.notifications) {
+			patient.notifications = [];
+		}
+		
+		patient.notifications.push({
+			title: "Appointment Rescheduled",
+			body: `Kindly note that ${doctor.firstName} ${doctor.lastName} rescheduled your appointment which was scheduled on ${new Date(appointment.date).toLocaleDateString()} at ${new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} to ${new Date(newDate).toLocaleDateString('en-GB')} at ${newTime}`
+		});
+		
 		appointment.date = finalDate;
-
-		console.log(appointment);
-
 		await appointment.save();
+		await patient.save();
 
 		res.status(200).json({ message: "Appointment rescheduled successfully." });
 	} catch (error) {
@@ -1053,11 +1066,21 @@ const cancelApp = async (req, res) => {
 		patientWallet.balance += amount;
 		doctorWallet.balance -= amount;
 
+		if (!patient.notifications) {
+			patient.notifications = [];
+		}
+
+		patient.notifications.push({
+			title: "Appointment Cancelled",
+			body: `Kindly note that ${doctor.firstName} ${doctor.lastName} cancelled your appointment which was scheduled on ${new Date(appointment.date).toLocaleDateString()} at ${new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+		});
+
 		await patientWallet.save();
 		await doctorWallet.save();
 
 		appointment.status = 'cancelled';
 		await appointment.save();
+		await patient.save();
 
 		res.status(200).json({ message: "Appointment cancelled successfully" });
 	} catch (error) {

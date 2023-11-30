@@ -88,6 +88,18 @@ const patientSchema = mongoose.Schema(
         },
       ],
     },
+    notifications: [
+      {
+        title: {
+          	type: String,
+            required: true
+        },
+        body: {
+          type: String,
+          required: true
+        },
+      }
+    ],
   },
   {
     timestamps: true,
