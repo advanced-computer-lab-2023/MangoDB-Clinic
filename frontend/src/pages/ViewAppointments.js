@@ -14,6 +14,7 @@ import {
 	filterPatientAppointments,
 	statusEnum,
 	patientReschuleApp,
+	patientCancelApp,
 } from "../services/api";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -289,7 +290,7 @@ const ViewAppointments = () => {
 								name='to'
 								label='To'
 								variant='outlined'
-								value={toReschdule}
+								// value={toReschdule}
 								onChange={handleChangee}
 								size='small'
 								type='datetime-local'
@@ -310,6 +311,24 @@ const ViewAppointments = () => {
 											</Button>
 										
 							</div>
+							): null}
+							{appointment.status !== "cancelled" ?
+										(
+											<div>
+											<Button
+												variant='outlined'
+												size='small'
+												onClick={(e) => {
+													e.preventDefault()
+													patientCancelApp({ appointmentId: appointment._id })
+													.then(() => {
+														window.location.reload();})
+													.catch((err) => setError(err.message));
+											}}
+											>
+													Cancel Appointment
+											</Button>
+										</div>
 							): null}
 							</div>
 						</Grid>

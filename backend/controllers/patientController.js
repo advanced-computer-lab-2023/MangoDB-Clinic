@@ -1351,7 +1351,8 @@ const cancelApp = async (req, res) => {
 			res.status(404).json({ message: "Appointment does not exist" });
 		}
 
-		const currDate = Date.now().toISOString();
+		const currDate = new Date(Date.now()).toISOString();
+
 		if (Math.abs(currDate - appointment.date) / 36e5 > 24) {
 			// REFUND SHOULD BE DONE HERE (Stripe?)
 			const patient = await Patient.findById(appointment.patientId);

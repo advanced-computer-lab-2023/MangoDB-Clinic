@@ -152,7 +152,7 @@ export const doctorCancelApp = (appointment) =>
 	API.patch(`doctor/cancelApp`, appointment, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export const patientCancelApp = (appointment) =>
-	API.delete(`patient/cancelApp`, appointment, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+	API.patch(`patient/cancelApp`, appointment, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export const patientReschuleApp = (appointmentId, newDate) =>
 	API.patch(`patient/rescheduleAppointment`, {appointmentId, newDate}, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });

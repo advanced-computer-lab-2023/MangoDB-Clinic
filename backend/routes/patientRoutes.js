@@ -176,7 +176,7 @@ router.post("/filterapp",protectPatient, filterStatus);
 
 router.post("/payFromWallet/:appointmentId", payFromWallet);
 
-router.delete("/cancelApp", protectPatient, cancelApp);
+router.patch("/cancelApp", protectPatient, cancelApp);
 
 router.patch("/rescheduleAppointment", protectPatient, rescheduleAppointment);
 
