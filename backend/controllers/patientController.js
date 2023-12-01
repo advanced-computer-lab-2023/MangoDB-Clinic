@@ -1430,7 +1430,7 @@ const payPescriptionWallet = async (req, res) => {
 	// let id="654c96df23805668bf47a67d";
 	 const patient = await Patient.findById(req.user._id);
 	// const patient = await Patient.findById(id);
-	const { totalPirce } = req.params;
+	const { totalPrice } = req.params;
 
 	const packageType = patient.healthPackage ? patient.healthPackage.name : null;
 
@@ -1467,11 +1467,13 @@ const payPescriptionWallet = async (req, res) => {
 			Discount = 0;
 	}
 
-	const paymentAmount = totalPirce - totalPirce * Discount;
+	const paymentAmount = totalPrice - totalPrice * Discount;
 	console.log(patient)
 	try {
-		const wallet = await Wallet.findOne({user:patient._id});
-
+		// const wallet = await Wallet.findOne({user:patient._id});
+		
+		const wallet = await Wallet.findOne({ user: patient._id.toHexString()}) ;
+		
 
 		if (!wallet) {
 			throw new Error("Wallet not found");

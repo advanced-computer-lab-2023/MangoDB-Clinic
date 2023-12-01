@@ -108,8 +108,8 @@ export const checkout = (id, items) =>
 export const checkout1 = (id, items) =>
 	API.post(`/payments/create-checkout-session-packages/${id}`, { items });
 //payment sprint3
-export const checkout2 = (id, totalPirce) =>
-API.post(`/payments/create-checkout-session/${id}`, { totalPirce });
+export const checkout2 = (id, items) =>
+API.post(`/payments/create-checkout-session-daaaaaaa/${id}`, { items });
 
 export const wallet = (appointmentId) =>
 	API.post(`/patient/payFromWallet/${appointmentId}`);

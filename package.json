@@ -33,7 +33,7 @@
 		"pdfkit": "^0.14.0",
 		"shortid": "^2.2.16",
 		"stream-browserify": "^3.0.0",
-		"stripe": "^14.4.0",
+		"stripe": "^14.7.0",
 		"util": "^0.12.5",
 		"webpack": "^5.89.0"
 	},
