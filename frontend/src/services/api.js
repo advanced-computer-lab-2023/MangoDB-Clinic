@@ -108,8 +108,8 @@ export const checkout = (id, items) =>
 export const checkout1 = (id, items) =>
 	API.post(`/payments/create-checkout-session-packages/${id}`, { items });
 //payment sprint3
-export const checkout2 = (id, totalPirce) =>
-API.post(`/payments/create-checkout-session/${id}`, { totalPirce });
+export const checkout2 = (id, items) =>
+API.post(`/payments/create-checkout-session-daaaaaaa/${id}`, { items });
 
 export const wallet = (appointmentId) =>
 	API.post(`/patient/payFromWallet/${appointmentId}`);
@@ -158,7 +158,7 @@ export const patientReschuleApp = (appointmentId, newDate) =>
 	API.patch(`patient/rescheduleAppointment`, {appointmentId, newDate}, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export const patientPayPrescription = (totalPirce) =>
-API.delete(`patient/payPescriptionWallet`, totalPirce, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });	
+API.post(`patient/payPescriptionWallet ${totalPirce}`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });	
 
 const API2 = axios.create({
 	baseURL: `http://localhost:${port}`,
