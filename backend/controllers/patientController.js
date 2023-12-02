@@ -1581,7 +1581,7 @@ new appointment  at ${new Date(appointment.date).toLocaleTimeString([], { hour: 
 			from: "omarelzaher93@gmail.com",
 			to: `dina.mamdouh.131@gmail.com, ${doctor.email}`,//send it lel dr wel patient 
 			subject: "[NO REPLY] Appointment Rescheduled",
-			text: `Kindly note that ${patient.firstName} ${patient.lastName} cancelled his/her appointment which was scheduled on ${new Date(appointment.date).toLocaleDateString()} at ${new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+			text: `Kindly note that ${patient.firstName} ${patient.lastName} rescheduled his/her appointment to ${new Date(appointment.date).toLocaleDateString()} at ${new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
 
 		};
 	
