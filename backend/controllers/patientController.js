@@ -1450,6 +1450,35 @@ const rescheduleAppointment = async (req, res) => {
 		}
         await appointment.save();
 
+		const doctorId = appointment.doctorId
+		const doctor = Doctor.findById(doctorId);
+		
+		const transporter = nodemailer.createTransport({
+			service: "Gmail",
+			auth: {
+				user: "omarelzaher93@gmail.com",
+				pass: "vtzilhuubkdtphww",
+			},
+		});
+	
+		const mailOptions = {
+			from: "omarelzaher93@gmail.com",
+			to: "dina.mamdouh.131@gmail.com",
+			subject: "[NO REPLY] Your Password Reset Request",
+			html: `<h1>You have requested to reset your password.<h1>
+					<p>If you did not request to reset your password, you can safely disregard this message.<p>
+					<p>We wish you a fruitful experience using El7a2ny!<p>
+					<p>This Is An Automated Message, Please Do Not Reply.<p>`,
+		};
+	
+		transporter.sendMail(mailOptions, (error, info) => {
+			if (error) {
+				res.status(500);
+				throw new Error(error.message);
+			} else {
+				res.status(200).json({ message: "OTP Sent, Please Check Your Email" });
+			}
+		});
         return res.status(200).json({ message: "Appointment rescheduled successfully" });
     } catch (error) {
         console.error(error);
