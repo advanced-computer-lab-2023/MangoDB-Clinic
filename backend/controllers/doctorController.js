@@ -337,7 +337,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 // @route POST /doctor/acceptFollowUpSession/:id
 // @access Private
 const acceptFollowUpSession = asyncHandler(async (req, res) => {
-	const doctor = req.user;
+	// const doctor = req.user;
 	const appointment = await Appointment.findOne({
 		_id: req.params.id,
 	}).populate("patientId");
@@ -356,6 +356,7 @@ const acceptFollowUpSession = asyncHandler(async (req, res) => {
 			} else {
 				appointment.status = "confirmed";
 				await appointment.save();
+				
 				res.status(200).json({ message: "Appointment confirmed successfully" });
 			}
 		}
@@ -787,6 +788,69 @@ const followUpDoc = async (req, res) => {
 		if (!appointment) {
 			return res.status(500).json({ error: "Appointment creation failed" });
 		}
+		const patient=await Patient.findById(patientId);
+		const doctor=await Doctor.findById(doctorId);
+		//system
+		if (!patient.notifications) {
+			doctor.notifications = [];
+		}
+
+		patient.notifications.push({
+			title: "Appointment followup",
+			body: `Kindly note that Dr ${doctor.firstName} ${doctor.lastName} scheduled a followup on ${new Date(appointment.date).toLocaleDateString()} at ${new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+		});
+
+		if (!doctor.notifications) {
+			doctor.notifications = [];
+		}
+
+		doctor.notifications.push({
+			title: "Appointment followup",
+			body: `followup at ${new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} is scheduled successfully`
+		});
+		await doctor.save();
+		await patient.save();
+
+		//email
+		const transporter = nodemailer.createTransport({
+		service: "Gmail",
+		auth: {
+			user: "omarelzaher93@gmail.com",
+			pass: "vtzilhuubkdtphww",
+		},
+		});
+
+		const mailOptions = {
+		from: "omarelzaher93@gmail.com",
+		to: `dina.mamdouh.131@gmail.com, ${doctor.email}`,//send it lel dr wel patient 
+		subject: "[NO REPLY] Appointment followup",
+		text: `followup at ${new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} is scheduled successfully`
+
+		};
+
+		transporter.sendMail(mailOptions, (error, info) => {
+		if (error) {
+			res.status(500);
+			throw new Error(error.message);
+		} else {
+			res.status(200).json({ message: "OTP Sent, Please Check Your Email" });
+		}
+		});
+		const mailOptionss = {
+		from: "omarelzaher93@gmail.com",
+		to: `dina.mamdouh.131@gmail.com, ${patient.email}`,//send it lel dr wel patient 
+		subject: "[NO REPLY] Appointment Cancelld",
+		text: `Kindly note that Dr ${doctor.firstName} ${doctor.lastName} scheduled a followup on ${new Date(appointment.date).toLocaleDateString()} at ${new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+		};
+
+		transporter.sendMail(mailOptionss, (error, info) => {
+		if (error) {
+			res.status(500);
+			throw new Error(error.message);
+		} else {
+			res.status(200).json({ message: "OTP Sent, Please Check Your Email" });
+		}
+		});
 
 		res.status(201).json(appointment);
 	} catch (error) {
@@ -975,27 +1039,70 @@ const followUp = async (req, res) => {
 
 		console.log(followUpDate);
 
-		if (!patient.notifications) {
-			patient.notifications = [];
-		}
 		
+		//system
+		if (!patient.notifications) {
+			doctor.notifications = [];
+		}
+
 		patient.notifications.push({
-			title: "Follow-Up Appointment Scheduled Successfully",
-			body: `Kindly note that your follow-up appointment with Dr. ${doctor.firstName} ${doctor.lastName} is scheduled on`
+			title: "Appointment followup",
+			body: `Kindly note that Dr ${doctor.firstName} ${doctor.lastName} scheduled a followup on ${new Date(newAppointment.date).toLocaleDateString()} at ${new Date(newAppointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
 		});
 
 		if (!doctor.notifications) {
 			doctor.notifications = [];
 		}
-		
+
 		doctor.notifications.push({
-			title: "Follow-Up Appointment Scheduled Successfully",
-			body: `Kindly note that your follow-up appointment with ${patient.firstName} ${patient.lastName} is scheduled on`
+			title: "Appointment followup",
+			body: `followup at ${new Date(newAppointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} is scheduled successfully`
+		});
+		await doctor.save();
+		await patient.save();
+
+		//email
+		const transporter = nodemailer.createTransport({
+		service: "Gmail",
+		auth: {
+			user: "omarelzaher93@gmail.com",
+			pass: "vtzilhuubkdtphww",
+		},
 		});
 
-		await patient.save();
-		await doctor.save();
+		const mailOptions = {
+		from: "omarelzaher93@gmail.com",
+		to: `dina.mamdouh.131@gmail.com, ${doctor.email}`,//send it lel dr wel patient 
+		subject: "[NO REPLY] Appointment followup",
+		text: `followup at ${new Date(newAppointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} is scheduled successfully`
 
+		};
+
+		transporter.sendMail(mailOptions, (error, info) => {
+		if (error) {
+			res.status(500);
+			throw new Error(error.message);
+		} else {
+			res.status(200).json({ message: "OTP Sent, Please Check Your Email" });
+		}
+		});
+		const mailOptionss = {
+		from: "omarelzaher93@gmail.com",
+		to: `dina.mamdouh.131@gmail.com, ${patient.email}`,//send it lel dr wel patient 
+		subject: "[NO REPLY] Appointment Cancelld",
+		text: `Kindly note that Dr ${doctor.firstName} ${doctor.lastName} scheduled a followup on ${new Date(appointment.date).toLocaleDateString()} at ${new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+		};
+
+		transporter.sendMail(mailOptionss, (error, info) => {
+		if (error) {
+			res.status(500);
+			throw new Error(error.message);
+		} else {
+			res.status(200).json({ message: "OTP Sent, Please Check Your Email" });
+		}
+		});
+//
+//msh el mafrod d newappointment ?
 		console.log("Updated Appointment:", updatedAppointment);
 
 		res.status(200).json(updatedAppointment);
@@ -1032,20 +1139,71 @@ const rescheduleApp = async (req, res) => {
 
 		
 		// console.log(appointment);
-		
+		//system 
 		if (!patient.notifications) {
 			patient.notifications = [];
 		}
-		
+
 		patient.notifications.push({
 			title: "Appointment Rescheduled",
-			body: `Kindly note that ${doctor.firstName} ${doctor.lastName} rescheduled your appointment which was scheduled on ${new Date(appointment.date).toLocaleDateString()} at ${new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} to ${new Date(newDate).toLocaleDateString('en-GB')} at ${newTime}`
+			body: `Kindly note that Dr${doctor.firstName} ${doctor.lastName} rescheduled the appointment to ${new Date(appointment.date).toLocaleDateString()} at ${new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
 		});
-		
-		appointment.date = finalDate;
-		await appointment.save();
 		await patient.save();
 
+		if (!doctor.notifications) {
+			doctor.notifications = [];
+		}
+
+		doctor.notifications.push({
+			title: "Appointment Rescheduled",
+			body: `Appointment is recheduled successfully, 
+new appointment  at ${new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+		});
+		await doctor.save();
+		//email
+		const transporter = nodemailer.createTransport({
+			service: "Gmail",
+			auth: {
+				user: "omarelzaher93@gmail.com",
+				pass: "vtzilhuubkdtphww",
+			},
+		});
+	
+		const mailOptions = {
+			from: "omarelzaher93@gmail.com",
+			to: `dina.mamdouh.131@gmail.com, ${patient.email}`,//send it lel dr wel patient 
+			subject: "[NO REPLY] Appointment Rescheduled",
+			text: `Kindly note that Dr${doctor.firstName} ${doctor.lastName} rescheduled the appointment to ${new Date(appointment.date).toLocaleDateString()} at ${new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+
+		};
+	
+		transporter.sendMail(mailOptions, (error, info) => {
+			if (error) {
+				res.status(500);
+				throw new Error(error.message);
+			} else {
+				res.status(200).json({ message: "OTP Sent, Please Check Your Email" });
+			}
+		});
+		const mailOptionss = {
+			from: "omarelzaher93@gmail.com",
+			to: `dina.mamdouh.131@gmail.com, ${doctor.email}`,//send it lel dr wel patient 
+			subject: "[NO REPLY] Appointment Rescheduled",
+			text: `Appointment is recheduled successfully, 
+new appointment  at ${new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+	};
+	
+		transporter.sendMail(mailOptionss, (error, info) => {
+			if (error) {
+				res.status(500);
+				throw new Error(error.message);
+			} else {
+				res.status(200).json({ message: "OTP Sent, Please Check Your Email" });
+			}
+		});
+
+		appointment.date = finalDate;
+		await appointment.save();
 		res.status(200).json({ message: "Appointment rescheduled successfully." });
 	} catch (error) {
 		console.error(error);
@@ -1091,25 +1249,76 @@ const cancelApp = async (req, res) => {
 
 		patientWallet.balance += amount;
 		doctorWallet.balance -= amount;
-
-		if (!patient.notifications) {
-			patient.notifications = [];
-		}
-
-		patient.notifications.push({
-			title: "Appointment Cancelled",
-			body: `Kindly note that ${doctor.firstName} ${doctor.lastName} cancelled your appointment which was scheduled on ${new Date(appointment.date).toLocaleDateString()} at ${new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
-		});
+					//system
+					if (!patient.notifications) {
+						doctor.notifications = [];
+					}
+		
+					patient.notifications.push({
+						title: "Appointment Cancelled",
+						body: `Kindly note that Dr ${doctor.firstName} ${doctor.lastName} cancelled the appointment which was scheduled on ${new Date(appointment.date).toLocaleDateString()} at ${new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+					});
+		
+					if (!doctor.notifications) {
+						doctor.notifications = [];
+					}
+		
+					doctor.notifications.push({
+						title: "Appointment Cancelled",
+						body: `Appointment at ${new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} is cancelled successfully`
+					});
+					await doctor.save();
+					await patient.save();
+			
 
 		await patientWallet.save();
 		await doctorWallet.save();
 
 		appointment.status = 'cancelled';
 		await appointment.save();
-		await patient.save();
 
 		// SEND MAIL NOTIFICATION HERE
+		//email
+		const transporter = nodemailer.createTransport({
+			service: "Gmail",
+			auth: {
+				user: "omarelzaher93@gmail.com",
+				pass: "vtzilhuubkdtphww",
+			},
+		});
+	
+		const mailOptions = {
+			from: "omarelzaher93@gmail.com",
+			to: `dina.mamdouh.131@gmail.com, ${doctor.email}`,//send it lel dr wel patient 
+			subject: "[NO REPLY] Appointment Cancelled",
+			text: `Appointment at ${new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} is cancelled successfully`
 
+		};
+	
+		transporter.sendMail(mailOptions, (error, info) => {
+			if (error) {
+				res.status(500);
+				throw new Error(error.message);
+			} else {
+				res.status(200).json({ message: "OTP Sent, Please Check Your Email" });
+			}
+		});
+		const mailOptionss = {
+			from: "omarelzaher93@gmail.com",
+			to: `dina.mamdouh.131@gmail.com, ${patient.email}`,//send it lel dr wel patient 
+			subject: "[NO REPLY] Appointment Cancelld",
+			text: `Kindly note that Dr ${doctor.firstName} ${doctor.lastName} cancelled the appointment which was scheduled on ${new Date(appointment.date).toLocaleDateString()} at ${new Date(appointment.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+	};
+	
+		transporter.sendMail(mailOptionss, (error, info) => {
+			if (error) {
+				res.status(500);
+				throw new Error(error.message);
+			} else {
+				res.status(200).json({ message: "OTP Sent, Please Check Your Email" });
+			}
+		});
+//
 		res.status(200).json({ message: "Appointment cancelled successfully" });
 	} catch (error) {
 		console.error(error);
