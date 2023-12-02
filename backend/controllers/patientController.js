@@ -232,10 +232,11 @@ const getAllPatients = async (req, res) => {
 
 //Get a single patient
 const getPatient = async (req, res) => {
-	const email = req.body.email;
+	// const email = req.body.email;
 
 	try {
-		const patient = await Patient.findOne({ email: email });
+		// const patient = await Patient.findOne({ email: email });
+		const patient = await Patient.findById(req.user._id);
 
 		if (!patient) {
 			return res.status(404).json({ error: "No such patient found" });
@@ -1777,7 +1778,20 @@ res.status(200).json(app);
 	}
 }
 
+const clearNotifs = async (req, res) => {
+	try {
+		const patient = await Patient.findById(req.user._id);
+		console.log(patient);
+		patient.notifications = [];
+		await patient.save();
+		res.status(200).json({ message: "Success!" });
+	} catch (error) {
+		res.status(500).json({ error: error.message});
+	}
+};
+
 module.exports = {
+	clearNotifs,
 	getMyInfo,
 	getAllPatients,
 	getPatient,

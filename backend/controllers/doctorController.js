@@ -1426,7 +1426,19 @@ const addOrUpdateDosage = async (req, res) => {
 	}
 };
 
+const clearNotifs = async (req, res) => {
+	try {
+		const doctor = await Doctor.findById(req.user._id);
+		doctor.notifications = [];
+		await doctor.save();
+		res.status(200).json({ message: "Success!" });
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
+};
+
 module.exports = {
+	clearNotifs,
 	getMyInfo,
 	createDoctor,
 	updateEmail,

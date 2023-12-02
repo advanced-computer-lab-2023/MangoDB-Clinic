@@ -49,7 +49,8 @@ const {
 	payPescriptionWallet,
 	viewSelectedPrescription,
 	requestFollowUp,
-	downloadPrescription
+	downloadPrescription,
+	clearNotifs
 } = require("../controllers/patientController");
 
 router.get("/myInfo", getMyInfo);
@@ -69,7 +70,7 @@ router.get(
 );
 
 //GET a single patient
-router.post("/get_patient", getPatient);
+router.get("/get_patient", protectPatient, getPatient);
 
 //POST a single patient
 router.post("/add_patient", addPatient);
@@ -183,5 +184,7 @@ router.patch("/rescheduleAppointment", protectPatient, rescheduleAppointment);
 router.post("/payPescriptionWallet/:totalPrice", protectPatient,payPescriptionWallet);
 
 router.post("/requestFollowUp/:doctorId", protectPatient, requestFollowUp);
+
+router.patch('/clearNotifs', protectPatient, clearNotifs);
 
 module.exports = router;

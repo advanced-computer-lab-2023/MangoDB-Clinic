@@ -7,6 +7,7 @@ import MuiDrawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
+import Popover from '@mui/material/Popover';
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
@@ -20,6 +21,9 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import LogoutIcon from "@mui/icons-material/Logout";
 
 import { PatientListItems } from "../../components/Patient/patientListItems";
+import { useEffect } from "react";
+import { useState } from "react";
+import { clearNotifs, clearNotifsPatient, getPatient, getPatientInfo } from "../../services/api";
 
 function Copyright(props) {
 	return (
@@ -88,6 +92,11 @@ const Drawer = styled(MuiDrawer, {
 const defaultTheme = createTheme();
 
 export default function Dashboard() {
+	const [ notifications, setNotifications ] = useState([]);
+	const [ error, setError ] = useState(null);
+	const [anchorEl, setAnchorEl] = useState(null);
+
+
 	const navigate = useNavigate();
 	const [open, setOpen] = React.useState(true);
 	const toggleDrawer = () => {
@@ -98,6 +107,28 @@ export default function Dashboard() {
 		localStorage.clear();
 		navigate("/");
 	};
+
+	const handleClick = (event) => {
+		setAnchorEl(event.currentTarget);
+	};
+	
+	const handleClose = () => {
+		setAnchorEl(null);
+		clearNotifsPatient();
+		window.location.reload();
+  	};
+	
+	const isOpen = Boolean(anchorEl);
+	const id = isOpen ? 'simple-popover' : undefined;
+
+	useEffect(() => {
+		getPatient()
+			.then((result) => {
+				console.log(result);
+				setNotifications(result.data.notifications);
+			})
+			.catch((err) => setError(err.message));
+	}, []);
 
 	return (
 		<ThemeProvider theme={defaultTheme}>
@@ -130,6 +161,42 @@ export default function Dashboard() {
 						>
 							Patient Dashboard
 						</Typography>
+						<div>
+							<Typography 
+								component='h1'
+								variant='h6'
+								color='inherit'
+								noWrap
+								sx={{ flexGrow: 1 }}
+								aria-describedby={id}
+								onClick={handleClick}
+							>
+								{ `Notifications (${ notifications.length })` }
+							</Typography>
+							<Popover
+								id={id}
+								open={isOpen}
+								anchorEl={anchorEl}
+								onClose={handleClose}
+								anchorOrigin={{
+									vertical: 'bottom',
+									horizontal: 'center',
+								}}
+								transformOrigin={{
+									vertical: 'top',
+									horizontal: 'center',
+								}}
+							>
+								<div>
+									{notifications.map(notification => (
+										<div key={notification._id}>
+											<h4>{notification.title}</h4>
+											<p>{notification.body}</p>
+										</div>
+									))}
+								</div>
+							</Popover>
+						</div>
 						<IconButton color='inherit'>
 							<LogoutIcon onClick={handleLogout} />
 						</IconButton>
