@@ -957,6 +957,9 @@ const followUp = async (req, res) => {
 		console.log("Patient ID:", patientId);
 		console.log("Appointment ID:", appointmentId);
 
+		const patient = await Patient.findById(patientId);
+		const doctor = await Patient.findById(doctorId);
+
 		const updatedAppointment = await Appointment.findOneAndUpdate(
 			{ _id: appointmentId, doctorId, patientId },
 			{ $set: { followUp: true } },
@@ -969,6 +972,29 @@ const followUp = async (req, res) => {
 			status: "confirmed", // Set the status for the new appointment
 			followUp: false, // Set followUp to false for the new appointment
 		});
+
+		console.log(followUpDate);
+
+		if (!patient.notifications) {
+			patient.notifications = [];
+		}
+		
+		patient.notifications.push({
+			title: "Follow-Up Appointment Scheduled Successfully",
+			body: `Kindly note that your follow-up appointment with Dr. ${doctor.firstName} ${doctor.lastName} is scheduled on`
+		});
+
+		if (!doctor.notifications) {
+			doctor.notifications = [];
+		}
+		
+		doctor.notifications.push({
+			title: "Follow-Up Appointment Scheduled Successfully",
+			body: `Kindly note that your follow-up appointment with ${patient.firstName} ${patient.lastName} is scheduled on`
+		});
+
+		await patient.save();
+		await doctor.save();
 
 		console.log("Updated Appointment:", updatedAppointment);
 
@@ -1081,6 +1107,8 @@ const cancelApp = async (req, res) => {
 		appointment.status = 'cancelled';
 		await appointment.save();
 		await patient.save();
+
+		// SEND MAIL NOTIFICATION HERE
 
 		res.status(200).json({ message: "Appointment cancelled successfully" });
 	} catch (error) {

@@ -1193,6 +1193,29 @@ const makeAppointment = async (req, res) => {
 		});
 		console.log(app);
 
+		console.log(date);
+
+		if (!patient.notifications) {
+			patient.notifications = [];
+		}
+		
+		patient.notifications.push({
+			title: "Appointment Scheduled Successfully",
+			body: `Kindly note that your appointment with Dr. ${doctor.firstName} ${doctor.lastName} is scheduled`
+		});
+
+		if (!doctor.notifications) {
+			doctor.notifications = [];
+		}
+		
+		doctor.notifications.push({
+			title: "Appointment Scheduled",
+			body: `Kindly note that ${patient.firstName} ${patient.lastName} scheduled an appointment with you on`
+		});
+
+		await patient.save();
+		await doctor.save();
+
 		res.status(200).json(app);
 
 		// return appointment;
