@@ -4,6 +4,7 @@ const doctorController = require("../controllers/doctorController");
 const { protectDoctor } = require("../middleware/doctorMiddleware");
 
 const {
+	createVideoChat,
 	getMyInfo,
 	createDoctor,
 	updateEmail,
@@ -43,7 +44,7 @@ const {
 	acceptFollowUpSession,
 	revokeFollowUpSession,
 	updatePrescription,
-	clearNotifs
+	clearNotifs,
 } = require("../controllers/doctorController");
 
 router.get("/myInfo", protectDoctor, getMyInfo);
@@ -57,11 +58,12 @@ router.post("/verify-otp", verifyOTP);
 router.post("/reset-password", resetPassword);
 router.post("/request-otp", sendOTP);
 router.post("/change-password", protectDoctor, changePassword);
+router.post("/createVideoChat/:patientId", protectDoctor, createVideoChat);
 
 router.post("/filterapp", protectDoctor, filterStatus);
 
 router.post("/get_doctor", getDoctor);
- 
+
 router.post("/acceptFollowUpSession/:id", acceptFollowUpSession);
 router.post("/revokeFollowUpSession/:id", revokeFollowUpSession);
 

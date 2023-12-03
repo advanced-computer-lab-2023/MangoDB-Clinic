@@ -12,6 +12,7 @@
 	"author": "Omar ElZaher",
 	"license": "MIT",
 	"dependencies": {
+		"@daily-co/daily-js": "^0.55.1",
 		"@mui/styles": "^5.14.17",
 		"bcryptjs": "^2.4.3",
 		"body-parser": "^1.20.2",
