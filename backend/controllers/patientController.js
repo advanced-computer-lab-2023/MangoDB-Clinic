@@ -1835,7 +1835,6 @@ const payPescriptionWallet = async (req, res) => {
 };
 
 const requestFollowUp = async (req, res) => {
-	const doctorId = req.params.doctorId;
 	const appId = req.body.appId;
 	const appointment = await Appointment.findById(appId);
 	if (!appointment) {
