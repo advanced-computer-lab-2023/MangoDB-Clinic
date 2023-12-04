@@ -285,7 +285,12 @@ const createVideoChat = asyncHandler(async (req, res) => {
 				if (error) {
 					console.log("Error sending email:", error);
 				} else {
-					res.status(200).json({ message: "Video chat created successfully." });
+					res
+						.status(200)
+						.json({
+							message: "Video chat created successfully.",
+							url: roomUrl,
+						});
 					console.log("Email sent:", info.response);
 				}
 			});
