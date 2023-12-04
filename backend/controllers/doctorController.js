@@ -424,7 +424,7 @@ const createVideoChat = asyncHandler(async (req, res) => {
 				"Bearer 8f336eeba4331019a6bab843ab49c57d657a2a3f80fdc0bda2c8afe600a9b3e9",
 		},
 		body: JSON.stringify({
-			name: `Meeting: ${generateRandomId(10)}`,
+			name: `Meeting-${generateRandomId(10)}`,
 			properties: {
 				enable_screenshare: true,
 				enable_chat: true,
@@ -453,7 +453,7 @@ const createVideoChat = asyncHandler(async (req, res) => {
 				from: "omarelzaher93@gmail.com",
 				to: doctor.email,
 				subject: `Video Chat Request From Dr. ${doctor.lastName}`,
-				text: `<h2>Hello Mr./Ms./Mrs. ${patient.lastName},</h2>\n\nYou have a video chat scheduled with <b>Dr. ${doctor.firstName} ${doctor.lastName}</b>.\n\nPlease join the video chat using the following URL: ${roomUrl}\n\nBest regards,\nYour Clinic`,
+				text: `Hello Mr./Ms./Mrs. ${patient.lastName},\n\nYou have a video chat scheduled with Dr. ${doctor.firstName} ${doctor.lastName}.\n\nPlease join the video chat using the following URL: ${roomUrl}\n\nBest regards,\nYour Clinic`,
 			};
 
 			transporter.sendMail(mailOptions, (error, info) => {
