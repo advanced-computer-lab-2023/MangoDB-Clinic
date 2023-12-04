@@ -16,6 +16,18 @@ function generateOTP() {
 	return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
+function generateRandomId(length) {
+	const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	let randomId = "";
+
+	for (let i = 0; i < length; i++) {
+		const randomIndex = Math.floor(Math.random() * characters.length);
+		randomId += characters.charAt(randomIndex);
+	}
+
+	return randomId;
+}
+
 const getMyInfo = asyncHandler(async (req, res) => {
 	const doctor = await Doctor.findById(req.user.id);
 
@@ -412,7 +424,7 @@ const createVideoChat = asyncHandler(async (req, res) => {
 				"Bearer 8f336eeba4331019a6bab843ab49c57d657a2a3f80fdc0bda2c8afe600a9b3e9",
 		},
 		body: JSON.stringify({
-			name: `Doctor-Patient-Meeting`,
+			name: `Meeting: ${generateRandomId(10)}`,
 			properties: {
 				enable_screenshare: true,
 				enable_chat: true,
@@ -428,7 +440,7 @@ const createVideoChat = asyncHandler(async (req, res) => {
 			console.log("json: ", json);
 			const roomUrl = json.url;
 
-			// Send email to doctor
+			// Send email to patient
 			const transporter = nodemailer.createTransport({
 				service: "Gmail",
 				auth: {
@@ -440,8 +452,8 @@ const createVideoChat = asyncHandler(async (req, res) => {
 			const mailOptions = {
 				from: "omarelzaher93@gmail.com",
 				to: doctor.email,
-				subject: "Video Chat Room URL",
-				text: `Hello ${patient.lastName},\n\nYou have a video chat scheduled with Dr. ${doctor.firstName} ${doctor.lastName}.\n\nPlease join the video chat using the following URL: ${roomUrl}\n\nBest regards,\nYour Clinic`,
+				subject: `Video Chat Request From Dr. ${doctor.lastName}`,
+				text: `<h2>Hello Mr./Ms./Mrs. ${patient.lastName},</h2>\n\nYou have a video chat scheduled with <b>Dr. ${doctor.firstName} ${doctor.lastName}</b>.\n\nPlease join the video chat using the following URL: ${roomUrl}\n\nBest regards,\nYour Clinic`,
 			};
 
 			transporter.sendMail(mailOptions, (error, info) => {

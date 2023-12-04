@@ -1941,7 +1941,6 @@ const requestFollowUp = async (req, res) => {
 };
 
 module.exports = {
-	clearNotifs,
 	getMyInfo,
 	getAllPatients,
 	getPatient,
