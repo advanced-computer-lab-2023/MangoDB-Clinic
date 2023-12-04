@@ -1836,6 +1836,11 @@ const payPescriptionWallet = async (req, res) => {
 
 const requestFollowUp = async (req, res) => {
 	const doctorId = req.params.doctorId;
+	if (!appointment) {
+		return res.status(404).json({ error: "Appointment not found" });
+	}
+
+	const doctorId = appointment.doctorId;
 	const patientId = req.user.id;
 	const date = req.body.date;
 

@@ -15,6 +15,7 @@ import {
 	statusEnum,
 	patientReschuleApp,
 	patientCancelApp,
+	patientReqFollowup
 } from "../services/api";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -312,7 +313,7 @@ const ViewAppointments = () => {
 										
 							</div>
 							): null}
-							{appointment.status !== "cancelled" ?
+							{appointment.status !== "cancelled" &&  appointment.status !== "done"?
 										(
 											<div>
 											<Button
@@ -327,6 +328,36 @@ const ViewAppointments = () => {
 											}}
 											>
 													Cancel Appointment
+											</Button>
+										</div>
+							): null}
+
+							{appointment.status === "done" ?
+										(
+											<div>
+												<TextField
+												id='to'
+												name='to'
+												label='To'
+												variant='outlined'
+												// value={toReschdule}
+												onChange={handleChangee}
+												size='small'
+												type='datetime-local'
+												InputLabelProps={{ shrink: true }}
+											/>
+											<Button
+												variant='outlined'
+												size='small'
+												onClick={(e) => {
+													e.preventDefault()
+													patientReqFollowup(appointment._id,newDateTime)
+													.then(() => {
+														window.location.reload();})
+													.catch((err) => setError(err.message));
+											}}
+											>
+													Request Follow-Up
 											</Button>
 										</div>
 							): null}

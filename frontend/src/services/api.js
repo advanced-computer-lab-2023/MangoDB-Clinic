@@ -161,6 +161,9 @@ export const patientCancelApp = (appointment) =>
 export const patientReschuleApp = (appointmentId, newDate) =>
 	API.patch(`patient/rescheduleAppointment`, {appointmentId, newDate}, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
+export const patientReqFollowup = (appId, date) =>
+API.post(`patient/requestFollowUp`, {appId, date}, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+
 export const patientPayPrescription = (totalPirce) =>
 API.post(`patient/payPescriptionWallet ${totalPirce}`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });	
 
