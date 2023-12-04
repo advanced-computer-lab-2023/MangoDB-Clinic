@@ -277,7 +277,7 @@ const createVideoChat = asyncHandler(async (req, res) => {
 			const mailOptions = {
 				from: "omarelzaher93@gmail.com",
 				to: doctor.email,
-				subject: "Video Chat Room URL",
+				subject: `Video Chat Request From ${patient.firstName} ${patient.lastName}`,
 				text: `Hello Dr. ${doctor.lastName},\n\nYou have a video chat scheduled with ${patient.firstName} ${patient.lastName}.\n\nPlease join the video chat using the following URL: ${roomUrl}\n\nBest regards,\nYour Clinic`,
 			};
 
