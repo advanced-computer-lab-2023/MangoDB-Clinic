@@ -15,6 +15,18 @@ const fs = require("fs");
 const port = process.env.PORT;
 const JWT_SECRET = "abc123";
 
+function generateRandomId(length) {
+	const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	let randomId = "";
+
+	for (let i = 0; i < length; i++) {
+		const randomIndex = Math.floor(Math.random() * characters.length);
+		randomId += characters.charAt(randomIndex);
+	}
+
+	return randomId;
+}
+
 // @desc Get my (patient) info
 // @route GET /patient/my-info
 // @access Public
@@ -237,7 +249,7 @@ const createVideoChat = asyncHandler(async (req, res) => {
 				"Bearer 8f336eeba4331019a6bab843ab49c57d657a2a3f80fdc0bda2c8afe600a9b3e9",
 		},
 		body: JSON.stringify({
-			name: `Patient-Doctor-Meeting`,
+			name: `Meeting: ${generateRandomId(10)}`,
 			properties: {
 				enable_screenshare: true,
 				enable_chat: true,
@@ -266,7 +278,7 @@ const createVideoChat = asyncHandler(async (req, res) => {
 				from: "omarelzaher93@gmail.com",
 				to: doctor.email,
 				subject: "Video Chat Room URL",
-				text: `Hello Dr. ${doctor.lastName},\n\nYou have a video chat scheduled with ${patient.firstName} ${patient.lastName}.\n\nPlease join the video chat using the following URL: ${roomUrl}\n\nBest regards,\nYour Clinic`,
+				text: `<h1>Hello Dr. ${doctor.lastName},</h1>\n\nYou have a video chat scheduled with <b>${patient.firstName} ${patient.lastName}<b/>.\n\nPlease join the video chat using the following URL: ${roomUrl}\n\nBest regards,\nYour Clinic`,
 			};
 
 			transporter.sendMail(mailOptions, (error, info) => {
