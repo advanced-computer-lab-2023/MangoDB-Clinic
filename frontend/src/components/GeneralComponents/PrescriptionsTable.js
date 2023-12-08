@@ -21,7 +21,6 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
-// import MedicationIcon from "@mui/icons-material/Medication";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { alpha } from '@mui/system';
 import theme from "../../theme";
@@ -71,6 +70,7 @@ const PrescriptionsTable = ({
 }) => {
 
 	const MedicationIcon = `${process.env.PUBLIC_URL}/icons/info.svg`;
+	const EditPrescription = `${process.env.PUBLIC_URL}/icons/editDocument.svg`;
 	const navigate = useNavigate();
 	console.log("Data:", data);
 
@@ -154,36 +154,59 @@ const PrescriptionsTable = ({
 										{prescription.filled ? "Yes" : "No"}
 									</TableCell>
 									<TableCell align='left'>
-										<Tooltip title='View Details' >
-											<Button
-												component={RouterLink}
-												to={`/prescriptiondetails/${prescription._id}`}
-												variant="outlined"
-												// sx={{ backgroundColor: alpha("#B2F0E8", 0.5)}}
-											>
-												<img 
-													src={MedicationIcon} 
-													alt='view details' 
-													// style={{marginLeft: "11rem"}}
-													width={25}
-													height={25}
-												/>
-											</Button>
-										</Tooltip>
+										{userType === "doctor" ? (
+											<Tooltip title='Edit Medication' >
+												<Button
+													// component={RouterLink}
+													// to={`/prescriptiondetails/${prescription._id}`}
+													variant="outlined"
+													// sx={{ backgroundColor: alpha("#B2F0E8", 0.5)}}
+												>
+													<img 
+														src={EditPrescription} 
+														alt='edit Medication' 
+														// style={{marginLeft: "11rem"}}
+														width={25}
+														height={25}
+													/>
+												</Button>
+											</Tooltip>
+											) : (
+												<Tooltip title='View Details' >
+												<Button
+													component={RouterLink}
+													to={`/prescriptiondetails/${prescription._id}`}
+													variant="outlined"
+													// sx={{ backgroundColor: alpha("#B2F0E8", 0.5)}}
+												>
+													<img 
+														src={MedicationIcon} 
+														alt='view details' 
+														// style={{marginLeft: "11rem"}}
+														width={25}
+														height={25}
+													/>
+												</Button>
+											</Tooltip>
+										)}
 									</TableCell>
 								</TableRow>
 							))}
 						{userType === "doctor" && (
 							<TableRow>
-								<TableCell align='left' colSpan={5}>
+								<TableCell align='center' colSpan={5}>
 									<Tooltip title='Add Prescription'>
-										<ListItemButton
+										<Button
+											variant='outlined'
+											type="add"
+											fullWidth
+											
 											onClick={() => {
 												onOpenDialog();
 											}}
 										>
-											<AddIcon />
-										</ListItemButton>
+											Add Prescription
+										</Button>
 									</Tooltip>
 								</TableCell>
 							</TableRow>

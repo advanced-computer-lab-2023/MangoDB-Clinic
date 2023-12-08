@@ -12,9 +12,12 @@ import {
 	Tooltip,
 	Typography,
 	Button,
+    ThemeProvider,
 } from "@mui/material";
 
 import PrescriptionsTable from "../../components/GeneralComponents/PrescriptionsTable";
+import theme from "../../theme";
+
 const ViewPrescriptionsDoctor = () => {
 
     const firstColumnName = "Patient";
@@ -181,101 +184,103 @@ const ViewPrescriptionsDoctor = () => {
     };
 
     return ( 
-        <Grid container justifyContent='center' style={{ padding: "2rem" }}>
-            <Grid item xs={12}>
-                <Paper elevation={3} style={{ padding: "2rem" }}>
-                    <Grid container spacing={2}>
-                        <Typography style={{ margin: "1rem" }} variant='h4' align='left'>
-                            List Of Prescriptions
-                        </Typography>
-                    </Grid>
-                    <PrescriptionsTable 
-                        firstColumnName={firstColumnName} 
-                        data={prescriptions} 
-                        userType="doctor"
-                        onOpenDialog={handleOpenDialog}
-                        onOpenFreqDialog={handleOpenFreqDialog}
-                    />
-                    {isPending && <div>Loading...</div>}
-                    {error && <div>{error}</div>}
-                </Paper>
-                <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-					<DialogContent>
-						<Card variant='outlined'>
-							<CardContent>
-								<Typography variant='h6' component='div'>
-									Insert Prescription
-									{/* <Typography variant='body2' component='div'>
-										Select only one option
-									</Typography> */}
-								</Typography>
-								<TextField
-									id='patient-username'
-									label='Patient Username'
-									variant='outlined'
-                                    required
-									value={patientUsername}
-									onChange={(e) => setPatientUsername(e.target.value)}
-									style={{ margin: "1rem" }}
-								/>
-								<TextField
-									id='date-filter'
-									label='Date'
-									type='date'
-									variant='outlined'
-                                    required
-									value={date}
-									onChange={(e) => setDate(e.target.value)}
-									InputLabelProps={{
-										shrink: true,
-									}}
-									style={{ margin: "1rem" }}
-								/>
-								<FormControlLabel
-									control={
-										<Checkbox
-											checked={filled}
-											onChange={handleCheckboxChange}
-										/>
-									}
-									label='Filled'
-									style={{ margin: "1rem" }}
-								/>
-								<Button variant='contained' onClick={handleAddPrescription} disabled={!patientUsername || !date}>
-									Add
-								</Button>
-							</CardContent>
-						</Card>
-					</DialogContent>
-				</Dialog>
-                <Dialog open={openFreqDialog} onClose={() => setOpenFreqDialog(false)}>
-                    <DialogContent>
-                        <Card variant='outlined'>
-                            <CardContent>
-                                <Typography variant='h6' component='div'>
-                                    Edit Dosage
-                                    {/* <Typography variant='body2' component='div'>
-                                        Select only one option
-                                    </Typography> */}
-                                </Typography>
-                                <TextField
-                                    id='frequency'
-                                    label='Frequency'
-                                    variant='outlined'
-                                    required
-                                    value={freqToBeUpdated}
-                                    onChange={(e) => setFreqToBeUpdated(e.target.value)}
-                                    style={{ margin: "1rem" }}
-                                />
-                                <Button variant='contained' onClick={handleEditDosage}>
-                                    Edit
-                                </Button>
-                            </CardContent>
-                        </Card>
-                    </DialogContent>
-                </Dialog>
+        <ThemeProvider theme={theme}>
+            <Grid container justifyContent='center' style={{ padding: "7rem" }}>
+                <Grid item xs={12}>
+                    <Paper elevation={3} style={{ padding: "2rem" }}>
+                        <Grid container spacing={2}>
+                            <Typography style={{ margin: "1rem" }} variant='h4' align='left'>
+                                List Of Prescriptions
+                            </Typography>
+                        </Grid>
+                        <PrescriptionsTable 
+                            firstColumnName={firstColumnName} 
+                            data={prescriptions} 
+                            userType="doctor"
+                            onOpenDialog={handleOpenDialog}
+                            onOpenFreqDialog={handleOpenFreqDialog}
+                        />
+                        {isPending && <div>Loading...</div>}
+                        {error && <div>{error}</div>}
+                    </Paper>
+                    <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+                        <DialogContent>
+                            <Card variant='outlined'>
+                                <CardContent>
+                                    <Typography variant='h6' component='div'>
+                                        Insert Prescription
+                                        {/* <Typography variant='body2' component='div'>
+                                            Select only one option
+                                        </Typography> */}
+                                    </Typography>
+                                    <TextField
+                                        id='patient-username'
+                                        label='Patient Username'
+                                        variant='outlined'
+                                        required
+                                        value={patientUsername}
+                                        onChange={(e) => setPatientUsername(e.target.value)}
+                                        style={{ margin: "1rem" }}
+                                    />
+                                    <TextField
+                                        id='date-filter'
+                                        label='Date'
+                                        type='date'
+                                        variant='outlined'
+                                        required
+                                        value={date}
+                                        onChange={(e) => setDate(e.target.value)}
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        style={{ margin: "1rem" }}
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={filled}
+                                                onChange={handleCheckboxChange}
+                                            />
+                                        }
+                                        label='Filled'
+                                        style={{ margin: "1rem" }}
+                                    />
+                                    <Button variant='contained' onClick={handleAddPrescription} disabled={!patientUsername || !date}>
+                                        Add
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        </DialogContent>
+                    </Dialog>
+                    <Dialog open={openFreqDialog} onClose={() => setOpenFreqDialog(false)}>
+                        <DialogContent>
+                            <Card variant='outlined'>
+                                <CardContent>
+                                    <Typography variant='h6' component='div'>
+                                        Edit Dosage
+                                        {/* <Typography variant='body2' component='div'>
+                                            Select only one option
+                                        </Typography> */}
+                                    </Typography>
+                                    <TextField
+                                        id='frequency'
+                                        label='Frequency'
+                                        variant='outlined'
+                                        required
+                                        value={freqToBeUpdated}
+                                        onChange={(e) => setFreqToBeUpdated(e.target.value)}
+                                        style={{ margin: "1rem" }}
+                                    />
+                                    <Button variant='contained' onClick={handleEditDosage}>
+                                        Edit
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        </DialogContent>
+                    </Dialog>
+                </Grid>
             </Grid>
-        </Grid>
+        </ThemeProvider>
     );
 }
  
