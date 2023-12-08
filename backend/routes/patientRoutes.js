@@ -92,11 +92,7 @@ router.get("/get_selected_doctor/:id", getSelectedDoctor);
 router.get("/get_all_prescriptions/:id", getAllPrescriptions);
 
 //GET all prescriptions of a single patient
-router.get(
-	"/get_prescriptions_of_patient",
-	protectPatient,
-	getAllPrescriptionsOfPatient
-);
+router.get("/get_prescriptions_of_patient", protectPatient, getAllPrescriptionsOfPatient);
 
 //filter prescriptions
 router.get("/filter_prescription", protectPatient, filterPrescription);

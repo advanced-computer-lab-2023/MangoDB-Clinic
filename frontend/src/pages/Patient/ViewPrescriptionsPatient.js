@@ -13,13 +13,16 @@ import {
 	Tooltip,
 	Typography,
 	Button,
+	ThemeProvider
 } from "@mui/material";
-import FilterListIcon from "@mui/icons-material/FilterList";
 
+// import FilterListIcon from "../../../public/icons/filter.svg";
+import theme from "../../theme";
 import PrescriptionsTable from "../../components/GeneralComponents/PrescriptionsTable";
 
 const ViewPrescriptionsPatient = () => {
 
+	const FilterListIcon = `${process.env.PUBLIC_URL}/icons/filter.svg`;
 	const firstColumnName = "Doctor";
 	const [prescriptions, setPrescriptions] = useState([]);
 	const [isPending, setIsPending] = useState(true);
@@ -139,79 +142,90 @@ const ViewPrescriptionsPatient = () => {
 	};
 
 	return (
-		<Grid container justifyContent='center' style={{ padding: "2rem" }}>
-			<Grid item xs={12}>
-				<Paper elevation={3} style={{ padding: "2rem" }}>
-					<Grid container spacing={2}>
-						<Typography style={{ margin: "1rem" }} variant='h4' align='left'>
-							List Of Prescriptions
-						</Typography>
-						<Tooltip title='Filter List' align='right'>
-							<Button onClick={() => setOpen(true)}>
-								<FilterListIcon />
-							</Button>
-						</Tooltip>
-					</Grid>
-					<PrescriptionsTable data={prescriptions} firstColumnName={firstColumnName} />
-					{isPending && <div>Loading...</div>}
-					{error && <div>{error}</div>}
-				</Paper>
-				<Dialog open={open} onClose={() => setOpen(false)}>
-					<DialogContent>
-						<Card variant='outlined'>
-							<CardContent>
-								<Typography variant='h6' component='div'>
-									Filter Options
-									<Typography variant='body2' component='div'>
-										Select only one option
-									</Typography>
-								</Typography>
-								<TextField
-									id='doctor-filter'
-									label='Doctor Name'
-									variant='outlined'
-									value={filterByDoctor}
-									onChange={(e) => setFilterByDoctor(e.target.value)}
-									style={{ margin: "1rem" }}
-								/>
-								<TextField
-									id='date-filter'
-									label='Date'
-									type='date'
-									variant='outlined'
-									value={filterByDate}
-									onChange={(e) => setFilterByDate(e.target.value)}
-									InputLabelProps={{
-										shrink: true,
-									}}
-									style={{ margin: "1rem" }}
-								/>
-								<FormControlLabel
-									control={
-										<Checkbox
-											checked={filterByFilled}
-											onChange={handleCheckboxChange}
+		<ThemeProvider theme={theme}>
+			{/* <Typography style={{ margin: "2rem" }} variant='h2' align='left'>
+				List Of Prescriptions
+			</Typography> */}
+			<Grid container justifyContent='center' style={{ padding: "7rem" }}>
+				<Grid item xs={12}>
+					<Paper elevation={3} style={{ padding: "2rem" }}>
+						<Grid container spacing={2} style={{ display: "flex", justifyContent: "space-between" }}>
+							<Typography style={{ margin: "1rem" }} variant='h4' align='left'>
+								Prescriptions
+							</Typography>
+							<Tooltip title='Filter List' style={{ margin: "1rem" }}>
+								<Button variant="outlined" onClick={() => setOpen(true)}>
+									<img 
+										src={FilterListIcon} 
+										alt='Filter List' 
+										// style={{marginLeft: "11rem"}}
+										width={25}
+										height={25}
 										/>
-									}
-									label='Filled'
-									style={{ margin: "1rem" }}
-								/>
-								{!isFilterApplied ? (
-									<Button disabled>Clear Filters</Button>
-								) : (
-									<Button variant='text' onClick={handleClearFilter}>
-										Clear Filters
-									</Button>
-								)}
-								<Button variant='contained' onClick={handleFilter}>
-									Apply Filter
 								</Button>
-							</CardContent>
-						</Card>
-					</DialogContent>
-				</Dialog>
+							</Tooltip>
+						</Grid>
+						<PrescriptionsTable data={prescriptions} firstColumnName={firstColumnName} />
+						{isPending && <div>Loading...</div>}
+						{error && <div>{error}</div>}
+					</Paper>
+					<Dialog open={open} onClose={() => setOpen(false)}>
+						<DialogContent>
+							<Card variant='outlined'>
+								<CardContent>
+									<Typography variant='h6' component='div'>
+										Filter Options
+										<Typography variant='body2' component='div'>
+											Select only one option
+										</Typography>
+									</Typography>
+									<TextField
+										id='doctor-filter'
+										label='Doctor Name'
+										variant='outlined'
+										value={filterByDoctor}
+										onChange={(e) => setFilterByDoctor(e.target.value)}
+										style={{ margin: "1rem" }}
+									/>
+									<TextField
+										id='date-filter'
+										label='Date'
+										type='date'
+										variant='outlined'
+										value={filterByDate}
+										onChange={(e) => setFilterByDate(e.target.value)}
+										InputLabelProps={{
+											shrink: true,
+										}}
+										style={{ margin: "1rem" }}
+									/>
+									<FormControlLabel
+										control={
+											<Checkbox
+												checked={filterByFilled}
+												onChange={handleCheckboxChange}
+											/>
+										}
+										label='Filled'
+										style={{ margin: "1rem" }}
+									/>
+									{!isFilterApplied ? (
+										<Button disabled>Clear Filters</Button>
+									) : (
+										<Button variant='text' onClick={handleClearFilter}>
+											Clear Filters
+										</Button>
+									)}
+									<Button variant='contained' onClick={handleFilter}>
+										Apply Filter
+									</Button>
+								</CardContent>
+							</Card>
+						</DialogContent>
+					</Dialog>
+				</Grid>
 			</Grid>
-		</Grid>
+		</ThemeProvider>
 	);
 };
 

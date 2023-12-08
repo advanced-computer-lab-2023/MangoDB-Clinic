@@ -17,11 +17,15 @@ import {
 	Typography,
 	Box,
 	Button,
+	ThemeProvider,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
-import MedicationIcon from "@mui/icons-material/Medication";
+// import MedicationIcon from "@mui/icons-material/Medication";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { alpha } from '@mui/system';
+import theme from "../../theme";
+
 
 const MedicationCard = ({
 	prescription,
@@ -65,6 +69,8 @@ const PrescriptionsTable = ({
 	onOpenDialog,
 	onOpenFreqDialog,
 }) => {
+
+	const MedicationIcon = `${process.env.PUBLIC_URL}/icons/info.svg`;
 	const navigate = useNavigate();
 	console.log("Data:", data);
 
@@ -73,16 +79,36 @@ const PrescriptionsTable = ({
 		return null;
 	}
 	return (
-		<>
+		<ThemeProvider theme={theme}>
 			<TableContainer component={Paper} xs={8}>
 				<Table sx={{ minWidth: 650 }} aria-label='simple table'>
-					<TableHead>
+					<TableHead sx={{backgroundColor: alpha("#B2F0E8", 0.3)}}> 
 						<TableRow>
-							<TableCell>{firstColumnName}</TableCell>
-							<TableCell align='center'>Medications & Frequency</TableCell>
-							<TableCell align='center'>Date Issued</TableCell>
-							<TableCell align='left'>Filled</TableCell>
-							<TableCell align='left'>{userType === "doctor" ? "Edit" : "Detials"}</TableCell>
+							<TableCell>
+								<Typography variant="subtitle1" fontWeight="bold">
+									{firstColumnName}
+								</Typography>
+							</TableCell>
+							<TableCell align='center'>
+								<Typography variant="subtitle1" fontWeight="bold">
+									Medications & Frequency
+								</Typography>
+							</TableCell>
+							<TableCell align='center'>
+								<Typography variant="subtitle1" fontWeight="bold">
+									Date Issued
+								</Typography>
+							</TableCell>
+							<TableCell align='left'>
+								<Typography variant="subtitle1" fontWeight="bold">
+									Filled
+								</Typography>
+							</TableCell>
+							<TableCell align='left'>
+								<Typography variant="subtitle1" fontWeight="bold">
+									{userType === "doctor" ? "Edit" : "Details"}
+								</Typography>
+							</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -127,14 +153,22 @@ const PrescriptionsTable = ({
 									<TableCell align='left'>
 										{prescription.filled ? "Yes" : "No"}
 									</TableCell>
-									<TableCell align='center'>
-										<Tooltip title='View Details'>
-											<ListItemButton
+									<TableCell align='left'>
+										<Tooltip title='View Details' >
+											<Button
 												component={RouterLink}
 												to={`/prescriptiondetails/${prescription._id}`}
+												variant="outlined"
+												// sx={{ backgroundColor: alpha("#B2F0E8", 0.5)}}
 											>
-												<MedicationIcon />
-											</ListItemButton>
+												<img 
+													src={MedicationIcon} 
+													alt='view details' 
+													// style={{marginLeft: "11rem"}}
+													width={25}
+													height={25}
+												/>
+											</Button>
 										</Tooltip>
 									</TableCell>
 								</TableRow>
@@ -172,7 +206,7 @@ const PrescriptionsTable = ({
 					Home
 				</Button>
 			</div>
-		</>
+		</ThemeProvider>
 	);
 };
 

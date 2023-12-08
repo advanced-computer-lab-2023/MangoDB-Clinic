@@ -458,7 +458,7 @@ const getAllPrescriptions = async (req, res) => {
 };
 
 const getAllPrescriptionsOfPatient = async (req, res) => {
-	const patientId = req.user.id;
+	const patientId = req.user._id;
 
 	if (!mongoose.Types.ObjectId.isValid(patientId)) {
 		return res.status(404).json({ error: "Id Not Found" });
