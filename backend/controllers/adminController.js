@@ -299,8 +299,8 @@ const doctorApproval = asyncHandler(async (req, res) => {
 		}
 
 		if (doctor.accountStatus === "inactive") {
-			// doctor.accountStatus = "active";
-			// await doctor.save();
+			doctor.accountStatus = "active";
+			await doctor.save();
 
 			const transporter = nodemailer.createTransport({
 				service: "Gmail",
