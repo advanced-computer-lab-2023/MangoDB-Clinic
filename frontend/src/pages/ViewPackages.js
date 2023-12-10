@@ -37,6 +37,12 @@ function Copyright(props) {
 	);
 }
 
+const fetchPackages = async () => {
+    const response = await fetch('http://localhost:4000/view_health_packages');
+    const data = await response.json();
+    return data;
+};
+
 const handleClick = async (e) => {
 	try {
 		const name = e.currentTarget.getAttribute("name");
@@ -60,92 +66,99 @@ const handleClick = async (e) => {
 	}
 };
 
-const tiers = [
-	{
-		title: "Silver",
-		price: "3600",
-		description: [
-			"40% off any doctor's session price",
-			"20% off any medicine ordered from our pharmacy",
-			"10% discount on the subscribtion price of any of your family members on any package",
-			"Phone & email support",
-		],
-		buttonText: "Subscribe",
-		buttonVariant: "contained",
-	},
-	{
-		title: "Gold",
-		subheader: "Most popular",
-		price: "6000",
-		description: [
-			"60% off any doctor's session price",
-			"30% off any medicine ordered from our pharmacy",
-			"15% discount on the subscribtion price of any of your family members on any package",
-			"Phone & email support",
-		],
-		buttonText: "Subscribe",
-		buttonVariant: "contained",
-	},
-	{
-		title: "Platinum",
-		price: "9000",
-		description: [
-			"80% off any doctor's session price",
-			"40% off any medicine ordered from our pharmacy",
-			"20% discount on the subscribtion price of any of your family members on any package",
-			"Phone & email support",
-		],
-		buttonText: "Subscribe",
-		buttonVariant: "contained",
-	},
-];
+// const tiers = [
+// 	{
+// 		title: "Silver",
+// 		price: "3600",
+// 		description: [
+// 			"40% off any doctor's session price",
+// 			"20% off any medicine ordered from our pharmacy",
+// 			"10% discount on the subscribtion price of any of your family members on any package",
+// 			"Phone & email support",
+// 		],
+// 		buttonText: "Subscribe",
+// 		buttonVariant: "contained",
+// 	},
+// 	{
+// 		title: "Gold",
+// 		subheader: "Most popular",
+// 		price: "6000",
+// 		description: [
+// 			"60% off any doctor's session price",
+// 			"30% off any medicine ordered from our pharmacy",
+// 			"15% discount on the subscribtion price of any of your family members on any package",
+// 			"Phone & email support",
+// 		],
+// 		buttonText: "Subscribe",
+// 		buttonVariant: "contained",
+// 	},
+// 	{
+// 		title: "Platinum",
+// 		price: "9000",
+// 		description: [
+// 			"80% off any doctor's session price",
+// 			"40% off any medicine ordered from our pharmacy",
+// 			"20% discount on the subscribtion price of any of your family members on any package",
+// 			"Phone & email support",
+// 		],
+// 		buttonText: "Subscribe",
+// 		buttonVariant: "contained",
+// 	},
+// ];
 
-const footers = [
-	{
-		title: "Company",
-		description: ["Team", "History", "Contact us", "Locations"],
-	},
-	{
-		title: "Features",
-		description: [
-			"Cool stuff",
-			"Random feature",
-			"Team feature",
-			"Developer stuff",
-			"Another one",
-		],
-	},
-	{
-		title: "Resources",
-		description: [
-			"Resource",
-			"Resource name",
-			"Another resource",
-			"Final resource",
-		],
-	},
-	{
-		title: "Legal",
-		description: ["Privacy policy", "Terms of use"],
-	},
-];
+// const footers = [
+// 	{
+// 		title: "Company",
+// 		description: ["Team", "History", "Contact us", "Locations"],
+// 	},
+// 	{
+// 		title: "Features",
+// 		description: [
+// 			"Cool stuff",
+// 			"Random feature",
+// 			"Team feature",
+// 			"Developer stuff",
+// 			"Another one",
+// 		],
+// 	},
+// 	{
+// 		title: "Resources",
+// 		description: [
+// 			"Resource",
+// 			"Resource name",
+// 			"Another resource",
+// 			"Final resource",
+// 		],
+// 	},
+// 	{
+// 		title: "Legal",
+// 		description: ["Privacy policy", "Terms of use"],
+// 	},
+// ];
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function Pricing() {
+
+	const [packages, setPackages] = React.useState([]);
+
+    React.useEffect(() => {
+        fetchPackages().then(data => setPackages(data));
+    }, []);
+	
 	return (
 		<ThemeProvider theme={defaultTheme}>
-			<GlobalStyles
-				styles={{ ul: { margin: 0, padding: 0, listStyle: "none" } }}
-			/>
-			<CssBaseline />
-			<AppBar
-				position='static'
-				color='default'
-				elevation={0}
-				sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
-			>
+		<GlobalStyles
+			styles={{ ul: { margin: 0, padding: 0, listStyle: 'none' } }}
+		/>
+		<CssBaseline />
+		<AppBar
+			position='static'
+			color='default'
+			elevation={0}
+			sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
+		>
 				<Toolbar sx={{ flexWrap: "wrap" }}>
 					<Link
 						variant='h6'
@@ -215,81 +228,51 @@ export default function Pricing() {
 			</Container>
 			{/* End hero unit */}
 			<Container maxWidth='md' component='main'>
-				<Grid container spacing={5} alignItems='flex-end'>
-					{tiers.map((tier) => (
-						<Grid
-							item
-							key={tier.title}
-							xs={12}
-							sm={tier.title === "Enterprise" ? 12 : 6}
-							md={4}
-						>
-							<Card>
-								<CardHeader
-									title={tier.title}
-									subheader={tier.subheader}
-									titleTypographyProps={{ align: "center" }}
-									action={tier.title === "Gold" ? <StarIcon /> : null}
-									subheaderTypographyProps={{
-										align: "center",
-									}}
-									sx={{
-										backgroundColor: (theme) =>
-											theme.palette.mode === "light"
-												? theme.palette.grey[200]
-												: theme.palette.grey[700],
-									}}
-								/>
-								<CardContent>
-									<Box
-										sx={{
-											display: "flex",
-											justifyContent: "center",
-											alignItems: "baseline",
-											mb: 2,
-										}}
-									>
-										<Typography
-											component='h2'
-											variant='h3'
-											color='text.primary'
-										>
-											EGP{tier.price}
-										</Typography>
-										<Typography variant='h6' color='text.secondary'>
-											/yr
-										</Typography>
-									</Box>
-									<ul>
-										{tier.description.map((line) => (
-											<Typography
-												component='li'
-												variant='subtitle1'
-												align='center'
-												key={line}
-											>
-												{line}
-											</Typography>
-										))}
-									</ul>
-								</CardContent>
-								<CardActions>
-									<Button
-										name={tier.title}
-										fullWidth
-										variant={tier.buttonVariant}
-										onClick={handleClick}
-									>
-										{tier.buttonText}
-									</Button>
-								</CardActions>
-							</Card>
-						</Grid>
-					))}
-				</Grid>
-			</Container>
+                <Grid container spacing={5} alignItems='flex-end'>
+                    {packages.map((tier) => (
+                        <Grid item key={tier.name} xs={12} sm={tier.title === 'Platinum' ? 12 : 6} md={4}>
+                            <Card>
+                                <CardHeader
+                                    title={tier.name}
+                                    subheader={tier.subheader}
+                                    titleTypographyProps={{ align: 'center' }}
+                                    subheaderTypographyProps={{ align: 'center' }}
+                                    action={tier.name === 'Gold' ? <StarIcon /> : null}
+                                    sx={{ pb: 1 }}
+                                />
+                                <CardContent>
+                                    <ul>
+                                        {tier.description.map((line) => (
+                                            <Typography
+                                                component='li'
+                                                variant='subtitle1'
+                                                align='center'
+                                                key={line}
+                                                sx={{ mt: 1, mb: 1 }}
+                                            >
+                                                {line}
+                                            </Typography>
+                                        ))}
+                                    </ul>
+                                </CardContent>
+                                <CardActions sx={{ pb: 2, justifyContent: 'center' }}>
+                                    <Button
+                                        fullWidth
+                                        variant={tier.buttonVariant}
+                                        color='primary'
+                                        onClick={handleClick}
+                                        name={tier.name}
+                                    >
+                                        {tier.buttonText}
+                                    </Button>
+                                </CardActions>
+                            </Card>
+                        </Grid>
+                    ))}
+                </Grid>
+            </Container>
 			{/* Footer */}
-			<Container
+			{/* <Container
 				maxWidth='md'
 				component='footer'
 				sx={{
@@ -317,7 +300,7 @@ export default function Pricing() {
 					))}
 				</Grid>
 				<Copyright sx={{ mt: 5 }} />
-			</Container>
+			</Container> */}
 			{/* End footer */}
 		</ThemeProvider>
 	);
