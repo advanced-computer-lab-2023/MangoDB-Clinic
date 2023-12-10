@@ -12,7 +12,7 @@ import {
     } from "@mui/material";
 import theme from "../../theme";
 import { useState, useEffect } from "react";
-import { checkout2 } from "../../services/api";
+import { checkout1, checkout2 } from "../../services/api";
 
 const PackageCard = ({ packages, handleClick }) => {
     
@@ -187,43 +187,44 @@ const ViewPackagesPatient = () => {
             console.log(id);
             const items = [{ id: 1, quantity: 1 }];
 
-            // const response = await checkout2(id, items);
+            const response = await checkout1(id, items);
 
-            // // Check if the request was successful (status code 2xx)
-            // if (response.status === 200) {
-            //     const { url } = response.data;
-            //     console.log("Checkout Session:", response.data);
-            //     // Handle the session object as needed (e.g., redirect to the checkout page)
+            // Check if the request was successful (status code 2xx)
+            if (response.status === 200) {
+                const { url } = response.data;
+                console.log("Checkout Session:", response.data);
+                // Handle the session object as needed (e.g., redirect to the checkout page)
+                window.location = url;
+            } else {
+                console.error("Failed to create checkout session");
+                // Handle error as needed
+            }
+    
+            // const res = await fetch(`http://localhost:4000/payments/create-checkout-session-packages/${id}`, {
+            //     method: "POST",
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //     },
+            //     body: JSON.stringify({
+            //         items: items,
+            //     }),
+            // });
+            // console.log(res.status);
+
+            // if (res.status === 200) {
+            //     console.log(res);
+                
+            //     // const { url } = res.data;
+            //     const { url } = res;
+
+            //     console.log("url:", url);
+            //     console.log("Checkout Session:", res.data);
+                
             //     window.location = url;
             // } else {
             //     console.error("Failed to create checkout session");
             //     // Handle error as needed
             // }
-    
-            const res = await fetch(`http://localhost:4000/payments/create-checkout-session-packages/${id}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    items: items,
-                }),
-            });
-            console.log(res.status);
-
-            if (res.status === 200) {
-                console.log(res);
-                
-                const { url } = res.data;
-
-                console.log("url:", url);
-                console.log("Checkout Session:", res.data);
-                
-                // window.location = url;
-            } else {
-                console.error("Failed to create checkout session");
-                // Handle error as needed
-            }
         } catch (error) {
             console.error("Error during checkout:", error);
             // Handle error as needed
