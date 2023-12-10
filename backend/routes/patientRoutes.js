@@ -54,7 +54,7 @@ const {
 	createVideoChat,
 } = require("../controllers/patientController");
 
-router.get("/myInfo", getMyInfo);
+router.get("/myInfo", protectPatient, getMyInfo);
 
 router.post("/login", loginPatient);
 router.post("/request-otp", sendOTP);
@@ -115,7 +115,7 @@ router.get("/search_doctor", protectPatient, searchDoctor);
 
 router.get("/view_health_records/", protectPatient, viewHealthRecords);
 
-router.get("/view_health_packages", viewHealthPackages);
+router.get("/view_health_packages", protectPatient, viewHealthPackages);
 
 router.get(
 	"/view_subscribed_health_package/",
@@ -146,7 +146,7 @@ router.put("/link_family_member/", protectPatient, linkFamilyMember);
 
 router.put(
 	"/subscribe_to_health_package/:patientId/:packageId",
-
+	protectPatient,
 	subscribeToHealthPackage
 );
 

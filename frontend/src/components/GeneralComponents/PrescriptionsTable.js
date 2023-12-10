@@ -1,6 +1,11 @@
 import { Link as RouterLink } from "react-router-dom";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import TablePagination from '@mui/material/TablePagination';
+import TableSortLabel from '@mui/material/TableSortLabel';
+import { visuallyHidden } from '@mui/utils';
+import { useState, useEffect } from 'react';
+
 
 import {
 	ListItemButton,
@@ -25,6 +30,33 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { alpha } from '@mui/system';
 import theme from "../../theme";
 
+function descendingComparator(a, b, orderBy) {
+	if (b[orderBy] < a[orderBy]) {
+	  return -1;
+	}
+	if (b[orderBy] > a[orderBy]) {
+	  return 1;
+	}
+	return 0;
+  }
+  
+function getComparator(order, orderBy) {
+	return order === 'desc'
+		? (a, b) => descendingComparator(a, b, orderBy)
+		: (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+function stableSort(array, comparator) {
+	const stabilizedThis = array.map((el, index) => [el, index]);
+	stabilizedThis.sort((a, b) => {
+	  const order = comparator(a[0], b[0]);
+	  if (order !== 0) {
+		return order;
+	  }
+	  return a[1] - b[1];
+	});
+	return stabilizedThis.map((el) => el[0]);
+  }
 
 const MedicationCard = ({
 	prescription,
@@ -68,11 +100,46 @@ const PrescriptionsTable = ({
 	onOpenDialog,
 	onOpenFreqDialog,
 }) => {
+	const navigate = useNavigate();
 
 	const MedicationIcon = `${process.env.PUBLIC_URL}/icons/info.svg`;
 	const EditPrescription = `${process.env.PUBLIC_URL}/icons/editDocument.svg`;
-	const navigate = useNavigate();
-	console.log("Data:", data);
+
+	{/* Sorting and Pagination */}
+	const [tableData, setTableData] = useState(data);
+	const [order, setOrder] = useState('asc');
+  	const [orderBy, setOrderBy] = useState('date'); // Default sorting by date
+  	const [page, setPage] = useState(0);
+  	const [rowsPerPage, setRowsPerPage] = useState(5);
+
+	const handleRequestSort = (property) => {
+	const isAsc = orderBy === property && order === 'asc';
+	setOrder(isAsc ? 'desc' : 'asc');
+	setOrderBy(property);
+	console.log('Sort Clicked:', property, order);
+	};
+
+	const handleChangePage = (event, newPage) => {
+	setPage(newPage);
+	const newData = stableSort(tableData, getComparator(order, orderBy));
+    // setTableData(newData);
+	console.log('Page Changed:', newPage);
+	};
+
+	const handleChangeRowsPerPage = (event) => {
+	setRowsPerPage(parseInt(event.target.value, 10));
+	setPage(0);
+	};
+
+	useEffect(() => {
+		console.log('Data Changed:', data);
+		const newData = stableSort(data, getComparator(order, orderBy)).slice(
+		  page * rowsPerPage,
+		  page * rowsPerPage + rowsPerPage
+		);
+		console.log('New Data:', newData);
+		setTableData(newData);
+	  }, [data, order, orderBy, page, rowsPerPage]);
 
 	if (!Array.isArray(data)) {
 		console.error("Invalid data format. Expected an array.");
@@ -84,7 +151,7 @@ const PrescriptionsTable = ({
 				<Table sx={{ minWidth: 650 }} aria-label='simple table'>
 					<TableHead sx={{backgroundColor: alpha("#B2F0E8", 0.3)}}> 
 						<TableRow>
-							<TableCell>
+							<TableCell >
 								<Typography variant="subtitle1" fontWeight="bold">
 									{firstColumnName}
 								</Typography>
@@ -95,16 +162,22 @@ const PrescriptionsTable = ({
 								</Typography>
 							</TableCell>
 							<TableCell align='center'>
-								<Typography variant="subtitle1" fontWeight="bold">
-									Date Issued
-								</Typography>
+								<TableSortLabel
+									active={orderBy === 'date'}
+									direction={order}
+									onClick={() => handleRequestSort('date')}
+									>
+									<Typography variant="subtitle1" fontWeight="bold">
+										Date Issued
+									</Typography>
+								</TableSortLabel>
 							</TableCell>
-							<TableCell align='left'>
+							<TableCell align='center'>
 								<Typography variant="subtitle1" fontWeight="bold">
 									Filled
 								</Typography>
 							</TableCell>
-							<TableCell align='left'>
+							<TableCell align='center'>
 								<Typography variant="subtitle1" fontWeight="bold">
 									{userType === "doctor" ? "Edit" : "Details"}
 								</Typography>
@@ -112,8 +185,8 @@ const PrescriptionsTable = ({
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{data &&
-							data.map((prescription) => (
+						{tableData &&
+							tableData.map((prescription) => (
 								<TableRow key={prescription._id}>
 									<TableCell component='th' scope='row'>
 										{prescription.patientId &&
@@ -150,10 +223,10 @@ const PrescriptionsTable = ({
 									<TableCell align='center'>
 										{new Date(prescription.date).toLocaleDateString()}
 									</TableCell>
-									<TableCell align='left'>
+									<TableCell align='center'>
 										{prescription.filled ? "Yes" : "No"}
 									</TableCell>
-									<TableCell align='left'>
+									<TableCell align='center'>
 										{userType === "doctor" ? (
 											<Tooltip title='Edit Medication' >
 												<Button
@@ -213,6 +286,15 @@ const PrescriptionsTable = ({
 						)}
 					</TableBody>
 				</Table>
+				<TablePagination
+					rowsPerPageOptions={[5, 10, 25]}
+					component="div"
+					count={data.length}
+					rowsPerPage={rowsPerPage}
+					page={page}
+					onPageChange={handleChangePage}
+					onRowsPerPageChange={handleChangeRowsPerPage}
+					/>
 			</TableContainer>
 
 			<div

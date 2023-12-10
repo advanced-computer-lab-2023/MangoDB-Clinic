@@ -808,7 +808,7 @@ const viewHealthRecords = async (req, res) => {
 
 const viewHealthPackages = asyncHandler(async (req, res) => {
 	try {
-		const packages = await Packages.find({}).sort({ createdAt: -1 });
+		const packages = await Packages.find({});
 		if (!packages) {
 			res.status(400).json({ error: "No Packages Found" });
 		} else {

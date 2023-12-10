@@ -124,7 +124,11 @@ router.post('/create-checkout-session/:id', async (req, res) => {
 
 
 router.post('/create-checkout-session-packages/:id', async (req, res) => {
+    console.log("henanaa");
     try {
+        
+        const items = req.body.items;
+        console.log(items);
         const packageType = req.params.id;
         let paymentAmount = 0;
         
@@ -142,8 +146,10 @@ router.post('/create-checkout-session-packages/:id', async (req, res) => {
                 paymentAmount = 0;
         }
 
+        console.log(paymentAmount);
+
         const storeItems = new Map([
-            [1, { priceInCents: paymentAmount * 100, name: `${ packageType } Health Package` }], // priceInSharks = pounds * 100
+            [1, { priceInCents: paymentAmount * 100, name: 'Payment' }], // priceInSharks = pounds * 100
            
         ])
         // END OF PASTE
@@ -169,15 +175,19 @@ router.post('/create-checkout-session-packages/:id', async (req, res) => {
                     quantity: item.quantity,
                 };
             }),
-            success_url: 'http://localhost:3000/successulPackagePayment',
-            cancel_url: 'http://localhost:3000/viewpackages',
+            success_url: 'http://localhost:3000/Success',
+            cancel_url: 'http://localhost:3000/Cancel',
         });
 
         res.json({ url: session.url });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: err.message, message: "error" });
     }
 });
+// router.get('/ayhga/:packageName', async (req, res) => {
+//     console.log("henanaa");
+// });
+
 // router.post('/create-checkout-session-daaaaaaa/:id', async (req, res) => {
 //     try {
 //         // const {totalPirce }= req.body;

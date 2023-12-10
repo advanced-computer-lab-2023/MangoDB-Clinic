@@ -109,8 +109,8 @@ export const filterPatientAppointments = (query) =>
 export const checkout = (id, items) =>
 	API.post(`/payments/create-checkout-session/${id}`, { items });
 
-export const checkout1 = (id, items) =>
-	API.post(`/payments/create-checkout-session-packages/${id}`, { items });
+export const checkout1 = (packageName, items) =>
+	API.post(`/payments/create-checkout-session-packages/${packageName}`, { items });
 //payment sprint3
 export const checkout2 = (id, items) =>
 API.post(`/payments/create-checkout-session-daaaaaaa/${id}`, { items });

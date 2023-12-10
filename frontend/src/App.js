@@ -58,6 +58,7 @@ import RemoveDoctorPage from "./pages/Admin/RemoveDoctorPage";
 //theme
 import { ThemeProvider } from "@mui/material";
 import theme from "./theme";
+import ViewPackagesPatient from "./pages/Patient/ViewPackagesPatient";
 
 function App() {
   return (
@@ -88,7 +89,7 @@ function App() {
             element={<PrescriptionDetials />}
           />
           <Route path="/search-doctors" element={<DoctorSearch />} />
-          <Route path="/viewpackages" element={<ViewPackages />} />
+          <Route path="/viewpackages" element={<ViewPackagesPatient />} />
           <Route
             path="/successfulPackagePayment"
             element={<SuccessfulPackagePayment />}
