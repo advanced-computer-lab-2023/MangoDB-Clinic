@@ -50,7 +50,8 @@ const DoctorForm = () => {
 		addDoctor(formData)
 			.then(() => {
 				setIsPending(false);
-				navigate("/doctordashboard");
+				alert("Registered Successfully, Please Wait To Be Approved");
+				navigate("/");
 			})
 			.catch((error) => {
 				console.error("Error adding doctor:", error);

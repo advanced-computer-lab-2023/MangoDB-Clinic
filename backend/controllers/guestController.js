@@ -27,8 +27,11 @@ const registerUser = async (req, res, model, userType, fields) => {
 
 	try {
 		const usernameExists = await User.findOne({ username: data.username });
-		if (usernameExists)
-			return res.status(400).json({ error: "Username already exists" });
+		if (usernameExists) {
+			res.status(400);
+			throw new Error("Username already exists");
+		}
+		// .json({ error: "Username already exists" });
 
 		const emailExists = await User.findOne({ email: data.email });
 		if (emailExists)
@@ -99,6 +102,11 @@ const login = asyncHandler(async (req, res) => {
 	const correctPassword = await bcrypt.compare(password, user.password);
 	if (!correctPassword)
 		res.status(400).json({ message: "Password is incorrect" });
+
+	if (user.accountStatus === "inactive") {
+		res.status(400);
+		throw new Error("Account has not been activated yet.");
+	}
 
 	res.status(200).json({
 		_id: user.id,

@@ -139,7 +139,7 @@ const getPatients = asyncHandler(async (req, res) => {
 
 	if (patients.length === 0) {
 		res.status(400);
-		throw new Error("No Admins");
+		throw new Error("No Patients Found");
 	} else {
 		res.status(200).json(patients);
 	}
@@ -149,11 +149,11 @@ const getPatients = asyncHandler(async (req, res) => {
 // @route GET /admin/get-doctors
 // @access Private
 const getDoctors = asyncHandler(async (req, res) => {
-	const doctors = await Doctor.find();
+	const doctors = await Doctor.find({ accountStatus: "active" });
 
 	if (doctors.length === 0) {
 		res.status(400);
-		throw new Error("No Admins");
+		throw new Error("No Active Doctors Found");
 	} else {
 		res.status(200).json(doctors);
 	}

@@ -7,7 +7,7 @@ import MuiDrawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import Popover from '@mui/material/Popover';
+import Popover from "@mui/material/Popover";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
@@ -23,7 +23,12 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { PatientListItems } from "../../components/Patient/patientListItems";
 import { useEffect } from "react";
 import { useState } from "react";
-import { clearNotifs, clearNotifsPatient, getPatient, getPatientInfo } from "../../services/api";
+import {
+	clearNotifs,
+	clearNotifsPatient,
+	getPatient,
+	getPatientInfo,
+} from "../../services/api";
 
 function Copyright(props) {
 	return (
@@ -92,10 +97,10 @@ const Drawer = styled(MuiDrawer, {
 const defaultTheme = createTheme();
 
 export default function Dashboard() {
-	const [ notifications, setNotifications ] = useState([]);
-	const [ error, setError ] = useState(null);
+	const [notifications, setNotifications] = useState([]);
+	const [error, setError] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
-
+	const [patientName, setPatientName] = useState("");
 
 	const navigate = useNavigate();
 	const [open, setOpen] = React.useState(true);
@@ -111,20 +116,21 @@ export default function Dashboard() {
 	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget);
 	};
-	
+
 	const handleClose = () => {
 		setAnchorEl(null);
 		clearNotifsPatient();
 		window.location.reload();
-  	};
-	
+	};
+
 	const isOpen = Boolean(anchorEl);
-	const id = isOpen ? 'simple-popover' : undefined;
+	const id = isOpen ? "simple-popover" : undefined;
 
 	useEffect(() => {
 		getPatient()
 			.then((result) => {
 				console.log(result);
+				setPatientName(`${result.data.firstName} ${result.data.lastName}`);
 				setNotifications(result.data.notifications);
 			})
 			.catch((err) => setError(err.message));
@@ -162,7 +168,7 @@ export default function Dashboard() {
 							Patient Dashboard
 						</Typography>
 						<div>
-							<Typography 
+							<Typography
 								component='h1'
 								variant='h6'
 								color='inherit'
@@ -171,7 +177,7 @@ export default function Dashboard() {
 								aria-describedby={id}
 								onClick={handleClick}
 							>
-								{ `Notifications (${ notifications.length })` }
+								{`Notifications (${notifications.length})`}
 							</Typography>
 							<Popover
 								id={id}
@@ -179,16 +185,16 @@ export default function Dashboard() {
 								anchorEl={anchorEl}
 								onClose={handleClose}
 								anchorOrigin={{
-									vertical: 'bottom',
-									horizontal: 'center',
+									vertical: "bottom",
+									horizontal: "center",
 								}}
 								transformOrigin={{
-									vertical: 'top',
-									horizontal: 'center',
+									vertical: "top",
+									horizontal: "center",
 								}}
 							>
 								<div>
-									{notifications.map(notification => (
+									{notifications.map((notification) => (
 										<div key={notification._id}>
 											<h4>{notification.title}</h4>
 											<p>{notification.body}</p>
@@ -236,7 +242,7 @@ export default function Dashboard() {
 					<Toolbar />
 					<Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
 						<Grid container spacing={3}>
-							PatientDashboard
+							{`Welocme ${patientName}!`}
 							<Grid item xs={12} md={8} lg={9}>
 								<Paper
 									sx={{

@@ -7,9 +7,9 @@ import MuiDrawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import Popover from '@mui/material/Popover';
+import Popover from "@mui/material/Popover";
 import List from "@mui/material/List";
-import ListItem from '@mui/material/ListItem';
+import ListItem from "@mui/material/ListItem";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
@@ -93,9 +93,10 @@ const Drawer = styled(MuiDrawer, {
 const defaultTheme = createTheme();
 
 export default function DoctorDashboard() {
-	const [ notifications, setNotifications ] = useState([]);
-	const [ error, setError ] = useState(null);
+	const [notifications, setNotifications] = useState([]);
+	const [error, setError] = useState(null);
 	const [anchorEl, setAnchorEl] = React.useState(null);
+	const [doctorName, setDoctorName] = useState("");
 
 	const navigate = useNavigate();
 	const [open, setOpen] = React.useState(true);
@@ -111,19 +112,20 @@ export default function DoctorDashboard() {
 	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget);
 	};
-	
+
 	const handleClose = () => {
 		setAnchorEl(null);
 		clearNotifsDoctor();
 		window.location.reload();
-  	};
-	
+	};
+
 	const isOpen = Boolean(anchorEl);
-	const id = isOpen ? 'simple-popover' : undefined;
+	const id = isOpen ? "simple-popover" : undefined;
 
 	useEffect(() => {
 		getDoctor()
 			.then((result) => {
+				setDoctorName(`${result.data.firstName} ${result.data.lastName}`);
 				setNotifications(result.data.notifications);
 			})
 			.catch((err) => setError(err.message));
@@ -161,7 +163,7 @@ export default function DoctorDashboard() {
 							Doctor Dashboard
 						</Typography>
 						<div>
-							<Typography 
+							<Typography
 								component='h1'
 								variant='h6'
 								color='inherit'
@@ -170,7 +172,7 @@ export default function DoctorDashboard() {
 								aria-describedby={id}
 								onClick={handleClick}
 							>
-								{ `Notifications (${ notifications.length })` }
+								{`Notifications (${notifications.length})`}
 							</Typography>
 							<Popover
 								id={id}
@@ -178,16 +180,16 @@ export default function DoctorDashboard() {
 								anchorEl={anchorEl}
 								onClose={handleClose}
 								anchorOrigin={{
-									vertical: 'bottom',
-									horizontal: 'center',
+									vertical: "bottom",
+									horizontal: "center",
 								}}
 								transformOrigin={{
-									vertical: 'top',
-									horizontal: 'center',
+									vertical: "top",
+									horizontal: "center",
 								}}
 							>
 								<div>
-									{notifications.map(notification => (
+									{notifications.map((notification) => (
 										<div key={notification._id}>
 											<h4>{notification.title}</h4>
 											<p>{notification.body}</p>
@@ -235,7 +237,7 @@ export default function DoctorDashboard() {
 					<Toolbar />
 					<Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
 						<Grid container spacing={3}>
-							Doctor Dashboard
+							{`Welcome Dr. ${doctorName}`}
 							<Grid item xs={12} md={8} lg={9}>
 								<Paper
 									sx={{

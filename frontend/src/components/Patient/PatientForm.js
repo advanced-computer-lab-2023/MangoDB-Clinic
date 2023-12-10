@@ -16,18 +16,18 @@ import {
 import { addPatient } from "../../services/api";
 
 const PatientForm = () => {
-	const [username, setUserName] = useState("karimgabr100");
-	const [email, setEmail] = useState("karimgabr26@gmail.com");
-	const [password, setPassword] = useState("ahmedmohsen");
-	const [firstName, setFirstName] = useState("Karim Gabr");
-	const [lastName, setLastName] = useState("Karim Gabr");
-	const [dob, setDOB] = useState("27/05/2002");
-	const [nationalID, setNationalID] = useState("Karim Gabr");
+	const [username, setUserName] = useState("");
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [firstName, setFirstName] = useState("");
+	const [lastName, setLastName] = useState("");
+	const [dob, setDOB] = useState("");
+	const [nationalID, setNationalID] = useState("");
 	const [gender, setGender] = useState("");
-	const [mobile, setMobile] = useState("0102334455");
+	const [mobile, setMobile] = useState("");
 	const [emergencyContact, setEmergencyContact] = useState({
-		name: "ahmed",
-		mobile: "1232132123",
+		name: "",
+		mobile: "",
 	});
 	const [isPending, setIsPending] = useState(false);
 	const navigate = useNavigate();
@@ -52,22 +52,13 @@ const PatientForm = () => {
 		addPatient(patient)
 			.then(() => {
 				setIsPending(false);
-				navigate("/patientdashboard");
+				alert("Account Created Successfully, Please Login");
+				navigate("/login");
 			})
 			.catch((error) => {
-				console.error("Error adding patient:", error);
+				alert(error.response.data.error);
 				setIsPending(false);
 			});
-
-		// fetch('http://localhost:4000/patientRegistration', {
-		//     method: 'POST',
-		//     headers: { "Content-Type": "application/json"},
-		//     body: JSON.stringify(patient)
-		// }).then(() => {
-		//     setIsPending(false);
-		//     // history.go(-1);
-		//     history.push('/');
-		// })
 	};
 	return (
 		<Grid container justifyContent='center' style={{ padding: "2rem" }}>

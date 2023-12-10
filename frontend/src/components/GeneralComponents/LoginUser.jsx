@@ -67,7 +67,7 @@ export default function LoginUser() {
 				}
 			}
 		} catch (error) {
-			alert("Invalid Credentials");
+			alert(error.response.data.message);
 		} finally {
 			setIsLoading(false);
 		}
