@@ -1957,6 +1957,23 @@ const requestFollowUp = async (req, res) => {
 	}
 };
 
+const clearNotifs = async (req, res) => {
+	const patientId = req.user._id;
+	const { id } = req.body;
+
+	try {
+		await Patient.updateOne(
+			{ _id: patientId },
+			{ $pull: { notifications: { _id: id } } }
+		);
+		
+		res.status(200).json({ message: "Success" })
+	} catch(error) {
+		res.status(404).json({ error: error.message });
+	}
+
+}
+
 module.exports = {
 	getMyInfo,
 	getAllPatients,
@@ -2005,4 +2022,5 @@ module.exports = {
 	requestFollowUp,
 	downloadPrescription,
 	createVideoChat,
+	clearNotifs
 };

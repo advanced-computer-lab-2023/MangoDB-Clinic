@@ -195,4 +195,6 @@ router.post(
 
 router.post("/requestFollowUp/:doctorId", protectPatient, requestFollowUp);
 
+router.patch("/clearNotifs", protectPatient, clearNotifs);
+
 module.exports = router;

@@ -20,6 +20,7 @@ import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import LogoutIcon from "@mui/icons-material/Logout";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import { DoctorListItems } from "../../components/Doctor/DoctorListItems";
 import { useState } from "react";
@@ -115,7 +116,7 @@ export default function DoctorDashboard() {
 
 	const handleClose = () => {
 		setAnchorEl(null);
-		clearNotifsDoctor();
+		// clearNotifsDoctor();
 		window.location.reload();
 	};
 
@@ -195,6 +196,8 @@ export default function DoctorDashboard() {
 											<p>{notification.body}</p>
 										</div>
 									))}
+									<DeleteForeverIcon />
+									{ /* x button id=notifId calls->deleteNotif(notifId) */ }
 								</div>
 							</Popover>
 						</div>

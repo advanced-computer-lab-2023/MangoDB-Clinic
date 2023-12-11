@@ -19,6 +19,7 @@ import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import LogoutIcon from "@mui/icons-material/Logout";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import { PatientListItems } from "../../components/Patient/patientListItems";
 import { useEffect } from "react";
@@ -29,6 +30,7 @@ import {
 	getPatient,
 	getPatientInfo,
 } from "../../services/api";
+import Notification from "../../components/Patient/Notification";
 
 function Copyright(props) {
 	return (
@@ -101,6 +103,7 @@ export default function Dashboard() {
 	const [error, setError] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [patientName, setPatientName] = useState("");
+	const [reload, setReload] = useState(false);
 
 	const navigate = useNavigate();
 	const [open, setOpen] = React.useState(true);
@@ -119,9 +122,14 @@ export default function Dashboard() {
 
 	const handleClose = () => {
 		setAnchorEl(null);
-		clearNotifsPatient();
-		window.location.reload();
+		// window.location.reload();
 	};
+
+	const handleNotifDelete = async (id) => {
+		console.log(id);
+		await clearNotifsPatient(id);
+		setReload(!reload);
+	}
 
 	const isOpen = Boolean(anchorEl);
 	const id = isOpen ? "simple-popover" : undefined;
@@ -134,7 +142,7 @@ export default function Dashboard() {
 				setNotifications(result.data.notifications);
 			})
 			.catch((err) => setError(err.message));
-	}, []);
+	}, [reload]);
 
 	return (
 		<ThemeProvider theme={defaultTheme}>
@@ -177,7 +185,8 @@ export default function Dashboard() {
 								aria-describedby={id}
 								onClick={handleClick}
 							>
-								{`Notifications (${notifications.length})`}
+								{/* {`Notifications (${ read ? "Old" : "New" })`} */}
+								{ `Notifications (${ (notifications.some(notification => notification.read === false)) ? "New" : "Old" })` }
 							</Typography>
 							<Popover
 								id={id}
@@ -193,14 +202,23 @@ export default function Dashboard() {
 									horizontal: "center",
 								}}
 							>
-								<div>
+								{/* <div>
 									{notifications.map((notification) => (
-										<div key={notification._id}>
-											<h4>{notification.title}</h4>
-											<p>{notification.body}</p>
-										</div>
+										<Notification key={ notification._id } notification={ notification } handleNotifDelete={ handleNotifDelete } />
 									))}
-								</div>
+								</div> */}
+								<div>
+                                    {notifications.map((notification) => (
+                                        <div key={notification._id}>
+                                            <div style={{ "display": "flex", "align-items": "center", "justify-content": "space-between" }}>
+                                                <h4>{notification.title}</h4>
+                                                <DeleteForeverIcon id={ notification._id } onClick={ () => handleNotifDelete(notification._id) } />
+                                            </div>
+                                            <p>{notification.body}</p>
+                                            {/* { !notification.read ? setRead(false) : (!read ? setRead(false) : setRead(true)) } */}
+                                        </div>
+                                    ))}
+                                </div>
 							</Popover>
 						</div>
 						<IconButton color='inherit'>
