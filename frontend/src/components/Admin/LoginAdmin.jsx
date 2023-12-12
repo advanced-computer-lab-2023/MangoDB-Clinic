@@ -60,7 +60,7 @@ export default function LoginAdmin() {
 				navigate("/admin");
 			}
 		} catch (error) {
-			setError("Invalid Credentials");
+			setError(error.response.data.message);
 		} finally {
 			setIsLoading(false);
 		}
