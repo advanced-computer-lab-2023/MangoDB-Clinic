@@ -70,8 +70,23 @@ const patientSchema = mongoose.Schema(
       default: [],
     },
     healthPackage: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Packages",
+      packageId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Packages",
+        default: null,
+      },
+      status: {
+        type: String,
+        default: 'Unsubscribed'
+      },
+      renewalDate: {
+        type: Date,
+        default: null
+      },
+      cancellationDate: {
+        type: Date,
+        default: null
+      }
     },
     healthRecord: {
       content: {

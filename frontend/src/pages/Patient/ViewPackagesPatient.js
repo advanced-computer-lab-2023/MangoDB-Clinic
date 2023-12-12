@@ -14,7 +14,7 @@ import theme from "../../theme";
 import { useState, useEffect } from "react";
 import { checkout1, checkout2 } from "../../services/api";
 
-const PackageCard = ({ packages, handleClick }) => {
+const PackageCard = ({ packages, handleClick, subscribed, packageInfo }) => {
     
     const getBackgroundColor = (type) => {
         switch (type) {
@@ -103,11 +103,13 @@ const PackageCard = ({ packages, handleClick }) => {
                         color="primary"
                         onClick={handleClick}
                         name={packages.name}
+                        disabled={subscribed && packageInfo.packageId.name !== packages.name}
                     >
-                        Subscribe
+                        {subscribed && packageInfo.packageId.name === packages.name ? 'Renew Subscription' : 'Subscribed'}
                     </Button>
                 </CardActions>
             </Card>
+            
         </Grid>
     );
 };
@@ -115,6 +117,9 @@ const PackageCard = ({ packages, handleClick }) => {
 const ViewPackagesPatient = () => {
     const [packages, setPackages] = useState([]);
     const [subscribed, setSubscribed] = useState(false);
+    const [cancelled, setCancelled] = useState(false);
+    const [packageCancelled, setPackageCancelled] = useState({});
+    const [packageInfo, setPackageInfo] = useState({});
     const [isPending, setIsPending] = useState(true);
     const [error, setError] = useState(null);
 
@@ -148,32 +153,57 @@ const ViewPackagesPatient = () => {
                 setError(err.message);
                 setIsPending(false);
             }
-        }
+        };
         fetchPackages();
-    }, []);
 
-    const getIdOfPatient = async () => {
-        try {
-            const token = localStorage.getItem("token");
-            const response = await fetch("http://localhost:4000/patient/myInfo", {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            });
-            const data = await response.json();
-            return data._id;
-        }
-        catch (err) {
-            console.log(err);
-        }
+        }, []);
 
-    }
+        useEffect(() => {
+            const checkSubscription = async () => {
+                const data = await subscribedPatient();
+                if (data.status === "Subscribed") {
+                    setSubscribed(true);
+                    setCancelled(false);
+                    setPackageInfo(data);
+                } else if (data.status === "Cancelled") {
+                    setCancelled(true);
+                    setSubscribed(false);
+                    setPackageInfo(data);
+                } else {
+                    setSubscribed(false);
+            }
+        };
+        checkSubscription();
+        }, [cancelled, subscribed]);
+
+    const unsubscribe = async () => {
+        const confirmed = window.confirm('Are you sure you want to unsubscribe?');
+        if (confirmed) {
+            try{
+                const token = localStorage.getItem("token");
+                const response = await fetch("http://localhost:4000/patient/cancel_health_package", {
+                    method: "PUT",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                });
+                const data = await response.json();
+                setCancelled(true);
+                setSubscribed(false)
+                console.log(data);
+                setPackageCancelled(data);
+                return data;
+            }
+            catch(err){
+                console.log(err);
+            }
+        }
+    };
     
     const subscribedPatient = async () => {
         const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:4000/patient/view_health_packages", {
+        const response = await fetch("http://localhost:4000/patient/check_health_package_subscription", {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -181,12 +211,7 @@ const ViewPackagesPatient = () => {
             },
         });
         const data = await response.json();
-        if(data === "Subscribed"){
-            setSubscribed(true);
-        }
-        else{
-            setSubscribed(false);
-        }
+
         return data;
     }
 
@@ -226,9 +251,45 @@ const ViewPackagesPatient = () => {
                             <PackageCard 
                                 key={index}
                                 packages={packages}
-                                handleClick={handleClick} />
+                                handleClick={handleClick}
+                                subscribed={subscribed}
+                                packageInfo={packageInfo} />
                         ))}
                     </Grid>
+                    {subscribed &&
+                    <Paper elevation={3} style={{padding: "2rem", margin: "2rem"}}>
+                        <Typography align="center" variant="h4" style={{paddingBottom: "1rem"}}>
+                           Package Subscription info
+                        </Typography>
+                        <Typography align="left" variant="h6" >
+                            You are subscribed to the {packageInfo.packageId.name} experience the endless opportunities you get form this package .
+                        </Typography>
+                        <Typography align="left" variant="h6" >
+                            Package Renewal: {new Date(packageInfo.renewalDate).toLocaleDateString()}
+                        </Typography>
+                        <Button 
+                            variant="outlined" 
+                            color="secondary"
+                            onClick={unsubscribe}
+                            name="Unsubscribe"
+                            >
+                            Unsubscribe
+                        </Button>
+                    </Paper>
+                    }
+                    {cancelled &&
+                    <Paper elevation={3} style={{padding: "2rem", margin: "2rem"}}>
+                        <Typography align="center" variant="h4" style={{paddingBottom: "1rem"}}>
+                           Package Subscription info
+                        </Typography>
+                        <Typography align="left" variant="h6" >
+                            You have cancelled your old package {packageCancelled.name}
+                        </Typography>
+                        <Typography align="left" variant="h6" >
+                            Cancellation Date: {new Date(packageInfo.cancellationDate).toLocaleDateString()}
+                        </Typography>
+                    </Paper>
+                    }   
                 </Paper>
             </Grid>
         </ThemeProvider>

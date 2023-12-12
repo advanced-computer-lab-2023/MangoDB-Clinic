@@ -24,19 +24,7 @@ const packagesSchema = mongoose.Schema({
   familyDiscount: {
     type: Number,
     required: true,
-  },
-  status: {
-    type: String,
-    default: 'Unsubscribed'
-  },
-  renewalDate: {
-    type: Date,
-    default: null
-  },
-  cancellationDate: {
-    type: Date,
-    default: null
-  },
+  }
 });
 
 module.exports = mongoose.model("Packages", packagesSchema);

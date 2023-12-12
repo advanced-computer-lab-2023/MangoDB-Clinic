@@ -126,7 +126,7 @@ router.get(
 
 router.get("/check_health_package_subscription", protectPatient, checkHealthPackageSubscription);
 
-router.put("/cancel_health_package/", protectPatient, cancelHealthPackage);
+router.put("/cancel_health_package", protectPatient, cancelHealthPackage);
 
 router.get("/downloadPrescription/", protectPatient, downloadPrescription);
 

@@ -36,7 +36,7 @@ const Success = () => {
 			}
 
 			subscribe();
-			navigate("/viewpackages");
+			navigate("/patientdashboard");
 		}, 5000);
 
 		// Clear the timeout when the component is unmounted
