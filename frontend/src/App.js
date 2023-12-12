@@ -46,6 +46,7 @@ import HealthPackagesPage from "./pages/Admin/HealthPackagesPage";
 import AddPackagePage from "./pages/Admin/AddPackagePage";
 import ChangePasswordPage from "./pages/Admin/ChangePasswordPage";
 import RemoveAdminPage from "./pages/Admin/RemoveAdminPage";
+import EditHealthPackagePage from "./pages/Admin/EditHealthPackagePage";
 
 import Success from "./pages/Success";
 import Cancel from "./pages/Cancel";
@@ -202,6 +203,10 @@ function App() {
 					/>
 					<Route path='/admin/health-packs' element={<HealthPackagesPage />} />
 					<Route path='/admin/add-health-pack' element={<AddPackagePage />} />
+					<Route
+						path='/admin/edit-health-package/:id'
+						element={<EditHealthPackagePage />}
+					/>
 					<Route
 						path='/admin/change-password'
 						element={<ChangePasswordPage />}

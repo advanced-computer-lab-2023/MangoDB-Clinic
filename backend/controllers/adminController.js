@@ -399,7 +399,7 @@ const getPackages = asyncHandler(async (req, res) => {
 });
 
 // @desc Get all packages
-// @route GET /admin/get-package/:id
+// @route POST /admin/get-package
 // @access Private
 const getPackage = asyncHandler(async (req, res) => {
 	const package = await Packages.findOne({ name: req.body.name });
@@ -474,7 +474,6 @@ const updatePackages = asyncHandler(async (req, res) => {
 		const updatedPackageInfo = await Packages.findByIdAndUpdate(
 			req.params.id,
 			req.body,
-			{ new: true }
 		);
 		if (updatedPackageInfo) {
 			res.status(200).json({ message: "Successfully Updated" });

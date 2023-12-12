@@ -10,7 +10,6 @@ import CardContent from "@mui/material/CardContent";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
@@ -26,29 +25,6 @@ import MuiDrawer from "@mui/material/Drawer";
 import { mainListItems } from "./listItems";
 
 const drawerWidth = 240;
-
-const MainContent = styled("main", {
-	shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-	flexGrow: 1,
-	height: "100vh",
-	display: "flex",
-	flexDirection: "column",
-	justifyContent: "center",
-	alignItems: "center",
-	transition: theme.transitions.create("margin", {
-		easing: theme.transitions.easing.sharp,
-		duration: theme.transitions.duration.leavingScreen,
-	}),
-	marginLeft: -drawerWidth,
-	...(open && {
-		marginLeft: 0,
-		transition: theme.transitions.create("margin", {
-			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.enteringScreen,
-		}),
-	}),
-}));
 
 const AppBar = styled(MuiAppBar, {
 	shouldForwardProp: (prop) => prop !== "open",
@@ -142,6 +118,12 @@ export default function HealthPackages() {
 			console.error("Error fetching packages:", error);
 		}
 	}
+
+	const handleEdit = (packName) => {
+		console.log("Edit");
+		console.log("Name: ", packName);
+		navigate(`/admin/edit-health-package/${packName}`);
+	};
 
 	const handleDelete = async (packName) => {
 		try {
@@ -302,7 +284,9 @@ export default function HealthPackages() {
 										<Typography>{pack.description}</Typography>
 									</CardContent>
 									<CardActions>
-										<Button size='small'>Edit</Button>
+										<Button size='small' onClick={() => handleEdit(pack.name)}>
+											Edit
+										</Button>
 										<Button
 											size='small'
 											color='error'

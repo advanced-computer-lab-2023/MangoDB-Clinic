@@ -34,7 +34,6 @@ router.get("/my-info", protectAdmin, getMyInfo);
 router.get("/view-doctor/:id", protectAdmin, viewDoctorRequest);
 router.get("/view-requested-doctors", protectAdmin, viewAllDoctorRequests);
 router.get("/get-packages", protectAdmin, getPackages);
-router.post("/get-package", protectAdmin, getPackage);
 router.get("/get-admins", protectAdmin, getAdmins);
 router.get("/get-doctors", protectAdmin, getDoctors);
 router.get("/get-patients", protectAdmin, getPatients);
@@ -46,6 +45,7 @@ router.post("/request-otp", sendOTP);
 router.post("/verify-otp", verifyOTP);
 router.post("/reset-password", resetPassword);
 router.post("/change-password", protectAdmin, changePassword);
+router.post("/get-package", protectAdmin, getPackage);
 
 router.delete("/remove-doctor/:id", protectAdmin, removeDoctor);
 router.delete("/remove-patient/:id", protectAdmin, removePatient);
