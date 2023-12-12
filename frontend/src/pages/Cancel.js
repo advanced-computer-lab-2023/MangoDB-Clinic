@@ -8,7 +8,7 @@ const Cancel = () => {
 		// Use setTimeout to delay the redirection
 		const timeoutId = setTimeout(() => {
 			// Redirect to the home page after 5 seconds
-			navigate("/");
+			navigate("/viewpackages");
 		}, 5000);
 
 		// Clear the timeout when the component is unmounted

@@ -887,6 +887,118 @@ const cancelHealthPackage = async (req, res) => {
 	}
 };
 
+const checkHealthPackageSubscription = async (req, res) => {
+	try {
+		const patient = req.user;
+		console.log(patient);
+
+		if (patient) {
+			if (!patient.healthPackage) {
+				return res.status(200).json("not subscribed");
+					
+			}
+			else {
+				const patient1 = await patient.populate("healthPackage");
+				console.log(patient1);
+				return res.status(200).json(patient1);
+			}
+		}
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+	}
+};
+
+const subscribeToHealthPackage = async (req, res) => {
+	const packageId = req.params.packageId;
+
+  try {
+    const patient = req.user;
+
+    if (patient) {
+      if (patient.healthPackage && patient.healthPackage.status === "Subscribed") {
+        return res.status(400).json({
+          error: "You are already subscribed to a health package. Cancel your subscription first",
+        });
+      }
+
+      const renewal = new Date();
+      renewal.setFullYear(renewal.getFullYear() + 1);
+
+      const healthPackageObject = {
+        _id: packageId, 
+        status: "Subscribed",
+        cancellationDate: null,
+        renewalDate: renewal,
+      };
+
+      patient.healthPackage = healthPackageObject;
+
+      for (const familyMember of patient.family) {
+        if (familyMember.userId) {
+          const member = await Patient.findById(familyMember.userId);
+          if (member) {
+            member.healthPackage = healthPackageObject;
+            await member.save();
+          }
+        }
+      }
+
+      // Save updates
+      await patient.save();
+
+      res.status(200).json({ message: "Successfully subscribed to health package" });
+    }
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+	// const packageId = req.params.packageId;
+
+	// try {
+	// 	const patient = req.user;
+
+	// 	if (patient) {
+	// 		if (
+	// 			patient.healthPackage &&
+	// 			patient.healthPackage.status === "Subscribed"
+	// 		) {
+	// 			return res.status(400).json({
+	// 				error:
+	// 					"You are already subscribed to a health package. Cancel your subscription first",
+	// 			});
+	// 		}
+
+	// 		const renewal = new Date();
+	// 		renewal.setFullYear(renewal.getFullYear() + 1);
+
+	// 		patient.healthPackage.status = "Subscribed";
+	// 		patient.healthPackage.cancellationDate = null;
+	// 		patient.healthPackage.renewalDate = renewal;
+	// 		patient.healthPackage = packageId;
+
+	// 		for (const familyMember of patient.family) {
+	// 			if (familyMember.userId) {
+	// 				const member = await Patient.findById(familyMember.userId);
+	// 				if (member) {
+	// 					member.healthPackage.status = "Subscribed";
+	// 					member.healthPackage.cancellationDate = null;
+	// 					member.healthPackage.renewalDate = renewal;
+	// 					member.healthPackage = packageId;
+	// 					await member.save();
+	// 				}
+	// 			}
+	// 		}
+
+	// 		await patient.save();
+
+	// 		res
+	// 			.status(200)
+	// 			.json({ message: "Successfully subscribed to health package" });
+	// 	}
+	// } catch (err) {
+	// 	res.status(400).json({ error: err.message });
+	// }
+};
+
 const downloadPrescription = asyncHandler(async (req, res) => {
 	const patient = req.user;
 	const prescription = await Prescription.findById(req.params.id).populate(
@@ -1057,55 +1169,6 @@ const linkFamilyMember = async (req, res) => {
 		}
 	} catch (err) {
 		res.status(500).json({ error: err.message });
-	}
-};
-
-const subscribeToHealthPackage = async (req, res) => {
-	const packageId = req.params.packageId;
-
-	try {
-		const patient = req.user;
-
-		if (patient) {
-			if (
-				patient.healthPackage &&
-				patient.healthPackage.status === "Subscribed"
-			) {
-				return res.status(400).json({
-					error:
-						"You are already subscribed to a health package. Cancel your subscription first",
-				});
-			}
-
-			const renewal = new Date();
-			renewal.setFullYear(renewal.getFullYear() + 1);
-
-			patient.healthPackage.status = "Subscribed";
-			patient.healthPackage.cancellationDate = null;
-			patient.healthPackage.renewalDate = renewal;
-			patient.healthPackage = packageId;
-
-			for (const familyMember of patient.family) {
-				if (familyMember.userId) {
-					const member = await Patient.findById(familyMember.userId);
-					if (member) {
-						member.healthPackage.status = "Subscribed";
-						member.healthPackage.cancellationDate = null;
-						member.healthPackage.renewalDate = renewal;
-						member.healthPackage = packageId;
-						await member.save();
-					}
-				}
-			}
-
-			await patient.save();
-
-			res
-				.status(200)
-				.json({ message: "Successfully subscribed to health package" });
-		}
-	} catch (err) {
-		res.status(200).json({ error: err.message });
 	}
 };
 
@@ -2022,5 +2085,6 @@ module.exports = {
 	requestFollowUp,
 	downloadPrescription,
 	createVideoChat,
-	clearNotifs
+	clearNotifs,
+	checkHealthPackageSubscription
 };

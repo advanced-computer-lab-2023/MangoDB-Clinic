@@ -21,7 +21,8 @@ const PackageCard = ({ packages, handleClick }) => {
             case 'Silver Package':
                 return 'linear-gradient(45deg, #c0c0c0, #f0f0f0)'; 
             case 'Gold Package':
-                return'linear-gradient(0deg, #7D3E00 -7.62%, #FFC170 14.51%, #FFEED8 32.4%, #FFC170 84.95%, #7D3E00 106.96%)';
+                return 'radial-gradient(ellipse farthest-corner at right bottom, #FEDB37 0%, #FDB931 8%, #9f7928 30%, #8A6E2F 40%, transparent 80%), ' +
+                'radial-gradient(ellipse farthest-corner at left top, #FFFFFF 0%, #FFFFAC 8%, #D1B464 25%, #5d4a1f 62.5%, #5d4a1f 100%)';
                   
             case 'Platinum Package':
                 return 'linear-gradient(45deg, #dedeff, #ffffff 16%, #dedeff 36%, #ffffff 45%, #ffffff 60%, #dedeff 72%, #ffffff 80%, #dedeff 84%, #555564)';
@@ -113,6 +114,7 @@ const PackageCard = ({ packages, handleClick }) => {
 
 const ViewPackagesPatient = () => {
     const [packages, setPackages] = useState([]);
+    const [subscribed, setSubscribed] = useState(false);
     const [isPending, setIsPending] = useState(true);
     const [error, setError] = useState(null);
 
@@ -168,18 +170,25 @@ const ViewPackagesPatient = () => {
         }
 
     }
-    // const subscribedPatient = async () => {
-    //     const token = localStorage.getItem("token");
-    //     const response = await fetch("http://localhost:4000/patient/view_health_packages", {
-    //         method: "GET",
-    //         headers: {
-    //             Authorization: `Bearer ${token}`,
-    //             "Content-Type": "application/json",
-    //         },
-    //     });
-    //     const data = await response.json();
-    //     return data;
-    // }
+    
+    const subscribedPatient = async () => {
+        const token = localStorage.getItem("token");
+        const response = await fetch("http://localhost:4000/patient/view_health_packages", {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+        const data = await response.json();
+        if(data === "Subscribed"){
+            setSubscribed(true);
+        }
+        else{
+            setSubscribed(false);
+        }
+        return data;
+    }
 
     const handleClick = async (e) => {
         try {
@@ -189,111 +198,18 @@ const ViewPackagesPatient = () => {
 
             const response = await checkout1(id, items);
 
-            // Check if the request was successful (status code 2xx)
             if (response.status === 200) {
                 const { url } = response.data;
                 console.log("Checkout Session:", response.data);
-                // Handle the session object as needed (e.g., redirect to the checkout page)
                 window.location = url;
             } else {
                 console.error("Failed to create checkout session");
-                // Handle error as needed
             }
     
-            // const res = await fetch(`http://localhost:4000/payments/create-checkout-session-packages/${id}`, {
-            //     method: "POST",
-            //     headers: {
-            //         "Content-Type": "application/json",
-            //     },
-            //     body: JSON.stringify({
-            //         items: items,
-            //     }),
-            // });
-            // console.log(res.status);
-
-            // if (res.status === 200) {
-            //     console.log(res);
-                
-            //     // const { url } = res.data;
-            //     const { url } = res;
-
-            //     console.log("url:", url);
-            //     console.log("Checkout Session:", res.data);
-                
-            //     window.location = url;
-            // } else {
-            //     console.error("Failed to create checkout session");
-            //     // Handle error as needed
-            // }
         } catch (error) {
             console.error("Error during checkout:", error);
-            // Handle error as needed
         }
     };
-
-    // const handleClick = async (packageName, packageID) => {
-    //     try {
-    //         const id = packageName.split(" ")[0];
-    //         const items = [{ id: 1, quantity: 1 }];
-    //         const response = await checkout1(id, items);
-    //         const patientID = await getIdOfPatient();
-            
-    //         if (response.status === 200) {
-
-    //             const { url } = response.data;
-    //             console.log("Checkout Session:", response.data);
-
-    //             const token = localStorage.getItem("token");
-    //             await fetch(`http://localhost:4000/patient/subscribe_to_health_package/${patientID}/${packageID}`, {
-    //                 method: "GET",
-    //                 headers: {
-    //                     Authorization: `Bearer ${token}`,
-    //                     "Content-Type": "application/json",
-    //                 },
-    //             });
-    //             window.location = url;
-    //         } else {
-    //             console.error("Failed to create checkout session");
-    //             // Handle error as needed
-    //         }
-    //     } catch (error) {
-    //         console.error("Error during checkout:", error);
-    //         // Handle error as needed
-    //     }
-    // };
-
-    // const handleClick = async (packageName) => {
-    //     setIsPending(true);
-    //     setError(null);
-
-    //     try {
-    //         const token = localStorage.getItem("token");
-    //         const pateintId = await getIdOfPatient();
-    //         const items = [{ id: 1, quantity: 1 }];
-    //         const response = await fetch(
-    //             "http://localhost:4000/payments/create-checkout-session-packages" , {
-    //             method: "POST",
-    //             body: JSON.stringify({
-    //                 patientId: pateintId,
-    //                 packageName: packageName,
-    //             }),
-    //         });
-
-    //         if (!response.ok) {
-    //             throw Error("Could not fetch the data for that resource");
-    //         }
-
-    //         const data = await response.json();
-    //         setIsPending(false);
-    //         setError(null);
-    //         alert("Package Subscribed!");
-    //     }
-    //     catch (err) {
-    //         setError(err.message);
-    //         setIsPending(false);
-    //     }
-
-    // };
 
     return (  
         <ThemeProvider theme={theme}>

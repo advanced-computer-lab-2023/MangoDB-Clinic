@@ -52,6 +52,7 @@ const {
 	downloadPrescription,
 	clearNotifs,
 	createVideoChat,
+	checkHealthPackageSubscription,
 } = require("../controllers/patientController");
 
 router.get("/myInfo", protectPatient, getMyInfo);
@@ -123,6 +124,8 @@ router.get(
 	viewSubscribedhealthPackage
 );
 
+router.get("/check_health_package_subscription", protectPatient, checkHealthPackageSubscription);
+
 router.put("/cancel_health_package/", protectPatient, cancelHealthPackage);
 
 router.get("/downloadPrescription/", protectPatient, downloadPrescription);
@@ -145,7 +148,7 @@ router.delete(
 router.put("/link_family_member/", protectPatient, linkFamilyMember);
 
 router.put(
-	"/subscribe_to_health_package/:patientId/:packageId",
+	"/subscribe_to_health_package/:packageId",
 	protectPatient,
 	subscribeToHealthPackage
 );

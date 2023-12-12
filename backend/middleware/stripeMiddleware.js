@@ -5,6 +5,7 @@ const Doctor = require('../models/doctorModel');
 const Patient = require('../models/patientModel');
 const Appointment = require('../models/appointmentModel');
 const Prescription = require("../models/prescriptionModel");
+const Package = require("../models/packagesModel");
 router.post('/create-checkout-session/:id', async (req, res) => {
     try {
         // const storeItems = new Map([
@@ -130,6 +131,8 @@ router.post('/create-checkout-session-packages/:id', async (req, res) => {
         const items = req.body.items;
         console.log(items);
         const packageType = req.params.id;
+        const package = await Package.findOne({name: packageType + " Package"});
+        const packageId = package._id;
         let paymentAmount = 0;
         
         switch (packageType) {
@@ -175,7 +178,7 @@ router.post('/create-checkout-session-packages/:id', async (req, res) => {
                     quantity: item.quantity,
                 };
             }),
-            success_url: 'http://localhost:3000/Success',
+            success_url: `http://localhost:3000/Success?packageId=${packageId}`,
             cancel_url: 'http://localhost:3000/Cancel',
         });
 
