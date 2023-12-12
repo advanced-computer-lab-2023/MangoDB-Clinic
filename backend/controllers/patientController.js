@@ -285,12 +285,10 @@ const createVideoChat = asyncHandler(async (req, res) => {
 				if (error) {
 					console.log("Error sending email:", error);
 				} else {
-					res
-						.status(200)
-						.json({
-							message: "Video chat created successfully.",
-							url: roomUrl,
-						});
+					res.status(200).json({
+						message: "Video chat created successfully.",
+						url: roomUrl,
+					});
 					console.log("Email sent:", info.response);
 				}
 			});
@@ -473,7 +471,9 @@ const getAllPrescriptionsOfPatient = async (req, res) => {
 
 		const prescriptions = await Prescription.find({
 			patientId: patientId,
-		}).populate("doctorId");
+		})
+			.populate("doctorId")
+			.populate("patientId");
 		console.log(prescriptions);
 		res.status(200).json(prescriptions);
 	} catch (error) {
@@ -895,9 +895,7 @@ const checkHealthPackageSubscription = async (req, res) => {
 		if (patient) {
 			if (!patient.healthPackage) {
 				return res.status(200).json("not subscribed");
-					
-			}
-			else {
+			} else {
 				const patient1 = await patient.populate("healthPackage");
 				console.log(patient1);
 				return res.status(200).json(patient1);
@@ -911,46 +909,52 @@ const checkHealthPackageSubscription = async (req, res) => {
 const subscribeToHealthPackage = async (req, res) => {
 	const packageId = req.params.packageId;
 
-  try {
-    const patient = req.user;
+	try {
+		const patient = req.user;
 
-    if (patient) {
-      if (patient.healthPackage && patient.healthPackage.status === "Subscribed") {
-        return res.status(400).json({
-          error: "You are already subscribed to a health package. Cancel your subscription first",
-        });
-      }
+		if (patient) {
+			if (
+				patient.healthPackage &&
+				patient.healthPackage.status === "Subscribed"
+			) {
+				return res.status(400).json({
+					error:
+						"You are already subscribed to a health package. Cancel your subscription first",
+				});
+			}
 
-      const renewal = new Date();
-      renewal.setFullYear(renewal.getFullYear() + 1);
+			const renewal = new Date();
+			renewal.setFullYear(renewal.getFullYear() + 1);
 
-      const healthPackageObject = {
-        _id: packageId, 
-        status: "Subscribed",
-        cancellationDate: null,
-        renewalDate: renewal,
-      };
+			const healthPackageObject = {
+				_id: packageId,
+				status: "Subscribed",
+				cancellationDate: null,
+				renewalDate: renewal,
+			};
 
-      patient.healthPackage = healthPackageObject;
+			patient.healthPackage = healthPackageObject;
 
-      for (const familyMember of patient.family) {
-        if (familyMember.userId) {
-          const member = await Patient.findById(familyMember.userId);
-          if (member) {
-            member.healthPackage = healthPackageObject;
-            await member.save();
-          }
-        }
-      }
+			for (const familyMember of patient.family) {
+				if (familyMember.userId) {
+					const member = await Patient.findById(familyMember.userId);
+					if (member) {
+						member.healthPackage = healthPackageObject;
+						await member.save();
+					}
+				}
+			}
 
-      // Save updates
-      await patient.save();
+			// Save updates
+			await patient.save();
 
-      res.status(200).json({ message: "Successfully subscribed to health package" });
-    }
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
+			res
+				.status(200)
+				.json({ message: "Successfully subscribed to health package" });
+		}
+	} catch (err) {
+		res.status(400).json({ error: err.message });
+	}
 	// const packageId = req.params.packageId;
 
 	// try {
@@ -2029,13 +2033,12 @@ const clearNotifs = async (req, res) => {
 			{ _id: patientId },
 			{ $pull: { notifications: { _id: id } } }
 		);
-		
-		res.status(200).json({ message: "Success" })
-	} catch(error) {
+
+		res.status(200).json({ message: "Success" });
+	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
-
-}
+};
 
 module.exports = {
 	getMyInfo,
@@ -2086,5 +2089,5 @@ module.exports = {
 	downloadPrescription,
 	createVideoChat,
 	clearNotifs,
-	checkHealthPackageSubscription
+	checkHealthPackageSubscription,
 };

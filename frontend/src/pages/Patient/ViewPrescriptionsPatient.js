@@ -143,9 +143,6 @@ const ViewPrescriptionsPatient = () => {
 
 	return (
 		<ThemeProvider theme={theme}>
-			{/* <Typography style={{ margin: "2rem" }} variant='h2' align='left'>
-				List Of Prescriptions
-			</Typography> */}
 			<Grid container justifyContent='center' style={{ padding: "7rem" }}>
 				<Grid item xs={12}>
 					<Paper elevation={3} style={{ padding: "2rem" }}>

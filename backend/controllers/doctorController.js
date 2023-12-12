@@ -1478,7 +1478,9 @@ const viewPrescriptionsByDoctor = async (req, res) => {
 	try {
 		const prescriptions = await Prescription.find({
 			doctorId: doctorId,
-		}).populate("patientId");
+		})
+			.populate("patientId")
+			.populate("doctorId");
 		res.status(200).json(prescriptions);
 	} catch (error) {
 		res.status(500).json({ error: "Failed to fetch prescriptions" });
