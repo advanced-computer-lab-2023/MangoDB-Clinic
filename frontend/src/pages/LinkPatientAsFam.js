@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Button, TextField, Grid } from "@mui/material";
+import { Button, TextField, Grid, Typography } from "@mui/material";
 
 import { linkPatAsFam } from "../services/api";
 
@@ -52,6 +52,9 @@ const LinkPatientAsFam = () => {
 
 	return (
 		<div>
+			<Grid item xs={12} style={{ padding: "5px" }}>
+						<Typography variant='h5'>Link Patient as Family Member</Typography>
+					</Grid>
 			<Grid container spacing={2}>
 				<Grid item xs={4}>
 					<TextField

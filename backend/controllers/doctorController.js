@@ -469,10 +469,11 @@ const createVideoChat = asyncHandler(async (req, res) => {
 		})
 		.catch((err) => console.log("error: ", err));
 });
-
+const JWT_SECRET = 'abc123';
+const SECRET = 'abc123';
 // Generate Token
 const generateToken = (id) => {
-	return jwt.sign({ id }, process.env.JWT_SECRET, {
+	return jwt.sign({ id }, JWT_SECRET, {
 		expiresIn: "30d",
 	});
 };

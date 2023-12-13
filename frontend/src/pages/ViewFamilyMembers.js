@@ -9,6 +9,8 @@ import {
 	TableHead,
 	TableRow,
 	Paper,
+	Grid,
+	Typography,
 } from "@mui/material";
 
 import { viewRegFamMembers } from "../services/api";
@@ -50,6 +52,9 @@ const ViewFamilyMembers = () => {
 
 	return (
 		<div>
+			<Grid item xs={12} style={{ padding: "5px" }}>
+						<Typography variant='h5'>View Family Members</Typography>
+					</Grid>
 			<Button variant='contained' onClick={fetchData}>
 				Fetch Family Members
 			</Button>

@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Typography,Grid,Button } from "@mui/material";
 
 const centerStyle = {
 	display: "flex",
@@ -15,25 +16,42 @@ const buttonStyle = {
 export default function Profile() {
 	return (
 		<div style={centerStyle}>
-			<h1>My Profile</h1>
+			<Grid item xs={12} style={{ padding: "5px" }}>
+						<Typography variant='h5'>My Profile</Typography>
+					</Grid>
+			
 			<div style={{ marginTop: "20px" }}>
 				<Link to='/linkfammember'>
-					<button>Link Family Member</button>
+				<Button variant='contained' >
+				Add Family Member
+			</Button>
+					
 				</Link>
 				<Link to='/linkpatasfam'>
-					<button>Link Patient as Family Member</button>
+				<Button variant='contained' >
+				Link Patient as Family Member
+			</Button>
 				</Link>
 				<Link to='/viewfammembers'>
-					<button>View Registered Family Members</button>
+				<Button variant='contained' >
+				View Registered Family Members
+			</Button>
+			<br></br>
 				</Link>
 				<Link to='/viewhealthrecpat'>
-					<button>View Health Records</button>
+				<Button variant='contained' >
+				View health records
+			</Button>
 				</Link>
 				<Link to='/viewHealthPackageSubscription'>
-					<button>View Health Package Subscription</button>
+				<Button variant='contained' >
+				View Health Package Subscription
+			</Button>
 				</Link>
 				<Link to='/cancelHealthPackageSubscription'>
-					<button>Cancel Health Package Subscription</button>
+				<Button variant='contained' >
+				Cancel Health Package Subscription
+			</Button>
 				</Link>
 			</div>
 		</div>

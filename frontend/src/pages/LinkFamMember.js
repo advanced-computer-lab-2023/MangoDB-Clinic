@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-import { Button, TextField, Grid } from "@mui/material";
+import { Button, TextField, Grid,Typography } from "@mui/material";
 
 import { linkFam } from "../services/api";
 
@@ -56,6 +56,9 @@ const LinkFamMember = () => {
 
 	return (
 		<div>
+			<Grid item xs={12} style={{ padding: "5px" }}>
+						<Typography variant='h5'>Add Family member</Typography>
+					</Grid>
 			<Grid container spacing={2}>
 				<Grid item xs={6}>
 					<TextField

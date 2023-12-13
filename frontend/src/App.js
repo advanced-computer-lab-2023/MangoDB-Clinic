@@ -169,7 +169,7 @@ function App() {
 						element={<ViewHealthRecordsPat />}
 					/>
 					<Route path='/linkpatasfam/:id' element={<LinkPatientAsFam />} />
-					<Route path='/addslots/:id' element={<AddSlotsPage />} />
+					<Route path='/addslots' element={<AddSlotsPage />} />
 					<Route
 						path='/viewemploymentcontract/:id'
 						element={<ViewEmploymentContract />}

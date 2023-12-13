@@ -30,6 +30,12 @@ export const DoctorListItems = (
 			</ListItemIcon>
 			<ListItemText primary='Appointments' />
 		</ListItemButton>
+		<ListItemButton component={Link} to={`/addslots`}>
+			<ListItemIcon>
+				<TodayIcon />
+			</ListItemIcon>
+			<ListItemText primary='Add Slots' />
+		</ListItemButton>
 		<ListItemButton component={Link} to='/viewPrescriptionsByDoctor'>
 			<ListItemIcon>
 				<MedicationIcon />

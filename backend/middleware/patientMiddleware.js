@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const Patient = require("../models/patientModel");
+const JWT_SECRET = 'abc123';
 
 const protectPatient = asyncHandler(async (req, res, next) => {
 	let token;
@@ -15,7 +16,7 @@ const protectPatient = asyncHandler(async (req, res, next) => {
 			
 
 			// Verify token
-			const decoded = jwt.verify(token, process.env.JWT_SECRET);
+			const decoded = jwt.verify(token, JWT_SECRET);
 
 			const patient = await Patient.findById(decoded.id);
 
