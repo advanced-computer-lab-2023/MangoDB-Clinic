@@ -1,12 +1,31 @@
 import { useEffect, useState } from "react";
-
-import { Grid, Paper, Typography, TextField } from "@mui/material";
+import React from "react";
+import { Grid, Paper, Typography, TextField ,ThemeProvider,	TableContainer,
+	TableHead,
+	TableRow,
+Table,
+TableBody,TableCell} from "@mui/material";
+import theme from "../theme";
 import { experimentalStyled as styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
+import { alpha } from "@mui/system";
+import TableSortLabel from "@mui/material/TableSortLabel";
+import FollowUpIcon from '@mui/icons-material/EventNote'
+import Box from '@mui/material/Box';
+
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+
+import DialogContentText from '@mui/material/DialogContentText';
+
 
 import {
 	viewPatientAppointments,
@@ -27,6 +46,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const ViewAppointments = () => {
+	const rejectIcon = `${process.env.PUBLIC_URL}/icons/reject.svg`;
 	// const id = "6526d30a0f83f5e462288354";
 	const [appointments, setAppointments] = useState([]);
 	const [isPending, setIsPending] = useState(true);
@@ -38,7 +58,23 @@ const ViewAppointments = () => {
 	const [statEnum, setStatEnum] = useState(["All"]);
 	const [newDateTime, setNewDateTime] = useState('');
 	const [toReschdule, setToReschdule] = useState('');
+	const [sortDirection, setSortDirection] = React.useState('asc');
 
+	const [open, setOpen] = useState(false);
+	const [openCancel, setOpenCancel] = useState(false);
+	const [openFollowup, setOpenFollowup] = React.useState(false);
+
+const handleClickOpenFollowup = () => {
+	setOpenFollowup(true);
+};
+
+const handleCloseFollowup= () => {
+	setOpenFollowup(false);
+};
+
+	const handleClose = () => {
+		setOpenCancel(false);
+	  };
 	function convertToISOFormat(dateString) {
 		// Split the input string into day, month, and year
 		const [day, month, year] = dateString.split("/");
@@ -51,7 +87,25 @@ const ViewAppointments = () => {
 
 		return isoDateString;
 	}
-
+	const handleSort = () => {
+		// Toggle sort direction
+		const newDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+		setSortDirection(newDirection);
+	
+		// Sort appointments
+		appointments.sort((a, b) => {
+			const dateA = new Date(a.date);
+			const dateB = new Date(b.date);
+	
+			// Compare dates depending on sort direction
+			if (newDirection === 'asc') {
+				return dateA - dateB;
+			} else {
+				return dateB - dateA;
+			}
+		});
+	};
+	
 	const handleUpcomingClick = () => {
 		setUpcoming(!upcoming);
 		setStatus("All");
@@ -176,36 +230,28 @@ const ViewAppointments = () => {
 	}, [appointments]);
 
 	return (
-		<div>
+		<ThemeProvider theme={theme}>
+		
 			<h1>Appointments</h1>
 			<div className='app-p'>
-				{!upcoming && (
-					<Button
-						disabled={false}
-						size='medium'
-						variant='outlined'
-						style={{ margin: "10px", color: "#1976d2" }}
-						onClick={handleUpcomingClick}
-					>
-						Upcoming Appointments
-					</Button>
-				)}
-				{upcoming && (
-					<Button
-						disabled={false}
-						size='medium'
-						variant='filled'
-						style={{ margin: "10px", color: "white", background: "#1976d2" }}
-						onClick={handleUpcomingClick}
-					>
-						Upcoming Appointments
-					</Button>
-				)}
+			
 
 				<br />
-				<form onSubmit={handleSubmit}>
-				<Grid>
-						<FormControl
+				
+			</div>
+
+			{isPending && <div>Loading...</div>}
+			{error && <div>{error}</div>}
+			{!isPending && !error && appointments.length < 1 && (
+				<div>No appointments to show...</div>
+			)}
+			{appointments.length > 0 && (
+			<TableContainer component={Paper} xs={8}>
+				<Table sx={{ minWidth: 650 }} aria-label='simple table'>
+				{/* <form onSubmit={handleSubmit}> */}
+				<TableHead sx={{ backgroundColor: alpha("#B2F0E8", 0.3) }}>
+				{/* <TableContainer component={Paper} xs={8}> */}
+						{/* <FormControl
 							fullWidth
 							variant='outlined'
 							size='small'
@@ -228,8 +274,8 @@ const ViewAppointments = () => {
 									</MenuItem>
 								))}
 							</Select>
-						</FormControl>
-						<TextField
+						</FormControl> */}
+						{/* <TextField
 							id='from'
 							name='from'
 							label='From'
@@ -253,120 +299,242 @@ const ViewAppointments = () => {
 						/>
 						<Button variant='contained' type='submit'>
 							Filter
-						</Button>
-					</Grid>
-				</form>
-			</div>
+						</Button> */}
+						{/* </TableContainer> */}
+						{/* {!upcoming && (
+					<Button
+						disabled={false}
+						size='medium'
+						variant='outlined'
+						style={{ margin: "10px", color: "#1976d2" }}
+						onClick={handleUpcomingClick}
+					>
+						Upcoming Appointments
+					</Button>
+				)}
+				{upcoming && (
+					<Button
+						disabled={false}
+						size='medium'
+						variant='filled'
+						style={{ margin: "10px", color: "white", background: "#1976d2" }}
+						onClick={handleUpcomingClick}
+					>
+						Upcoming Appointments
+					</Button>
+				)} */}
+				<TableRow>
+				<TableCell >
+					<Typography variant='subtitle1' fontWeight='bold'>Doctor</Typography>
+				</TableCell>
+				<TableCell >
+					<TableSortLabel active={true} direction={sortDirection} onClick={handleSort}>
+						<Typography variant='subtitle1' fontWeight='bold'>Date</Typography>
+					</TableSortLabel>
+				</TableCell>
+				<TableCell >
+					<Typography variant='subtitle1' fontWeight='bold'>Status</Typography>
+				</TableCell>
+				<TableCell >
+					<Typography variant='subtitle1' fontWeight='bold'>Followup</Typography>
+				</TableCell>
+				
+				<TableCell >
+					<Typography variant='subtitle1' fontWeight='bold'>Reschedule</Typography>
+				</TableCell>
+				<TableCell >
+					<Typography variant='subtitle1' fontWeight='bold'>Cancel</Typography>
+				</TableCell>
+				<TableCell >
+					<Typography variant='subtitle1' fontWeight='bold'>Schedule followup</Typography>
+				</TableCell>
+			</TableRow>
 
-			{isPending && <div>Loading...</div>}
-			{error && <div>{error}</div>}
-			{!isPending && !error && appointments.length < 1 && (
-				<div>No appointments to show...</div>
-			)}
-			{appointments.length > 0 && (
-				<Grid>
+					</TableHead>
+				{/* </form> */}
+				<TableBody>
 					{appointments.map((appointment) => (
-						<Grid className='app-preview' key={appointment.id}>
-							<div>
-								<h1>
-									{/* Doctor Name: {appointment.doctorId.firstName} {appointment.doctorId.lastName} */}
-								</h1>
-								<h2>
-									{`Date: ${new Date(appointment.date).toLocaleDateString()}`}
+						// <Grid className='app-preview' key={appointment.id}>
+						<TableRow>
+							<TableCell>
+									 {appointment.doctorId.firstName} {appointment.doctorId.lastName}
+							</TableCell>
+							<TableCell>
+								
+									{`${new Date(appointment.date).toLocaleDateString()}`}
 									{`         Time: ${new Date(
 										appointment.date
 									).toLocaleTimeString([], {
 										hour: "2-digit",
 										minute: "2-digit",
 									})}`}
-								</h2>
+								
+							</TableCell>
+							<TableCell>
+							 {appointment.status}
+							</TableCell>
+							<TableCell >
+								{appointment.followUp ? "Yes" : "No"}
+							</TableCell>
+						
 
-								<h4>Status: {appointment.status}</h4>
-								<h5>Follow up: {appointment.followUp ? "Yes" : "No"}</h5>
-								{appointment.status === "confirmed" || appointment.status === "requested" ?
-										(
-											<div>			
-								<TextField
-								id='to'
-								name='to'
-								label='To'
-								variant='outlined'
-								// value={toReschdule}
-								onChange={handleChangee}
-								size='small'
-								type='datetime-local'
-								InputLabelProps={{ shrink: true }}
-							/>
+
+
+
+<TableCell>
+  {appointment.status === "confirmed" || appointment.status === "requested" ? (
+    <div>
+      <IconButton
+        onClick={() => setOpen(true)}
+      >
+        <CalendarTodayIcon />
+      </IconButton>
+
+	  <Dialog open={open} onClose={() => setOpen(false)}>
+  <DialogTitle>Reschedule Appointment</DialogTitle>
+  <DialogContent>
+    <TextField
+      id='to'
+      name='to'
+      label='To'
+      variant='outlined'
+      // value={toReschdule}
+      onChange={handleChangee}
+      size='small'
+      type='datetime-local'
+      InputLabelProps={{ shrink: true }}
+    />
+    <DialogActions style={{ justifyContent: 'center' }}>
+      <Button
+        variant='contained'
+        size='small'
+        onClick={(e) => {
+          e.preventDefault();
+          patientReschuleApp(appointment._id, newDateTime).then(() => {
+            window.location.reload();
+          }).catch((err) => setError(err.message));
+          setOpen(false);
+        }}
+      >
+        Reschedule
+      </Button>
+    </DialogActions>
+  </DialogContent>
+</Dialog>
+
+
+
+    </div>
+  ) : null}
+</TableCell>
+
+
+
+
+<TableCell>
+  {appointment.status !== "cancelled" &&  appointment.status !== "done" ? (
+    <div>
+  <IconButton
+  style={{ width: '40px', height: '40px' }}
+  onClick={(e) => {
+    e.preventDefault();
+    setOpenCancel(true);
+  }}
+>
+  <img src={rejectIcon} alt="Cancel Icon" style={{ width: '100%', height: '100%' }} />
+</IconButton>
+
+      <Dialog
+        open={openCancel}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Cancel Appointment"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to cancel the appointment?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="secondary" variant="outlined" >
+            No
+          </Button>
+          <Button
+            onClick={() => {
+              patientCancelApp({ appointmentId: appointment._id })
+                .then(() => {
+                  window.location.reload();
+                })
+                .catch((err) => setError(err.message));
+            }}
+            color="secondary" variant="contained"
+            autoFocus
+          >
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  ) : null}
+</TableCell>
+
+
+<TableCell>
+  {appointment.status === "done" ? (
+    <Box>
+      <IconButton onClick={handleClickOpenFollowup}>
+        <FollowUpIcon />
+      </IconButton>
+      <Dialog open={openFollowup} onClose={handleCloseFollowup}>
+        <DialogTitle>Request Follow-Up</DialogTitle>
+        <DialogContent>
+          <TextField
+            id='to'
+            name='to'
+            label='To'
+            variant='outlined'
+            onChange={handleChangee}
+            size='small'
+            type='datetime-local'
+            InputLabelProps={{ shrink: true }}
+          />
+        </DialogContent>
+        <DialogActions style={{ justifyContent: 'center' }}>
+          <Button onClick={handleCloseFollowup} color="secondary">
+            Cancel
+          </Button>
+          <Button
+            variant='contained'
+            size='small'
+            onClick={(e) => {
+              e.preventDefault();
+              patientReqFollowup(appointment._id,newDateTime)
+                .then(() => {
+                  window.location.reload();
+                })
+                .catch((err) => setError(err.message));
+              handleClose();
+            }}
+          >
+            Follow-Up
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
+  ) : null}
+</TableCell>
+
 							
-											<Button
-												variant='outlined'
-												size='small'
-												onClick={(e) => {
-													e.preventDefault()
-													patientReschuleApp(appointment._id, newDateTime).then(() => {
-															window.location.reload();})
-														.catch((err) => setError(err.message));
-												}}
-											>
-													Reschdule
-											</Button>
-										
-							</div>
-							): null}
-							{appointment.status !== "cancelled" &&  appointment.status !== "done"?
-										(
-											<div>
-											<Button
-												variant='outlined'
-												size='small'
-												onClick={(e) => {
-													e.preventDefault()
-													patientCancelApp({ appointmentId: appointment._id })
-													.then(() => {
-														window.location.reload();})
-													.catch((err) => setError(err.message));
-											}}
-											>
-													Cancel Appointment
-											</Button>
-										</div>
-							): null}
-
-							{appointment.status === "done" ?
-										(
-											<div>
-												<TextField
-												id='to'
-												name='to'
-												label='To'
-												variant='outlined'
-												// value={toReschdule}
-												onChange={handleChangee}
-												size='small'
-												type='datetime-local'
-												InputLabelProps={{ shrink: true }}
-											/>
-											<Button
-												variant='outlined'
-												size='small'
-												onClick={(e) => {
-													e.preventDefault()
-													patientReqFollowup(appointment._id,newDateTime)
-													.then(() => {
-														window.location.reload();})
-													.catch((err) => setError(err.message));
-											}}
-											>
-													Request Follow-Up
-											</Button>
-										</div>
-							): null}
-							</div>
-						</Grid>
+							</TableRow>
+						// </Grid>
 					))}
-				</Grid>
+				</TableBody>
+				</Table>
+				</TableContainer>
 			)}
-		</div>
+	
+		</ThemeProvider>
 	);
 };
 

@@ -559,7 +559,8 @@ const getAllAppointments = async (req, res) => {
 		console.log(req.user._id.toHexString());
 		const appointments = await Appointment.find({
 			patientId: patientId,
-		}).populate({
+		}).sort({ date: 'asc' }) // Add this line
+		.populate({
 			path: "doctorId",
 			select: "firstName lastName",
 		});
