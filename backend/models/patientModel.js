@@ -113,7 +113,7 @@ const patientSchema = mongoose.Schema(
           type: String,
           required: true
         },
-        read: {
+        seen: {
           type: Boolean,
           default: false
         }

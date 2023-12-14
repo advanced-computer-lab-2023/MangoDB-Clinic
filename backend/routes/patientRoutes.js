@@ -53,6 +53,7 @@ const {
 	clearNotifs,
 	createVideoChat,
 	checkHealthPackageSubscription,
+	seenNotifs
 } = require("../controllers/patientController");
 
 router.get("/myInfo", protectPatient, getMyInfo);
@@ -199,5 +200,6 @@ router.post(
 router.post("/requestFollowUp/:doctorId", protectPatient, requestFollowUp);
 
 router.patch("/clearNotifs", protectPatient, clearNotifs);
+router.patch("/seenNotifs", protectPatient, seenNotifs)
 
 module.exports = router;

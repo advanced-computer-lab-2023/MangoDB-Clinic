@@ -71,6 +71,10 @@ const doctorSchema = mongoose.Schema({
         type: String,
         required: true
       },
+      seen: {
+        type: Boolean,
+        default: false
+      }
     }
   ],
 },

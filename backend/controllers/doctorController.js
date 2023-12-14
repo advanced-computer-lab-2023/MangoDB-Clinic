@@ -1585,6 +1585,26 @@ const clearNotifs = async (req, res) => {
 	}
 };
 
+const seenNotifs = async (req, res) => {
+	try {
+		const doctorId = req.user._id;
+		const doctor = await Doctor.findById(doctorId);
+	
+		doctor.notifications.map((notification) => {
+			if (!notification.seen) {
+				notification.seen = true;
+			}
+		})
+	
+		await doctor.save();
+	
+		res.status(200).json({ message: "Success" });
+	} catch (error) {
+		console.log(error);
+		res.status(404).json({ error: error.message });
+	}
+}
+
 module.exports = {
 	clearNotifs,
 	createVideoChat,
@@ -1627,4 +1647,5 @@ module.exports = {
 	acceptFollowUpSession,
 	revokeFollowUpSession,
 	updatePrescription,
+	seenNotifs
 };

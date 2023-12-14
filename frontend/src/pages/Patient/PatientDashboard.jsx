@@ -19,6 +19,8 @@ import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import LogoutIcon from "@mui/icons-material/Logout";
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import Badge from '@mui/material/Badge';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import { PatientListItems } from "../../components/Patient/patientListItems";
@@ -29,6 +31,7 @@ import {
 	clearNotifsPatient,
 	getPatient,
 	getPatientInfo,
+	seenNotifsPatient,
 } from "../../services/api";
 import Notification from "../../components/Patient/Notification";
 
@@ -100,10 +103,12 @@ const defaultTheme = createTheme();
 
 export default function Dashboard() {
 	const [notifications, setNotifications] = useState([]);
+	const [ notificationsCount, setNotificationsCount ] = useState(0);
 	const [error, setError] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [patientName, setPatientName] = useState("");
 	const [reload, setReload] = useState(false);
+	const [ seen, setSeen ] = useState(false);
 
 	const navigate = useNavigate();
 	const [open, setOpen] = React.useState(true);
@@ -122,13 +127,30 @@ export default function Dashboard() {
 
 	const handleClose = () => {
 		setAnchorEl(null);
+		setSeen(true);
 		// window.location.reload();
+		notifications.map((notification) => {
+			notification.seen = true;
+		});
+		countNewNotifications(notifications);
 	};
 
 	const handleNotifDelete = async (id) => {
 		console.log(id);
 		await clearNotifsPatient(id);
 		setReload(!reload);
+	}
+
+	const countNewNotifications = (notifs) => {
+		let count = 0;
+	
+		for (let i = 0; i < notifs.length; i++) {
+		  if (!notifs[i].seen) {
+			count++;
+		  }
+		}
+	
+		setNotificationsCount(count);
 	}
 
 	const isOpen = Boolean(anchorEl);
@@ -139,10 +161,19 @@ export default function Dashboard() {
 			.then((result) => {
 				console.log(result);
 				setPatientName(`${result.data.firstName} ${result.data.lastName}`);
+				countNewNotifications(result.data.notifications);
 				setNotifications(result.data.notifications);
 			})
 			.catch((err) => setError(err.message));
 	}, [reload]);
+
+	useEffect(() => {
+		if (seen) {
+			seenNotifsPatient()
+				.then((result) => console.log(result))
+				.catch((err) => console.log(err.message));
+		}
+	}, [seen]);
 
 	return (
 		<ThemeProvider theme={defaultTheme}>
@@ -175,52 +206,38 @@ export default function Dashboard() {
 						>
 							Patient Dashboard
 						</Typography>
-						<div>
-							<Typography
-								component='h1'
-								variant='h6'
-								color='inherit'
-								noWrap
-								sx={{ flexGrow: 1 }}
-								aria-describedby={id}
-								onClick={handleClick}
-							>
-								{/* {`Notifications (${ read ? "Old" : "New" })`} */}
-								{ `Notifications (${ (notifications.some(notification => notification.read === false)) ? "New" : "Old" })` }
-							</Typography>
-							<Popover
-								id={id}
-								open={isOpen}
-								anchorEl={anchorEl}
-								onClose={handleClose}
-								anchorOrigin={{
-									vertical: "bottom",
-									horizontal: "center",
-								}}
-								transformOrigin={{
-									vertical: "top",
-									horizontal: "center",
-								}}
-							>
-								{/* <div>
-									{notifications.map((notification) => (
-										<Notification key={ notification._id } notification={ notification } handleNotifDelete={ handleNotifDelete } />
-									))}
-								</div> */}
-								<div>
-                                    {notifications.map((notification) => (
-                                        <div key={notification._id}>
-                                            <div style={{ "display": "flex", "align-items": "center", "justify-content": "space-between" }}>
-                                                <h4>{notification.title}</h4>
-                                                <DeleteForeverIcon id={ notification._id } onClick={ () => handleNotifDelete(notification._id) } />
-                                            </div>
-                                            <p>{notification.body}</p>
-                                            {/* { !notification.read ? setRead(false) : (!read ? setRead(false) : setRead(true)) } */}
-                                        </div>
-                                    ))}
-                                </div>
-							</Popover>
-						</div>
+						<IconButton color="inherit">
+							<Badge badgeContent={ notificationsCount } color="secondary">
+								<NotificationsIcon onClick={ handleClick } />
+								<Popover
+									id={id}
+									open={isOpen}
+									anchorEl={anchorEl}
+									onClose={handleClose}
+									anchorOrigin={{
+										vertical: 'bottom',
+										horizontal: 'center',
+									}}
+									transformOrigin={{
+										vertical: 'top',
+										horizontal: 'center',
+									}}
+								>
+									<div>
+										{notifications.map(notification => (
+										<div key={notification._id} style={ notification.seen ? {} : { "backgroundColor": '#F0F0F0' } }>
+											{/* <h4>{notification.title}</h4> */}
+											<div style={{ "display": "flex", "alignItems": "center", "justifyContent": "space-between" }}>
+											<h4>{notification.title}</h4>
+											<DeleteForeverIcon id={ notification._id } onClick={ () => handleNotifDelete(notification._id) } />
+											</div>
+											<p>{notification.body}</p>
+										</div>
+										))}
+									</div>
+								</Popover>
+							</Badge>
+						</IconButton>
 						<IconButton color='inherit'>
 							<LogoutIcon onClick={handleLogout} />
 						</IconButton>

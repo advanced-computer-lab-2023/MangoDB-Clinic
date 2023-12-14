@@ -27,6 +27,8 @@ export const getPatientInfo = () => API.get(`/patient/myInfo`, { headers: { Auth
 
 export const clearNotifsPatient = (id) => API.patch('/patient/clearNotifs', { id }, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 export const clearNotifsDoctor = () => API.patch('/doctor/clearNotifs', {}, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+export const seenNotifsDoctor = () => API.patch('/doctor/seenNotifs', {}, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+export const seenNotifsPatient = () => API.patch('/patient/seenNotifs', {}, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export const statusEnum = () => API.get("/doctor/statusOptions");
 

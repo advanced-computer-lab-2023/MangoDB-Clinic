@@ -1985,6 +1985,26 @@ const clearNotifs = async (req, res) => {
 	}
 };
 
+const seenNotifs = async (req, res) => {
+	try {
+		const patientId = req.user._id;
+		const patient = await Patient.findById(patientId);
+	
+		patient.notifications.map((notification) => {
+			if (!notification.seen) {
+				notification.seen = true;
+			}
+		})
+	
+		await patient.save();
+	
+		res.status(200).json({ message: "Success" });
+	} catch (error) {
+		console.log(error);
+		res.status(404).json({ error: error.message });
+	}
+}
+
 module.exports = {
 	getMyInfo,
 	getAllPatients,
@@ -2035,4 +2055,5 @@ module.exports = {
 	createVideoChat,
 	clearNotifs,
 	checkHealthPackageSubscription,
+	seenNotifs
 };

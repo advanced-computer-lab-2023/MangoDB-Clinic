@@ -20,12 +20,14 @@ import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import LogoutIcon from "@mui/icons-material/Logout";
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import Badge from '@mui/material/Badge';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import { DoctorListItems } from "../../components/Doctor/DoctorListItems";
 import { useState } from "react";
 import { useEffect } from "react";
-import { clearNotifsDoctor, getDoctor } from "../../services/api";
+import { clearNotifsDoctor, getDoctor, seenNotifsDoctor } from "../../services/api";
 
 function Copyright(props) {
 	return (
@@ -95,9 +97,11 @@ const defaultTheme = createTheme();
 
 export default function DoctorDashboard() {
 	const [notifications, setNotifications] = useState([]);
+	const [ notificationsCount, setNotificationsCount ] = useState(0);
 	const [error, setError] = useState(null);
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [doctorName, setDoctorName] = useState("");
+	const [ seen, setSeen ] = useState(false);
 
 	const navigate = useNavigate();
 	const [open, setOpen] = React.useState(true);
@@ -116,9 +120,26 @@ export default function DoctorDashboard() {
 
 	const handleClose = () => {
 		setAnchorEl(null);
+		setSeen(true);
 		// clearNotifsDoctor();
-		window.location.reload();
+		// window.location.reload();
+		notifications.map((notification) => {
+			notification.seen = true;
+		});
+		countNewNotifications(notifications);
 	};
+
+	const countNewNotifications = (notifs) => {
+		let count = 0;
+	
+		for (let i = 0; i < notifs.length; i++) {
+		  if (!notifs[i].seen) {
+			count++;
+		  }
+		}
+	
+		setNotificationsCount(count);
+	}
 
 	const isOpen = Boolean(anchorEl);
 	const id = isOpen ? "simple-popover" : undefined;
@@ -127,10 +148,19 @@ export default function DoctorDashboard() {
 		getDoctor()
 			.then((result) => {
 				setDoctorName(`${result.data.firstName} ${result.data.lastName}`);
+				countNewNotifications(result.data.notifications);
 				setNotifications(result.data.notifications);
 			})
 			.catch((err) => setError(err.message));
 	}, []);
+
+	useEffect(() => {
+		if (seen) {
+			seenNotifsDoctor()
+				.then((result) => console.log(result))
+				.catch((err) => console.log(err.message));
+		}
+	}, [seen]);
 
 	return (
 		<ThemeProvider theme={defaultTheme}>
@@ -163,7 +193,39 @@ export default function DoctorDashboard() {
 						>
 							Doctor Dashboard
 						</Typography>
-						<div>
+						<IconButton color="inherit">
+							<Badge badgeContent={ notificationsCount } color="secondary">
+								<NotificationsIcon onClick={ handleClick } />
+								<Popover
+									id={id}
+									open={isOpen}
+									anchorEl={anchorEl}
+									onClose={handleClose}
+									anchorOrigin={{
+										vertical: 'bottom',
+										horizontal: 'center',
+									}}
+									transformOrigin={{
+										vertical: 'top',
+										horizontal: 'center',
+									}}
+								>
+									<div>
+										{notifications.map(notification => (
+										<div key={notification._id} style={ notification.seen ? {} : { "backgroundColor": '#F0F0F0' } }>
+											{/* <h4>{notification.title}</h4> */}
+											<div style={{ "display": "flex", "alignItems": "center", "justifyContent": "space-between" }}>
+											<h4>{notification.title}</h4>
+											<DeleteForeverIcon id={ notification._id } onClick={ () => handleNotifDelete(notification._id) } />
+											</div>
+											<p>{notification.body}</p>
+										</div>
+										))}
+									</div>
+								</Popover>
+							</Badge>
+						</IconButton>
+						{/* <div>
 							<Typography
 								component='h1'
 								variant='h6'
@@ -197,10 +259,9 @@ export default function DoctorDashboard() {
 										</div>
 									))}
 									<DeleteForeverIcon />
-									{ /* x button id=notifId calls->deleteNotif(notifId) */ }
 								</div>
 							</Popover>
-						</div>
+						</div> */}
 						<IconButton color='inherit'>
 							<LogoutIcon onClick={handleLogout} />
 						</IconButton>
