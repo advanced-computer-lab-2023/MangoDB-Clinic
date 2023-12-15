@@ -1,11 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import{  
+	Snackbar
+	} from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
 
 const Success = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
     const packageId = new URLSearchParams(location.search).get("packageId");
+	const [openSuccess, setOpenSuccess] = useState(true);
 
 	useEffect(() => {
 		// Use setTimeout to delay the redirection
@@ -45,8 +50,22 @@ const Success = () => {
 
 	return (
 		<div>
-			<h1>Payment successful</h1>
 			<p>Redirecting to the home page...</p>
+			<Snackbar
+				open={openSuccess}
+				anchorOrigin={{ vertical: "top", horizontal: "center" }}
+				autoHideDuration={6000}
+				onClose={() => setOpenSuccess(false)}
+				>
+				<MuiAlert
+					onClose={() => setOpenSuccess(false)}
+					severity="success"
+					elevation={6}
+					variant="filled"
+				>
+					Congratulations Payment was Successful.
+				</MuiAlert>
+            </Snackbar>
 		</div>
 	);
 };

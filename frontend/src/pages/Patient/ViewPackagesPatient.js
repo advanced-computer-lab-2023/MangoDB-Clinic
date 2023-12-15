@@ -8,9 +8,11 @@ import {
     Box,
     Button,
     CardActions,
-    CardHeader
+    CardHeader,
+    Snackbar,
     } from "@mui/material";
 import theme from "../../theme";
+import MuiAlert from "@mui/material/Alert";
 import { useState, useEffect } from "react";
 import { checkout1, checkout2 } from "../../services/api";
 
@@ -120,6 +122,7 @@ const ViewPackagesPatient = () => {
     const [cancelled, setCancelled] = useState(false);
     const [packageCancelled, setPackageCancelled] = useState({});
     const [packageInfo, setPackageInfo] = useState({});
+    const [openSuccess, setOpenSuccess] = useState(false);
     const [isPending, setIsPending] = useState(true);
     const [error, setError] = useState(null);
 
@@ -193,6 +196,7 @@ const ViewPackagesPatient = () => {
                 setSubscribed(false)
                 console.log(data);
                 setPackageCancelled(data);
+                setOpenSuccess(true);
                 return data;
             }
             catch(err){
@@ -236,6 +240,10 @@ const ViewPackagesPatient = () => {
         }
     };
 
+    const handleCloseSnackbar = () => {
+        setOpenSuccess(false);
+    };
+
     return (  
         <ThemeProvider theme={theme}>
             <Typography align="center" variant="h2" paddingTop={3}>
@@ -270,11 +278,28 @@ const ViewPackagesPatient = () => {
                         <Button 
                             variant="outlined" 
                             color="secondary"
-                            onClick={unsubscribe}
+                            onClick={async () => {
+                                await unsubscribe();
+                            }}
                             name="Unsubscribe"
-                            >
+                        >
                             Unsubscribe
                         </Button>
+                        <Snackbar
+                            open={openSuccess}
+                            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                            autoHideDuration={6000}
+                            onClose={handleCloseSnackbar}
+                            >
+                            <MuiAlert
+                                onClose={handleCloseSnackbar}
+                                severity="success"
+                                elevation={6}
+                                variant="filled"
+                            >
+                                Package was Unsubscribed Succefully.
+                            </MuiAlert>
+                        </Snackbar>
                     </Paper>
                     }
                     {cancelled &&

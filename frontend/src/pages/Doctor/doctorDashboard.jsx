@@ -216,7 +216,7 @@ export default function DoctorDashboard() {
 											{/* <h4>{notification.title}</h4> */}
 											<div style={{ "display": "flex", "alignItems": "center", "justifyContent": "space-between" }}>
 											<h4>{notification.title}</h4>
-											<DeleteForeverIcon id={ notification._id } onClick={ () => handleNotifDelete(notification._id) } />
+											{/* <DeleteForeverIcon id={ notification._id } onClick={ () => handleNotifDelete(notification._id) } /> */}
 											</div>
 											<p>{notification.body}</p>
 										</div>
