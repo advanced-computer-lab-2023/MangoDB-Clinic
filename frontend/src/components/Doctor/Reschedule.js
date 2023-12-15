@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button, TextField } from "@mui/material";
 import { doctorRescheduleApp } from "../../services/api";
 
-const Reschedule = ({ appointment, onReload, onError }) => {
+const Reschedule = ({ appointment, handleReload, handleError }) => {
     const [date, setDate] = useState(appointment.date.substring(0, 10));
     // const [time, setTime] = useState((parseInt(appointment.date.substring(11, 16)) + 2).toString());
 
@@ -24,15 +24,17 @@ const [time, setTime] = useState(localTime);
         e.preventDefault();
         doctorRescheduleApp({ appointmentId: appointment._id, newDate: date, newTime: time })
           .then((result) => {
-            onReload(); // Call the callback function from the parent to update the state
+            handleReload(); // Call the callback function from the parent to update the state
           })
           .catch((err) => {
-            onError(err.message); // Call the error callback function from the parent
+            handleError(err.message); // Call the error callback function from the parent
         });
     };
 
     return (
-        <div style={{ "margin": "10px 0" }}>
+        // <div style={{ "margin": "10px 0" }}>
+        // <div style={{ "margin": "10px 0", "marginTop": "20px" }}>
+        <div style={{ margin: '5px' }}>
             <TextField
                 id={`date-${appointment._id}`}
                 name={`date-${appointment._id}`}
@@ -56,8 +58,9 @@ const [time, setTime] = useState(localTime);
             <Button
                 disabled={ !date || !time }
                 variant='outlined'
-                size='large'
+                size='medium'
                 onClick={ handleReschedule }
+                sx={{ "marginTop": "0.5%" }}
             >
                 Reschedule
             </Button>
