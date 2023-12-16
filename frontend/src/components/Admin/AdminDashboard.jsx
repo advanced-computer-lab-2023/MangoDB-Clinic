@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider, styled } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
@@ -23,6 +23,7 @@ import { mainListItems } from "./listItems.jsx";
 import Chart from "./Chart.jsx";
 import DateCard from "./DateCard.jsx";
 import RequestedDoctors from "./RequestedDoctorsTable.jsx";
+import theme from "../../theme";
 
 function Copyright(props) {
 	return (
@@ -88,7 +89,7 @@ const Drawer = styled(MuiDrawer, {
 	},
 }));
 
-const defaultTheme = createTheme();
+const defaultTheme = theme;
 
 export default function Dashboard() {
 	const [open, setOpen] = React.useState(false);

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Button, TextField, Grid, Typography } from "@mui/material";
+import { Button, TextField, Grid, Typography,Paper } from "@mui/material";
 
 import { linkPatAsFam } from "../services/api";
 
@@ -42,6 +42,10 @@ const LinkPatientAsFam = () => {
 			//const isEmptyEmail = email.trim(); // Check if the email field is empty or only whitespace
 			//const email2 = email && email !== "";
 
+			if(email == "" && phone == ""){
+				alert('Please provide either an Email or Phone number')
+			}
+
 			await linkPatAsFam( email, phone, relation);
 
 			setPatientInfo({ email: "", phone: "", relation: "" }); // Reset the form after linking
@@ -51,38 +55,59 @@ const LinkPatientAsFam = () => {
 	};
 
 	return (
-		<div>
-			<Grid item xs={12} style={{ padding: "5px" }}>
-						<Typography variant='h5'>Link Patient as Family Member</Typography>
-					</Grid>
-			<Grid container spacing={2}>
+		<Grid container justifyContent='center' style={{ padding: "2rem" }}>
+		<Grid item xs={6}>
+			<Paper elevation={3} style={{ padding: "2rem" }}>
+				<Typography variant="h3" paddingBottom={10}>Link Patient as Family Member</Typography>
+			<Grid container spacing={2} sx = {{display : "flex", flexDirection : "column"}}>
+				<Grid container spacing={2} sx = {{display : "flex", flexDirection : "row"}}>
 				<Grid item xs={4}>
 					<TextField
 						label='Email'
 						value={patientInfo.email}
+						fullWidth
+                  		
+						InputLabelProps={{ shrink: true }}
 						onChange={(e) => handleChange("email", e.target.value)}
 					/>
 				</Grid>
+				<br/>
+				<Typography variant="p" paddingTop={5} paddingLeft={3}>
+					   -OR-
+				</Typography>
+				
+				
+				
 				<Grid item xs={4}>
 					<TextField
 						label='Phone Number'
 						value={patientInfo.phone}
+						fullWidth
+                  		
+						InputLabelProps={{ shrink: true }}
 						onChange={(e) => handleChange("phone", e.target.value)}
 					/>
 				</Grid>
+				</Grid>
+				<br></br>
 				<Grid item xs={4}>
 					<TextField
 						label='Relation'
 						value={patientInfo.relation}
+						fullWidth
+                  		required
+						InputLabelProps={{ shrink: true }}
 						onChange={(e) => handleChange("relation", e.target.value)}
 					/>
 				</Grid>
 			</Grid>
 
-			<Button variant='contained' onClick={handleLink}>
+			<Button variant='contained' type='submit' fullWidth onClick={handleLink}>
 				Link Patient as Family Member
 			</Button>
-		</div>
+			</Paper>
+			</Grid>
+		</Grid>
 	);
 };
 

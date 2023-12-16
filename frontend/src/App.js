@@ -60,6 +60,7 @@ import RemoveDoctorPage from "./pages/Admin/RemoveDoctorPage";
 import { ThemeProvider } from "@mui/material";
 import theme from "./theme";
 import ViewPackagesPatient from "./pages/Patient/ViewPackagesPatient";
+import NotFound from "./pages/General/NotFound";
 
 //AppBars and headers
 import AdminHeader from "./components/GeneralComponents/adminHeader";
@@ -215,6 +216,9 @@ function App() {
             path="/admin/change-password"
             element={<ChangePasswordPage />}
           />
+          <Route path="/checkout" element={<Checkout />} />
+
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </ThemeProvider>

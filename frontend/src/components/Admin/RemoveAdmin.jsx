@@ -10,15 +10,42 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
+import { ThemeProvider } from "@mui/material/styles";
+import Slide, { SlideProps } from "@mui/material/Slide";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 import Title from "./Title";
 import Spinner from "../GeneralComponents/Spinner";
+import theme from "../../theme";
+
+const defaultTheme = theme;
 
 export default function RemoveAdmin() {
 	const navigate = useNavigate();
 	const [rows, setRows] = React.useState([]);
 	const [loading, setLoading] = React.useState(false);
 	const [adminID, setAdminID] = React.useState("");
+	const [state, setState] = React.useState({
+		open: false,
+		Transition: Slide,
+		message: "",
+	});
+
+	const Alert = React.forwardRef(function Alert(props, ref) {
+		return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
+	});
+
+	function SlideTransition(props) {
+		return <Slide {...props} direction='down' />;
+	}
+
+	const handleClose = () => {
+		setState({
+			...state,
+			open: false,
+		});
+	};
 
 	const getData = async () => {
 		try {
@@ -33,7 +60,11 @@ export default function RemoveAdmin() {
 				return response.data;
 			}
 		} catch (error) {
-			alert(error.message);
+			setState({
+				open: true,
+				Transition: SlideTransition,
+				message: error.response.data.message,
+			});
 			return [];
 		} finally {
 			setLoading(false);
@@ -83,14 +114,22 @@ export default function RemoveAdmin() {
 				);
 
 				if (response.status === 200) {
-					alert(response.data.message);
+					setState({
+						open: true,
+						Transition: SlideTransition,
+						message: response.data.message,
+					});
 					fetchData();
 				}
 			} else {
 				return;
 			}
 		} catch (error) {
-			alert(error.message);
+			setState({
+				open: true,
+				Transition: SlideTransition,
+				message: error.response.data.message,
+			});
 		} finally {
 			setLoading(false);
 		}
@@ -98,68 +137,81 @@ export default function RemoveAdmin() {
 
 	return (
 		<>
-			{loading ? (
-				<Spinner />
-			) : (
-				<>
-					<br />
-					<Button
-						variant='outlined'
-						style={{ marginLeft: "10px" }}
-						onClick={() => navigate(-1)}
-					>
-						Back
-					</Button>
-					<br />
-					<br />
-					<Title>Remove Admins</Title>
-					<Table size='small' style={{ margin: "10px" }}>
-						<TableHead>
-							<TableRow>
-								<TableCell>ID</TableCell>
-								<TableCell>Name</TableCell>
-								<TableCell>Username</TableCell>
-								<TableCell>Email</TableCell>
-								<TableCell>Created At</TableCell>
-								<TableCell></TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{rows.map(
-								(row) =>
-									row._id !== adminID && (
-										<TableRow key={row._id}>
-											<TableCell>{row._id}</TableCell>
-											<TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>
-											<TableCell>{row.username}</TableCell>
-											<TableCell>{row.email}</TableCell>
-											<TableCell>{row.createdAt}</TableCell>
-											<TableCell>
-												<Stack direction='row' spacing={2}>
-													<Button
-														variant='contained'
-														color='error'
-														onClick={() => handleRemove(row._id)}
-													>
-														Remove
-													</Button>
-												</Stack>
-											</TableCell>
-										</TableRow>
-									)
-							)}
-						</TableBody>
-					</Table>
-					<br />
-					<Button
-						variant='contained'
-						style={{ margin: "10px" }}
-						onClick={() => navigate("/admin")}
-					>
-						Home
-					</Button>
-				</>
-			)}
+			<ThemeProvider theme={defaultTheme}>
+				{loading ? (
+					<Spinner />
+				) : (
+					<>
+						<br />
+						<Button
+							variant='outlined'
+							style={{ marginLeft: "10px" }}
+							onClick={() => navigate(-1)}
+						>
+							Back
+						</Button>
+						<br />
+						<br />
+						<Title>Remove Admins</Title>
+						<Table size='small' style={{ margin: "10px" }}>
+							<TableHead>
+								<TableRow>
+									<TableCell>ID</TableCell>
+									<TableCell>Name</TableCell>
+									<TableCell>Username</TableCell>
+									<TableCell>Email</TableCell>
+									<TableCell>Created At</TableCell>
+									<TableCell></TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{rows.map(
+									(row) =>
+										row._id !== adminID && (
+											<TableRow key={row._id}>
+												<TableCell>{row._id}</TableCell>
+												<TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>
+												<TableCell>{row.username}</TableCell>
+												<TableCell>{row.email}</TableCell>
+												<TableCell>{row.createdAt}</TableCell>
+												<TableCell>
+													<Stack direction='row' spacing={2}>
+														<Button
+															variant='contained'
+															color='error'
+															onClick={() => handleRemove(row._id)}
+														>
+															Remove
+														</Button>
+													</Stack>
+												</TableCell>
+											</TableRow>
+										)
+								)}
+							</TableBody>
+						</Table>
+						<Snackbar
+							open={state.open}
+							onClose={handleClose}
+							TransitionComponent={state.Transition}
+							key={state.Transition.name}
+							autoHideDuration={2000}
+						>
+							<Alert severity='success' sx={{ width: "100%" }}>
+								{state.message}
+							</Alert>
+						</Snackbar>
+						<br />
+						<Button
+							variant='contained'
+							style={{ margin: "10px" }}
+							onClick={() => navigate("/admin")}
+						>
+							Home
+						</Button>
+					</>
+				)}
+			</ThemeProvider>
 		</>
 	);
 }

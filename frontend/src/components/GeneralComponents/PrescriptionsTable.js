@@ -101,6 +101,8 @@ const PrescriptionsTable = ({
 	userType,
 	onOpenDialog,
 	onOpenFreqDialog,
+	onOpenEditDialog
+
 }) => {
 	const navigate = useNavigate();
 
@@ -292,8 +294,9 @@ const PrescriptionsTable = ({
 									</TableCell>
 									<TableCell align='center'>
 										{userType === "doctor" ? (
-											<Tooltip title='Edit Medication'>
+											<Tooltip title='Edit Prescription'>
 												<Button
+													onClick={() => {onOpenEditDialog(prescription);}}
 													// component={RouterLink}
 													// to={`/prescriptiondetails/${prescription._id}`}
 													variant='outlined'

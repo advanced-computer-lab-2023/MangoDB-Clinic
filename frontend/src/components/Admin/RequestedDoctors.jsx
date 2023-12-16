@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
+import { styled, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
@@ -21,6 +21,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 
 import { mainListItems } from "./listItems";
 import RequestedDoctors from "./RequestedDoctorsTable.jsx";
+import theme from "../../theme.js";
 
 function Copyright(props) {
 	return (
@@ -86,7 +87,7 @@ const Drawer = styled(MuiDrawer, {
 	},
 }));
 
-const defaultTheme = createTheme();
+const defaultTheme = theme;
 
 export default function Dashboard() {
 	const [open, setOpen] = React.useState(false);

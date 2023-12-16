@@ -2,9 +2,26 @@ import React from "react";
 import { useParams } from "react-router-dom";
 
 import { checkout, wallet } from "../services/api";
+import { Grid, Paper, Typography, TextField ,ThemeProvider,	TableContainer,
+	TableHead,
+	TableRow,
+Table,
+TableBody,TableCell,Radio, RadioGroup,FormControlLabel} from "@mui/material";
+import theme from "../theme";
+import { experimentalStyled as styled } from "@mui/material/styles";
+import Button from "@mui/material/Button";
 
+const Item = styled(Paper)(({ theme }) => ({
+	backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+	...theme.typography.body2,
+	padding: theme.spacing(2),
+	textAlign: "center",
+	color: theme.palette.text.secondary,
+}));
 const Checkout = () => {
 	const { id } = useParams();
+	const WalletIcon = `${process.env.PUBLIC_URL}/icons/wallet.svg`;
+	const creditCardIcon = `${process.env.PUBLIC_URL}/icons/creditcard.svg`;
 	const handleCheckoutClick = async () => {
 		try {
 			// Make a request to /create-checkout-session using Axios
@@ -83,7 +100,10 @@ const Checkout = () => {
 	};
 
 	return (
-		<div style={styles.container}>
+		<Paper sx={{ "margin": "auto", "width": "90%", "marginTop": "200px", "padding": "2%" }}>
+			<ThemeProvider theme={theme}>
+			<Typography variant='h3' marginLeft={"400px"}>Choose a payment method</Typography>
+			{/* <div style={styles.container}>
 			<h1 style={styles.heading}>Choose your payment method</h1>
 			<button style={styles.button} onClick={handleCheckoutClick}>
 				Pay using Credit Card
@@ -91,7 +111,51 @@ const Checkout = () => {
 			<button style={styles.button} onClick={handleWallet}>
 				Pay using Wallet
 			</button>
-		</div>
+		</div> */}
+		<Grid container spacing={3}>
+									<Grid style={{marginLeft:"470px"}}>
+									<Button
+									variant="contained"
+									color="secondary"
+									component="label"
+									endIcon={
+										<img
+										src={WalletIcon}
+										alt="Upload Icon"
+										style={{ filter: "invert(1)" }}
+										width="20"
+										height="20"
+										/>
+									}
+									onClick={handleWallet}
+									// fullWidth // This makes the button take up the full width of the Grid item
+									>
+									Wallet
+									</Button>
+									</Grid>
+									<Grid style={{marginLeft:"20px"}}>
+									<Button
+									variant="contained"
+									color="secondary"
+									component="label"
+									endIcon={
+										<img
+										src={creditCardIcon}
+										alt="Upload Icon"
+										style={{ filter: "invert(1)" }}
+										width="20"
+										height="20"
+										/>
+									}
+									onClick={handleCheckoutClick}
+									// fullWidth // This makes the button take up the full width of the Grid item
+									>
+									Credit card
+									</Button>
+									</Grid>
+								</Grid>
+		</ThemeProvider>
+		</Paper>
 	);
 };
 

@@ -2,13 +2,16 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-import { Grid, Paper, Typography, TextField } from "@mui/material";
+import { Grid, Paper, Typography, TextField, Table, TableHead, TableCell } from "@mui/material";
 import { experimentalStyled as styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import ReusableTable2 from "../../components/ReusableTable2";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 import { getPatientsDoctor, searchPatients } from "../../services/api";
 import Spinner from "../../components/GeneralComponents/Spinner";
+import PatientRow from "../../components/Doctor/PatientRow";
 
 const Item = styled(Paper)(({ theme }) => ({
 	backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -135,32 +138,52 @@ const PatientList = () => {
 
 	return (
 		<div className='patient-list'>
-				<Paper sx={{ "margin": "auto", "width": "fit-content", "marginTop": "90px", "padding": "2%" }}>
+				<Paper sx={{ "margin": "auto", "width": "fit-content", "minWidth": "60%", "marginTop": "90px", "padding": "2%" }}>
 					{
 						<>
 							<Grid item xs={12}>
-								<Typography variant='h5' align="center">Patient List</Typography>
+								<Typography
+									variant='h1'
+									marginBottom="10px"
+								>
+									Patient List
+								</Typography>
 							</Grid>
 
-							<form onSubmit={handleSubmit}>
-								<Grid container direction="row" alignItems="center" item xs={12}>
-									<Grid item>
-										<TextField
-											label='Search'
-											type='text'
-											size='small'
-											value={search}
-											onChange={handleChange}
-											sx={{ "marginTop": "11.5%", "marginRight": "2%" }}
-										/>
+							<div style={{ display: "flex", gap: "250px", marginBottom: "25px" }}>
+								<form onSubmit={handleSubmit}>
+									<Grid container direction="row" alignItems="center" item xs={12}>
+										<Grid item>
+											<TextField
+												label='Search'
+												type='text'
+												size='small'
+												value={search}
+												onChange={handleChange}
+												// sx={{ "marginTop": "11.5%", "marginRight": "2%" }}
+												sx={{ "marginTop": "11.5%", "marginRight": "10px" }}
+											/>
+										</Grid>
+										<Grid item>
+											<Button variant='contained' type='submit'>
+												Search
+											</Button>
+										</Grid>
 									</Grid>
-									<Grid item>
-										<Button variant='contained' type='submit'>
-											Search
-										</Button>
-									</Grid>
-								</Grid>
-							</form>
+								</form>
+
+								<Button
+									component={Link}
+									disabled={false}
+									size='medium'
+									variant='contained'
+									// style={{ margin: "10px", color: "white", background: "#1976d2" }}
+									sx={{ "marginBottom": "10px" }}
+									to='/doctorAppointments'
+								>
+									Go To Appointments
+								</Button>
+							</div>
 						</>
 					}
 					{/* { !upcoming &&
@@ -185,22 +208,29 @@ const PatientList = () => {
 							Upcoming Appointments
 						</Button> 
 					} */}
-					{
+					{/* {
 						<Button
 							component={Link}
 							disabled={false}
 							size='medium'
-							variant='outlined'
+							variant='contained'
 							// style={{ margin: "10px", color: "white", background: "#1976d2" }}
 							sx={{ "marginBottom": "10px" }}
 							to='/doctorAppointments'
 						>
-							Appointments
+							Go To Appointments
 						</Button>
-					}
+					} */}
 					{/* {isPending && <div>Loading...</div>} */}
 					{ isPending && <Spinner /> }
-					{error && <div>{error}</div>}
+					{/* {error && <div>{error}</div>} */}
+					{error && (
+						<Snackbar open={open}>
+							<Alert severity="error" sx={{ width: '100%' }}>
+								{ error }
+							</Alert>
+						</Snackbar>
+					)}
 					{/* {!isPending && !error && patients.length < 1 && (
 						<div>No patients to display...</div>
 					)} */}
@@ -275,13 +305,45 @@ const PatientList = () => {
 							))}
 						</Grid>
 					)} */}
-					{ patients && (
+					{/* { patients && (
 						<ReusableTable2
 							data={modifiedPatients}
 							columns={columns}
 							linkPath='/selectedPatient'
 						/>
-					) }
+					) } */}
+					<Paper>
+						{ patients && (
+							<>
+								<Table>
+									<TableHead
+										sx={{ "backgroundColor": "#b2f0e8" }}
+									>
+										<TableCell
+											sx={{ fontWeight: "bold" }}
+										>
+											Patient Name
+										</TableCell>
+
+										<TableCell
+											sx={{ fontWeight: "bold" }}
+										>
+											Email
+										</TableCell>
+
+										<TableCell
+											sx={{ fontWeight: "bold" }}
+										>
+											Create Video Chat
+										</TableCell>
+									</TableHead>
+									{ modifiedPatients.map((patient) => (
+										<PatientRow patient={patient} />
+									)) }
+								</Table>
+							</>
+						) }
+					</Paper>
 				</Paper>
 		</div>
 	);

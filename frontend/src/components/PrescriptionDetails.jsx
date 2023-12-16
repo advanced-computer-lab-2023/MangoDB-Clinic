@@ -3,12 +3,24 @@ import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-import { Typography, Card, CardContent, Button } from "@mui/material";
+import { Typography, Card, CardContent, Button,Grid } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import Spinner from "./GeneralComponents/Spinner";
 import { checkout2, patientPayPrescription,checkout1 } from "../services/api";
 
+import { SvgIcon } from '@mui/material';
+
+import ButtonGroup from '@mui/material/ButtonGroup';
+import IconButton from '@mui/material/IconButton';
+//   import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import WalletIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
+import CreditCardIcon from '@mui/icons-material/CreditCard';
+
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
+// import WalletIcon from "../";
 const defaultTheme = createTheme();
 
 export default function PrescriptionDetails() {
@@ -17,6 +29,17 @@ export default function PrescriptionDetails() {
 	const [loading, setLoading] = React.useState(false);
 	const { id } = useParams();
 
+	const [open, setOpen] = React.useState(false);
+	const [alertMessage, setAlertMessage] = React.useState('');
+	
+//  const WalletIcon = `${process.env.PUBLIC_URL}/icons/wallet.svg`;
+
+	const handleClose = (event, reason) => {
+		if (reason === 'clickaway') {
+			return;
+		}
+		setOpen(false);
+	};
 	const getData = async (id) => {
 		try {
 			setLoading(true);
@@ -40,6 +63,8 @@ export default function PrescriptionDetails() {
 		fetchData();
 	}, []);
 
+	
+	  
 	const fetchData = async () => {
 		setLoading(true);
 		try {
@@ -76,11 +101,13 @@ export default function PrescriptionDetails() {
 				console.log("Wallet Payment:", response.data);
 
 				if (success) {
-					// Handle success as needed
-					alert(message);
-				} else {
-					alert("Insufficient funds in the wallet");
-				}
+				// Handle success as needed
+				setAlertMessage(message);
+				setOpen(true);
+			} else {
+				setAlertMessage("Insufficient funds in the wallet");
+				setOpen(true);
+			}
 			} else {
 				console.error(
 					"Failed to process wallet payment. Status:",
@@ -181,6 +208,7 @@ const handleCredit = async (e) => {
 	
 
 	return (
+		
 		<>
 			{loading ? (
 				<Spinner />
@@ -223,12 +251,47 @@ const handleCredit = async (e) => {
 									<Typography variant='body1'>
 										Filled: {data.filled ? "Yes" : "No"}
 									</Typography>
-									<Button variant='outlined' onClick={handleWallet}>
-										Pay using wallet
+
+									<h3 variant='body1'
+									>
+										Pay using:
+									</h3>
+									{/* <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group"> */}
+									<Grid container spacing={3}>
+									<Grid style={{marginLeft:"100px"}}>
+										<Button
+											variant="outlined"
+											component="label"
+											endIcon={<WalletIcon />}
+											onClick={handleWallet}
+										>
+											Wallet
+										</Button>
+									</Grid>
+									<Grid style={{marginLeft:"20px"}}>
+									<Button
+										variant="outlined"
+										color="secondary"
+										component="label"
+										endIcon={
+											<SvgIcon >
+												<CreditCardIcon />
+											</SvgIcon>
+										}
+										onClick={handleCredit}
+									>
+										Credit card
 									</Button>
-									<Button variant='outlined' onClick={handleCredit}>
-										Pay using credit card
-									</Button>
+									</Grid>
+								</Grid>
+									
+								{/* </ButtonGroup> */}
+
+								<Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+									<MuiAlert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+										{alertMessage}
+									</MuiAlert>
+								</Snackbar>
 								</CardContent>
 							</Card>
 							<div

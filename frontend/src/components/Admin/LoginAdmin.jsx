@@ -12,9 +12,13 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import Slide, { SlideProps } from "@mui/material/Slide";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 import Spinner from "../GeneralComponents/Spinner";
+import theme from "../../theme";
 
 function Copyright(props) {
 	return (
@@ -25,7 +29,7 @@ function Copyright(props) {
 			{...props}
 		>
 			{"Copyright © "}
-			<Link color='inherit' href='https://www.google.com'>
+			<Link color='inherit' href='#'>
 				El7a2ny
 			</Link>{" "}
 			{new Date().getFullYear()}
@@ -34,7 +38,7 @@ function Copyright(props) {
 	);
 }
 
-const defaultTheme = createTheme();
+const defaultTheme = theme;
 
 export default function LoginAdmin() {
 	const navigate = useNavigate();
@@ -43,8 +47,27 @@ export default function LoginAdmin() {
 		password: "",
 	});
 	const [error, setError] = React.useState(null);
+	const [state, setState] = React.useState({
+		open: false,
+		Transition: Slide,
+	});
 
 	const [isLoading, setIsLoading] = React.useState(false);
+
+	const Alert = React.forwardRef(function Alert(props, ref) {
+		return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
+	});
+
+	function SlideTransition(props) {
+		return <Slide {...props} direction='down' />;
+	}
+
+	const handleClose = () => {
+		setState({
+			...state,
+			open: false,
+		});
+	};
 
 	const handleLogin = async () => {
 		try {
@@ -56,10 +79,18 @@ export default function LoginAdmin() {
 
 			if (response.status === 200) {
 				localStorage.setItem("token", response.data.token);
+				setState({
+					open: true,
+					Transition: SlideTransition,
+				});
 				setError(null);
 				navigate("/admin");
 			}
 		} catch (error) {
+			setState({
+				open: true,
+				Transition: SlideTransition,
+			});
 			setError(error.response.data.message);
 		} finally {
 			setIsLoading(false);
@@ -96,13 +127,11 @@ export default function LoginAdmin() {
 							<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
 								<LockOutlinedIcon />
 							</Avatar>
-							<Typography component='h1' variant='h5'>
+							<Typography component='h1' variant='h3' color='secondary.main'>
 								Welcome Back Admin 👋🏽
 							</Typography>
 
-							<Typography component='h4' variant='h5'>
-								Login To Use The Dashboard
-							</Typography>
+							<Typography variant='p'>Login To Use The Dashboard</Typography>
 
 							<Box
 								component='form'
@@ -110,18 +139,6 @@ export default function LoginAdmin() {
 								noValidate
 								sx={{ mt: 1 }}
 							>
-								{error && (
-									<div
-										style={{
-											color: "red",
-											marginBottom: "1rem",
-											textAlign: "center",
-											fontWeight: "bold",
-										}}
-									>
-										{error}
-									</div>
-								)}
 								<TextField
 									margin='normal'
 									required
@@ -154,9 +171,25 @@ export default function LoginAdmin() {
 								>
 									Login
 								</Button>
+								<Snackbar
+									open={state.open}
+									onClose={handleClose}
+									TransitionComponent={state.Transition}
+									key={state.Transition.name}
+									autoHideDuration={2000}
+								>
+									<Alert severity='error' sx={{ width: "100%" }}>
+										{error}
+									</Alert>
+								</Snackbar>
 								<Grid container>
 									<Grid item xs>
-										<Link href='/admin/forgot-password' variant='body2'>
+										<Link
+											href='/admin/forgot-password'
+											color='secondary.main'
+											fontFamily={defaultTheme.typography.fontFamily}
+											fontSize={defaultTheme.typography.fontSize}
+										>
 											Forgot password?
 										</Link>
 									</Grid>

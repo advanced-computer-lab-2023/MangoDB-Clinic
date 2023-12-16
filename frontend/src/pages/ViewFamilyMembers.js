@@ -12,6 +12,7 @@ import {
 	Grid,
 	Typography,
 } from "@mui/material";
+import { alpha } from "@mui/system";
 
 import { viewRegFamMembers } from "../services/api";
 
@@ -52,38 +53,42 @@ const ViewFamilyMembers = () => {
 
 	return (
 		<div>
+			<paper>
 			<Grid item xs={12} style={{ padding: "5px" }}>
 						<Typography variant='h5'>View Family Members</Typography>
+						<br></br>
 					</Grid>
-			<Button variant='contained' onClick={fetchData}>
+			{/* <Button variant='contained' onClick={fetchData}>
 				Fetch Family Members
-			</Button>
+			</Button> */}
 			{familyMembers.length > 0 ? (
-				<TableContainer component={Paper}>
-					<Table>
-						<TableHead>
-							<TableRow>
-								<TableCell>Name</TableCell>
-								<TableCell>National ID</TableCell>
-								<TableCell>Relation</TableCell>
-								<TableCell>Age</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{familyMembers.map((member, index) => (
-								<TableRow key={index}>
-									<TableCell>{member.name}</TableCell>
-									<TableCell>{member.nationalID}</TableCell>
-									<TableCell>{member.relation}</TableCell>
-									<TableCell>{member.age}</TableCell>
-								</TableRow>
-							))}
-						</TableBody>
-					</Table>
-				</TableContainer>
+			<TableContainer component={Paper} sx={{ width: '70%' }}>
+			<Table sx={{ minWidth: 650 }} aria-label='simple table'>
+			  <TableHead sx={{ backgroundColor: alpha("#B2F0E8", 0.3) }}>
+				<TableRow>
+				  <TableCell><Typography variant='subtitle1' fontWeight='bold'>Name</Typography></TableCell>
+				  <TableCell><Typography variant='subtitle1' fontWeight='bold'>National ID</Typography></TableCell>
+				  <TableCell><Typography variant='subtitle1' fontWeight='bold'>Relation</Typography></TableCell>
+				  <TableCell><Typography variant='subtitle1' fontWeight='bold'>Age</Typography></TableCell>
+				</TableRow>
+			  </TableHead>
+			  <TableBody>
+				{familyMembers.map((member, index) => (
+				  <TableRow key={index}>
+					<TableCell>{member.name}</TableCell>
+					<TableCell>{member.nationalID}</TableCell>
+					<TableCell>{member.relation}</TableCell>
+					<TableCell>{member.age}</TableCell>
+				  </TableRow>
+				))}
+			  </TableBody>
+			</Table>
+		  </TableContainer>
+		  
 			) : (
 				<p>No family members found.</p>
 			)}
+			</paper>
 		</div>
 	);
 };

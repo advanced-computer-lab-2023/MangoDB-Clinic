@@ -4,7 +4,7 @@ import { Grid, Paper, Typography, TextField ,ThemeProvider,	TableContainer,
 	TableHead,
 	TableRow,
 Table,
-TableBody,TableCell} from "@mui/material";
+TableBody,TableCell,Radio, RadioGroup,FormControlLabel} from "@mui/material";
 import theme from "../theme";
 import { experimentalStyled as styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -16,6 +16,7 @@ import { alpha } from "@mui/system";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import FollowUpIcon from '@mui/icons-material/EventNote'
 import Box from '@mui/material/Box';
+import { useNavigate } from "react-router-dom";
 
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -46,6 +47,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const ViewAppointments = () => {
+	const navigate = useNavigate();
 	const rejectIcon = `${process.env.PUBLIC_URL}/icons/reject.svg`;
 	// const id = "6526d30a0f83f5e462288354";
 	const [appointments, setAppointments] = useState([]);
@@ -63,7 +65,14 @@ const ViewAppointments = () => {
 	const [open, setOpen] = useState(false);
 	const [openCancel, setOpenCancel] = useState(false);
 	const [openFollowup, setOpenFollowup] = React.useState(false);
-
+	const [openFilter, setOpenFilter] = useState(false);
+	const [value, setValue] = useState('option1');
+	const handleClickOpenFilter = () => {
+		setOpenFilter(true);
+	  };
+	  const handleCloseFilter = () => {
+		setOpenFilter(false);
+	  };
 const handleClickOpenFollowup = () => {
 	setOpenFollowup(true);
 };
@@ -230,9 +239,11 @@ const handleCloseFollowup= () => {
 	}, [appointments]);
 
 	return (
+		<div>
+		<Paper sx={{ "margin": "auto", "width": "90%", "marginTop": "90px", "padding": "2%" }}>
 		<ThemeProvider theme={theme}>
 		
-			<h1>Appointments</h1>
+			<Typography variant='h3'>My Appointments</Typography>
 			<div className='app-p'>
 			
 
@@ -247,82 +258,123 @@ const handleCloseFollowup= () => {
 			)}
 			{appointments.length > 0 && (
 			<TableContainer component={Paper} xs={8}>
-				<Table sx={{ minWidth: 650 }} aria-label='simple table'>
-				{/* <form onSubmit={handleSubmit}> */}
-				<TableHead sx={{ backgroundColor: alpha("#B2F0E8", 0.3) }}>
-				{/* <TableContainer component={Paper} xs={8}> */}
-						{/* <FormControl
-							fullWidth
-							variant='outlined'
-							size='small'
-							style={{ minWidth: "5vw", width: "auto" }}
-						>
-							<InputLabel id='status-label'>Status</InputLabel>
-							<Select
-								labelId='status-label'
-								id='status'
-								name='status'
-								label='Status'
-								variant='outlined'
-								size='small'
-								value={status}
-								onChange={handleChange}
-							>
-								{statEnum.map((option) => (
-									<MenuItem key={option} value={option}>
-										{option}
-									</MenuItem>
-								))}
-							</Select>
-						</FormControl> */}
-						{/* <TextField
-							id='from'
-							name='from'
-							label='From'
-							variant='outlined'
-							value={from}
-							onChange={handleChange}
-							size='small'
-							type='date'
-							InputLabelProps={{ shrink: true }}
-						/>
-						<TextField
-							id='to'
-							name='to'
-							label='To'
-							variant='outlined'
-							value={to}
-							onChange={handleChange}
-							size='small'
-							type='date'
-							InputLabelProps={{ shrink: true }}
-						/>
-						<Button variant='contained' type='submit'>
-							Filter
-						</Button> */}
-						{/* </TableContainer> */}
-						{/* {!upcoming && (
-					<Button
-						disabled={false}
-						size='medium'
-						variant='outlined'
-						style={{ margin: "10px", color: "#1976d2" }}
-						onClick={handleUpcomingClick}
-					>
-						Upcoming Appointments
-					</Button>
+			<TableRow>
+			  <TableCell>
+				<div>
+				<form onSubmit={handleSubmit}>
+  <Grid container spacing={4} alignItems="center">
+    <Grid item xs={1.2}>
+      <FormControl
+        fullWidth
+        variant='outlined'
+        size='small'
+        style={{ minWidth: "5vw", width: "auto" }}
+      >
+        <InputLabel id='status-label'>Status</InputLabel>
+        <Select
+          labelId='status-label'
+          id='status'
+          name='status'
+          label='Status'
+          variant='outlined'
+          size='small'
+          value={status}
+          onChange={handleChange}
+        >
+          {statEnum.map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Grid>
+    <Grid item xs={2.2}>
+      <TextField
+        id='from'
+        name='from'
+        label='From'
+        variant='outlined'
+        value={from}
+        onChange={handleChange}
+        size='small'
+        type='date'
+        InputLabelProps={{ shrink: true }}
+      />
+    </Grid>
+    <Grid item xs={2.2}>
+      <TextField
+        id='to'
+        name='to'
+        label='To'
+        variant='outlined'
+        value={to}
+        onChange={handleChange}
+        size='small'
+        type='date'
+        InputLabelProps={{ shrink: true }}
+      />
+    </Grid>
+    <Grid item xs={2}>
+      <Button variant='contained' type='submit' style={{ height: '35px', width: '70px' ,marginTop: '0px',fontSize :"15px"}}>
+        Filter
+      </Button>
+    </Grid>
+    <Grid item xs={1}>
+      {!upcoming && (
+        <Button
+          disabled={false}
+          size='small'
+          variant='contained'
+          style={{ margin: "10px" ,height: '45px', width: '300px',fontSize :"14px"}}
+          onClick={handleUpcomingClick}
+        >
+          Show Upcoming Appointments
+        </Button>
+      )}
+      {upcoming && (
+               <Button
+			   disabled={false}
+			   size='small'
+			   variant='contained'
+			   style={{ margin: "10px" ,height: '45px', width: '300px',fontSize :"14px"}}
+			   onClick={handleUpcomingClick}
+			 >
+			   Show All Appointments
+			 </Button>
+      )}
+    </Grid>
+  </Grid>
+</form>
+
+				</div>
+				{/* {!upcoming && (
+				  <Button
+					disabled={false}
+					size='medium'
+					variant='outlined'
+					style={{ margin: "10px", color: "#1976d2" }}
+					onClick={handleUpcomingClick}
+				  >
+					Upcoming Appointments
+				  </Button>
 				)}
 				{upcoming && (
-					<Button
-						disabled={false}
-						size='medium'
-						variant='filled'
-						style={{ margin: "10px", color: "white", background: "#1976d2" }}
-						onClick={handleUpcomingClick}
-					>
-						Upcoming Appointments
-					</Button>
+				  <Button
+					disabled={false}
+					size='medium'
+					variant='filled'
+					style={{ margin: "10px", color: "white", background: "#1976d2" }}
+					onClick={handleUpcomingClick}
+				  >
+					Upcoming Appointments
+				  </Button>
 				)} */}
+			  </TableCell>
+			</TableRow>
+		
+				<Table sx={{ minWidth: 650 }} aria-label='simple table'>
+				<TableHead sx={{ backgroundColor: alpha("#B2F0E8", 0.3) }}>
 				<TableRow>
 				<TableCell >
 					<Typography variant='subtitle1' fontWeight='bold'>Doctor</Typography>
@@ -343,15 +395,16 @@ const handleCloseFollowup= () => {
 					<Typography variant='subtitle1' fontWeight='bold'>Reschedule</Typography>
 				</TableCell>
 				<TableCell >
-					<Typography variant='subtitle1' fontWeight='bold'>Cancel</Typography>
-				</TableCell>
-				<TableCell >
 					<Typography variant='subtitle1' fontWeight='bold'>Schedule followup</Typography>
 				</TableCell>
+				<TableCell >
+					<Typography variant='subtitle1' fontWeight='bold'>Cancel</Typography>
+				</TableCell>
+				
 			</TableRow>
 
 					</TableHead>
-				{/* </form> */}
+				
 				<TableBody>
 					{appointments.map((appointment) => (
 						// <Grid className='app-preview' key={appointment.id}>
@@ -374,7 +427,7 @@ const handleCloseFollowup= () => {
 							 {appointment.status}
 							</TableCell>
 							<TableCell >
-								{appointment.followUp ? "Yes" : "No"}
+								{appointment.followUp ? "Available" : ""}
 							</TableCell>
 						
 
@@ -384,7 +437,7 @@ const handleCloseFollowup= () => {
 <TableCell>
   {appointment.status === "confirmed" || appointment.status === "requested" ? (
     <div>
-      <IconButton
+      <IconButton style={{ marginLeft: "20px" }}
         onClick={() => setOpen(true)}
       >
         <CalendarTodayIcon />
@@ -428,14 +481,57 @@ const handleCloseFollowup= () => {
   ) : null}
 </TableCell>
 
-
+<TableCell>
+  {appointment.status === "done" ? (
+    <Box>
+      <IconButton  style={{ marginLeft: "60px"  }}onClick={handleClickOpenFollowup}>
+	  <FollowUpIcon style={{ fontSize: '30px' }} />
+      </IconButton>
+      <Dialog open={openFollowup} onClose={handleCloseFollowup}>
+        <DialogTitle>Request Follow-Up</DialogTitle>
+        <DialogContent>
+          <TextField
+            id='to'
+            name='to'
+            label='To'
+            variant='outlined'
+            onChange={handleChangee}
+            size='small'
+            type='datetime-local'
+            InputLabelProps={{ shrink: true }}
+          />
+        </DialogContent>
+        <DialogActions style={{ justifyContent: 'center' }}>
+          <Button onClick={handleCloseFollowup} color="secondary">
+            Cancel
+          </Button>
+          <Button
+            variant='contained'
+            size='small'
+            onClick={(e) => {
+              e.preventDefault();
+              patientReqFollowup(appointment._id,newDateTime)
+                .then(() => {
+                  window.location.reload();
+                })
+                .catch((err) => setError(err.message));
+              handleClose();
+            }}
+          >
+            Follow-Up
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
+  ) : null}
+</TableCell>
 
 
 <TableCell>
   {appointment.status !== "cancelled" &&  appointment.status !== "done" ? (
     <div>
   <IconButton
-  style={{ width: '40px', height: '40px' }}
+  style={{ marginLeft:"10",width: '40px', height: '40px' }}
   onClick={(e) => {
     e.preventDefault();
     setOpenCancel(true);
@@ -480,50 +576,7 @@ const handleCloseFollowup= () => {
 </TableCell>
 
 
-<TableCell>
-  {appointment.status === "done" ? (
-    <Box>
-      <IconButton onClick={handleClickOpenFollowup}>
-        <FollowUpIcon />
-      </IconButton>
-      <Dialog open={openFollowup} onClose={handleCloseFollowup}>
-        <DialogTitle>Request Follow-Up</DialogTitle>
-        <DialogContent>
-          <TextField
-            id='to'
-            name='to'
-            label='To'
-            variant='outlined'
-            onChange={handleChangee}
-            size='small'
-            type='datetime-local'
-            InputLabelProps={{ shrink: true }}
-          />
-        </DialogContent>
-        <DialogActions style={{ justifyContent: 'center' }}>
-          <Button onClick={handleCloseFollowup} color="secondary">
-            Cancel
-          </Button>
-          <Button
-            variant='contained'
-            size='small'
-            onClick={(e) => {
-              e.preventDefault();
-              patientReqFollowup(appointment._id,newDateTime)
-                .then(() => {
-                  window.location.reload();
-                })
-                .catch((err) => setError(err.message));
-              handleClose();
-            }}
-          >
-            Follow-Up
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
-  ) : null}
-</TableCell>
+
 
 							
 							</TableRow>
@@ -533,8 +586,10 @@ const handleCloseFollowup= () => {
 				</Table>
 				</TableContainer>
 			)}
-	
+
 		</ThemeProvider>
+		</Paper>
+		</div>
 	);
 };
 

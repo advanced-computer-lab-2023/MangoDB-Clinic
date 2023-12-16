@@ -4,16 +4,39 @@ import { useNavigate } from "react-router-dom";
 import {
 	Button,
 	TextField,
+	Select,
+	MenuItem,
 	FormControl,
 	InputLabel,
 	Grid,
-	Paper,
 	Input,
+	Paper,
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	DialogContentText,
+	DialogActions,
+	CircularProgress,
+	Typography,
+	FormControlLabel,
+	RadioGroup,
+	FormLabel,
+	Radio,
+	Tooltip,
+	Snackbar,
+	FormHelperText,
+	Alert,
 } from "@mui/material";
 
 import { addDoctor } from "../../services/api";
 
 const DoctorForm = () => {
+	const uploadIcon = `${process.env.PUBLIC_URL}/icons/upload.svg`;
+
+	const [successOpen, setSuccessOpen] = useState(false);
+	const [errorOpen, setErrorOpen] = useState(false);
+	const [warningOpen, setWarningOpen] = React.useState(false);
+
 	const [username, setUserName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -27,6 +50,23 @@ const DoctorForm = () => {
 	const [speciality, setSpeciality] = useState("");
 	const [isPending, setIsPending] = useState(false);
 	const navigate = useNavigate();
+
+	const handleSuccessClose = () => {
+		setSuccessOpen(false);
+		navigate("/Home"); // Redirect to the login page after successful registration
+	};
+
+	const handleErrorClose = () => {
+		setErrorOpen(false);
+	};
+
+	const handleWarningClose = (event, reason) => {
+		if (reason === "clickaway") {
+			return;
+		}
+
+		setWarningOpen(false);
+	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -60,12 +100,12 @@ const DoctorForm = () => {
 	};
 	return (
 		<Grid container justifyContent='center' style={{ padding: "2rem" }}>
-			<Grid item xs={6}>
+			<Grid item xs={12} sm={6}>
 				<Paper elevation={3} style={{ padding: "2rem" }}>
 					<h2>Register As Doctor</h2>
 					<form onSubmit={handleSubmit}>
 						<Grid container spacing={2}>
-							<Grid item xs={6}>
+							<Grid item xs={12} sm={6}>
 								<TextField
 									label='First Name'
 									type='text'
@@ -76,7 +116,7 @@ const DoctorForm = () => {
 									style={{ marginBottom: "1rem" }}
 								/>
 							</Grid>
-							<Grid item xs={6}>
+							<Grid item xs={12} sm={6}>
 								<TextField
 									label='Last Name'
 									type='text'
@@ -87,7 +127,7 @@ const DoctorForm = () => {
 									style={{ marginBottom: "1rem" }}
 								/>
 							</Grid>
-							<Grid item xs={6}>
+							<Grid item xs={12} sm={6}>
 								<TextField
 									label='Username'
 									type='text'
@@ -99,7 +139,7 @@ const DoctorForm = () => {
 									style={{ marginBottom: "1rem" }}
 								/>
 							</Grid>
-							<Grid item xs={6}>
+							<Grid item xs={12} sm={6}>
 								<TextField
 									label='Email'
 									type='email'
@@ -110,7 +150,7 @@ const DoctorForm = () => {
 									style={{ marginBottom: "1rem" }}
 								/>
 							</Grid>
-							<Grid item xs={6}>
+							<Grid item xs={12} sm={6}>
 								<TextField
 									label='Password'
 									type='password'
@@ -121,7 +161,7 @@ const DoctorForm = () => {
 									style={{ marginBottom: "1rem" }}
 								/>
 							</Grid>
-							<Grid item xs={6}>
+							<Grid item xs={12} sm={6}>
 								<TextField
 									label='Date of Birth'
 									type='date'
@@ -130,10 +170,11 @@ const DoctorForm = () => {
 									value={dob}
 									onChange={(e) => setDOB(e.target.value)}
 									style={{ marginBottom: "1rem" }}
+									InputLabelProps={{ shrink: true }}
 								/>
 							</Grid>
 
-							<Grid item xs={6}>
+							<Grid item xs={12} sm={6}>
 								<TextField
 									label='Speciality'
 									type='text'
@@ -145,7 +186,7 @@ const DoctorForm = () => {
 									style={{ marginBottom: "1rem" }}
 								/>
 							</Grid>
-							<Grid item xs={6}>
+							<Grid item xs={12} sm={6}>
 								<TextField
 									label='Affiliation'
 									type='text'
@@ -158,7 +199,7 @@ const DoctorForm = () => {
 								/>
 							</Grid>
 
-							<Grid item xs={6}>
+							<Grid item xs={12} sm={6}>
 								<TextField
 									label='Educational Background'
 									type='text'
@@ -171,7 +212,7 @@ const DoctorForm = () => {
 								/>
 							</Grid>
 
-							<Grid item xs={6}>
+							<Grid item xs={12} sm={6}>
 								<TextField
 									label='Hourly Rate'
 									type='number'
@@ -183,31 +224,103 @@ const DoctorForm = () => {
 								/>
 							</Grid>
 
-							<Grid item xs={6}>
-								<FormControl fullWidth>
-									<InputLabel>Upload Documents</InputLabel>
-									<Input
-										type='file'
-										onChange={(e) => setDocuments(Array.from(e.target.files))}
-										style={{ marginBottom: "5rem" }}
-										inputProps={{ multiple: true }}
-									/>
-								</FormControl>
-							</Grid>
-						</Grid>
 
-						{!isPending ? (
-							<Button variant='contained' type='submit' fullWidth>
-								Register
-							</Button>
+
+
+							<Grid item xs={6}>
+								<Button
+									variant="contained"
+									color="secondary"
+									component="label"
+									startIcon={
+										<img
+											src={uploadIcon}
+											alt="Upload Icon"
+											style={{ filter: "invert(1)" }}
+											width="20"
+											height="20"
+										/>
+									}
+									onClick={() => document.getElementById("fileInput").click()}
+									fullWidth // This makes the button take up the full width of the Grid item
+								>
+									Upload
+								</Button>
+								<Input
+									id="fileInput"
+									type="file"
+									name="picture"
+									onChange={(e) => setDocuments(Array.from(e.target.files))}
+									style={{ display: "none" }}
+								/>
+								<FormHelperText>
+									Upload id , medicine degree or working license
+								</FormHelperText>
+							</Grid>
+
+
+						</Grid>
+						<Button
+							variant="contained"
+							type="submit"
+							fullWidth
+							style={{ marginTop: "2rem" }}
+						>
+						{isPending ? (
+							<CircularProgress size={24} color="inherit" />
 						) : (
-							<Button variant='contained' disabled fullWidth>
-								Registering
-							</Button>
+							"Register"
 						)}
+						</Button>
 					</form>
 				</Paper>
+
 			</Grid>
+			<Snackbar
+				open={successOpen}
+				autoHideDuration={6000}
+				onClose={handleSuccessClose}
+				anchorOrigin={{ vertical: "top", horizontal: "center" }}
+			>
+				<Alert
+					onClose={handleSuccessClose}
+					severity="success"
+					sx={{ width: "100%" }}
+				>
+					Patient registration was successful. You will be redirected to the
+					home page shortly.
+				</Alert>
+			</Snackbar>
+
+			<Snackbar
+				open={errorOpen}
+				autoHideDuration={6000}
+				onClose={handleErrorClose}
+				anchorOrigin={{ vertical: "top", horizontal: "center" }}
+			>
+				<Alert
+					onClose={handleErrorClose}
+					severity="error"
+					sx={{ width: "100%" }}
+				>
+					Patient registration failed. Please try again.
+				</Alert>
+			</Snackbar>
+
+			<Snackbar
+				open={warningOpen} // You need to control this state variable
+				autoHideDuration={6000}
+				onClose={handleWarningClose} // And this function
+				anchorOrigin={{ vertical: "top", horizontal: "center" }}
+			>
+				<Alert
+					onClose={handleWarningClose}
+					severity="warning"
+					sx={{ width: "100%" }}
+				>
+					A field is missing or a username is taken. Please check your input.
+				</Alert>
+			</Snackbar>
 		</Grid>
 	);
 };

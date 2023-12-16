@@ -10,14 +10,42 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
+import { ThemeProvider } from "@mui/material/styles";
+import Slide, { SlideProps } from "@mui/material/Slide";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 import Title from "./Title";
 import Spinner from "../GeneralComponents/Spinner";
+import theme from "../../theme";
+
+const defaultTheme = theme;
 
 export default function RemovePatient() {
 	const navigate = useNavigate();
 	const [rows, setRows] = React.useState([]);
 	const [loading, setLoading] = React.useState(false);
+	const [state, setState] = React.useState({
+		open: false,
+		Transition: Slide,
+		message: "",
+	});
+	const [isSuccess, setIsSuccess] = React.useState(false);
+
+	const Alert = React.forwardRef(function Alert(props, ref) {
+		return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
+	});
+
+	function SlideTransition(props) {
+		return <Slide {...props} direction='down' />;
+	}
+
+	const handleClose = () => {
+		setState({
+			...state,
+			open: false,
+		});
+	};
 
 	const getData = async () => {
 		try {
@@ -32,7 +60,12 @@ export default function RemovePatient() {
 				return response.data;
 			}
 		} catch (error) {
-			alert(error.response.data.message);
+			setIsSuccess(false);
+			setState({
+				open: true,
+				Transition: SlideTransition,
+				message: error.response.data.message,
+			});
 			return [];
 		} finally {
 			setLoading(false);
@@ -69,11 +102,21 @@ export default function RemovePatient() {
 				}
 			);
 			if (response.status === 200) {
-				alert("Patient removed successfully");
+				setIsSuccess(true);
+				setState({
+					open: true,
+					Transition: SlideTransition,
+					message: response.data.message,
+				});
 				fetchData();
 			}
 		} catch (error) {
-			alert(error.message);
+			setIsSuccess(false);
+			setState({
+				open: true,
+				Transition: SlideTransition,
+				message: error.response.data.message,
+			});
 		} finally {
 			setLoading(false);
 		}
@@ -81,66 +124,94 @@ export default function RemovePatient() {
 
 	return (
 		<>
-			{loading ? (
-				<Spinner />
-			) : (
-				<>
-					<br />
-					<Button
-						variant='outlined'
-						style={{ marginLeft: "10px" }}
-						onClick={() => navigate(-1)}
-					>
-						Back
-					</Button>
-					<br />
-					<br />
-					<Title>Remove Patients</Title>
-					<Table size='small'>
-						<TableHead>
-							<TableRow>
-								<TableCell>ID</TableCell>
-								<TableCell>Name</TableCell>
-								<TableCell>Username</TableCell>
-								<TableCell>Phone</TableCell>
-								<TableCell>Email</TableCell>
-								<TableCell>Actions</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{rows.map((row) => (
-								<TableRow key={row._id}>
-									<TableCell>{row._id}</TableCell>
-									<TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>
-									<TableCell>{row.username}</TableCell>
-									<TableCell>{row.mobile}</TableCell>
-									<TableCell>{row.email}</TableCell>
-									<TableCell align='center'>
-										<Stack direction='row' spacing={2}>
-											<Button
-												variant='contained'
-												color='error'
-												onClick={() => handleRemove(row._id)}
-											>
-												Remove
-											</Button>
-										</Stack>
-									</TableCell>
+			<ThemeProvider theme={defaultTheme}>
+				{loading ? (
+					<Spinner />
+				) : (
+					<>
+						<br />
+						<Button
+							variant='outlined'
+							style={{ marginLeft: "10px" }}
+							onClick={() => navigate(-1)}
+						>
+							Back
+						</Button>
+						<br />
+						<br />
+						<Title>Remove Patients</Title>
+						<Table size='small'>
+							<TableHead>
+								<TableRow>
+									<TableCell>ID</TableCell>
+									<TableCell>Name</TableCell>
+									<TableCell>Username</TableCell>
+									<TableCell>Phone</TableCell>
+									<TableCell>Email</TableCell>
+									<TableCell>Actions</TableCell>
 								</TableRow>
-							))}
-						</TableBody>
-					</Table>
+							</TableHead>
+							<TableBody>
+								{rows.map((row) => (
+									<TableRow key={row._id}>
+										<TableCell>{row._id}</TableCell>
+										<TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>
+										<TableCell>{row.username}</TableCell>
+										<TableCell>{row.mobile}</TableCell>
+										<TableCell>{row.email}</TableCell>
+										<TableCell align='center'>
+											<Stack direction='row' spacing={2}>
+												<Button
+													variant='contained'
+													color='error'
+													onClick={() => handleRemove(row._id)}
+												>
+													Remove
+												</Button>
+											</Stack>
+										</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
 
-					<br />
-					<Button
-						variant='contained'
-						style={{ margin: "10px" }}
-						onClick={() => navigate("/admin")}
-					>
-						Home
-					</Button>
-				</>
-			)}
+						{isSuccess ? (
+							<Snackbar
+								open={state.open}
+								onClose={handleClose}
+								TransitionComponent={state.Transition}
+								key={state.Transition.name}
+								autoHideDuration={2000}
+							>
+								<Alert severity='success' sx={{ width: "100%" }}>
+									{state.message}
+								</Alert>
+							</Snackbar>
+						) : (
+							<Snackbar
+								open={state.open}
+								onClose={handleClose}
+								TransitionComponent={state.Transition}
+								key={state.Transition.name}
+								autoHideDuration={2000}
+							>
+								<Alert severity='error' sx={{ width: "100%" }}>
+									{state.message}
+								</Alert>
+							</Snackbar>
+						)}
+
+						<br />
+						<Button
+							variant='contained'
+							style={{ margin: "10px" }}
+							onClick={() => navigate("/admin")}
+						>
+							Home
+						</Button>
+					</>
+				)}
+			</ThemeProvider>
 		</>
 	);
 }
