@@ -32,7 +32,7 @@ const PatientForm = () => {
 	const [successOpen, setSuccessOpen] = useState(false);
   	const [errorOpen, setErrorOpen] = useState(false);
 	const [warningOpen, setWarningOpen] = React.useState(false);
-	
+
 	const [username, setUserName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -182,7 +182,6 @@ const PatientForm = () => {
 									type='date'
 									required
 									fullWidth
-									InputLabelProps={{ shrink: true }}
 									value={dob}
 									onChange={(e) => setDOB(e.target.value)}
 									style={{ marginBottom: "1rem" }}
