@@ -273,110 +273,139 @@ const DoctorApps = () => {
 
 	return (
 		<div>
-				<Paper sx={{ "margin": "auto", "width": "fit-content", "marginTop": "90px", "padding": "2%" }}>
+				<Paper sx={{ "margin": "auto", "width": "90%", "marginTop": "90px", "padding": "2%" }}>
 					<Typography
 						variant="h1"
-						align="center"
+						align="left"
+						// marginBottom="18px"
+						marginBottom="32px"
 					>
 						Appointments
 					</Typography>
 					{/* <h1>Appointments</h1> */}
-					{!upcoming && (
-						<Button
-							disabled={false}
-							size='medium'
-							variant='outlined'
-							// style={{ margin: "10px", color: "#1976d2" }}
-							sx={{ "marginBottom": "10px" }}
-							onClick={handleUpcomingClick}
-						>
-							Upcoming Appointments
-						</Button>
-					)}
-					{upcoming && (
-						<Button
-							disabled={false}
-							size='medium'
-							variant='contained'
-							// style={{ margin: "10px", color: "white", background: "#1976d2" }}
-							sx={{ "marginBottom": "10px" }}
-							onClick={handleUpcomingClick}
-						>
-							Upcoming Appointments
-						</Button>
-					)}
-
-					<br />
-					<form onSubmit={handleSubmit}>
-						<Grid item xs={12} style={{ padding: "5px" }}>
-							{/* <TextField id="status" name="status" label="Status" variant="outlined" value={ status } onChange={ handleChange } size="small"/> */}
-							{/* <Select
-								id="status" 
-								name="status" 
-								label="Status"
-								variant="outlined" 
-								size="small"
-								value={status}
-								onChange={handleChange}
-							>
-								{statEnum.map((option) => (
-									<MenuItem key={ option } value={ option }>
-										{ option }
-									</MenuItem>
-								))}
-							</Select> */}
-							<FormControl
-								fullWidth
+					{/* <div style={{ display: "flex", gap: "400px", "marginBottom": "18px"}}> */}
+					<div style={{ display: "flex", gap: "400px", "marginBottom": "30px"}}>
+						{/* {upcoming && (
+							<Button
+								disabled={false}
+								size='medium'
 								variant='outlined'
-								size='small'
-								style={{ minWidth: "5vw", width: "auto" }}
+								// style={{ margin: "10px", color: "#1976d2" }}
+								sx={{ "marginBottom": "10px" }}
+								onClick={handleUpcomingClick}
 							>
-								<InputLabel id='status-label'>Status</InputLabel>
-								<Select
-									labelId='status-label'
-									id='status'
-									name='status'
-									label='Status'
-									variant='outlined'
-									size='small'
+								Hide Upcoming Appointments
+							</Button>
+						)}
+						{!upcoming && (
+							<Button
+								disabled={false}
+								size='medium'
+								variant='contained'
+								// style={{ margin: "10px", color: "white", background: "#1976d2" }}
+								sx={{ "marginBottom": "10px" }}
+								onClick={handleUpcomingClick}
+							>
+								View Upcoming Appointments
+							</Button>
+						)} */}
+
+						{/* <br /> */}
+						<form onSubmit={handleSubmit}>
+							<Grid item xs={12} style={{ padding: "5px" }} sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+								{/* <TextField id="status" name="status" label="Status" variant="outlined" value={ status } onChange={ handleChange } size="small"/> */}
+								{/* <Select
+									id="status" 
+									name="status" 
+									label="Status"
+									variant="outlined" 
+									size="small"
 									value={status}
 									onChange={handleChange}
 								>
 									{statEnum.map((option) => (
-										<MenuItem key={option} value={option}>
-											{option}
+										<MenuItem key={ option } value={ option }>
+											{ option }
 										</MenuItem>
 									))}
-								</Select>
-							</FormControl>
-							<TextField
-								id='from'
-								name='from'
-								label='From'
-								variant='outlined'
-								value={from}
-								onChange={handleChange}
-								size='small'
-								type='date'
-								InputLabelProps={{ shrink: true }}
-							/>
-							<TextField
-								id='to'
-								name='to'
-								label='To'
-								variant='outlined'
-								value={to}
-								onChange={handleChange}
-								size='small'
-								type='date'
-								InputLabelProps={{ shrink: true }}
-							/>
-							<Button variant='contained' type='submit' sx={{ "marginTop": "0.5%" }}>
-								Filter
-							</Button>
-						</Grid>
-					</form>
+								</Select> */}
+								<FormControl
+									fullWidth
+									variant='outlined'
+									size='small'
+									style={{ minWidth: "5vw", width: "auto" }}
+								>
+									<InputLabel id='status-label'>Status</InputLabel>
+									<Select
+										labelId='status-label'
+										id='status'
+										name='status'
+										label='Status'
+										variant='outlined'
+										size='small'
+										value={status}
+										onChange={handleChange}
+									>
+										{statEnum.map((option) => (
+											<MenuItem key={option} value={option}>
+												{option}
+											</MenuItem>
+										))}
+									</Select>
+								</FormControl>
+								<TextField
+									id='from'
+									name='from'
+									label='From'
+									variant='outlined'
+									value={from}
+									onChange={handleChange}
+									size='small'
+									type='date'
+									InputLabelProps={{ shrink: true }}
+								/>
+								<TextField
+									id='to'
+									name='to'
+									label='To'
+									variant='outlined'
+									value={to}
+									onChange={handleChange}
+									size='small'
+									type='date'
+									InputLabelProps={{ shrink: true }}
+								/>
+								<Button variant='contained' type='submit' sx={{ "marginTop": "0.5%" }}>
+									Filter
+								</Button>
+							</Grid>
+						</form>
 
+						{upcoming && (
+							<Button
+								disabled={false}
+								size='medium'
+								variant='outlined'
+								// style={{ margin: "10px", color: "#1976d2" }}
+								sx={{ "marginBottom": "10px", "marginTop": "8px", "marginLeft": "300px" }}
+								onClick={handleUpcomingClick}
+							>
+								Hide Upcoming Appointments
+							</Button>
+						)}
+						{!upcoming && (
+							<Button
+								disabled={false}
+								size='medium'
+								variant='contained'
+								// style={{ margin: "10px", color: "white", background: "#1976d2" }}
+								sx={{ "marginBottom": "10px", "marginTop": "8px" }}
+								onClick={handleUpcomingClick}
+							>
+								View Upcoming Appointments
+							</Button>
+						)}
+					</div>
 					{/* {isPending && <div>Loading...</div>} */}
 					{isPending && (
 						<Spinner />
@@ -522,45 +551,47 @@ const DoctorApps = () => {
 					)} */}
 					<Paper>
 						<Table>
-							<TableHead>
+							<TableHead
+								sx={{ "backgroundColor": "#b2f0e8" }}
+							>
 								<TableCell
-									align="center"
+									sx={{ fontWeight: "bold"  }}
 								>
 									Patient
 								</TableCell>
 
 								<TableCell
-									align="center"
+									sx={{ fontWeight: "bold"  }}
 								>
 									Date
 								</TableCell>
 
 								<TableCell
-									align="center"
+									sx={{ fontWeight: "bold"  }}
 								>
 									Time
 								</TableCell>
 
 								<TableCell
-									align="center"
+									sx={{ fontWeight: "bold"  }}
 								>
 									Status
 								</TableCell>
 
 								<TableCell
-									align="center"
+									sx={{ fontWeight: "bold"  }}
 								>
 									Follow up
 								</TableCell>
 
 								<TableCell
-									align="center"
+									sx={{ fontWeight: "bold"  }}
 								>
 									Reschedule
 								</TableCell>
 
 								<TableCell
-									align="center"
+									sx={{ fontWeight: "bold"  }}
 								>
 									Cancel
 								</TableCell>

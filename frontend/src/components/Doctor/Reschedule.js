@@ -34,7 +34,7 @@ const [time, setTime] = useState(localTime);
     return (
         // <div style={{ "margin": "10px 0" }}>
         // <div style={{ "margin": "10px 0", "marginTop": "20px" }}>
-        <div style={{ margin: '5px' }}>
+        <div style={{ margin: '5px', display: "flex", flexDirection: "column" }}>
             <TextField
                 id={`date-${appointment._id}`}
                 name={`date-${appointment._id}`}
@@ -57,7 +57,7 @@ const [time, setTime] = useState(localTime);
             />
             <Button
                 disabled={ !date || !time }
-                variant='outlined'
+                variant='contained'
                 size='medium'
                 onClick={ handleReschedule }
                 sx={{ "marginTop": "0.5%" }}
