@@ -239,9 +239,11 @@ const handleCloseFollowup= () => {
 	}, [appointments]);
 
 	return (
+		<div>
+		<Paper sx={{ "margin": "auto", "width": "90%", "marginTop": "90px", "padding": "2%" }}>
 		<ThemeProvider theme={theme}>
 		
-			<h2>My Appointments</h2>
+			<Typography variant='h3'>My Appointments</Typography>
 			<div className='app-p'>
 			
 
@@ -586,6 +588,8 @@ const handleCloseFollowup= () => {
 			)}
 
 		</ThemeProvider>
+		</Paper>
+		</div>
 	);
 };
 

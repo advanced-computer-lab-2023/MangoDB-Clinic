@@ -57,7 +57,7 @@ const DoctorDetails = () => {
 			//   fetchAvailableSlots(id, selectedDate);
 			//   console.log(app._id)
 			const items = [{ id: 1, quantity: 1 }];
-			const url = "http://localhost:3000/checkout/65390c8a85e114d6cb5d5b34";
+			const url = `http://localhost:3000/checkout/${id}`;
 			window.location = url;
 
 			// const response = await axios.post('/api/checkout', { appointmentId: app.data._id, items });
@@ -117,6 +117,14 @@ const DoctorDetails = () => {
 					<p>Educational Background: {doctor.educationalBackground}</p>
 					<p>Affiliation: {doctor.affiliation}</p>
 					<h3>Documents:</h3>
+					{doctor.availableSlots.map((slot, index) => (
+  <div key={index}>
+    <p>Weekday: {slot.weekday}</p>
+    <p>Start Time: {new Date(slot.startTime).toLocaleTimeString()}</p>
+    <p>End Time: {new Date(slot.endTime).toLocaleTimeString()}</p>
+  </div>
+))}
+
 					{/* {doctor.documents.map((document, index) => (
             <div key={index}>
               <p>File: {document.name}</p>

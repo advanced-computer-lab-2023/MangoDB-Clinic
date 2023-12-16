@@ -211,7 +211,9 @@ function App() {
 						path='/admin/change-password'
 						element={<ChangePasswordPage />}
 					/>
+					<Route path='/checkout' element={<Checkout />} />
 				</Routes>
+				
 			</Router>
 		</ThemeProvider>
 	);
