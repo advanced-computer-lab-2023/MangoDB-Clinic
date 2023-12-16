@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-import { Button, TextField, Grid,Typography } from "@mui/material";
+import { Button, TextField, Grid,Typography,Paper, Tooltip } from "@mui/material";
 
 import { linkFam } from "../services/api";
 
@@ -55,15 +55,24 @@ const LinkFamMember = () => {
 	};
 
 	return (
-		<div>
-			<Grid item xs={12} style={{ padding: "5px" }}>
-						<Typography variant='h5'>Add Family member</Typography>
-					</Grid>
+		
+		<Grid container justifyContent="center" style={{ padding: "2rem" }}>
+		<Grid item xs={6}>
+		  <Paper
+			elevation={3}
+			sx={{ maxWidth: "80%", margin: "auto" }}
+			style={{ padding: "2rem" }}
+		  >
+				<Typography variant="h4" paddingBottom={3}>Add Family Member</Typography>
 			<Grid container spacing={2}>
 				<Grid item xs={6}>
 					<TextField
 						label='Name'
 						value={family.name}
+						fullWidth
+                  		required
+						InputLabelProps={{ shrink: true }}
+						placeholder="Name"
 						onChange={(e) => handleChange("name", e.target.value)}
 					/>
 				</Grid>
@@ -71,6 +80,10 @@ const LinkFamMember = () => {
 					<TextField
 						label='National ID'
 						value={family.nationalID}
+						fullWidth
+                  		required
+						InputLabelProps={{ shrink: true }}
+						placeholder="0123456789"
 						onChange={(e) => handleChange("nationalID", e.target.value)}
 					/>
 				</Grid>
@@ -78,29 +91,74 @@ const LinkFamMember = () => {
 					<TextField
 						label='Age'
 						value={family.age}
+						fullWidth
+                  		required
+						InputLabelProps={{ shrink: true }}
+						placeholder="00"
 						onChange={(e) => handleChange("age", e.target.value)}
 					/>
 				</Grid>
 				<Grid item xs={6}>
+				<Tooltip
+                  title="Gender can only be male or female."
+                  placement="right"
+                  PopperProps={{
+                    modifiers: [
+                      {
+                        name: "offset",
+                        options: {
+                          offset: [0, -10], // Adjust these values as needed
+                        },
+                      },
+                    ],
+                  }}
+                >
 					<TextField
 						label='Gender'
 						value={family.gender}
+						fullWidth
+                  		required
+						InputLabelProps={{ shrink: true }}
+						placeholder="Gender"
 						onChange={(e) => handleChange("gender", e.target.value)}
 					/>
+					</Tooltip>
 				</Grid>
 				<Grid item xs={6}>
+				<Tooltip
+                  title="Relation can only be husband, wife, or child."
+                  placement="right"
+                  PopperProps={{
+                    modifiers: [
+                      {
+                        name: "offset",
+                        options: {
+                          offset: [0, -10], // Adjust these values as needed
+                        },
+                      },
+                    ],
+                  }}
+                >
 					<TextField
 						label='Relation'
 						value={family.relation}
+						fullWidth
+                  		required
+						InputLabelProps={{ shrink: true }}
+						placeholder="Relation"
 						onChange={(e) => handleChange("relation", e.target.value)}
 					/>
+				</Tooltip>
 				</Grid>
 			</Grid>
 
-			<Button variant='contained' onClick={handleLink}>
+			<Button variant='contained' type='submit' fullWidth onClick={handleLink}>
 				Link
 			</Button>
-		</div>
+			</Paper>
+			</Grid>
+		</Grid>
+		
 	);
 };
 
