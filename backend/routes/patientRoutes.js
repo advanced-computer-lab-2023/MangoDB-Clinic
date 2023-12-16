@@ -173,9 +173,8 @@ router.get(
 );
 
 router.get(
-	"/get_available_appointments",
+	"/get_available_appointments/:id",
 	protectPatient,
-
 	getAvailableAppointments
 );
 
@@ -197,7 +196,7 @@ router.post(
 	payPescriptionWallet
 );
 
-router.post("/requestFollowUp/:doctorId", protectPatient, requestFollowUp);
+router.post("/requestFollowUp", protectPatient, requestFollowUp);
 
 router.patch("/clearNotifs", protectPatient, clearNotifs);
 router.patch("/seenNotifs", protectPatient, seenNotifs)
