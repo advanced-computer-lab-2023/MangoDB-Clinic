@@ -107,7 +107,7 @@ const PackageCard = ({ packages, handleClick, subscribed, packageInfo }) => {
                         name={packages.name}
                         disabled={subscribed && packageInfo.packageId.name !== packages.name}
                     >
-                        {subscribed && packageInfo.packageId.name === packages.name ? 'Renew Subscription' : 'Subscribed'}
+                        {subscribed && packageInfo.packageId.name === packages.name ? 'Renew Subscription' : 'Subscribe'}
                     </Button>
                 </CardActions>
             </Card>
@@ -247,7 +247,7 @@ const ViewPackagesPatient = () => {
     return (  
         <ThemeProvider theme={theme}>
             <Typography align="center" variant="h2" paddingTop={3}>
-                Packeges Pricing
+                Packages Pricing
             </Typography>
             <Typography align="center" variant="h5" padding={3}>
                 We offer 3 different packages for our patients to try and improve their experience with us.
