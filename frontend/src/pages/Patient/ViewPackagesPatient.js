@@ -63,10 +63,10 @@ const PackageCard = ({ packages, handleClick, subscribed, packageInfo }) => {
                     }}
                   >
                     <Typography component="h2" variant="h3" color="text.primary">
-                        £{packages.price}
+                        EGP{packages.price}
                     </Typography>
                     <Typography variant="h6" color="text.secondary">
-                        /mo
+                        /yr
                     </Typography>
                   </Box>
                   <ul>
