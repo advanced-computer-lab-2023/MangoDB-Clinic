@@ -15,6 +15,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import Spinner from "./Spinner";
+import theme from "../../theme";
 
 function Copyright(props) {
 	return (
@@ -34,7 +35,7 @@ function Copyright(props) {
 	);
 }
 
-const defaultTheme = createTheme();
+const defaultTheme = theme;
 
 export default function LoginUser() {
 	const navigate = useNavigate();

@@ -4,6 +4,7 @@ import axios from "axios";
 import { useTheme } from "@mui/material/styles";
 
 import Title from "./Title";
+import { Typography } from "@mui/material";
 
 const getName = async () => {
 	try {
@@ -44,7 +45,7 @@ export default function Chart() {
 
 	return (
 		<React.Fragment>
-			<Title>Welcome Back {name}!</Title>
+			<Typography variant="h4">Welcome Back {name}!</Typography>
 		</React.Fragment>
 	);
 }

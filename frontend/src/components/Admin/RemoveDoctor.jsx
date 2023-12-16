@@ -10,14 +10,42 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
+import { ThemeProvider } from "@mui/material/styles";
+import Slide, { SlideProps } from "@mui/material/Slide";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 import Title from "./Title";
 import Spinner from "../GeneralComponents/Spinner";
+import theme from "../../theme";
+
+const defaultTheme = theme;
 
 export default function RemoveDoctor() {
 	const navigate = useNavigate();
 	const [rows, setRows] = React.useState([]);
 	const [loading, setLoading] = React.useState(false);
+	const [isSuccess, setIsSuccess] = React.useState(false);
+	const [state, setState] = React.useState({
+		open: false,
+		Transition: Slide,
+		message: "",
+	});
+
+	const Alert = React.forwardRef(function Alert(props, ref) {
+		return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
+	});
+
+	function SlideTransition(props) {
+		return <Slide {...props} direction='down' />;
+	}
+
+	const handleClose = () => {
+		setState({
+			...state,
+			open: false,
+		});
+	};
 
 	const getData = async () => {
 		try {
@@ -72,14 +100,30 @@ export default function RemoveDoctor() {
 					}
 				);
 				if (response.status === 200) {
-					alert("Doctor removed successfully!");
-					fetchData();
+					setIsSuccess(true);
+					setState({
+						open: true,
+						Transition: SlideTransition,
+						message: `${response.data.message}`,
+					});
+					setTimeout(() => {
+						setState({
+							...state,
+							open: false,
+						});
+						fetchData();
+					}, 1500);
 				}
 			} else {
 				return;
 			}
 		} catch (error) {
-			alert(error.message);
+			setIsSuccess(false);
+			setState({
+				open: true,
+				Transition: SlideTransition,
+				message: error.response.data.message,
+			});
 		} finally {
 			setLoading(false);
 		}
@@ -87,68 +131,95 @@ export default function RemoveDoctor() {
 
 	return (
 		<>
-			{loading ? (
-				<Spinner />
-			) : (
-				<>
-					<br />
-					<Button
-						variant='outlined'
-						style={{ marginLeft: "10px" }}
-						onClick={() => navigate(-1)}
-					>
-						Back
-					</Button>
-					<br />
-					<br />
-					<Title>Remove Doctor</Title>
-					<Table size='small'>
-						<TableHead>
-							<TableRow>
-								<TableCell>Doctor ID</TableCell>
-								<TableCell>Doctor Username</TableCell>
-								<TableCell>Doctor Name</TableCell>
-								<TableCell>Doctor Email</TableCell>
-								<TableCell>Doctor Affiliation</TableCell>
-								<TableCell>Doctor Speciality</TableCell>
-								<TableCell></TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{rows.map((row) => (
-								<TableRow key={row._id}>
-									<TableCell>{row._id}</TableCell>
-									<TableCell>{row.username}</TableCell>
-									<TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>
-									<TableCell>{row.email}</TableCell>
-									<TableCell>{row.affiliation}</TableCell>
-									<TableCell>{row.speciality}</TableCell>
-									<TableCell>
-										<Stack direction='row' spacing={2}>
-											<Button
-												variant='contained'
-												color='error'
-												onClick={() => handleRemove(row._id)}
-											>
-												Remove
-											</Button>
-										</Stack>
-									</TableCell>
+			<ThemeProvider theme={defaultTheme}>
+				{loading ? (
+					<Spinner />
+				) : (
+					<>
+						<br />
+						<Button
+							variant='outlined'
+							style={{ marginLeft: "10px" }}
+							onClick={() => navigate(-1)}
+						>
+							Back
+						</Button>
+						<br />
+						<br />
+						<Title>Remove Doctor</Title>
+						<Table size='small'>
+							<TableHead>
+								<TableRow>
+									<TableCell>Doctor ID</TableCell>
+									<TableCell>Doctor Username</TableCell>
+									<TableCell>Doctor Name</TableCell>
+									<TableCell>Doctor Email</TableCell>
+									<TableCell>Doctor Affiliation</TableCell>
+									<TableCell>Doctor Speciality</TableCell>
+									<TableCell></TableCell>
 								</TableRow>
-							))}
-						</TableBody>
-					</Table>
+							</TableHead>
+							<TableBody>
+								{rows.map((row) => (
+									<TableRow key={row._id}>
+										<TableCell>{row._id}</TableCell>
+										<TableCell>{row.username}</TableCell>
+										<TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>
+										<TableCell>{row.email}</TableCell>
+										<TableCell>{row.affiliation}</TableCell>
+										<TableCell>{row.speciality}</TableCell>
+										<TableCell>
+											<Stack direction='row' spacing={2}>
+												<Button
+													variant='contained'
+													color='error'
+													onClick={() => handleRemove(row._id)}
+												>
+													Remove
+												</Button>
+											</Stack>
+										</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+						{isSuccess ? (
+							<Snackbar
+								open={state.open}
+								onClose={handleClose}
+								TransitionComponent={state.Transition}
+								key={state.Transition.name}
+								autoHideDuration={2000}
+							>
+								<Alert severity='success' sx={{ width: "100%" }}>
+									{state.message}
+								</Alert>
+							</Snackbar>
+						) : (
+							<Snackbar
+								open={state.open}
+								onClose={handleClose}
+								TransitionComponent={state.Transition}
+								key={state.Transition.name}
+								autoHideDuration={2000}
+							>
+								<Alert severity='error' sx={{ width: "100%" }}>
+									{state.message}
+								</Alert>
+							</Snackbar>
+						)}
 
-					<br />
-					<Button
-						variant='contained'
-						style={{ margin: "10px" }}
-						onClick={() => navigate("/admin")}
-					>
-						Home
-					</Button>
-				</>
-			)}
+						<br />
+						<Button
+							variant='contained'
+							style={{ margin: "10px" }}
+							onClick={() => navigate("/admin")}
+						>
+							Home
+						</Button>
+					</>
+				)}
+			</ThemeProvider>
 		</>
 	);
 }
