@@ -52,18 +52,7 @@ export default function Profile() {
 			<br></br>
 
 				</Link>
-				<Link to='/viewHealthPackageSubscription'>
-				<Button variant='contained' >
-				View Health Package Subscription
-			</Button>
-			<br></br>
 
-				</Link>
-				<Link to='/cancelHealthPackageSubscription'>
-				<Button variant='contained' >
-				Cancel Health Package Subscription
-			</Button>
-				</Link>
 			</div>
 		</div>
 	);

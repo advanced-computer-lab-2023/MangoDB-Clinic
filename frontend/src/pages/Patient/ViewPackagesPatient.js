@@ -10,13 +10,15 @@ import {
     CardActions,
     CardHeader,
     Snackbar,
+    Dialog,
     } from "@mui/material";
 import theme from "../../theme";
 import MuiAlert from "@mui/material/Alert";
 import { useState, useEffect } from "react";
 import { checkout1, checkout2 } from "../../services/api";
 
-const PackageCard = ({ packages, handleClick, subscribed, packageInfo }) => {
+const PackageCard = ({ packages, handleClick, subscribed, packageInfo, payWithWallet, setOpen }) => {
+    const [open, setOpen] = useState(false);
     
     const getBackgroundColor = (type) => {
         switch (type) {
@@ -63,10 +65,10 @@ const PackageCard = ({ packages, handleClick, subscribed, packageInfo }) => {
                     }}
                   >
                     <Typography component="h2" variant="h3" color="text.primary">
-                        £{packages.price}
+                        EGP{packages.price}
                     </Typography>
                     <Typography variant="h6" color="text.secondary">
-                        /mo
+                        /yr
                     </Typography>
                   </Box>
                   <ul>
@@ -103,15 +105,37 @@ const PackageCard = ({ packages, handleClick, subscribed, packageInfo }) => {
                         fullWidth
                         variant="contained"
                         color="primary"
-                        onClick={handleClick}
+                        onClick={() => setOpen(true)}
                         name={packages.name}
                         disabled={subscribed && packageInfo.packageId.name !== packages.name}
                     >
-                        {subscribed && packageInfo.packageId.name === packages.name ? 'Renew Subscription' : 'Subscribed'}
+                        {subscribed && packageInfo.packageId.name === packages.name ? 'Renew Subscription' : 'Subscribe'}
                     </Button>
                 </CardActions>
             </Card>
-            
+            <Dialog open={open} onClose={() => {setOpen(false)}}>
+                <Typography align="center" variant="h4" style={{paddingBottom: "1rem"}}>
+                    Please choose a payment method
+                </Typography>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleClick}
+                    name={packages.name}
+                    style={{margin: "1rem"}}
+                >
+                    Credit Card
+                </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={payWithWallet}
+                    name={packages.name}
+                    style={{margin: "1rem"}}
+                >
+                    Cash
+                </Button>
+        </Dialog>
         </Grid>
     );
 };
@@ -240,6 +264,16 @@ const ViewPackagesPatient = () => {
         }
     };
 
+    const payWithWallet = async (e) => {
+        try {
+            const id = e.currentTarget.getAttribute("name").split(" ")[0];
+            console.log(id);
+            const items = [{ id: 1, quantity: 1 }];
+        } catch (error) {
+            console.error("Error during checkout:", error);
+        }
+    };
+
     const handleCloseSnackbar = () => {
         setOpenSuccess(false);
     };
@@ -247,7 +281,7 @@ const ViewPackagesPatient = () => {
     return (  
         <ThemeProvider theme={theme}>
             <Typography align="center" variant="h2" paddingTop={3}>
-                Packeges Pricing
+                Packages Pricing
             </Typography>
             <Typography align="center" variant="h5" padding={3}>
                 We offer 3 different packages for our patients to try and improve their experience with us.
@@ -261,7 +295,9 @@ const ViewPackagesPatient = () => {
                                 packages={packages}
                                 handleClick={handleClick}
                                 subscribed={subscribed}
-                                packageInfo={packageInfo} />
+                                packageInfo={packageInfo}
+                                payWithWallet={payWithWallet}
+                                setOpen={setOpen} />
                         ))}
                     </Grid>
                     {subscribed &&
@@ -270,7 +306,7 @@ const ViewPackagesPatient = () => {
                            Package Subscription info
                         </Typography>
                         <Typography align="left" variant="h6" >
-                            You are subscribed to the {packageInfo.packageId.name} experience the endless opportunities you get form this package .
+                            You are subscribed to the {packageInfo.packageId.name}, experience the endless opportunities you get from this package .
                         </Typography>
                         <Typography align="left" variant="h6" >
                             Package Renewal: {new Date(packageInfo.renewalDate).toLocaleDateString()}

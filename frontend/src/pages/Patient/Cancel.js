@@ -18,7 +18,7 @@ const Cancel = () => {
 	return (
 		<div>
 			<h1>Payment Cancelled</h1>
-			<p>Redirecting to the home page...</p>
+			<p>Redirecting to the packages page...</p>
 		</div>
 	);
 };

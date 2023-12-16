@@ -34,6 +34,7 @@ import {
 	seenNotifsPatient,
 } from "../../services/api";
 import Notification from "../../components/Patient/Notification";
+import Notifications from "../../components/GeneralComponents/Notifiactions";
 
 function Copyright(props) {
 	return (
@@ -177,6 +178,7 @@ export default function Dashboard() {
 
 	return (
 		<ThemeProvider theme={defaultTheme}>
+			{/* <PatientHeader /> */}
 			<Box sx={{ display: "flex" }}>
 				<CssBaseline />
 				<AppBar position='absolute' open={open}>
@@ -206,7 +208,7 @@ export default function Dashboard() {
 						>
 							Patient Dashboard
 						</Typography>
-						<IconButton color="inherit">
+						{/* <IconButton color="inherit">
 							<Badge badgeContent={ notificationsCount } color="secondary">
 								<NotificationsIcon onClick={ handleClick } />
 								<Popover
@@ -226,7 +228,7 @@ export default function Dashboard() {
 									<div>
 										{notifications.map(notification => (
 										<div key={notification._id} style={ notification.seen ? {} : { "backgroundColor": '#F0F0F0' } }>
-											{/* <h4>{notification.title}</h4> */}
+											{/* <h4>{notification.title}</h4> //}
 											<div style={{ "display": "flex", "alignItems": "center", "justifyContent": "space-between" }}>
 											<h4>{notification.title}</h4>
 											<DeleteForeverIcon id={ notification._id } onClick={ () => handleNotifDelete(notification._id) } />
@@ -237,7 +239,10 @@ export default function Dashboard() {
 									</div>
 								</Popover>
 							</Badge>
-						</IconButton>
+						</IconButton> */}
+						
+						<Notifications type="patient" onError={setError} />
+
 						<IconButton color='inherit'>
 							<LogoutIcon onClick={handleLogout} />
 						</IconButton>
@@ -277,7 +282,7 @@ export default function Dashboard() {
 					<Toolbar />
 					<Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
 						<Grid container spacing={3}>
-							{`Welocme ${patientName}!`}
+							{`Welcome back, ${patientName}!`}
 							<Grid item xs={12} md={8} lg={9}>
 								<Paper
 									sx={{

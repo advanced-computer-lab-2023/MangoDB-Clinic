@@ -18,6 +18,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Divider from "@mui/material/Divider";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
+import Notifications from "./Notifiactions";
 
 export default function PatientHeader() {
   const [openProfileDrawer, setOpenProfileDrawer] = React.useState(false);
@@ -324,6 +325,11 @@ export default function PatientHeader() {
               transform: "translateX(-50%)",
             }}
           />
+
+          { 
+            /* HANDLE NOTIFS HERE */
+            <Notifications type="patient" onError={null} />
+          }
 
           <Avatar sx={{ marginRight: 2 }}>{/* User's initials */}</Avatar>
           <Typography

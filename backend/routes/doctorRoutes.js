@@ -30,7 +30,9 @@ const {
 	getDoctorInfo,
 	loginDoctor,
 	resetPassword,
+	acceptEmploymentContract,
 	sendOTP,
+	rejectEmploymentContract,
 	verifyOTP,
 	followUp,
 	getDoctor,
@@ -45,7 +47,7 @@ const {
 	revokeFollowUpSession,
 	updatePrescription,
 	clearNotifs,
-	seenNotifs
+	seenNotifs,
 } = require("../controllers/doctorController");
 
 router.get("/myInfo", protectDoctor, getMyInfo);
@@ -70,6 +72,9 @@ router.post("/revokeFollowUpSession/:id", revokeFollowUpSession);
 
 // router.post("/upcoming", upcoming);
 router.post("/upcoming", protectDoctor, upcoming);
+
+router.post("/acceptContract", protectDoctor, acceptEmploymentContract);
+router.post("/rejectContract", protectDoctor, rejectEmploymentContract);
 
 router.post("/CreateDoctor", createDoctor);
 router.post("/CreatePatient", createPatient);
@@ -154,6 +159,6 @@ router.patch("/updatePrescription/:id", protectDoctor, updatePrescription);
 
 router.patch("/clearNotifs", protectDoctor, clearNotifs);
 
-router.patch("/seenNotifs", protectDoctor, seenNotifs)
+router.patch("/seenNotifs", protectDoctor, seenNotifs);
 
 module.exports = router;

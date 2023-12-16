@@ -26,7 +26,7 @@ export const getPatient = () => API.get(`/patient/get_patient`, { headers: { Aut
 export const getPatientInfo = () => API.get(`/patient/myInfo`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export const clearNotifsPatient = (id) => API.patch('/patient/clearNotifs', { id }, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
-export const clearNotifsDoctor = () => API.patch('/doctor/clearNotifs', {}, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+export const clearNotifsDoctor = (id) => API.patch('/doctor/clearNotifs', { id }, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 export const seenNotifsDoctor = () => API.patch('/doctor/seenNotifs', {}, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 export const seenNotifsPatient = () => API.patch('/patient/seenNotifs', {}, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 

@@ -79,6 +79,7 @@ export default function LoginAdmin() {
 
 			if (response.status === 200) {
 				localStorage.setItem("token", response.data.token);
+				localStorage.setItem('userData', JSON.stringify(response.data));
 				setState({
 					open: true,
 					Transition: SlideTransition,
