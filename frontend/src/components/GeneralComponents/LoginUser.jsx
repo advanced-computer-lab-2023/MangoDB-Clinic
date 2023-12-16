@@ -61,7 +61,11 @@ export default function LoginUser() {
 						navigate("/patientdashboard");
 						break;
 					case "Doctor":
-						navigate("/doctordashboard");
+						if (response.data.accountStatus === "pending") {
+							navigate("/employmentcontract");
+						} else {
+							navigate("/doctordashboard");
+						}
 						break;
 					default:
 						break;
