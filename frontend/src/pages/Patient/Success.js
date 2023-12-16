@@ -50,7 +50,7 @@ const Success = () => {
 
 	return (
 		<div>
-			<p>Redirecting to the home page...</p>
+			{/* <p>Redirecting to the home page...</p> */}
 			<Snackbar
 				open={openSuccess}
 				anchorOrigin={{ vertical: "top", horizontal: "center" }}
@@ -63,7 +63,7 @@ const Success = () => {
 					elevation={6}
 					variant="filled"
 				>
-					Congratulations Payment was Successful.
+					Congratulations Payment was Successful. You will be redirected to the Patient Dashboard.
 				</MuiAlert>
             </Snackbar>
 		</div>
