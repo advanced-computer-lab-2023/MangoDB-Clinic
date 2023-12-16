@@ -52,6 +52,7 @@
         <li><a href="#usage">Usage</a></li>
       </ul>
     </li>
+    <li><a href="#running-tests">Running Tests</li>
     <li><a href="#code-specifcations">Code Specifcations</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#credits">Credits</a></li>
@@ -187,7 +188,7 @@ MangoDB Virtual Clinic is a comprehensive virtual healthcare platform that bridg
 * [![Stripe][Stripe]][Stripe-url]
 * [![Figma][Figma]][Figma-url]
 * [![VScode][VScode]][VScode-url]
-* [![Notion][Notion]][Notion-url]
+* [![Postman][Postman]][Postman-url]
 * [![Github][Github]][Github-url]
 * [![Git][Git]][Git-url]
 * <img src=readme_images/dailyco.png alt="Dailyco" width="80"/> 
@@ -208,12 +209,6 @@ Before you begin, make sure you have the following installed on your machine:
 - [MongoDB](https://www.mongodb.com/try/download/community) - Set up a MongoDB database to store application data.
 - [VScode](https://code.visualstudio.com) - Install any IDE to run the project on.
 - [Stripe](https://stripe.com) - Head to Stripe and get your Stipe private key.
-
-<!-- This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ``` -->
 
 ### Installation 📥
 
@@ -315,7 +310,49 @@ Experience the MangoDB Virtual Clinic by following these simple steps:
 <p align="right">(<a href="#mangodb-virtual-clinic">back to top</a>)</p>
 
 
+## Running Tests 🧪
 
+The testing is done using [Postman](https://www.postman.com)
+**Note:**For testing any GET, PUT, 
+
+<details>
+<summary><strong>Login test:</strong></summary>
+
+You should register first a doctor or a patient to test the Login
+![loginPostman](readme_images/loginPostman.png)
+
+</details>
+
+<details>
+<summary><strong>Prescriptions test:</strong></summary>
+Enter the token you got from the login in bearer auth in postman
+
+![getPrescPostman](readme_images/getPrescPostman.png)
+
+**Note**: You may get an empty array in case there are no prescriptions.
+</details>
+
+<details>
+<summary><strong>add Prescription:</strong></summary>
+
+![addPrescPostman](readme_images/addPrescPostman.png)
+
+</details>
+
+<details>
+<summary><strong>Check Patient's health package test:</strong></summary>
+
+![checkPackagePostman](readme_images/checkPackagePostman.png)
+
+</details>
+
+<details>
+<summary><strong>Login test:</strong></summary>
+
+You should register first a doctor or a patient to test the Login
+![loginPostman](readme_images/loginPostman.png)
+
+</details>
 
 <!-- ROADMAP -->
 ## Code Specifcations ⚙️
@@ -655,3 +692,5 @@ The software is open source under the GPL.3 License. [GPT3](https://choosealicen
 [Github-url]: https://github.com
 [Dailyco]: readme_images/dailyco.png
 [Dailyco-url]: https://www.daily.co
+[Postman]: https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white
+[Postman-url]: https://www.postman.com
