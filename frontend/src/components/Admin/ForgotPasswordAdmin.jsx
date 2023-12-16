@@ -10,7 +10,7 @@ import Box from "@mui/material/Box";
 import LockResetIcon from "@mui/icons-material/LockReset";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 
 import Spinner from "../GeneralComponents/Spinner";
 import theme from "../../theme";

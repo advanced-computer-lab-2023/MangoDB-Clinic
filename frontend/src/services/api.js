@@ -169,6 +169,31 @@ API.post(`patient/requestFollowUp`, {appId, date}, { headers: { Authorization: `
 export const patientPayPrescription = (totalPirce) =>
 API.post(`patient/payPescriptionWallet ${totalPirce}`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });	
 
+
+export const viewChats = () =>
+API.get('/Doctor/viewChats', {
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem('token')}`,
+  },
+});
+  
+export const getAllPharmacists = () => API.get(`/Doctor/getAllPharmacists`,{ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+
+export const createChat = (pharmacistFirstName, pharmacistLastName) => API.post("/Doctor/createChat",{ pharmacistFirstName,pharmacistLastName },{ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+
+export const getChat = ({ pharmacistId }) =>
+API.post("/Doctor/getChat", { pharmacistId }, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } })
+  .then((response) => response.data)
+  .catch((error) => {
+    console.error("Error fetching chat:", error);
+    throw error;
+  });
+
+export const sendMessage = ( messageText, receiverId) => API.post("/Doctor/sendMessage",{ messageText, receiverId},{ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+
+export const getPharmacistbyId = (id) => API.get(`/Doctor/getPharmacistById/${id}`);
+
+
 const API2 = axios.create({
 	baseURL: `http://localhost:${port}`,
 	timeout: 5000,

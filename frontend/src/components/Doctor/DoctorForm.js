@@ -70,6 +70,7 @@ const DoctorForm = () => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
+		localStorage.clear();
 		const formData = new FormData();
 		formData.append("username", username);
 		formData.append("email", email);

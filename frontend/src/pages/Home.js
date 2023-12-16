@@ -5,10 +5,27 @@ import Typography from "@mui/material/Typography";
 const Home = () => {
 	const navigate = useNavigate();
 
+	function isLoggedIn() {
+		if (localStorage.getItem("token")) {
+			return true;
+		}
+
+		return false;
+	}
+
+	function isPatient() {
+		if (localStorage.getItem("type") === "Patient") {
+			return true;
+		}
+
+		return false;
+	}
+
 	return (
 		<div className='home-container'>
-			<Typography variant='h1'>El7a2ni ⛑️</Typography>
-			<Typography variant='h3'>Your Health, Our Priority</Typography>
+			<Typography variant='h1'>EL7A2NY ⛑️</Typography>
+			<br />
+			<Typography variant='h4'>Your Health, Our Priority</Typography>
 
 			<div style={{ marginTop: "20px" }}>
 				<Button
@@ -18,7 +35,8 @@ const Home = () => {
 				>
 					Patient Registration
 				</Button>
-				{localStorage.getItem("token") ? (
+
+				{isLoggedIn() ? (
 					<></>
 				) : (
 					<Button
@@ -29,6 +47,7 @@ const Home = () => {
 						Login
 					</Button>
 				)}
+
 				<Button
 					variant='contained'
 					onClick={() => navigate("/doctorform")}
@@ -36,23 +55,32 @@ const Home = () => {
 				>
 					Doctor Registration
 				</Button>
-
-				<Button
-					variant='contained'
-					style={{ margin: "10px" }}
-					onClick={() => navigate("/patientdashboard")}
-				>
-					Patient Dashboard
-				</Button>
-
-				<Button
-					variant='contained'
-					style={{ margin: "10px" }}
-					onClick={() => navigate("/doctordashboard")}
-				>
-					Doctor Dashboard
-				</Button>
 			</div>
+			{isLoggedIn() ? (
+				isPatient() ? (
+					<>
+						<Button
+							variant='contained'
+							style={{ margin: "10px" }}
+							onClick={() => navigate("/patientdashboard")}
+						>
+							Your Dashboard
+						</Button>
+					</>
+				) : (
+					<>
+						<Button
+							variant='contained'
+							style={{ margin: "10px" }}
+							onClick={() => navigate("/doctordashboard")}
+						>
+							Your Dashboard
+						</Button>
+					</>
+				)
+			) : (
+				<></>
+			)}
 		</div>
 	);
 };

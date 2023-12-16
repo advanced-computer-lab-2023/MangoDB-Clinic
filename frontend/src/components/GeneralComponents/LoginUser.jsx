@@ -12,7 +12,7 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 
 import Spinner from "./Spinner";
 import theme from "../../theme";
@@ -58,12 +58,15 @@ export default function LoginUser() {
 				localStorage.setItem("token", response.data.token);
 				switch (response.data.type) {
 					case "Patient":
+						localStorage.setItem("type", "Patient");
 						navigate("/patientdashboard");
 						break;
 					case "Doctor":
 						if (response.data.accountStatus === "pending") {
+							localStorage.setItem("type", "Doctor");
 							navigate("/employmentcontract");
 						} else {
+							localStorage.setItem("type", "Doctor");
 							navigate("/doctordashboard");
 						}
 						break;

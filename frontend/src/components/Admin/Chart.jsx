@@ -1,25 +1,13 @@
 import * as React from "react";
 import axios from "axios";
 
-import { useTheme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 
-import Title from "./Title";
+import { theme } from "../../theme";
+
 import { Typography } from "@mui/material";
 
-const getName = async () => {
-	try {
-		const response = await axios.get("http://localhost:4000/admin/my-info", {
-			headers: {
-				Authorization: `Bearer ${localStorage.getItem("token")}`,
-			},
-		});
-
-		return response.data.name;
-	} catch (error) {}
-};
-
 export default function Chart() {
-	const theme = useTheme();
 	const [name, setName] = React.useState(null);
 
 	React.useEffect(() => {
@@ -36,7 +24,7 @@ export default function Chart() {
 
 				setName(response.data.name);
 			} catch (error) {
-				console.error("Error fetching name:", error);
+				console.error("Error fetching name: ", error);
 			}
 		};
 
@@ -44,8 +32,10 @@ export default function Chart() {
 	}, []);
 
 	return (
-		<React.Fragment>
-			<Typography variant="h4">Welcome Back {name}!</Typography>
-		</React.Fragment>
+		<ThemeProvider theme={theme}>
+			<React.Fragment>
+				<Typography variant='h2'>Welcome Back {name}!</Typography>
+			</React.Fragment>
+		</ThemeProvider>
 	);
 }

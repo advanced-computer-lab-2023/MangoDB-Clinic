@@ -30,7 +30,7 @@ const userSchema = mongoose.Schema(
 		},
 		userType: {
 			type: String,
-			enum: ["patient", "doctor"],
+			enum: ["patient", "doctor", "Pharmacist"],
 		},
 		accountStatus: {
 			type: String,

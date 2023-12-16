@@ -54,6 +54,12 @@ export const DoctorListItems = (
 			</ListItemIcon>
 			<ListItemText primary='Forget Password' />
 		</ListItemButton>
+		<ListItemButton component={Link} to="/viewChats">
+			<ListItemIcon>
+				<AccountCircleIcon />
+			</ListItemIcon>
+			<ListItemText primary="View Chats" />
+		</ListItemButton>
 	</React.Fragment>
 );
 

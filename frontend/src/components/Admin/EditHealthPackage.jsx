@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
 import axios from "axios";
 
 import Avatar from "@mui/material/Avatar";
@@ -13,7 +12,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import EditIcon from "@mui/icons-material/Edit";
 import { ThemeProvider } from "@mui/material/styles";
-import Slide, { SlideProps } from "@mui/material/Slide";
+import Slide from "@mui/material/Slide";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
@@ -30,14 +29,6 @@ export default function EditHealthPackage() {
 	const [isLoading, setIsLoading] = React.useState(false);
 	const [error, setError] = React.useState(null);
 	const [healthPackage, setHealthPackage] = React.useState({});
-	const [formData, setFormData] = React.useState({
-		name: "",
-		description: "",
-		price: "",
-		doctorSessionDiscount: "",
-		medicineDiscount: "",
-		familyDiscount: "",
-	});
 	const [isSuccess, setIsSuccess] = React.useState(false);
 	const [state, setState] = React.useState({
 		open: false,
