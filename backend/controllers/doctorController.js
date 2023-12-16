@@ -28,6 +28,47 @@ function generateRandomId(length) {
 	return randomId;
 }
 
+// @desc Doctor accepts employment contract
+// @route POST /doctor/acceptContract
+// @access Private
+const acceptEmploymentContract = asyncHandler(async (req, res) => {
+	const doctor = req.user;
+
+	if (!doctor) {
+		res.status(400);
+		throw new Error("Doctor Not Found");
+	}
+
+	if (doctor.accountStatus !== "pending") {
+		res.status(400);
+		throw new Error("Doctor is not pending");
+	}
+
+	doctor.accountStatus = "active";
+	await doctor.save();
+	res.status(200).json({ message: "Employment Contract Accepted Successfully" });
+});
+
+// @desc Reject employment contract
+// @route POST /doctor/rejectContract
+// @access Private
+const rejectEmploymentContract = asyncHandler(async (req, res) => {
+	const doctor = req.user;
+
+	if (!doctor) {
+		res.status(400);
+		throw new Error("Doctor Not Found");
+	}
+
+	if (doctor.accountStatus !== "pending") {
+		res.status(400);
+		throw new Error("Doctor is not pending");
+	}
+
+	await Doctor.findByIdAndDelete(doctor._id);
+	res.status(200).json({ message: "Employment Contract Rejected Successfully, Your Account Has Been Deleted From Our System" });
+});
+
 const getMyInfo = asyncHandler(async (req, res) => {
 	const doctor = await Doctor.findById(req.user.id);
 
@@ -469,8 +510,8 @@ const createVideoChat = asyncHandler(async (req, res) => {
 		})
 		.catch((err) => console.log("error: ", err));
 });
-const JWT_SECRET = 'abc123';
-const SECRET = 'abc123';
+const JWT_SECRET = "abc123";
+const SECRET = "abc123";
 // Generate Token
 const generateToken = (id) => {
 	return jwt.sign({ id }, JWT_SECRET, {
@@ -1594,21 +1635,21 @@ const seenNotifs = async (req, res) => {
 	try {
 		const doctorId = req.user._id;
 		const doctor = await Doctor.findById(doctorId);
-	
+
 		doctor.notifications.map((notification) => {
 			if (!notification.seen) {
 				notification.seen = true;
 			}
-		})
-	
+		});
+
 		await doctor.save();
-	
+
 		res.status(200).json({ message: "Success" });
 	} catch (error) {
 		console.log(error);
 		res.status(404).json({ error: error.message });
 	}
-}
+};
 
 module.exports = {
 	clearNotifs,
@@ -1652,5 +1693,7 @@ module.exports = {
 	acceptFollowUpSession,
 	revokeFollowUpSession,
 	updatePrescription,
-	seenNotifs
+	seenNotifs,
+	acceptEmploymentContract,
+	rejectEmploymentContract,
 };

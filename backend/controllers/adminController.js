@@ -6,6 +6,7 @@ const Admin = require("../models/adminModel");
 const Doctor = require("../models/doctorModel");
 const Patient = require("../models/patientModel");
 const Packages = require("../models/packagesModel");
+const { jsPDF } = require("jspdf");
 
 const renderDashboard = (req, res) => {
 	res.status(200).render("adminDashboard");
@@ -305,9 +306,6 @@ const doctorApproval = asyncHandler(async (req, res) => {
 		}
 
 		if (doctor.accountStatus === "inactive") {
-			doctor.accountStatus = "active";
-			await doctor.save();
-
 			const transporter = nodemailer.createTransport({
 				service: "Gmail",
 				auth: {
@@ -323,16 +321,18 @@ const doctorApproval = asyncHandler(async (req, res) => {
 					"[NO REPLY] Congratulations! You Have Been Approved To Use El7any!",
 				html: `<h1> Congratulations Dr. ${doctor.lastName}<h1>
                 <p>Everything looks good on your part and we have decided to accept you to use our service! <p>
-                <p>You can now login with your username and password as you like. <p>
-                <p>We wish you a fruitful experience using El7any!<p>
+                <p>Please login to the system and accept your personal employment contract to be able to fully use or clinic! <p>
+                <p>We wish you a fruitful experience using El7a2ny!<p>
                 <p>This Is An Automated Message, Please Do Not Reply.<p>`,
 			};
 
-			transporter.sendMail(mailOptions, (error, info) => {
+			transporter.sendMail(mailOptions, async (error, info) => {
 				if (error) {
 					res.status(500);
 					throw new Error("Something Went Wrong");
 				} else {
+					doctor.accountStatus = "pending";
+					await doctor.save();
 					res.status(200).json({
 						message: "Doctor Has Been Approved And Email Has Been Sent!",
 					});
