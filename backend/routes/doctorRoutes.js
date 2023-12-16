@@ -48,6 +48,11 @@ const {
 	updatePrescription,
 	clearNotifs,
 	seenNotifs,
+	createChat,
+    getChat,
+    sendMessage,
+    viewChats,
+    getAllPharmacists,
 } = require("../controllers/doctorController");
 
 router.get("/myInfo", protectDoctor, getMyInfo);
@@ -160,5 +165,12 @@ router.patch("/updatePrescription/:id", protectDoctor, updatePrescription);
 router.patch("/clearNotifs", protectDoctor, clearNotifs);
 
 router.patch("/seenNotifs", protectDoctor, seenNotifs);
+
+router.post("/createChat",protectDoctor, createChat);
+router.post("/getChat", protectDoctor, getChat);
+router.post("/sendMessage", protectDoctor, sendMessage);
+router.get('/viewChats',protectDoctor , viewChats)
+router.get("/getAllPharmacists", protectDoctor, getAllPharmacists);
+router.get("/getPharmacistById/:id", doctorController.getPharmacistById);
 
 module.exports = router;

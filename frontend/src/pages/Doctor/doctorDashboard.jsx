@@ -177,7 +177,7 @@ export default function DoctorDashboard() {
 
 	return (
 		<ThemeProvider theme={defaultTheme}>
-			<DoctorHeader />
+			{/* <DoctorHeader /> */}
 			<Box sx={{ display: "flex" }}>
 				<CssBaseline />
 				<AppBar position='absolute' open={open}>

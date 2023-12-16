@@ -67,6 +67,10 @@ import NotFound from "./pages/General/NotFound";
 import AdminHeader from "./components/GeneralComponents/adminHeader";
 import PatientHeader from "./components/GeneralComponents/patientHeader";
 import DoctorHeader from "./components/GeneralComponents/doctorHeader";
+
+import ViewChats from "./pages/Doctor/viewChats";
+import Chat from "./pages/Doctor/chat";
+
 function App() {
 	return (
 		<ThemeProvider theme={theme}>
@@ -223,6 +227,9 @@ function App() {
 						element={<ChangePasswordPage />}
 					/>
 					<Route path='/checkout' element={<Checkout />} />
+
+					<Route path='/viewchats' element={<ViewChats />} />
+                    <Route path="/chat/:id" element={<Chat />} />
 
 					<Route path='*' element={<NotFound />} />
 				</Routes>

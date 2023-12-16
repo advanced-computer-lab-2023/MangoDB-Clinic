@@ -4,6 +4,9 @@ const Patient = require("../models/patientModel.js");
 const Appointment = require("../models/appointmentModel");
 const Wallet = require("../models/walletModel.js");
 const Prescription = require("../models/prescriptionModel");
+const Chat = require('../models/chatModel');
+const Message = require('../models/messageModel');
+const Pharmacist = require('../models/pharmacistModel.js');
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
@@ -1651,6 +1654,172 @@ const seenNotifs = async (req, res) => {
 	}
 };
 
+const createChat = async (req, res) => {
+    const {  pharmacistFirstName, pharmacistLastName } = req.body;
+  
+    try {
+      const doctorId =  req.user._id;
+      const pharmacist = await Pharmacist.findOne({
+        firstName: pharmacistFirstName,
+        lastName: pharmacistLastName,
+      });
+      if (!pharmacist) {
+        return res.status(404).json({ error: 'pharmacist not found' });
+      }
+  
+      const newChat = new Chat({
+        userId1: doctorId,
+        userId2: pharmacist._id,
+        messages: [],
+      });
+  
+      await newChat.save();
+  
+      return res.status(201).json(newChat);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+
+  const getChat = async (req, res) => {
+    try {
+      const doctorId = req.user._id;
+
+      const recieverId = req.body.pharmacistId; 
+      console.log(recieverId);
+
+      const chat = await Chat.findOne({
+        $or: [
+          { userId1: doctorId, userId2: recieverId },
+          { userId1: recieverId, userId2: doctorId },
+        ],
+      }).populate('messages'); // Populate the messages field
+        console.log(chat);
+      if (!chat) {
+        return res.status(404).json({ error: 'Chat not found' });
+      }
+  
+      return res.status(200).json(chat);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+
+  const sendMessage = async (req, res) => {
+    const { messageText, receiverId } = req.body;
+    const senderId = req.user._id;//req.user._id;
+  
+    try {
+      // Find the chat based on patientId and doctorId
+      const chat = await Chat.findOne({
+        $or: [
+          { userId1: senderId, userId2: receiverId },
+          { userId1: receiverId, userId2: senderId },
+        ],
+      });
+  
+      if (!chat) {
+        return res.status(404).json({ error: 'Chat not found' });
+      }
+  
+      const newMessage = new Message({
+        messageText,
+        senderRole : 'doctor',
+      });
+  
+      chat.messages.push(newMessage);
+  
+      await chat.save();
+  
+      return res.status(201).json(newMessage);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+
+  const viewChats = async (req, res) => {
+    try {
+      const doctorId = req.user._id;
+      const chats = await Chat.find({
+        $or: [{ userId1: doctorId }, { userId2: doctorId }],
+      });
+  
+      const formattedChats = await Promise.all(
+        chats.map(async (chat) => {
+  let   pharmacist= null;
+
+            pharmacist = await User.findOne({ _id: chat.userId1 });
+          
+          if (pharmacist.userType !== 'Pharmacist') {
+              pharmacist= null;
+          }
+          // Get the last message
+          const lastMessage =
+            chat.messages.length > 0
+              ? chat.messages[chat.messages.length - 1]
+              : 'No messages';
+  
+          // Include the chat in the result only if there are messages and patient is not null
+          return lastMessage !== 'No messages' && pharmacist
+            ? {
+                pharmacist: {
+                  firstName:pharmacist.firstName,
+                  lastName: pharmacist.lastName,
+                  id: pharmacist._id,
+                },
+                lastMessage,
+              }
+            : null;
+        })
+      );
+  
+      const filteredChats = formattedChats.filter(
+        (chat) => chat !== null && chat.pharmacist !== null
+      );
+       
+      console.log("the formatted chats", filteredChats);
+      res.status(200).json(filteredChats);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+  
+  const getAllPharmacists = asyncHandler(async (req, res) => {
+    try {
+      const doctorId = req.user._id;
+  
+      const doctorChats = await Chat.find({ userId1: doctorId });
+  
+      const pharmacistIdsWithChat = doctorChats.map(chat => chat.userId2);
+  
+      const pharmacists = await Pharmacist.find({ _id: { $nin: pharmacistIdsWithChat } });
+  
+      res.status(200).json(pharmacists);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  const getPharmacistById = asyncHandler(async (req, res) => {
+	try {
+		const pharmacist = await Pharmacist.findById(req.params.id)
+  
+		if (pharmacist) {
+			res.status(200).json(pharmacist);
+		} else {
+			res.status(400).json({ message: "pharmacist not found" });
+		}
+	} catch (error) {
+		res.status(500).json({ message: "Server error" });
+	}
+  });
+
+
 module.exports = {
 	clearNotifs,
 	createVideoChat,
@@ -1696,4 +1865,10 @@ module.exports = {
 	seenNotifs,
 	acceptEmploymentContract,
 	rejectEmploymentContract,
+	createChat,
+    getChat,
+    sendMessage,
+    viewChats,
+    getAllPharmacists,
+	getPharmacistById
 };

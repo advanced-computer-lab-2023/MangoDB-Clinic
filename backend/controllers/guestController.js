@@ -6,6 +6,7 @@ const Patient = require("../models/patientModel");
 const Doctor = require("../models/doctorModel");
 const User = require("../models/userModel");
 const Wallet = require("../models/walletModel");
+const Pharmacist = require("../models/pharmacistModel");
 
 const port = process.env.PORT;
 
@@ -126,6 +127,55 @@ const genToken = (id) => {
 	return jwt.sign({ id }, JWT_SECRET);
 };
 
+const createPharmacist = async (req, res) => {
+	try {
+	  const {
+		username,
+		email,
+		password,
+		firstName,
+		lastName,
+		dob,
+		userType,
+		rate,
+		affiliation,
+		education,
+		status,
+		documents,
+	  } = req.body;
+  
+	  const newPharmacist = new Pharmacist({
+		username,
+		email,
+		password,
+		firstName,
+		lastName,
+		dob,
+		userType,
+		rate,
+		affiliation,
+		education,
+		status,
+		documents,
+	  });
+  
+	  await newPharmacist.save();
+  
+	  res.status(201).json({
+		success: true,
+		message: 'Pharmacist created successfully',
+		data: newPharmacist,
+	  });
+	} catch (error) {
+	  console.error('Error creating pharmacist:', error);
+	  res.status(500).json({
+		success: false,
+		message: 'Internal server error',
+		error: error.message,
+	  });
+	}
+  };
+
 module.exports = {
 	registerAsPatient,
 	registerAsDoctor,
@@ -133,4 +183,5 @@ module.exports = {
 	renderPatientRegistration,
 	renderDoctorRegistration,
 	getType,
+	createPharmacist
 };
