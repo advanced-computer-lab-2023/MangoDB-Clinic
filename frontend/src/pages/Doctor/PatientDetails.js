@@ -123,28 +123,32 @@ const PatientDetails = () => {
 						<div>
 							<Typography
 								variant="h1"
-								align="center"
+								align="left"
+								sx={{ paddingLeft: "35px", paddingTop: "35px" }}
 							>
 								Patient Info
 							</Typography>
 							<Typography
 								variant="body1"
-								align='center'
+								align='left'
 								fontWeight='bold'
+								sx={{ paddingLeft: "35px" }}
 							>
 								Patient Name: {patient.firstName + " " + patient.lastName}
 							</Typography>
 							<Typography
 								variant="body1"
-								align='center'
+								align='left'
 								fontWeight='bold'
+								sx={{ paddingLeft: "35px" }}
 							>
 								Email: {patient.email}
 							</Typography>
 							<Typography
 								variant="body1"
-								align='center'
+								align='left'
 								fontWeight='bold'
+								sx={{ paddingLeft: "35px" }}
 							>
 								Emergency Contact: {patient.emergencyContact.name} - Number:{" "}
 								{patient.emergencyContact.mobile}
