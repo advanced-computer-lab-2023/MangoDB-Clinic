@@ -99,7 +99,13 @@ export default function RequestedDoctors({ maxRows, seeMore }) {
 					Transition: SlideTransition,
 					message: response.data.message,
 				});
-				fetchData();
+				setTimeout(() => {
+					setState({
+						...state,
+						open: false,
+					});
+					fetchData();
+				}, 2000);
 			}
 		} catch (error) {
 			setState({

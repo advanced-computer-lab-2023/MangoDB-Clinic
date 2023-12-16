@@ -58,12 +58,15 @@ export default function LoginUser() {
 				localStorage.setItem("token", response.data.token);
 				switch (response.data.type) {
 					case "Patient":
+						localStorage.setItem("type", "Patient");
 						navigate("/patientdashboard");
 						break;
 					case "Doctor":
 						if (response.data.accountStatus === "pending") {
+							localStorage.setItem("type", "Doctor");
 							navigate("/employmentcontract");
 						} else {
+							localStorage.setItem("type", "Doctor");
 							navigate("/doctordashboard");
 						}
 						break;

@@ -94,6 +94,7 @@ export default function EmploymentContract() {
 			);
 
 			if (response.status === 200) {
+				localStorage.clear();
 				setIsSuccess(true);
 				setState({
 					open: true,

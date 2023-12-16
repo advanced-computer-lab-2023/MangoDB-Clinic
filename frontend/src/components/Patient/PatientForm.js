@@ -82,6 +82,8 @@ const PatientForm = () => {
 			emergencyContact,
 		};
 
+		localStorage.clear();
+
 		setIsPending(true);
 
 		addPatient(patient)
