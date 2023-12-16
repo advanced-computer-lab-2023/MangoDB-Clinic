@@ -199,25 +199,20 @@ const PatientForm = () => {
 									style={{ marginBottom: "1rem" }}
 								/>
 							</Grid>
+
 							<Grid item xs={12} sm={6}>
-								<FormControl variant='standard' sx={{ m: 1, minWidth: 300 }}>
-									<InputLabel id='demo-simple-select-standard-label'>
-										Gender
-									</InputLabel>
+								<FormControl required fullWidth margin="normal">
+									<InputLabel id="gender-label">Gender</InputLabel>
 									<Select
-										labelId='demo-simple-select-standard-label'
-										id='demo-simple-select-standard'
+										labelId="gender-label"
+										id="gender-select"
+										name="gender"
 										value={gender}
 										onChange={(e) => setGender(e.target.value)}
-										fullWidth
-										// color='primary'
-										style={{ marginBottom: "1rem" }}
 									>
-										<MenuItem value=''>
-											<em>None</em>
-										</MenuItem>
-										<MenuItem value='male'>Male</MenuItem>
-										<MenuItem value='female'>Female</MenuItem>
+										<MenuItem value="male">Male</MenuItem>
+										<MenuItem value="female">Female</MenuItem>
+										<MenuItem value="other">Other</MenuItem>
 									</Select>
 								</FormControl>
 							</Grid>
@@ -236,16 +231,7 @@ const PatientForm = () => {
 								}}
 							/>
 						</Grid>
-						<Paper
-							elevation={3}
-							style={{
-								padding: "1rem",
-								marginTop: "1rem",
-								marginBottom: "2rem",
-								marginRight: "1rem",
-								marginLeft: "1rem",
-							}}
-						>
+
 							<Typography variant='h5' style={{ margin: "1rem" }}>
 								Emergency Contact Information:
 							</Typography>
@@ -283,7 +269,6 @@ const PatientForm = () => {
 									/>
 								</Grid>
 							</Grid>
-						</Paper>
 						<Button
 							variant="contained"
 							type="submit"

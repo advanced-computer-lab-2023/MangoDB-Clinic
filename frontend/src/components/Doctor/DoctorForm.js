@@ -102,7 +102,7 @@ const DoctorForm = () => {
 		<Grid container justifyContent='center' style={{ padding: "2rem" }}>
 			<Grid item xs={12} sm={6}>
 				<Paper elevation={3} style={{ padding: "2rem" }}>
-					<h2>Register As Doctor</h2>
+				<Typography variant="h3">Register as a Doctor</Typography>
 					<form onSubmit={handleSubmit}>
 						<Grid container spacing={2}>
 							<Grid item xs={12} sm={6}>

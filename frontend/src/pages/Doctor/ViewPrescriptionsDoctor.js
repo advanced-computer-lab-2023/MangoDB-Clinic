@@ -349,7 +349,7 @@ const ViewPrescriptionsDoctor = () => {
                         <DialogContent>
                             <Card variant='outlined'>
                                 <CardContent>
-                                    <Typography variant='h6' component='div'>
+                                    <Typography variant='h4' component='div'>
                                         Edit Prescription
                                         {/* <Typography variant='body2' component='div'>
                                             Select only one option
@@ -382,6 +382,7 @@ const ViewPrescriptionsDoctor = () => {
                                             <Checkbox
                                                 checked={filled}
                                                 onChange={handleCheckboxChange}
+                                                
                                                 
                                             />
                                         }
