@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Grid, Paper, Typography, TextField } from "@mui/material";
+import { Grid, Paper, Typography, TextField, Table, TableHead, TableCell } from "@mui/material";
 import { experimentalStyled as styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Select from "@mui/material/Select";
@@ -18,6 +18,11 @@ import {
 	doctorRescheduleApp,
 } from "../../services/api";
 import Reschedule from "../../components/Doctor/Reschedule";
+
+import Spinner from '../../components/GeneralComponents/Spinner'
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import AppRow from "../../components/Doctor/AppRow";
 
 const Item = styled(Paper)(({ theme }) => ({
 	backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -268,234 +273,307 @@ const DoctorApps = () => {
 
 	return (
 		<div>
-			<h1>Appointments</h1>
-			{!upcoming && (
-				<Button
-					disabled={false}
-					size='medium'
-					variant='outlined'
-					style={{ margin: "10px", color: "#1976d2" }}
-					onClick={handleUpcomingClick}
-				>
-					Upcoming Appointments
-				</Button>
-			)}
-			{upcoming && (
-				<Button
-					disabled={false}
-					size='medium'
-					variant='filled'
-					style={{ margin: "10px", color: "white", background: "#1976d2" }}
-					onClick={handleUpcomingClick}
-				>
-					Upcoming Appointments
-				</Button>
-			)}
-
-			<br />
-			<form onSubmit={handleSubmit}>
-				<Grid item xs={12} style={{ padding: "5px" }}>
-					{/* <TextField id="status" name="status" label="Status" variant="outlined" value={ status } onChange={ handleChange } size="small"/> */}
-					{/* <Select
-                        id="status" 
-                        name="status" 
-                        label="Status"
-                        variant="outlined" 
-                        size="small"
-                        value={status}
-                        onChange={handleChange}
-                    >
-                        {statEnum.map((option) => (
-                            <MenuItem key={ option } value={ option }>
-                                { option }
-                            </MenuItem>
-                        ))}
-                    </Select> */}
-					<FormControl
-						fullWidth
-						variant='outlined'
-						size='small'
-						style={{ minWidth: "5vw", width: "auto" }}
+				<Paper sx={{ "margin": "auto", "width": "fit-content", "marginTop": "90px", "padding": "2%" }}>
+					<Typography
+						variant="h1"
+						align="center"
 					>
-						<InputLabel id='status-label'>Status</InputLabel>
-						<Select
-							labelId='status-label'
-							id='status'
-							name='status'
-							label='Status'
+						Appointments
+					</Typography>
+					{/* <h1>Appointments</h1> */}
+					{!upcoming && (
+						<Button
+							disabled={false}
+							size='medium'
 							variant='outlined'
-							size='small'
-							value={status}
-							onChange={handleChange}
+							// style={{ margin: "10px", color: "#1976d2" }}
+							sx={{ "marginBottom": "10px" }}
+							onClick={handleUpcomingClick}
 						>
-							{statEnum.map((option) => (
-								<MenuItem key={option} value={option}>
-									{option}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
-					<TextField
-						id='from'
-						name='from'
-						label='From'
-						variant='outlined'
-						value={from}
-						onChange={handleChange}
-						size='small'
-						type='date'
-						InputLabelProps={{ shrink: true }}
-					/>
-					<TextField
-						id='to'
-						name='to'
-						label='To'
-						variant='outlined'
-						value={to}
-						onChange={handleChange}
-						size='small'
-						type='date'
-						InputLabelProps={{ shrink: true }}
-					/>
-					<Button variant='contained' type='submit'>
-						Filter
-					</Button>
-				</Grid>
-			</form>
-
-			{isPending && <div>Loading...</div>}
-			{error && <div>{error}</div>}
-			{!isPending && !error && appointments.length < 1 && (
-				<div>No appointments to show...</div>
-			)}
-			{appointments.length > 0 && (
-				<Grid
-					container
-					direction='column'
-					justifyContent='center'
-					alignItems='flex-start'
-					spacing={3}
-				>
-					{appointments.map((appointment) => (
-						<Grid
-							item
-							xs={12}
-							sm={6}
-							md={4}
-							key={
-								appointment.appointmentId
-									? appointment.appointmentId
-									: appointment._id
-							}
+							Upcoming Appointments
+						</Button>
+					)}
+					{upcoming && (
+						<Button
+							disabled={false}
+							size='medium'
+							variant='contained'
+							// style={{ margin: "10px", color: "white", background: "#1976d2" }}
+							sx={{ "marginBottom": "10px" }}
+							onClick={handleUpcomingClick}
 						>
-							<div>
-								{/* <Link to={`/selectedPatient/${patient._id}`} style={{ textDecoration: 'none' }}> */}
-								<Item>
-									<Typography variant='h6' style={{ color: "black" }}>
-										Patient:{" "}
-										{appointment.patientFirstName
-											? `${appointment.patientFirstName} ${appointment.patientLastName}`
-											: `${appointment.firstName} ${appointment.lastName}`}
-									</Typography>
-									<Typography variant='body2' style={{ color: "black" }}>
-										{`Date: ${new Date(appointment.date).toLocaleDateString()}`}
-									</Typography>
-									<Typography variant='body2' style={{ color: "black" }}>
-										{`Time: ${new Date(appointment.date).toLocaleTimeString(
-											[],
-											{ hour: "2-digit", minute: "2-digit" }
-										)}`}
-									</Typography>
-									<Typography variant='body2' style={{ color: "black" }}>
-										Status: {appointment.status}
-									</Typography>
-									<Typography variant='body2' style={{ color: "black" }}>
-										Follow up: {appointment.followUp ? "Yes" : "No"}
-									</Typography>
-									{appointment.status === "confirmed" &&
-										!appointment.followUp && (
-											<div>
-												<TextField
-													id={`followUpDate-${appointment._id}`}
-													name={`followUpDate-${appointment._id}`}
-													label='Follow-up Date'
-													type='date'
-													value={followUpDate}
-													onChange={handleFollowUpDateChange}
-													InputLabelProps={{ shrink: true }}
-												/>
-												<Button
-													variant='outlined'
-													size='small'
-													onClick={() =>
-														scheduleFollowupHandler(
-															appointment.doctorId,
-															appointment.patientId,
-															appointment._id,
-															followUpDate
-														)
-													}
-												>
-													Schedule Follow-up
-												</Button>
-											</div>
-										)}
+							Upcoming Appointments
+						</Button>
+					)}
 
-									{ appointment.status !== 'cancelled' && (
-										<>
-											{/* <div style={{ "margin": "10px 0" }}>
-												<TextField
-													id={`reschedule-${appointment._id}`}
-													name={`reschedule-${appointment._id}`}
-													label='reschedule'
-													type='date'
-													size="small"
-													value={ reschedule }
-													onChange={ (e) => setReschedule(e.target.value)}
-													InputLabelProps={{ shrink: true }}
-												/>
-												<Button
-													disabled={ !reschedule }
-													variant='outlined'
-													size='large'
-													onClick={(e) => {
-														e.preventDefault();
-														doctorRescheduleApp({ appointmentId: appointment._id, newDate: reschedule })
-															.then((result) => {
-																setReload(!reload);
-															})
-															.catch((err) => setError(err.message));
-													}}
-												>
-													Schedule Follow-up
-												</Button>
-											</div> */}
-											<Reschedule appointment={appointment} onReload={ handleReload } onError={ handleError } />
-											<div>
-												<Button
-													variant='outlined'
-													size='small'
-													onClick={(e) => {
-														e.preventDefault()
-														doctorCancelApp({ appointmentId: appointment._id })
-															.then((result) => {
-																setReload(!reload);
-															})
-															.catch((err) => setError(err.message));
-													}}
-												>
-														Cancel Appointment
-												</Button>
-											</div>
-										</>
-									) }
-								</Item>
-								{/* </Link> */}
-							</div>
+					<br />
+					<form onSubmit={handleSubmit}>
+						<Grid item xs={12} style={{ padding: "5px" }}>
+							{/* <TextField id="status" name="status" label="Status" variant="outlined" value={ status } onChange={ handleChange } size="small"/> */}
+							{/* <Select
+								id="status" 
+								name="status" 
+								label="Status"
+								variant="outlined" 
+								size="small"
+								value={status}
+								onChange={handleChange}
+							>
+								{statEnum.map((option) => (
+									<MenuItem key={ option } value={ option }>
+										{ option }
+									</MenuItem>
+								))}
+							</Select> */}
+							<FormControl
+								fullWidth
+								variant='outlined'
+								size='small'
+								style={{ minWidth: "5vw", width: "auto" }}
+							>
+								<InputLabel id='status-label'>Status</InputLabel>
+								<Select
+									labelId='status-label'
+									id='status'
+									name='status'
+									label='Status'
+									variant='outlined'
+									size='small'
+									value={status}
+									onChange={handleChange}
+								>
+									{statEnum.map((option) => (
+										<MenuItem key={option} value={option}>
+											{option}
+										</MenuItem>
+									))}
+								</Select>
+							</FormControl>
+							<TextField
+								id='from'
+								name='from'
+								label='From'
+								variant='outlined'
+								value={from}
+								onChange={handleChange}
+								size='small'
+								type='date'
+								InputLabelProps={{ shrink: true }}
+							/>
+							<TextField
+								id='to'
+								name='to'
+								label='To'
+								variant='outlined'
+								value={to}
+								onChange={handleChange}
+								size='small'
+								type='date'
+								InputLabelProps={{ shrink: true }}
+							/>
+							<Button variant='contained' type='submit' sx={{ "marginTop": "0.5%" }}>
+								Filter
+							</Button>
 						</Grid>
-					))}
-				</Grid>
-			)}
+					</form>
+
+					{/* {isPending && <div>Loading...</div>} */}
+					{isPending && (
+						<Spinner />
+					)}
+					{/* {error && <div>{error}</div>} */}
+					{error && (
+						<Snackbar open={open}>
+							<Alert severity="error" sx={{ width: '100%' }}>
+								{ error }
+							</Alert>
+						</Snackbar>
+					)}
+					{/* {!isPending && !error && appointments.length < 1 && (
+						<div>No appointments to show...</div>
+					)} */}
+					{/* {appointments.length > 0 && (
+						<Grid
+							container
+							direction='column'
+							justifyContent='center'
+							alignItems='flex-start'
+							spacing={3}
+						>
+							{appointments.map((appointment) => (
+								<Grid
+									item
+									xs={12}
+									sm={6}
+									md={4}
+									key={
+										appointment.appointmentId
+											? appointment.appointmentId
+											: appointment._id
+									}
+								>
+									<div>
+										{/* <Link to={`/selectedPatient/${patient._id}`} style={{ textDecoration: 'none' }}> //}
+										<Item>
+											<Typography variant='h6' style={{ color: "black" }}>
+												Patient:{" "}
+												{appointment.patientFirstName
+													? `${appointment.patientFirstName} ${appointment.patientLastName}`
+													: `${appointment.firstName} ${appointment.lastName}`}
+											</Typography>
+											<Typography variant='body2' style={{ color: "black" }}>
+												{`Date: ${new Date(appointment.date).toLocaleDateString()}`}
+											</Typography>
+											<Typography variant='body2' style={{ color: "black" }}>
+												{`Time: ${new Date(appointment.date).toLocaleTimeString(
+													[],
+													{ hour: "2-digit", minute: "2-digit" }
+												)}`}
+											</Typography>
+											<Typography variant='body2' style={{ color: "black" }}>
+												Status: {appointment.status}
+											</Typography>
+											<Typography variant='body2' style={{ color: "black" }}>
+												Follow up: {appointment.followUp ? "Yes" : "No"}
+											</Typography>
+											{appointment.status === "confirmed" &&
+												!appointment.followUp && (
+													<div>
+														<TextField
+															id={`followUpDate-${appointment._id}`}
+															name={`followUpDate-${appointment._id}`}
+															label='Follow-up Date'
+															type='date'
+															value={followUpDate}
+															onChange={handleFollowUpDateChange}
+															InputLabelProps={{ shrink: true }}
+														/>
+														<Button
+															variant='outlined'
+															size='small'
+															onClick={() =>
+																scheduleFollowupHandler(
+																	appointment.doctorId,
+																	appointment.patientId,
+																	appointment._id,
+																	followUpDate
+																)
+															}
+														>
+															Schedule Follow-up
+														</Button>
+													</div>
+												)}
+
+											{ appointment.status !== 'cancelled' && (
+												<>
+													{/* <div style={{ "margin": "10px 0" }}>
+														<TextField
+															id={`reschedule-${appointment._id}`}
+															name={`reschedule-${appointment._id}`}
+															label='reschedule'
+															type='date'
+															size="small"
+															value={ reschedule }
+															onChange={ (e) => setReschedule(e.target.value)}
+															InputLabelProps={{ shrink: true }}
+														/>
+														<Button
+															disabled={ !reschedule }
+															variant='outlined'
+															size='large'
+															onClick={(e) => {
+																e.preventDefault();
+																doctorRescheduleApp({ appointmentId: appointment._id, newDate: reschedule })
+																	.then((result) => {
+																		setReload(!reload);
+																	})
+																	.catch((err) => setError(err.message));
+															}}
+														>
+															Schedule Follow-up
+														</Button>
+													</div> //}
+													<Reschedule appointment={appointment} onReload={ handleReload } onError={ handleError } />
+													<div>
+														<Button
+															variant='outlined'
+															size='small'
+															onClick={(e) => {
+																e.preventDefault()
+																doctorCancelApp({ appointmentId: appointment._id })
+																	.then((result) => {
+																		setReload(!reload);
+																	})
+																	.catch((err) => setError(err.message));
+															}}
+														>
+																Cancel Appointment
+														</Button>
+													</div>
+												</>
+											) }
+										</Item>
+										{/* </Link> //}
+									</div>
+								</Grid>
+							))}
+						</Grid>
+					)} */}
+					<Paper>
+						<Table>
+							<TableHead>
+								<TableCell
+									align="center"
+								>
+									Patient
+								</TableCell>
+
+								<TableCell
+									align="center"
+								>
+									Date
+								</TableCell>
+
+								<TableCell
+									align="center"
+								>
+									Time
+								</TableCell>
+
+								<TableCell
+									align="center"
+								>
+									Status
+								</TableCell>
+
+								<TableCell
+									align="center"
+								>
+									Follow up
+								</TableCell>
+
+								<TableCell
+									align="center"
+								>
+									Reschedule
+								</TableCell>
+
+								<TableCell
+									align="center"
+								>
+									Cancel
+								</TableCell>
+							</TableHead>
+							{ appointments.map((appointment) => (
+								<>
+									<AppRow appointment={appointment} handleReload={ handleReload } handleError={ handleError } />
+									{/* <Reschedule appointment={appointment} onReload={ handleReload } onError={ handleError } /> */}
+								</>
+							)) }
+						</Table>
+					</Paper>
+				</Paper>
 		</div>
 	);
 };

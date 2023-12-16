@@ -11,7 +11,11 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+// import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { Paper } from "@mui/material";
+import Snackbar from '@mui/material/Snackbar';
+import CircularProgress from '@mui/material/CircularProgress';
+import Spinner from '../../components/GeneralComponents/Spinner'
 
 import {
 	getDoctor,
@@ -27,7 +31,7 @@ const EditDoctor = () => {
 	const [error, setError] = useState(null);
 	const [success, setSuccess] = useState(false);
 
-	const defaultTheme = createTheme();
+	// const defaultTheme = createTheme();
 
 	// const getID = async () => {
 	// 	try {
@@ -52,6 +56,22 @@ const EditDoctor = () => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
+
+		if (doctor.email === '') {
+			setError('Email field cannot be empty');
+			return;
+		}
+
+		if (doctor.hourlyRate === '') {
+			setError('Hourly Rate field cannot be empty');
+			return;
+		}
+
+		if (doctor.affiliation === '') {
+			setError('Affiliation field cannot be empty');
+			return;
+		}
+
 		updateDoctorEmail(doctor);
 		updateDoctorRate(doctor);
 		updateDoctorAffiliation(doctor);
@@ -73,137 +93,155 @@ const EditDoctor = () => {
 
 	return (
 		<div>
-			{isPending && <div>Loading...</div>}
-			{error && <div>{error}</div>}
+			{/* {isPending && <div>Loading...</div>} */}
+			{/* {error && <div>{error}</div>} */}
+			{isPending && (
+				// <Box sx={{ display: 'flex', alignContent: 'center', justifyContent: 'center' }}>
+				// 	<CircularProgress color="success" sx={{ color: 'green', margin: '50vh' }} />
+				// </Box>
+				<Spinner />
+			)}
 			{doctor && (
-				<ThemeProvider theme={defaultTheme}>
-					<Container component='main' maxWidth='xs'>
-						<CssBaseline />
-						<Box
-							sx={{
-								marginTop: 8,
-								display: "flex",
-								flexDirection: "column",
-								alignItems: "center",
-							}}
-						>
-							<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-								{/* <LockOutlinedIcon /> */}
-							</Avatar>
-							<Typography component='h1' variant='h5'>
-								Edit Info
-							</Typography>
+					<Paper sx={{ "margin": "auto", "width": "fit-content", "marginTop": "90px"}}>
+						<Container component='main' maxWidth='xs'>
+							<CssBaseline />
 							<Box
-								component='form'
-								noValidate
-								onSubmit={handleSubmit}
-								sx={{ mt: 3 }}
+								sx={{
+									marginTop: 8,
+									display: "flex",
+									flexDirection: "column",
+									alignItems: "center",
+								}}
 							>
-								<Grid container spacing={2}>
-									<Grid item xs={12} sm={6}>
-										<TextField
-											autoComplete='given-name'
-											name='firstName'
-											required
-											fullWidth
-											id='firstName'
-											label='First Name'
-											// autoFocus
-											value={doctor.firstName}
-											disabled
-										/>
-									</Grid>
-									<Grid item xs={12} sm={6}>
-										<TextField
-											required
-											fullWidth
-											id='lastName'
-											label='Last Name'
-											name='lastName'
-											autoComplete='family-name'
-											value={doctor.lastName}
-											disabled
-										/>
-									</Grid>
-									<Grid item xs={12}>
-										<TextField
-											required
-											fullWidth
-											id='email'
-											label='Email Address'
-											name='email'
-											value={doctor.email}
-											onChange={handleChange}
-											autoComplete='email'
-										/>
-									</Grid>
-									{/* <Grid item xs={12}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        name="password"
-                                        label="Password"
-                                        type="password"
-                                        id="password"
-                                        autoComplete="new-password"
-                                    />
-                                </Grid> */}
-									<Grid item xs={12}>
-										<TextField
-											required
-											fullWidth
-											id='rate'
-											label='Hourly Rate'
-											name='hourlyRate'
-											value={doctor.hourlyRate}
-											onChange={handleChange}
-											autoComplete='Hourly Rate'
-										/>
-									</Grid>
-									<Grid item xs={12}>
-										<TextField
-											required
-											fullWidth
-											id='affiliation'
-											label='Affiliation'
-											name='affiliation'
-											value={doctor.affiliation}
-											onChange={handleChange}
-											autoComplete='Affiliation'
-										/>
-									</Grid>
-									{/* <Grid item xs={12}>
-                                    <FormControlLabel
-                                        control={<Checkbox value="allowExtraEmails" color="primary" />}
-                                        label="I want to receive inspiration, marketing promotions and updates via email."
-                                    />
-                                </Grid> */}
-								</Grid>
-								<Button
-									type='submit'
-									fullWidth
-									variant='contained'
-									sx={{ mt: 3, mb: 2 }}
+								<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+									{/* <LockOutlinedIcon /> */}
+								</Avatar>
+								<Typography component='h1' variant='h5'>
+									Edit Info
+								</Typography>
+								<Box
+									component='form'
+									noValidate
+									onSubmit={handleSubmit}
+									sx={{ mt: 3 }}
 								>
-									Submit
-								</Button>
-								{/* <Grid container justifyContent="flex-end">
-                                <Grid item>
-                                    <Link href="#" variant="body2">
-                                        Already have an account? Sign in
-                                    </Link>
-                                </Grid>
-                            </Grid> */}
+									<Grid container spacing={2}>
+										<Grid item xs={12} sm={6}>
+											<TextField
+												autoComplete='given-name'
+												name='firstName'
+												required
+												fullWidth
+												id='firstName'
+												label='First Name'
+												// autoFocus
+												value={doctor.firstName}
+												disabled
+											/>
+										</Grid>
+										<Grid item xs={12} sm={6}>
+											<TextField
+												required
+												fullWidth
+												id='lastName'
+												label='Last Name'
+												name='lastName'
+												autoComplete='family-name'
+												value={doctor.lastName}
+												disabled
+											/>
+										</Grid>
+										<Grid item xs={12}>
+											<TextField
+												required
+												fullWidth
+												id='email'
+												label='Email Address'
+												name='email'
+												value={doctor.email}
+												onChange={handleChange}
+												autoComplete='email'
+											/>
+										</Grid>
+										{/* <Grid item xs={12}>
+										<TextField
+											required
+											fullWidth
+											name="password"
+											label="Password"
+											type="password"
+											id="password"
+											autoComplete="new-password"
+										/>
+									</Grid> */}
+										<Grid item xs={12}>
+											<TextField
+												required
+												fullWidth
+												id='rate'
+												label='Hourly Rate'
+												name='hourlyRate'
+												value={doctor.hourlyRate}
+												onChange={handleChange}
+												autoComplete='Hourly Rate'
+											/>
+										</Grid>
+										<Grid item xs={12}>
+											<TextField
+												required
+												fullWidth
+												id='affiliation'
+												label='Affiliation'
+												name='affiliation'
+												value={doctor.affiliation}
+												onChange={handleChange}
+												autoComplete='Affiliation'
+											/>
+										</Grid>
+										{/* <Grid item xs={12}>
+										<FormControlLabel
+											control={<Checkbox value="allowExtraEmails" color="primary" />}
+											label="I want to receive inspiration, marketing promotions and updates via email."
+										/>
+									</Grid> */}
+									</Grid>
+									<Button
+										type='submit'
+										fullWidth
+										variant='contained'
+										sx={{ mt: 3, mb: 2 }}
+									>
+										Submit
+									</Button>
+									{/* <Grid container justifyContent="flex-end">
+									<Grid item>
+										<Link href="#" variant="body2">
+											Already have an account? Sign in
+										</Link>
+									</Grid>
+								</Grid> */}
+								</Box>
 							</Box>
-						</Box>
-					</Container>
-				</ThemeProvider>
+						</Container>
+					</Paper>
 			)}
 			{success && (
-				<Alert severity='success'>
-					<AlertTitle>Success</AlertTitle>
-					Submitted Successfully!
-				</Alert>
+				// <Alert severity='success'>
+				// 	<AlertTitle>Success</AlertTitle>
+				// 	Submitted Successfully!
+				// </Alert>
+				<Snackbar open={open} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+					<Alert severity="success" sx={{ width: '100%' }}>
+						Submitted Successfully!
+					</Alert>
+				</Snackbar>
+			)}
+			{error && (
+				<Snackbar open={open}>
+					<Alert severity="error" sx={{ width: '100%' }}>
+						  { error }
+					</Alert>
+				  </Snackbar>
 			)}
 		</div>
 	);

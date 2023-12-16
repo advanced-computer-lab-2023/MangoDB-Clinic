@@ -19,6 +19,9 @@ import { Typography } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 import { uploadHealthRecord, selectPatient } from "../../services/api";
+import Spinner from '../../components/GeneralComponents/Spinner'
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 /**
  * TODO: 1-Get the patient using the id param (Done)
@@ -42,6 +45,7 @@ const PatientDetails = () => {
 					setIsPending(false);
 				})
 				.catch((err) => {
+					console.log(err);
 					setError(err.message);
 					setIsPending(false);
 				});
@@ -89,7 +93,6 @@ const PatientDetails = () => {
 				console.log(res);
 			})
 			.catch((err) => {
-				console.log(err);
 				setError(err.message);
 			});
 
@@ -100,85 +103,129 @@ const PatientDetails = () => {
 
 	return (
 		<div>
-			{isPending && <div>Loading...</div>}
-			{error && <div>{error}</div>}
-			{patient && (
-				<div>
-					<h2>Patient Name: {patient.firstName + " " + patient.lastName} </h2>
-					<h3>Email: {patient.email}</h3>
-					<p>
-						Emergency Contact: {patient.emergencyContact.name} - Number:{" "}
-						{patient.emergencyContact.mobile}
-					</p>
-					<br />
+				{/* {isPending && <div>Loading...</div>} */}
+				{isPending && (
+					// <Box sx={{ display: 'flex', alignContent: 'center', justifyContent: 'center' }}>
+					// 	<CircularProgress color="success" sx={{ color: 'green', margin: '50vh' }} />
+					// </Box>
+					<Spinner />
+				)}
+				{/* {error && <div>{error}</div>} */}
+				{error && (
+					<Snackbar open={open}>
+						<Alert severity="error" sx={{ width: '100%' }}>
+						  	{ error }
+						</Alert>
+					</Snackbar>
+				)}
+				<Paper sx={{ "margin": "auto", "width": "fit-content", "marginTop": "90px" }}>
+					{patient && (
+						<div>
+							<Typography
+								variant="h1"
+								align="center"
+							>
+								Patient Info
+							</Typography>
+							<Typography
+								variant="body1"
+								align='center'
+								fontWeight='bold'
+							>
+								Patient Name: {patient.firstName + " " + patient.lastName}
+							</Typography>
+							<Typography
+								variant="body1"
+								align='center'
+								fontWeight='bold'
+							>
+								Email: {patient.email}
+							</Typography>
+							<Typography
+								variant="body1"
+								align='center'
+								fontWeight='bold'
+							>
+								Emergency Contact: {patient.emergencyContact.name} - Number:{" "}
+								{patient.emergencyContact.mobile}
+							</Typography>
+							
+							{/* <h2>Patient Name: {patient.firstName + " " + patient.lastName} </h2> */}
+							{/* <h3>Email: {patient.email}</h3> */}
+							{/* <p>
+								Emergency Contact: {patient.emergencyContact.name} - Number:{" "}
+								{patient.emergencyContact.mobile}
+							</p> */}
+							<br />
 
-					<Grid container justifyContent='center' style={{ padding: "2rem" }}>
-						<Grid item xs={12}>
-							<Paper elevation={3} style={{ padding: "2rem" }}>
-								<Typography
-									style={{ margin: "1rem" }}
-									align='left'
-									variant='h4'
-								>
-									Health Records:{" "}
-								</Typography>
-								<TableContainer component={Paper}>
-									<TableBody
-										style={{
-											display: "flex",
-											flexFlow: "row wrap",
-											justifyContent: "center",
-											alignItems: "center",
-										}}
-									>
-										{patient.healthRecord.files.length == 0
-											? "No records to display"
-											: patient.healthRecord.files.map((file, index) => (
-													<TableCell>
-														<img
-															key={index + file.name}
-															src={file.file}
-															alt={file.name}
-															// crossOrigin="anonymous"
-														/>
-													</TableCell>
-											  ))}
-										<TableCell>
-											<Tooltip title='Add Record' align='center'>
-												<Button onClick={() => setOpen(true)}>
-													<AddCircleIcon color='secondary' />
-												</Button>
-											</Tooltip>
-										</TableCell>
-									</TableBody>
-								</TableContainer>
-							</Paper>
-							<Dialog open={open} onClose={() => setOpen(false)}>
-								<DialogContent>
-									<Card variant='outlined'>
-										<CardContent>
-											<Typography variant='h6' component='div'>
-												Upload Health Record
-											</Typography>
-											<Typography variant='body2' component='div'>
-												please add only one document at a time
-											</Typography>
-											<input type='file' onChange={handleFileChange} />
-											<Button
-												variant='contained'
-												color='primary'
-												onClick={handleUpload}
+							<Grid container justifyContent='center' style={{ padding: "2rem" }}>
+								<Grid item xs={12}>
+									<Paper elevation={3} style={{ padding: "2rem" }}>
+										<Typography
+											style={{ margin: "1rem" }}
+											align='left'
+											variant='h4'
+										>
+											Health Records:{" "}
+										</Typography>
+										<TableContainer component={Paper}>
+											<TableBody
+												style={{
+													display: "flex",
+													flexFlow: "row wrap",
+													justifyContent: "center",
+													alignItems: "center",
+												}}
 											>
-												Upload
-											</Button>
-										</CardContent>
-									</Card>
-								</DialogContent>
-							</Dialog>
-						</Grid>
-					</Grid>
-				</div>
-			)}
+												{patient.healthRecord.files.length == 0
+													? "No records to display"
+													: patient.healthRecord.files.map((file, index) => (
+															<TableCell>
+																<img
+																	key={index + file.name}
+																	src={file.file}
+																	alt={file.name}
+																	// crossOrigin="anonymous"
+																/>
+															</TableCell>
+													))}
+												<TableCell>
+													<Tooltip title='Add Record' align='center'>
+														<Button onClick={() => setOpen(true)}>
+															<AddCircleIcon color='secondary' />
+														</Button>
+													</Tooltip>
+												</TableCell>
+											</TableBody>
+										</TableContainer>
+									</Paper>
+									<Dialog open={open} onClose={() => setOpen(false)}>
+										<DialogContent>
+											<Card variant='outlined'>
+												<CardContent>
+													<Typography variant='h6' component='div'>
+														Upload Health Record
+													</Typography>
+													<Typography variant='body2' component='div'>
+														please add only one document at a time
+													</Typography>
+													<input type='file' onChange={handleFileChange} />
+													<Button
+														variant='contained'
+														color='primary'
+														onClick={handleUpload}
+													>
+														Upload
+													</Button>
+												</CardContent>
+											</Card>
+										</DialogContent>
+									</Dialog>
+								</Grid>
+							</Grid>
+						</div>
+					)}
+				</Paper>
 		</div>
 	);
 };

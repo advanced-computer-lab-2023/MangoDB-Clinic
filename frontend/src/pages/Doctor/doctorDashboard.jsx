@@ -102,6 +102,7 @@ export default function DoctorDashboard() {
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [doctorName, setDoctorName] = useState("");
 	const [ seen, setSeen ] = useState(false);
+	const [ reload, setReload ] = useState(false);
 
 	const navigate = useNavigate();
 	const [open, setOpen] = React.useState(true);
@@ -129,6 +130,12 @@ export default function DoctorDashboard() {
 		countNewNotifications(notifications);
 	};
 
+	const handleNotifDelete = async (id) => {
+		console.log(id);
+		await clearNotifsDoctor(id);
+		setReload(!reload);
+	}
+
 	const countNewNotifications = (notifs) => {
 		let count = 0;
 	
@@ -152,7 +159,7 @@ export default function DoctorDashboard() {
 				setNotifications(result.data.notifications);
 			})
 			.catch((err) => setError(err.message));
-	}, []);
+	}, [reload]);
 
 	useEffect(() => {
 		if (seen) {
