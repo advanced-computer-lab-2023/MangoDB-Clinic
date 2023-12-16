@@ -60,6 +60,7 @@ import RemoveDoctorPage from "./pages/Admin/RemoveDoctorPage";
 import { ThemeProvider } from "@mui/material";
 import theme from "./theme";
 import ViewPackagesPatient from "./pages/Patient/ViewPackagesPatient";
+import NotFound from "./pages/General/NotFound";
 
 function App() {
 	return (
@@ -212,6 +213,8 @@ function App() {
 						element={<ChangePasswordPage />}
 					/>
 					<Route path='/checkout' element={<Checkout />} />
+
+					<Route path="*" element={<NotFound />} />
 				</Routes>
 				
 			</Router>

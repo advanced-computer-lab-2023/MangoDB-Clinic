@@ -6,6 +6,8 @@ import { Grid, Paper, Typography, TextField, Table, TableHead, TableCell } from 
 import { experimentalStyled as styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import ReusableTable2 from "../../components/ReusableTable2";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 import { getPatientsDoctor, searchPatients } from "../../services/api";
 import Spinner from "../../components/GeneralComponents/Spinner";
@@ -221,7 +223,14 @@ const PatientList = () => {
 					} */}
 					{/* {isPending && <div>Loading...</div>} */}
 					{ isPending && <Spinner /> }
-					{error && <div>{error}</div>}
+					{/* {error && <div>{error}</div>} */}
+					{error && (
+						<Snackbar open={open}>
+							<Alert severity="error" sx={{ width: '100%' }}>
+								{ error }
+							</Alert>
+						</Snackbar>
+					)}
 					{/* {!isPending && !error && patients.length < 1 && (
 						<div>No patients to display...</div>
 					)} */}
