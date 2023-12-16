@@ -177,12 +177,18 @@ const loginAdmin = asyncHandler(async (req, res) => {
 	const admin = await Admin.findOne({ username });
 
 	if (admin && (await bcrypt.compare(password, admin.password))) {
+		const initials = (admin.firstName ? admin.firstName[0] : '') +
+					   (admin.lastName ? admin.lastName[0] : '');
+
 		res.status(200).json({
 			message: "Successful Login",
 			_id: admin.id,
 			username: admin.username,
-			name: admin.firstName + admin.lastName,
+			// name: admin.firstName + admin.lastName,
+			name: admin.firstName,
+			lastName: admin.lastName,
 			email: admin.email,
+			initials: initials, 
 			token: generateToken(admin._id),
 		});
 	} else {

@@ -11,7 +11,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -20,7 +20,11 @@ import Divider from "@mui/material/Divider";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 
-export default function AdminHeader() {
+const AdminHeader = () => {
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  console.log(userData);
+  const { username, name, lastName, initials } = userData;
+
   const [openProfileDrawer, setOpenProfileDrawer] = React.useState(false);
 
   const [open, setOpen] = React.useState(true);
@@ -44,6 +48,14 @@ export default function AdminHeader() {
   const WalletIcon = `${process.env.PUBLIC_URL}/icons/wallet.svg`;
   const EditIcon = `${process.env.PUBLIC_URL}/icons/edit.svg`;
   const HealthPackageIcon = `${process.env.PUBLIC_URL}/icons/healthPackage.svg`;
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+		localStorage.removeItem("userData");
+		localStorage.removeItem("token");
+		navigate("/admin/login");
+	};
 
   const list = () => (
     <Box
@@ -305,7 +317,7 @@ export default function AdminHeader() {
           width: "100%", // This will make your logout button take up the full width of the box
         }}
       >
-        <ListItem button sx={{ mb: 5, padding: "5px 16px" }}>
+        <ListItem button sx={{ mb: 5, padding: "5px 16px" }} onClick={handleLogout}>
           <ListItemIcon>
             <img
               src={LogoutIcon}
@@ -373,12 +385,13 @@ export default function AdminHeader() {
             }}
           />
 
-          <Avatar sx={{ marginRight: 2 }}>{/* User's initials */}</Avatar>
+          <Avatar sx={{ marginRight: 2 }}>{initials}</Avatar>
           <Typography
             variant="body1"
             sx={{ fontWeight: "bold", marginRight: -2, color: "#333" }}
           >
-            {"First Name"}
+            {/* {"First Name"} */}
+            {name } {lastName}
           </Typography>
           <IconButton
             onClick={() => setOpenProfileDrawer(!openProfileDrawer)}
@@ -422,7 +435,7 @@ export default function AdminHeader() {
             </ListItemIcon>
             <ListItemText primary="My Profile" />
           </ListItem>
-          <ListItem button sx={{ mb: 0 }}>
+          <ListItem button sx={{ mb: 0 }} onClick={handleLogout}>
             {" "}
             {/* Remove the bottom margin from the last ListItem */}
             <ListItemIcon>
@@ -455,3 +468,5 @@ export default function AdminHeader() {
     </Box>
   );
 }
+
+export default AdminHeader;

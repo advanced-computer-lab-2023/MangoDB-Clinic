@@ -32,6 +32,8 @@ import {
 	getDoctor,
 	seenNotifsDoctor,
 } from "../../services/api";
+import Notifications from "../../components/GeneralComponents/Notifiactions";
+import DoctorHeader from "../../components/GeneralComponents/doctorHeader";
 
 function Copyright(props) {
 	return (
@@ -175,6 +177,7 @@ export default function DoctorDashboard() {
 
 	return (
 		<ThemeProvider theme={defaultTheme}>
+			<DoctorHeader />
 			<Box sx={{ display: "flex" }}>
 				<CssBaseline />
 				<AppBar position='absolute' open={open}>
@@ -204,7 +207,7 @@ export default function DoctorDashboard() {
 						>
 							Doctor Dashboard
 						</Typography>
-						<IconButton color='inherit'>
+						{/* <IconButton color='inherit'>
 							<Badge badgeContent={notificationsCount} color='secondary'>
 								<NotificationsIcon onClick={handleClick} />
 								<Popover
@@ -231,7 +234,7 @@ export default function DoctorDashboard() {
 														: { backgroundColor: "#F0F0F0" }
 												}
 											>
-												{/* <h4>{notification.title}</h4> */}
+												{/* <h4>{notification.title}</h4> //}
 												<div
 													style={{
 														display: "flex",
@@ -248,7 +251,10 @@ export default function DoctorDashboard() {
 									</div>
 								</Popover>
 							</Badge>
-						</IconButton>
+						</IconButton> */}
+
+						<Notifications type="doctor" onError={setError} />
+
 						{/* <div>
 							<Typography
 								component='h1'

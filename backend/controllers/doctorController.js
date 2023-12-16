@@ -1575,11 +1575,16 @@ const addOrUpdateDosage = async (req, res) => {
 };
 
 const clearNotifs = async (req, res) => {
+	const doctorId = req.user._id;
+	const { id } = req.body;
+	
 	try {
-		const doctor = await Doctor.findById(req.user._id);
-		doctor.notifications = [];
-		await doctor.save();
-		res.status(200).json({ message: "Success!" });
+		await Doctor.updateOne(
+			{ _id: doctorId },
+			{ $pull: { notifications: { _id: id } } }
+		);
+		
+		res.status(200).json({ message: "Success" });
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}

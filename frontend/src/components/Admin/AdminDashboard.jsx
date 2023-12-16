@@ -100,6 +100,7 @@ export default function Dashboard() {
 	};
 
 	const handleLogout = () => {
+		localStorage.removeItem("userData");
 		localStorage.removeItem("token");
 		navigate("/admin/login");
 	};

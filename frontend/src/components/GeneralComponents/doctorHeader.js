@@ -18,6 +18,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Divider from "@mui/material/Divider";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
+import Notifications from "./Notifiactions";
 
 export default function DoctorHeader() {
   const [openProfileDrawer, setOpenProfileDrawer] = React.useState(false);
@@ -318,6 +319,11 @@ export default function DoctorHeader() {
               transform: "translateX(-50%)",
             }}
           />
+
+          { 
+            /* HANDLE NOTIFS HERE */
+            <Notifications type="doctor" onError={null} />
+          }
 
           <Avatar sx={{ marginRight: 2 }}>{/* User's initials */}</Avatar>
           <Typography
