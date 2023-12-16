@@ -131,6 +131,7 @@ const PatientForm = () => {
 									type='date'
 									required
 									fullWidth
+									InputLabelProps={{ shrink: true }}
 									value={dob}
 									onChange={(e) => setDOB(e.target.value)}
 									style={{ marginBottom: "1rem" }}

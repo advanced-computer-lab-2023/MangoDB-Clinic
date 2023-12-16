@@ -20,14 +20,18 @@ import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import LogoutIcon from "@mui/icons-material/Logout";
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import Badge from '@mui/material/Badge';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import Badge from "@mui/material/Badge";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 import { DoctorListItems } from "../../components/Doctor/DoctorListItems";
 import { useState } from "react";
 import { useEffect } from "react";
-import { clearNotifsDoctor, getDoctor, seenNotifsDoctor } from "../../services/api";
+import {
+	clearNotifsDoctor,
+	getDoctor,
+	seenNotifsDoctor,
+} from "../../services/api";
 
 function Copyright(props) {
 	return (
@@ -97,12 +101,12 @@ const defaultTheme = createTheme();
 
 export default function DoctorDashboard() {
 	const [notifications, setNotifications] = useState([]);
-	const [ notificationsCount, setNotificationsCount ] = useState(0);
+	const [notificationsCount, setNotificationsCount] = useState(0);
 	const [error, setError] = useState(null);
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [doctorName, setDoctorName] = useState("");
-	const [ seen, setSeen ] = useState(false);
-	const [ reload, setReload ] = useState(false);
+	const [seen, setSeen] = useState(false);
+	const [reload, setReload] = useState(false);
 
 	const navigate = useNavigate();
 	const [open, setOpen] = React.useState(true);
@@ -134,19 +138,19 @@ export default function DoctorDashboard() {
 		console.log(id);
 		await clearNotifsDoctor(id);
 		setReload(!reload);
-	}
+	};
 
 	const countNewNotifications = (notifs) => {
 		let count = 0;
-	
+
 		for (let i = 0; i < notifs.length; i++) {
-		  if (!notifs[i].seen) {
-			count++;
-		  }
+			if (!notifs[i].seen) {
+				count++;
+			}
 		}
-	
+
 		setNotificationsCount(count);
-	}
+	};
 
 	const isOpen = Boolean(anchorEl);
 	const id = isOpen ? "simple-popover" : undefined;
@@ -200,33 +204,46 @@ export default function DoctorDashboard() {
 						>
 							Doctor Dashboard
 						</Typography>
-						<IconButton color="inherit">
-							<Badge badgeContent={ notificationsCount } color="secondary">
-								<NotificationsIcon onClick={ handleClick } />
+						<IconButton color='inherit'>
+							<Badge badgeContent={notificationsCount} color='secondary'>
+								<NotificationsIcon onClick={handleClick} />
 								<Popover
 									id={id}
 									open={isOpen}
 									anchorEl={anchorEl}
 									onClose={handleClose}
 									anchorOrigin={{
-										vertical: 'bottom',
-										horizontal: 'center',
+										vertical: "bottom",
+										horizontal: "center",
 									}}
 									transformOrigin={{
-										vertical: 'top',
-										horizontal: 'center',
+										vertical: "top",
+										horizontal: "center",
 									}}
 								>
 									<div>
-										{notifications.map(notification => (
-										<div key={notification._id} style={ notification.seen ? {} : { "backgroundColor": '#F0F0F0' } }>
-											{/* <h4>{notification.title}</h4> */}
-											<div style={{ "display": "flex", "alignItems": "center", "justifyContent": "space-between" }}>
-											<h4>{notification.title}</h4>
-											{/* <DeleteForeverIcon id={ notification._id } onClick={ () => handleNotifDelete(notification._id) } /> */}
+										{notifications.map((notification) => (
+											<div
+												key={notification._id}
+												style={
+													notification.seen
+														? {}
+														: { backgroundColor: "#F0F0F0" }
+												}
+											>
+												{/* <h4>{notification.title}</h4> */}
+												<div
+													style={{
+														display: "flex",
+														alignItems: "center",
+														justifyContent: "space-between",
+													}}
+												>
+													<h4>{notification.title}</h4>
+													<DeleteForeverIcon id={notification._id} />
+												</div>
+												<p>{notification.body}</p>
 											</div>
-											<p>{notification.body}</p>
-										</div>
 										))}
 									</div>
 								</Popover>

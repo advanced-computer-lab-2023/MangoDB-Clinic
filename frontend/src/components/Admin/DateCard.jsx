@@ -21,7 +21,12 @@ export default function DateCard() {
 			</Typography>
 			<Typography color='text.secondary' sx={{ flex: 1 }}></Typography>
 			<div>
-				<Link color='primary' href='https://www.weather.com'>
+				<Link
+					color='secondary'
+					href='https://www.weather.com'
+					target='_blank'
+					rel='noopener noreferrer'
+				>
 					View Weather
 				</Link>
 			</div>

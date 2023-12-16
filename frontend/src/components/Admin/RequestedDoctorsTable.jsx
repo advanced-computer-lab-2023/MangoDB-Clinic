@@ -10,14 +10,36 @@ import TableRow from "@mui/material/TableRow";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import Slide, { SlideProps } from "@mui/material/Slide";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
-import Title from "./Title";
 import Spinner from "../GeneralComponents/Spinner";
 
 export default function RequestedDoctors({ maxRows, seeMore }) {
 	const [rows, setRows] = React.useState([]);
 	const [loading, setLoading] = React.useState(false);
 	const [error, setError] = React.useState(null);
+	const [state, setState] = React.useState({
+		open: false,
+		Transition: Slide,
+		message: "",
+	});
+
+	const Alert = React.forwardRef(function Alert(props, ref) {
+		return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
+	});
+
+	function SlideTransition(props) {
+		return <Slide {...props} direction='down' />;
+	}
+
+	const handleClose = () => {
+		setState({
+			...state,
+			open: false,
+		});
+	};
 
 	const getData = async () => {
 		try {
@@ -49,7 +71,10 @@ export default function RequestedDoctors({ maxRows, seeMore }) {
 			const data = await getData();
 			setRows(data);
 		} catch (error) {
-			alert(error.message);
+			// setState({
+			// 	open: true,
+			// 	Transition: SlideTransition,
+			// });
 		} finally {
 			setLoading(false);
 		}
@@ -69,11 +94,19 @@ export default function RequestedDoctors({ maxRows, seeMore }) {
 			);
 
 			if (response.status === 200) {
-				alert(response.data.message);
+				setState({
+					open: true,
+					Transition: SlideTransition,
+					message: response.data.message,
+				});
 				fetchData();
 			}
 		} catch (error) {
-			alert(error.message);
+			setState({
+				open: true,
+				Transition: SlideTransition,
+				message: error.response.data.message,
+			});
 		} finally {
 			setLoading(false);
 		}
@@ -93,11 +126,25 @@ export default function RequestedDoctors({ maxRows, seeMore }) {
 			);
 
 			if (response.status === 200) {
-				alert(response.data.message);
-				fetchData();
+				setState({
+					open: true,
+					Transition: SlideTransition,
+					message: `${response.data.message}`,
+				});
+				setTimeout(() => {
+					setState({
+						...state,
+						open: false,
+					});
+					fetchData();
+				}, 2000);
 			}
 		} catch (error) {
-			alert(error.message);
+			setState({
+				open: true,
+				Transition: SlideTransition,
+				message: error.response.data.message,
+			});
 		} finally {
 			setLoading(false);
 		}
@@ -109,7 +156,7 @@ export default function RequestedDoctors({ maxRows, seeMore }) {
 				<Spinner />
 			) : (
 				<React.Fragment>
-					<Title>Requested Doctors</Title>
+					<Typography variant='h5'>Requested Doctors</Typography>
 					{error ? (
 						<>
 							<Typography variant='h6' color='error'>
@@ -148,7 +195,10 @@ export default function RequestedDoctors({ maxRows, seeMore }) {
 													>
 														Accept
 													</Button>
-													<Button onClick={() => handleDecline(row._id)}>
+													<Button
+														onClick={() => handleDecline(row._id)}
+														variant='outlined'
+													>
 														Decline
 													</Button>
 												</Stack>
@@ -157,12 +207,23 @@ export default function RequestedDoctors({ maxRows, seeMore }) {
 									))}
 								</TableBody>
 							</Table>
+							<Snackbar
+								open={state.open}
+								onClose={handleClose}
+								TransitionComponent={state.Transition}
+								key={state.Transition.name}
+								autoHideDuration={2000}
+							>
+								<Alert severity='success' sx={{ width: "100%" }}>
+									{state.message}
+								</Alert>
+							</Snackbar>
 						</>
 					)}
 
 					{seeMore ? (
 						<Link
-							color='primary'
+							color='secondary'
 							href='/admin/requested-doctors'
 							sx={{ mt: 3 }}
 						>

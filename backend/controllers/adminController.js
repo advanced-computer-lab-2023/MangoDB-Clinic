@@ -439,7 +439,7 @@ const addPackages = asyncHandler(async (req, res) => {
 
 	if (await Packages.findOne({ name })) {
 		res.status(400);
-		throw new Error("Package With This Name Already Exists");
+		throw new Error("A Package With This Name Already Exists");
 	}
 
 	const package = await Packages.create({
@@ -473,7 +473,7 @@ const updatePackages = asyncHandler(async (req, res) => {
 	} else {
 		const updatedPackageInfo = await Packages.findByIdAndUpdate(
 			req.params.id,
-			req.body,
+			req.body
 		);
 		if (updatedPackageInfo) {
 			res.status(200).json({ message: "Successfully Updated" });

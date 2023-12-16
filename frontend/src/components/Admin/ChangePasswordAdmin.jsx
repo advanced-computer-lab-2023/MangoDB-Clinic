@@ -11,9 +11,13 @@ import Box from "@mui/material/Box";
 import PasswordIcon from "@mui/icons-material/Password";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import Slide, { SlideProps } from "@mui/material/Slide";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 import Spinner from "../GeneralComponents/Spinner";
+import theme from "../../theme";
 
 function Copyright(props) {
 	return (
@@ -33,7 +37,7 @@ function Copyright(props) {
 	);
 }
 
-const defaultTheme = createTheme();
+const defaultTheme = theme;
 
 export default function ChangePassword() {
 	const navigate = useNavigate();
@@ -43,9 +47,30 @@ export default function ChangePassword() {
 		confirmPassword: "",
 	});
 	const [error, setError] = React.useState(null);
-	
 
 	const [isLoading, setIsLoading] = React.useState(false);
+
+	const [isSuccess, setIsSuccess] = React.useState(false);
+	const [state, setState] = React.useState({
+		open: false,
+		Transition: Slide,
+		message: "",
+	});
+
+	const Alert = React.forwardRef(function Alert(props, ref) {
+		return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
+	});
+
+	function SlideTransition(props) {
+		return <Slide {...props} direction='down' />;
+	}
+
+	const handleClose = () => {
+		setState({
+			...state,
+			open: false,
+		});
+	};
 
 	const handleChange = async () => {
 		try {
@@ -66,25 +91,29 @@ export default function ChangePassword() {
 			);
 
 			if (response.status === 200) {
-				alert("Password Changed Successfully");
 				setError(null);
-				localStorage.removeItem("token");
-				navigate("/admin/login");
+				setIsSuccess(true);
+				setState({
+					open: true,
+					Transition: SlideTransition,
+					message: `${response.data.message}, Redirecting...`,
+				});
+				setTimeout(() => {
+					setState({
+						...state,
+						open: false,
+					});
+					localStorage.removeItem("token");
+					navigate("/admin/login");
+				}, 1500);
 			}
 		} catch (error) {
-			if (error.response) {
-				const responseData = error.response.data;
-
-				if (responseData.message) {
-					setError(responseData.message);
-				} else {
-					setError("An error occurred on the server.");
-				}
-			} else if (error.request) {
-				setError("No response from the server.");
-			} else {
-				setError("Error setting up the request.");
-			}
+			setIsSuccess(false);
+			setState({
+				open: true,
+				Transition: SlideTransition,
+				message: error.response.data.message,
+			});
 		} finally {
 			setIsLoading(false);
 		}
@@ -183,6 +212,31 @@ export default function ChangePassword() {
 								>
 									Change Password
 								</Button>
+								{isSuccess ? (
+									<Snackbar
+										open={state.open}
+										onClose={handleClose}
+										TransitionComponent={state.Transition}
+										key={state.Transition.name}
+										autoHideDuration={2000}
+									>
+										<Alert severity='success' sx={{ width: "100%" }}>
+											{state.message}
+										</Alert>
+									</Snackbar>
+								) : (
+									<Snackbar
+										open={state.open}
+										onClose={handleClose}
+										TransitionComponent={state.Transition}
+										key={state.Transition.name}
+										autoHideDuration={2000}
+									>
+										<Alert severity='error' sx={{ width: "100%" }}>
+											{state.message}
+										</Alert>
+									</Snackbar>
+								)}
 							</Box>
 						</Box>
 					</>

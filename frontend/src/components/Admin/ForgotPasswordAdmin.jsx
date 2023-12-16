@@ -13,8 +13,9 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import Spinner from "../GeneralComponents/Spinner";
+import theme from "../../theme";
 
-const defaultTheme = createTheme();
+const defaultTheme = theme;
 
 export default function ForgotPasswordAdmin() {
 	const navigate = useNavigate();

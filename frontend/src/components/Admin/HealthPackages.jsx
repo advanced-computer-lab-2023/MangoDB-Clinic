@@ -2,7 +2,7 @@ import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
+import { styled, ThemeProvider } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -21,8 +21,12 @@ import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MuiDrawer from "@mui/material/Drawer";
+import Slide, { SlideProps } from "@mui/material/Slide";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 import { mainListItems } from "./listItems";
+import theme from "../../theme";
 
 const drawerWidth = 240;
 
@@ -70,14 +74,35 @@ const Drawer = styled(MuiDrawer, {
 	},
 }));
 
-const defaultTheme = createTheme();
+const defaultTheme = theme;
 
 export default function HealthPackages() {
 	const [cards, setCards] = React.useState([1, 2, 3]);
 	const [packages, setPackages] = React.useState([]);
 	const [open, setOpen] = React.useState(false);
+	const [isSuccess, setIsSuccess] = React.useState(false);
+	const [state, setState] = React.useState({
+		open: false,
+		Transition: Slide,
+		message: "",
+	});
 	let packID = null;
 	const navigate = useNavigate();
+
+	const Alert = React.forwardRef(function Alert(props, ref) {
+		return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
+	});
+
+	function SlideTransition(props) {
+		return <Slide {...props} direction='down' />;
+	}
+
+	const handleClose = () => {
+		setState({
+			...state,
+			open: false,
+		});
+	};
 
 	const toggleDrawer = () => {
 		setOpen(!open);
@@ -157,10 +182,28 @@ export default function HealthPackages() {
 			);
 
 			if (response.status === 200) {
-				alert("Package Removed");
-				window.location.reload();
+				setIsSuccess(true);
+				setState({
+					open: true,
+					Transition: SlideTransition,
+					message: `${response.data.message}`,
+				});
+				setTimeout(() => {
+					setState({
+						...state,
+						open: false,
+					});
+					getPackagesData();
+				}, 1500);
 			}
-		} catch (error) {}
+		} catch (error) {
+			setIsSuccess(false);
+			setState({
+				open: true,
+				Transition: SlideTransition,
+				message: error.response.data.message,
+			});
+		}
 	};
 
 	React.useEffect(() => {
@@ -284,12 +327,15 @@ export default function HealthPackages() {
 										<Typography>{pack.description}</Typography>
 									</CardContent>
 									<CardActions>
-										<Button size='small' onClick={() => handleEdit(pack.name)}>
+										<Button
+											size='small'
+											variant='contained'
+											onClick={() => handleEdit(pack.name)}
+										>
 											Edit
 										</Button>
 										<Button
 											size='small'
-											color='error'
 											variant='outlined'
 											onClick={() => handleDelete(pack.name)}
 										>
@@ -300,6 +346,31 @@ export default function HealthPackages() {
 							</Grid>
 						))}
 					</Grid>
+					{isSuccess ? (
+						<Snackbar
+							open={state.open}
+							onClose={handleClose}
+							TransitionComponent={state.Transition}
+							key={state.Transition.name}
+							autoHideDuration={2000}
+						>
+							<Alert severity='success' sx={{ width: "100%" }}>
+								{state.message}
+							</Alert>
+						</Snackbar>
+					) : (
+						<Snackbar
+							open={state.open}
+							onClose={handleClose}
+							TransitionComponent={state.Transition}
+							key={state.Transition.name}
+							autoHideDuration={2000}
+						>
+							<Alert severity='error' sx={{ width: "100%" }}>
+								{state.message}
+							</Alert>
+						</Snackbar>
+					)}
 				</Container>
 			</div>
 		</ThemeProvider>

@@ -1,4 +1,7 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -9,11 +12,13 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material";
+import Slide, { SlideProps } from "@mui/material/Slide";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 import Spinner from "../GeneralComponents/Spinner";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import theme from "../../theme";
 
 function Copyright(props) {
 	return (
@@ -33,7 +38,7 @@ function Copyright(props) {
 	);
 }
 
-const defaultTheme = createTheme();
+const defaultTheme = theme;
 
 export default function AddPackage() {
 	const navigate = useNavigate();
@@ -47,6 +52,27 @@ export default function AddPackage() {
 	});
 
 	const [isLoading, setIsLoading] = React.useState(false);
+	const [isSuccess, setIsSuccess] = React.useState(false);
+	const [state, setState] = React.useState({
+		open: false,
+		Transition: Slide,
+		message: "",
+	});
+
+	const Alert = React.forwardRef(function Alert(props, ref) {
+		return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
+	});
+
+	function SlideTransition(props) {
+		return <Slide {...props} direction='down' />;
+	}
+
+	const handleClose = () => {
+		setState({
+			...state,
+			open: false,
+		});
+	};
 
 	const handleAdd = async () => {
 		try {
@@ -63,11 +89,27 @@ export default function AddPackage() {
 			);
 
 			if (response.status === 201) {
-				alert("Package Added Successfully");
-				navigate("/admin/health-packs");
+				setIsSuccess(true);
+				setState({
+					open: true,
+					Transition: SlideTransition,
+					message: `${response.data.message}, Redirecting...`,
+				});
+				setTimeout(() => {
+					setState({
+						...state,
+						open: false,
+					});
+					navigate("/admin/health-packs");
+				}, 1500);
 			}
 		} catch (error) {
-			alert("Error Adding Package");
+			setIsSuccess(false);
+			setState({
+				open: true,
+				Transition: SlideTransition,
+				message: error.response.data.message,
+			});
 		} finally {
 			setIsLoading(false);
 		}
@@ -188,6 +230,31 @@ export default function AddPackage() {
 								>
 									Add Package
 								</Button>
+								{isSuccess ? (
+									<Snackbar
+										open={state.open}
+										onClose={handleClose}
+										TransitionComponent={state.Transition}
+										key={state.Transition.name}
+										autoHideDuration={2000}
+									>
+										<Alert severity='success' sx={{ width: "100%" }}>
+											{state.message}
+										</Alert>
+									</Snackbar>
+								) : (
+									<Snackbar
+										open={state.open}
+										onClose={handleClose}
+										TransitionComponent={state.Transition}
+										key={state.Transition.name}
+										autoHideDuration={2000}
+									>
+										<Alert severity='error' sx={{ width: "100%" }}>
+											{state.message}
+										</Alert>
+									</Snackbar>
+								)}
 							</Box>
 						</Box>
 						<Copyright sx={{ mt: 5 }} />
