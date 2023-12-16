@@ -270,7 +270,7 @@ const ViewPackagesPatient = () => {
                            Package Subscription info
                         </Typography>
                         <Typography align="left" variant="h6" >
-                            You are subscribed to the {packageInfo.packageId.name} experience the endless opportunities you get form this package .
+                            You are subscribed to the {packageInfo.packageId.name}, experience the endless opportunities you get from this package .
                         </Typography>
                         <Typography align="left" variant="h6" >
                             Package Renewal: {new Date(packageInfo.renewalDate).toLocaleDateString()}
