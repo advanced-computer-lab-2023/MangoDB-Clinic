@@ -13,7 +13,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/advanced-computer-lab-2023/MangoDB-Clinic">
-    <img src="readme_images/clinicLogo.svg" alt="Logo" width="250" height="250">
+    <img src="readme_images/readMeClinic.svg" alt="Logo" width="350" height="350">
   </a>
 
   <h1 align="center">MangoDB Virtual Clinic</h1>
@@ -34,14 +34,10 @@
         <li><a href="#description">Description</a></li>
         <li>
             <a href="#features">Features</a>
-            <!-- <ul>
-                <li><a href="#patients">Patient-Centric Features:</a></li>
-                <li><a href="#doctors">Doctor-Empowering Tools:</a></li>
-                <li><a href="#admins">Administrator Oversight:</a></li>
-            </ul> -->
         </li> 
         <li><a href="#screenshots">Screenshots</a></li>
         <li><a href="#built-with">Built With</a></li>
+        <li><a href="build-status">Build Status</a></li>
       </ul>
     </li>
     <li>
@@ -52,8 +48,9 @@
         <li><a href="#usage">Usage</a></li>
       </ul>
     </li>
-    <li><a href="#running-tests">Running Tests</li>
+    <li><a href="#running-tests">Running Tests</a></li>
     <li><a href="#code-specifcations">Code Specifcations</a></li>
+    <li><a href="#generate-api-documentation">Generate API Documentation</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#credits">Credits</a></li>
     <li><a href="#license">License</a></li>
@@ -127,7 +124,6 @@ MangoDB Virtual Clinic is a comprehensive virtual healthcare platform that bridg
     - Be promptly informed about cancellations or rescheduling to adapt your plans accordingly.
     - Utilize our user-friendly interface to view updated appointment details and take necessary actions.
 
-<!-- <p align="right">(<a href="#readme-top">back to top</a>)</p> -->
 </details>
 
 <details>
@@ -142,8 +138,6 @@ MangoDB Virtual Clinic is a comprehensive virtual healthcare platform that bridg
     - Generate detailed reports to inform strategic decisions and enhance the overall user experience.
 
 </details>
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 ### Screenshots 📸
@@ -171,9 +165,6 @@ MangoDB Virtual Clinic is a comprehensive virtual healthcare platform that bridg
 </details>
 
 
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 ### Built With 🛠️
 
 *Tech/Framework used:*
@@ -192,6 +183,9 @@ MangoDB Virtual Clinic is a comprehensive virtual healthcare platform that bridg
 * [![Github][Github]][Github-url]
 * [![Git][Git]][Git-url]
 * <img src=readme_images/dailyco.png alt="Dailyco" width="80"/> 
+
+### Build Status 
+
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -310,7 +304,7 @@ Experience the MangoDB Virtual Clinic by following these simple steps:
 <p align="right">(<a href="#mangodb-virtual-clinic">back to top</a>)</p>
 
 
-## Running Tests 🧪
+## Running Tests
 
 The testing is done using [Postman](https://www.postman.com)
 **Note:**For testing any GET, PUT, 
@@ -620,6 +614,16 @@ You should register first a doctor or a patient to test the Login
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
+## Generate API Documentation
+
+To view all the routes:
+
+**Run at route Directory**
+   ```sh
+   npm run generate-swagger
+   ```
+
+**Note:** you will find the routes in backend/swagger-output.json
 
 
 

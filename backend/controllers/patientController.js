@@ -948,6 +948,50 @@ const subscribeToHealthPackage = async (req, res) => {
   }
 };
 
+const payHealthPackageWithWallet = async (req, res) => {
+	const packageId = req.params.packageId;
+
+	try {
+		const patient = req.user;
+
+		if (patient) {
+			if (patient.healthPackage.status === "Subscribed") {
+				return res.status(404).json({
+					error: "You are already subscribed to a health package. Cancel your subscription first",
+				});
+			}
+
+			const subscribedPackage = await Packages.findById(packageId);
+
+			const healthPackageObject = {
+				packageId: subscribedPackage._id,
+				status: "Subscribed",
+				renewalDate: new Date(),
+				cancellationDate: null,
+			};
+
+			patient.healthPackage = healthPackageObject;
+
+			for (const familyMember of patient.family) {
+				if (familyMember.userId) {
+					const member = await Patient.findById(familyMember.userId);
+					if (member) {
+						member.healthPackage = healthPackageObject;
+						await member.save();
+					}
+				}
+			}
+
+			// Save updates
+			await patient.save();
+
+			res.status(200).json({ message: "Successfully subscribed to health package" });
+		}
+	} catch (err) {
+		res.status(400).json({ error: err.message });
+	}
+}
+
 const downloadPrescription = asyncHandler(async (req, res) => {
 	const patient = req.user;
 	const prescription = await Prescription.findById(req.params.id).populate(

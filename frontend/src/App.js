@@ -48,8 +48,8 @@ import ChangePasswordPage from "./pages/Admin/ChangePasswordPage";
 import RemoveAdminPage from "./pages/Admin/RemoveAdminPage";
 import EditHealthPackagePage from "./pages/Admin/EditHealthPackagePage";
 
-import Success from "./pages/Success";
-import Cancel from "./pages/Cancel";
+import Success from "./pages/Patient/Success";
+import Cancel from "./pages/Patient/Cancel";
 import SuccessfulPackagePayment from "./pages/successfulPackagePayment";
 import CancelHealthPackageSubscription from "./pages/cancelHealthPackageSubscription";
 import ViewHealthPackageSubscription from "./pages/viewHealthPackageSubscription";
