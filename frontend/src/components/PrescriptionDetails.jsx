@@ -24,6 +24,7 @@ import MuiAlert from '@mui/material/Alert';
 const defaultTheme = createTheme();
 
 export default function PrescriptionDetails() {
+	let totalPrice = 0;
 	const navigate = useNavigate();
 	const [data, setData] = React.useState(null);
 	const [loading, setLoading] = React.useState(false);
@@ -40,6 +41,19 @@ export default function PrescriptionDetails() {
 		}
 		setOpen(false);
 	};
+
+	const getPrice=async(medicationName) =>{
+		const response = await axios.get(`localhost:8000/patient/getPrice/${medicationName}`);
+		const price = await response.json();
+		return price;
+	}
+	
+	const calculateTotalPrice =async (medications)  =>{
+		for (let medication of medications) {
+			totalPrice += await getPrice(medication.medicationName);
+		}
+		return totalPrice;
+	}
 	const getData = async (id) => {
 		try {
 			setLoading(true);
@@ -80,9 +94,14 @@ export default function PrescriptionDetails() {
 	const handleGoBack = () => {
 		navigate(-1);
 	};
+
+	
 	const handleWallet = async() => {
 		try {
-			let totalPrice=50;
+			// let totalPrice=50;
+
+			
+
 			// Call your backend API endpoint for wallet payment
 			const response = await axios.post(
 				`http://localhost:4000/patient/payPescriptionWallet/${totalPrice}`,
@@ -136,51 +155,7 @@ export default function PrescriptionDetails() {
 			// Handle error as needed
 		}
 	};
-// 	const handleCredit= async() => {
-// 		try {
-// 			// Make a request to /create-checkout-session using Axios
-// 			// const response = await axios.post('http://localhost:4000/create-checkout-session', {
-// 			//   items: [
-// 			//     { id: 1, quantity: 3 },
-// 			//     { id: 2, quantity: 1 },
-// 			//   ],
-// 			// });
-// 			const totalPrice=50;
-// 			const items = [{ id: 1, quantity: 1 }];
-// // API.post(`/payments/create-checkout-session/${id}`, { totalPirce });
-// 			// const response = await checkout(id, items);
-// 			// const response = await axios.post(
-// 			// 	`/payments/create-checkout-session-prescription/${id}`, 
-// 			// 	{items},
-// 			// 	// {
-// 			// 	// 	headers: {
-// 			// 	// 		Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your actual token
-// 			// 	// 	},
-// 			// 	// }
-// 			// );
-// 			try {
-// 				const response = await checkout2(id, items);
-// 				console.log(response);
-			
-			
-// 			// Check if the request was successful (status code 2xx)
-// 			if (response.status === 200) {
-// 				const { url } = response.data;
-// 				console.log("Checkout Session:", response.data);
-// 				// Handle the session object as needed (e.g., redirect to the checkout page)
-// 				window.location = url;
-// 			} else {
-// 				console.error("Failed to create checkout session");
-// 				// Handle error as needed
-// 			}} catch (error) {
-// 				console.log('aaaaaaa');
-// 				console.error(error);
-// 			}
-// 		} catch (error) {
-// 			console.error("Error during checkout:", error);
-// 			// Handle error as needed
-// 		}
-// 	};
+
 const handleCredit = async (e) => {
 	try {
 		
@@ -255,9 +230,21 @@ const handleCredit = async (e) => {
 									<h3 variant='body1'
 									>
 										Pay using:
+
+										
 									</h3>
 									{/* <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group"> */}
-									<Grid container spacing={3}>
+
+									{data.medications ? (
+											 calculateTotalPrice(data.medications)
+											 .then(total => {
+												 console.log("Total Price: ", total);}
+										) ): (
+											<div>No medications available</div>
+										)}
+
+									<Grid container spacing={3}
+									>
 									<Grid style={{marginLeft:"100px"}}>
 										<Button
 											variant="outlined"
@@ -266,8 +253,12 @@ const handleCredit = async (e) => {
 											onClick={handleWallet}
 										>
 											Wallet
+
+
+											
 										</Button>
 									</Grid>
+									
 									<Grid style={{marginLeft:"20px"}}>
 									<Button
 										variant="outlined"
