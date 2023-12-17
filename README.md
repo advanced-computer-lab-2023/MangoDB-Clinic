@@ -151,9 +151,9 @@ MangoDB Virtual Clinic is a comprehensive virtual healthcare platform that bridg
 </details>
 
 <details>
-<summary>Patient's HomePage</summary>
+<summary>List Of Doctors</summary>
   
-![Patient's HomePage](readme_images/patientDashboard.png)
+![Doctor's List](readme_images/docList.png)
     
 </details>
 
@@ -161,6 +161,34 @@ MangoDB Virtual Clinic is a comprehensive virtual healthcare platform that bridg
 <summary>Doctor's HomePage</summary>
   
 ![Doctor's HomePage](readme_images/doctorDashboard.png)
+    
+</details>
+
+<details>
+<summary>Doctor's Appointments</summary>
+  
+![Doctor's Appointments](readme_images/appDoctor.png)
+    
+</details>
+
+<details>
+<summary>Doctor's Registration</summary>
+  
+![Doctor's Registration](readme_images/regDoc.png)
+    
+</details>
+
+<details>
+<summary>Patient's Packages</summary>
+  
+![Patient's Packages](readme_images/PatientPackages.png)
+    
+</details>
+
+<details>
+<summary>Patient's Appointments</summary>
+  
+![Patient's Appointments](readme_images/appPatient.png)
     
 </details>
 
@@ -822,6 +850,245 @@ const viewEmploymentContract = async (req, res) => {
 		res.status(500).json({ error: "An error occurred" });
 	}
 };
+
+```
+
+</details>
+
+<details>
+<summary><strong>Create Admin</strong></summary>
+
+```javascript
+
+// @desc Create new admin
+// @route POST /admin/create-admin
+// @access Private
+const createAdmin = asyncHandler(async (req, res) => {
+	const { email, firstName, lastName } = req.body;
+
+	if (!email || !firstName || !lastName) {
+		res.status(400);
+		throw new Error("Please Enter All Fields");
+	}
+
+	if (!emailValidator(email)) {
+		res.status(400);
+		throw new Error("Invalid Email Format");
+	}
+
+	// Check if admin exists
+	const adminExists = await Admin.findOne({ email });
+
+	if (adminExists) {
+		res.status(400);
+		throw new Error("An Admin With This Email Already Exists");
+	}
+
+	const randomUsername = generateRandomUsername();
+	const password = generateRandomPassword();
+
+	// Hash password
+	const salt = await bcrypt.genSalt(10);
+	const hashedPassword = await bcrypt.hash(password, salt);
+
+	// Create user
+	const admin = await Admin.create({
+		username: randomUsername,
+		email,
+		password: hashedPassword,
+		firstName,
+		lastName,
+	});
+
+	if (admin) {
+		res.status(201).json({
+			_id: admin.id,
+			name: admin.firstName + " " + admin.lastName,
+			username: randomUsername,
+			password: password,
+		});
+	} else {
+		res.status(400);
+		throw new Error("Invalid Data");
+	}
+});
+
+```
+
+</details>
+
+<details>
+<summary><strong>Login Page return statement:</strong></summary>
+
+```javascript
+
+return (
+		<ThemeProvider theme={defaultTheme}>
+			<Container component='main' maxWidth='xs'>
+				<CssBaseline />
+				{isLoading ? (
+					<Spinner />
+				) : (
+					<>
+						<Box
+							sx={{
+								marginTop: 8,
+								display: "flex",
+								flexDirection: "column",
+								alignItems: "center",
+							}}
+						>
+							<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+								<LockOutlinedIcon />
+							</Avatar>
+							<Typography component='h1' variant='h5'>
+								Welcome Back 👋🏽
+							</Typography>
+
+							<Typography component='h4' variant='h5'>
+								Login To Use The Dashboard
+							</Typography>
+
+							<Box
+								component='form'
+								onSubmit={handleSubmit}
+								noValidate
+								sx={{ mt: 1 }}
+							>
+								<TextField
+									margin='normal'
+									required
+									fullWidth
+									id='username'
+									label='Username'
+									name='username'
+									value={formData.username}
+									onChange={handleInputChange}
+									autoComplete='username'
+									autoFocus
+								/>
+								<TextField
+									margin='normal'
+									required
+									fullWidth
+									name='password'
+									label='Password'
+									type='password'
+									id='password'
+									onChange={handleInputChange}
+									value={formData.password}
+									autoComplete='current-password'
+								/>
+								<Button
+									type='submit'
+									fullWidth
+									variant='contained'
+									sx={{ mt: 3, mb: 2 }}
+								>
+									Login
+								</Button>
+								<Grid container>
+									<Grid item xs>
+										<Link href='/forgot-password' color='#2fc4b2'>
+											Forgot password?
+										</Link>
+									</Grid>
+
+									<Grid container justifyContent='space-between'>
+										<Grid item>
+											<Link href='/patientform' color='#2fc4b2'>
+												Register As Patient
+											</Link>
+										</Grid>
+
+										<Grid item>
+											<Link href='/doctorform' color='#2fc4b2'>
+												Register As Doctor
+											</Link>
+										</Grid>
+									</Grid>
+								</Grid>
+							</Box>
+						</Box>
+						<Copyright sx={{ mt: 8, mb: 4 }} />
+					</>
+				)}
+			</Container>
+		</ThemeProvider>
+	);
+
+```
+
+</details>
+
+<details>
+<summary><strong>Use Effects hooks for getting the packages</strong></summary>
+
+```javascript
+
+useEffect(() => {
+		const fetchPackages = async () => {
+			setIsPending(true);
+			setError(null);
+
+			const token = localStorage.getItem("token");
+			try {
+				const res = await fetch(
+					"http://localhost:4000/patient/view_health_packages",
+					{
+						method: "GET",
+						headers: {
+							Authorization: `Bearer ${token}`,
+							"Content-Type": "application/json",
+						},
+					}
+				);
+
+				if (!res.ok) {
+					throw Error("Could not fetch the data for that resource");
+				}
+
+				const data = await res.json();
+				setPackages(data);
+				setIsPending(false);
+			} catch (err) {
+				setError(err.message);
+				setIsPending(false);
+			}
+		};
+		fetchPackages();
+	}, []);
+
+	useEffect(() => {
+		const checkSubscription = async () => {
+            try {
+              const data = await subscribedPatient();
+                console.log("enttt");
+              if (data.healthPackage.status === "Subscribed") {
+                setSubscribed(true);
+                setCancelled(false);
+                setPackageInfo(data.healthPackage);
+                setPatient(data.patient);
+                console.log(data.healthPackage);
+                console.log(data);
+              } else if (data.healthPackage.status === "Cancelled") {
+                setCancelled(true);
+                setSubscribed(false);
+                setPackageInfo(data.healthPackage);
+                setPatient(data.patient);
+              } else {
+                setSubscribed(false);
+                setCancelled(false); 
+                setPackageInfo(null);
+                setPatient(null);
+              }
+            } catch (error) {
+              console.error("Error while checking subscription:", error);
+            }
+          };
+          
+		checkSubscription();
+	}, [cancelled, subscribed]);
 
 ```
 
