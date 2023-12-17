@@ -16,7 +16,7 @@ const defaultTheme = theme;
 
 export default function EmploymentContract() {
 	const navigate = useNavigate();
-	const doctor = getDoctorInfo();
+	const [doctor, setDoctor] = React.useState({});
 	const [error, setError] = React.useState(null);
 	const [isLoading, setIsLoading] = React.useState(false);
 	const [isSuccess, setIsSuccess] = React.useState(false);
@@ -57,6 +57,10 @@ export default function EmploymentContract() {
 			setError(error.response.data.message);
 		}
 	};
+
+	React.useEffect(() => {
+		getDoctorInfo().then((data) => setDoctor(data));
+	}, []);
 
 	const handleAccept = async () => {
 		try {
@@ -149,7 +153,7 @@ export default function EmploymentContract() {
 						EMPLOYMENT AGREEMENT
 					</Typography>
 					<Typography>
-						This Employment Agreement ("Agreement") is entered into on
+						This Employment Agreement ("Agreement") is entered into on{" "}
 						{new Date().toDateString()} by and between EL7A2NY VIRTUAL CLINIC
 						("Employer"), and {doctor.firstName} {doctor.lastName}, a licensed
 						physician ("Doctor").
@@ -194,8 +198,9 @@ export default function EmploymentContract() {
 					<Typography>8. GOVERNING LAW</Typography>
 					<Typography>
 						This Agreement shall be governed by and construed in accordance with
-						the laws of the state of Egypt.
+						the laws of the Arab Republic of Egypt.
 					</Typography>
+					<br />
 					<Typography>
 						IN WITNESS WHEREOF, the parties hereto have executed this Agreement
 						as of the date first above written.
