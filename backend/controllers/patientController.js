@@ -1534,11 +1534,11 @@ const payFromWallet = async (req, res) => {
 			? patient.healthPackage.name
 			: null;
 
-		if (!packageType) {
-			return res
-				.status(404)
-				.json({ error: "Package not found for the patient" });
-		}
+		// if (!packageType) {
+		// 	return res
+		// 		.status(404)
+		// 		.json({ error: "Package not found for the patient" });
+		// }
 
 		// Initialize discount values
 		let doctorSessionDiscount = 0;

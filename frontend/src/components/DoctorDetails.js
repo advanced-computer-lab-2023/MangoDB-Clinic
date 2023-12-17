@@ -95,9 +95,9 @@ const DoctorDetails = () => {
       //   );
       // }
       const items = [{ id: 1, quantity: 1 }];
-      const url = `http://localhost:3000/checkout/${id}`;
+      const url = `http://localhost:3000/checkout/${response.data._id}`;
       // window.location = url;
-      navigate(`/checkout/${id}`);
+      navigate(`/checkout/${response.data._id}`);
 
       // const response = await axios.post('/api/checkout', { appointmentId: app.data._id, items });
       //  const response=await checkout(app._id,items);
