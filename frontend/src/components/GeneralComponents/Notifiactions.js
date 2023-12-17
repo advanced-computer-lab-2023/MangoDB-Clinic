@@ -40,7 +40,7 @@ const Notifications = ({ type }) => {
             if (type === 'doctor') {
                 seenNotifsDoctor()
                     .then((result) => console.log(result))
-                    .catch((err) => onError(err.message));
+                    .catch((err) => console.log(err.message));
             } else if (type === 'patient') {
                 seenNotifsPatient()
                     .then((result) => console.log(result))
