@@ -35,6 +35,7 @@ import {
 } from "../../services/api";
 import Notification from "../../components/Patient/Notification";
 import Notifications from "../../components/GeneralComponents/Notifiactions";
+import PatientHeader from "../../components/GeneralComponents/patientHeader";
 
 function Copyright(props) {
 	return (
@@ -178,10 +179,10 @@ export default function Dashboard() {
 
 	return (
 		<ThemeProvider theme={defaultTheme}>
-			{/* <PatientHeader /> */}
+			<PatientHeader />
 			<Box sx={{ display: "flex" }}>
 				<CssBaseline />
-				<AppBar position='absolute' open={open}>
+				{/* <AppBar position='absolute' open={open}>
 					<Toolbar
 						sx={{
 							pr: "24px", // keep right padding when drawer closed
@@ -239,7 +240,7 @@ export default function Dashboard() {
 									</div>
 								</Popover>
 							</Badge>
-						</IconButton> */}
+						</IconButton> //}
 						
 						<Notifications type="patient" onError={setError} />
 
@@ -266,7 +267,7 @@ export default function Dashboard() {
 						{PatientListItems}
 						<Divider sx={{ my: 1 }} />
 					</List>
-				</Drawer>
+				</Drawer> */}
 				<Box
 					component='main'
 					sx={{

@@ -7,6 +7,7 @@ import Link from "@mui/material/Link";
 import Button from "@mui/material/Button";
 
 import { viewSubscribedhealthPackage } from "../services/api";
+import PatientHeader from "../components/GeneralComponents/patientHeader";
 
 export default function ViewHealthPackageSubscription() {
 	const [success, setSuccess] = useState(false);
@@ -23,6 +24,7 @@ export default function ViewHealthPackageSubscription() {
 	}, []);
 	return (
 		<div>
+			<PatientHeader />
 			<AppBar
 				position='static'
 				color='default'

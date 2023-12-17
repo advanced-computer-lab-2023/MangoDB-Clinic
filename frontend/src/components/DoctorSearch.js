@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 
 import DoctorsTable from "./DoctorsTable";
 import Filter from "./Filter";
+import PatientHeader from "./GeneralComponents/patientHeader";
 
 const DoctorSearch = () => {
 	const [searchTerm, setSearchTerm] = useState("");
@@ -45,6 +46,7 @@ const DoctorSearch = () => {
 
 	return (
 		<div>
+			<PatientHeader />
 			<div
 				style={{
 					display: "flex",

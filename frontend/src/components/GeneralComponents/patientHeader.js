@@ -19,8 +19,15 @@ import Divider from "@mui/material/Divider";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import Notifications from "./Notifiactions";
+import { useNavigate } from "react-router-dom";
+import { getPatient, viewWallet } from "../../services/api";
 
 export default function PatientHeader() {
+  const navigate = useNavigate();
+
+  const [ patient, setPatient ] = React.useState("");
+  const [ balance, setBalance ] = React.useState(null);
+
   const [openProfileDrawer, setOpenProfileDrawer] = React.useState(false);
 
   const [open, setOpen] = React.useState(true);
@@ -42,6 +49,21 @@ export default function PatientHeader() {
   const LogoutIcon = `${process.env.PUBLIC_URL}/icons/logout.svg`;
   const NotificationsIcon = `${process.env.PUBLIC_URL}/icons/notifications.svg`;
   const WalletIcon = `${process.env.PUBLIC_URL}/icons/wallet.svg`;
+
+  React.useEffect(() => {
+    viewWallet()
+      .then((result) => {
+        console.log(result.data.wallet);
+        setBalance(result.data.wallet.balance);
+      })
+      .catch((err) => console.log(err));
+
+      getPatient()
+        .then((result) => {
+          setPatient(result.data);
+        })
+        .catch((err) => console.log(err));
+  }, []);
 
   const list = () => (
     <Box
@@ -87,7 +109,7 @@ export default function PatientHeader() {
         </IconButton>
       </Box>
       <List sx={{ p: 0 }}>
-        <ListItem button sx={{ pt: 0, pb: 1 }}>
+        <ListItem button sx={{ pt: 0, pb: 1 }} onClick={ () => handleRedirect('/patientdashboard') }>
           <ListItemIcon>
             <img
               src={DashboardIcon}
@@ -108,7 +130,8 @@ export default function PatientHeader() {
           </ListItemIcon>
           <ListItemText primary="Profile" />
         </ListItem>
-        <ListItem button sx={{ pb: 1 }}>
+        
+        {/* <ListItem button sx={{ pb: 1 }}>
           <ListItemIcon>
             <img
               src={NotificationsIcon}
@@ -117,9 +140,9 @@ export default function PatientHeader() {
             />
           </ListItemIcon>
           <ListItemText primary="Notifications" />
-        </ListItem>
+        </ListItem> */}
 
-        <ListItem button sx={{ pb: 1 }}>
+        <ListItem button sx={{ pb: 1 }} onClick={ () => handleRedirect('/search-doctors') }>
           <ListItemIcon>
             <img
               src={DoctorsIcon}
@@ -130,7 +153,29 @@ export default function PatientHeader() {
           <ListItemText primary="Doctors" />
         </ListItem>
 
-        <Accordion
+        <ListItem button sx={{ pb: 1 }} onClick={ () => handleRedirect('/viewappointments') }>
+          <ListItemIcon>
+            <img
+              src={ViewIcon}
+              style={{ width: 25, height: 25 }}
+              alt="View All Appointments"
+            />
+          </ListItemIcon>
+          <ListItemText primary="Appointments" />
+        </ListItem>
+
+        <ListItem button sx={{ pb: 1 }} onClick={ () => handleRedirect('/viewpackages') }>
+          <ListItemIcon>
+            <img
+              src={HealthPackageIcon}
+              alt="Health Packages"
+              style={{ width: 26, height: 26 }}
+            />
+          </ListItemIcon>
+          <ListItemText primary="View Packages" />
+        </ListItem>
+
+        {/* <Accordion
           sx={{
             boxShadow: "none",
             "&.Mui-expanded": { margin: 0 },
@@ -172,7 +217,7 @@ export default function PatientHeader() {
                 </ListItemIcon>
                 <ListItemText primary="Make Appointment" />
               </ListItem>
-              <ListItem button sx={{ pb: 1 }}>
+              <ListItem button sx={{ pb: 1 }} onClick={ () => handleRedirect('/viewappointments') }>
                 <ListItemIcon>
                   <img
                     src={ViewIcon}
@@ -184,9 +229,9 @@ export default function PatientHeader() {
               </ListItem>
             </List>
           </AccordionDetails>
-        </Accordion>
+        </Accordion> */}
 
-        <Accordion
+        {/* <Accordion
           sx={{
             boxShadow: "none",
             "&.Mui-expanded": { margin: 0 },
@@ -216,7 +261,7 @@ export default function PatientHeader() {
           </AccordionSummary>
           <AccordionDetails sx={{ padding: "0 16px 0px" }}>
             <List sx={{ padding: "0px" }}>
-              <ListItem button sx={{ pb: 1 }}>
+              <ListItem button sx={{ pb: 1 }} onClick={ () => handleRedirect('/viewpackages') }>
                 <ListItemIcon>
                   <img
                     src={ViewIcon}
@@ -226,7 +271,7 @@ export default function PatientHeader() {
                 </ListItemIcon>
                 <ListItemText primary="View Packages" />
               </ListItem>
-              <ListItem button sx={{ pb: 0 }}>
+              <ListItem button sx={{ pb: 0 }} onClick={ () => handleRedirect('/viewHealthPackageSubscription') }>
                 <ListItemIcon>
                   <img
                     src={AcceptIcon}
@@ -234,13 +279,13 @@ export default function PatientHeader() {
                     style={{ width: 30, height: 30 }}
                   />
                 </ListItemIcon>
-                <ListItemText primary="Subscribe" />
+                <ListItemText primary="Subscriptions" />
               </ListItem>
             </List>
           </AccordionDetails>
-        </Accordion>
+        </Accordion> */}
 
-        <ListItem button sx={{ pb: 0 }}>
+        <ListItem button sx={{ pb: 0 }} onClick={ () => handleRedirect('/viewPrescriptionsOfPatient') }>
           <ListItemIcon>
             <img
               src={PrescriptionsIcon}
@@ -258,7 +303,7 @@ export default function PatientHeader() {
           width: "100%", // This will make your logout button take up the full width of the box
         }}
       >
-        <ListItem button sx={{ mb: 5, padding: "5px 16px" }}>
+        <ListItem button sx={{ mb: 5, padding: "5px 16px" }} onClick={handleLogout}>
           <ListItemIcon>
             <img
               src={LogoutIcon}
@@ -281,11 +326,20 @@ export default function PatientHeader() {
     setOpen(false);
   };
 
+  const handleLogout = () => {
+		localStorage.clear();
+		navigate("/");
+	};
+
+  const handleRedirect = (path) => {
+    navigate(path);
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
         position="relative"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, background: "#2fc4b2" }}
       >
         <Toolbar>
           <IconButton
@@ -331,12 +385,14 @@ export default function PatientHeader() {
             <Notifications type="patient" onError={null} />
           }
 
-          <Avatar sx={{ marginRight: 2 }}>{/* User's initials */}</Avatar>
+          {/* <Avatar sx={{ marginRight: 2 }}>User's initials</Avatar> */}
+          <Avatar sx={{ marginRight: 2 }}>{  patient ? `${patient.firstName[0]}${patient.lastName[0]}` : '' }</Avatar>
           <Typography
             variant="body1"
             sx={{ fontWeight: "bold", marginRight: -2, color: "#333" }}
           >
-            {"First Name"}
+            {/* {"First Name"} */}
+            { patient ? patient.firstName : '' }
           </Typography>
           <IconButton
             onClick={() => setOpenProfileDrawer(!openProfileDrawer)}
@@ -392,11 +448,12 @@ export default function PatientHeader() {
               variant="body1"
               sx={{ fontWeight: "bold", marginRight: 2, color: "#333" }}
             >
-              {"$100"} {/* Replace with actual wallet balance */}
+              {/* {"$100"} Replace with actual wallet balance */}
+              { `${balance} EGP` }
             </Typography>
           </ListItem>
 
-          <ListItem button>
+          <ListItem button onClick={handleLogout}>
             <ListItemIcon>
               <img
                 src={LogoutIcon}
@@ -451,7 +508,7 @@ export default function PatientHeader() {
             </Typography>
           </ListItem>
 
-          <ListItem button>
+          <ListItem button onClick={handleLogout}>
             <ListItemIcon>
               <img
                 src={LogoutIcon}
