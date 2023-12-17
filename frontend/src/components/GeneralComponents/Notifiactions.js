@@ -23,7 +23,7 @@ const Notifications = ({ type }) => {
                     setNotifications(result.data.notifications);
                     console.log(result.data.notifications);
                 })
-                .catch((err) => onError(err.message));
+                .catch((err) => console.log(err.message));
         } else if (type === 'patient') {
             getPatient2()
                 .then((result) => {
