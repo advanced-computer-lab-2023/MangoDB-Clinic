@@ -49,7 +49,7 @@ const Filter = ({ onFilterChange }) => {
 				variant='outlined'
 				value={speciality}
 				onChange={(e) => setSpeciality(e.target.value)}
-				style={{ width: "200px" }}
+				style={{ width: "200px" , marginRight: "5px"}}
 				displayEmpty
 			>
 				<MenuItem value=''>All Specialities</MenuItem>
@@ -65,6 +65,7 @@ const Filter = ({ onFilterChange }) => {
 				variant='outlined'
 				value={date}
 				onChange={(e) => setDate(e.target.value)}
+				style={{marginRight: "5px"}}
 			/>
 			<TextField
 				type='time'

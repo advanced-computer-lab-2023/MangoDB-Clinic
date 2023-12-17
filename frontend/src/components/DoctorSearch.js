@@ -59,14 +59,14 @@ const DoctorSearch = () => {
 						variant='outlined'
 						value={searchTerm}
 						onChange={(e) => setSearchTerm(e.target.value)}
-						style={{ marginBottom: "20px" }}
+						style={{ marginBottom: "20px", marginRight: "10px"}}
 					/>
 					<TextField
 						label='Speciality'
 						variant='outlined'
 						value={speciality}
 						onChange={(e) => setSpeciality(e.target.value)}
-						style={{ marginBottom: "20px" }}
+						style={{ marginBottom: "20px"}}
 					/>
 					<Button
 						variant='contained'
@@ -79,12 +79,12 @@ const DoctorSearch = () => {
 				<div style={{ display: "inline", marginBottom: "10px" }}>
 					<Filter
 						onFilterChange={setFilterParams}
-						style={{ marginTop: "10px" }}
+						style={{ marginTop: "10px"}}
 					/>
 					<Button
 						variant='contained'
 						onClick={handleFilter}
-						style={{ marginLeft: "10px" }}
+						style={{ marginLeft: "10px", }}
 					>
 						Apply Filters
 					</Button>
