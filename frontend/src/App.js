@@ -48,6 +48,7 @@ import AddPackagePage from "./pages/Admin/AddPackagePage";
 import ChangePasswordPage from "./pages/Admin/ChangePasswordPage";
 import RemoveAdminPage from "./pages/Admin/RemoveAdminPage";
 import EditHealthPackagePage from "./pages/Admin/EditHealthPackagePage";
+import ProfilePage from "./pages/General/ProfilePage";
 
 import Success from "./pages/Patient/Success";
 import Cancel from "./pages/Patient/Cancel";
@@ -137,7 +138,7 @@ function App() {
 					<Route path='/viewappointments' element={<ViewAppointments />} />
 					<Route path='/doctorAppointments' element={<DoctorApps />} />
 
-					<Route path='/viewprofile' element={<ViewProfile />} />
+					<Route path='/viewprofile' element={<ProfilePage />} />
 
 					<Route
 						path='/employmentcontract'

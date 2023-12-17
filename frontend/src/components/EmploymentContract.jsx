@@ -40,6 +40,23 @@ export default function EmploymentContract() {
 		});
 	};
 
+	const getDoctorInfo = async () => {
+		try {
+			const response = await axios.get(
+				"http://localhost:4000/doctor/doctorInfo",
+				{
+					headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+				}
+			);
+
+			if (response.status === 200) {
+				return response.data;
+			}
+		} catch (error) {
+			setError(error.response.data.message);
+		}
+	};
+
 	const handleAccept = async () => {
 		try {
 			setIsLoading(true);
