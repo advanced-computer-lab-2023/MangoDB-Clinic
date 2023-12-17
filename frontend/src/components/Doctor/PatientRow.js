@@ -13,12 +13,12 @@ const PatientRow = ({ patient }) => {
         navigate(`/selectedPatient/${patient._id}`);
     };
 
-    const handleCreateVideoChat = async (doctorId) => {
+    const handleCreateVideoChat = async (patientId) => {
 		try {
 			setLoading(true); // Set loading to true when starting the request
 
 			const response = await axios.post(
-				`http://localhost:4000/doctor/createVideoChat/${patient._id}`,
+				`http://localhost:4000/doctor/createVideoChat/${patientId}`,
 				{},
 				{
 					headers: {
