@@ -23,6 +23,7 @@ import {
 	updateDoctorEmail,
 	updateDoctorRate,
 } from "../../services/api";
+import DoctorHeader from "../../components/GeneralComponents/doctorHeader";
 
 const EditDoctor = () => {
 	// const { id } = useParams();
@@ -93,6 +94,7 @@ const EditDoctor = () => {
 
 	return (
 		<div>
+			<DoctorHeader />
 			{/* {isPending && <div>Loading...</div>} */}
 			{/* {error && <div>{error}</div>} */}
 			{isPending && (

@@ -23,6 +23,7 @@ import Spinner from '../../components/GeneralComponents/Spinner'
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import AppRow from "../../components/Doctor/AppRow";
+import DoctorHeader from "../../components/GeneralComponents/doctorHeader";
 
 const Item = styled(Paper)(({ theme }) => ({
 	backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -273,6 +274,7 @@ const DoctorApps = () => {
 
 	return (
 		<div>
+			<DoctorHeader />
 				<Paper sx={{ "margin": "auto", "width": "90%", "marginTop": "90px", "padding": "2%" }}>
 					<Typography
 						variant="h1"

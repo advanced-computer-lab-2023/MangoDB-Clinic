@@ -4,6 +4,7 @@ import axios from "axios";
 import { Button, TextField,Typography, Grid } from "@mui/material";
 
 import { addSlots } from "../services/api";
+import DoctorHeader from "../components/GeneralComponents/doctorHeader";
 
 const AddSlotsPage = () => {
 	//const id = "6526d4fc602e6bd55799cda8";
@@ -59,6 +60,7 @@ const AddSlotsPage = () => {
 
 	return (
 		<div>
+			<DoctorHeader />
 			<Grid item xs={12} style={{ padding: "5px" }}>
 						<Typography variant='h5'>Add Slots</Typography>
 					</Grid>

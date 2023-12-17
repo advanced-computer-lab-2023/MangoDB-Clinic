@@ -13,6 +13,7 @@ const Notifications = ({ type, onError }) => {
 	const id = isOpen ? "simple-popover" : undefined;
     const [seen, setSeen] = useState(false);
     const [reload, setReload] = useState(false);
+    const notificationsIcon = `${process.env.PUBLIC_URL}/icons/notifications.svg`;
 
     useEffect(() => {
         if(type === 'doctor') {
@@ -84,9 +85,10 @@ const Notifications = ({ type, onError }) => {
 	};
 
     return (
-        <IconButton color='inherit' sx={{ marginRight: "5px" }}>
+        <IconButton color='inherit' sx={{ marginRight: "20px" }}>
 			<Badge badgeContent={notificationsCount} color='secondary'>
-			    <NotificationsIcon onClick={handleClick} />
+			    {/* <NotificationsIcon onClick={handleClick} sx={{ fill: "white" }} /> */}
+                <img src={notificationsIcon} style={{ maxWidth: "30px" }} onClick={handleClick} />
                 <Popover
                     id={id}
                     open={isOpen}

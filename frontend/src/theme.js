@@ -146,7 +146,7 @@ export const theme = createTheme({
           borderRadius: "0px",
         },
         colorInherit: {
-          backgroundColor: "#689f38",
+          backgroundColor: "#2fc4b2",
           color: "#fff",
         },
       },

@@ -12,6 +12,7 @@ import Alert from '@mui/material/Alert';
 import { getPatientsDoctor, searchPatients } from "../../services/api";
 import Spinner from "../../components/GeneralComponents/Spinner";
 import PatientRow from "../../components/Doctor/PatientRow";
+import DoctorHeader from "../../components/GeneralComponents/doctorHeader";
 
 const Item = styled(Paper)(({ theme }) => ({
 	backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -138,6 +139,7 @@ const PatientList = () => {
 
 	return (
 		<div className='patient-list'>
+			<DoctorHeader />
 				<Paper sx={{ "margin": "auto", "width": "fit-content", "minWidth": "60%", "marginTop": "90px", "padding": "2%" }}>
 					{
 						<>

@@ -98,6 +98,8 @@ export const filterAppointments = (query) =>
 
 export const viewWallet = (id) => API.get(`/patient/view_wallet/${id}`);
 
+export const viewWalletDoctor = () => API.get(`/doctor/view_wallet`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+
 export const viewPatientAppointments = () =>
 	API.get(`/patient/get_all_appointments`,{ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
