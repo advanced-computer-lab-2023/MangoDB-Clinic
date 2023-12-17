@@ -147,7 +147,7 @@ export default function AddPackage() {
 								<AddIcon />
 							</Avatar>
 							<Typography component='h1' variant='h5'>
-								Add Health Package
+								Add Package
 							</Typography>
 							<Box
 								component='form'
