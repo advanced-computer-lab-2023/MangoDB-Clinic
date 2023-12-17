@@ -18,6 +18,7 @@ import MuiAlert from "@mui/material/Alert";
 
 import Spinner from "../GeneralComponents/Spinner";
 import theme from "../../theme";
+import AdminHeader from "../GeneralComponents/adminHeader";
 
 function Copyright(props) {
 	return (
@@ -132,6 +133,7 @@ export default function ChangePassword() {
 
 	return (
 		<ThemeProvider theme={defaultTheme}>
+			<AdminHeader />
 			<Container component='main' maxWidth='xs'>
 				<CssBaseline />
 				{isLoading ? (

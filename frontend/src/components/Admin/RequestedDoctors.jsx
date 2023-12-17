@@ -22,6 +22,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { mainListItems } from "./listItems";
 import RequestedDoctors from "./RequestedDoctorsTable.jsx";
 import theme from "../../theme.js";
+import AdminHeader from "../GeneralComponents/adminHeader.js";
 
 function Copyright(props) {
 	return (
@@ -103,9 +104,10 @@ export default function Dashboard() {
 	};
 	return (
 		<ThemeProvider theme={defaultTheme}>
+			<AdminHeader />
 			<Box sx={{ display: "flex" }}>
 				<CssBaseline />
-				<AppBar position='absolute' open={open}>
+				{/* <AppBar position='absolute' open={open}>
 					<Toolbar
 						sx={{
 							pr: "24px", // keep right padding when drawer closed
@@ -152,7 +154,7 @@ export default function Dashboard() {
 					</Toolbar>
 					<Divider />
 					<List component='nav'>{mainListItems}</List>
-				</Drawer>
+				</Drawer> */}
 				<Box
 					component='main'
 					sx={{

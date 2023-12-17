@@ -27,6 +27,7 @@ import MuiAlert from "@mui/material/Alert";
 
 import { mainListItems } from "./listItems";
 import theme from "../../theme";
+import AdminHeader from "../GeneralComponents/adminHeader";
 
 const drawerWidth = 240;
 
@@ -212,8 +213,9 @@ export default function HealthPackages() {
 
 	return (
 		<ThemeProvider theme={defaultTheme}>
+			<AdminHeader />
 			<CssBaseline />
-			<AppBar position='absolute' open={open}>
+			{/* <AppBar position='absolute' open={open}>
 				<Toolbar
 					sx={{
 						pr: "24px", // keep right padding when drawer closed
@@ -244,10 +246,10 @@ export default function HealthPackages() {
 						<LogoutIcon onClick={handleLogout} />
 					</IconButton>
 				</Toolbar>
-			</AppBar>
+			</AppBar> */}
 
 			<div style={{ display: "flex" }}>
-				<Drawer variant='permanent' open={open}>
+				{/* <Drawer variant='permanent' open={open}>
 					<Toolbar
 						sx={{
 							display: "flex",
@@ -262,7 +264,7 @@ export default function HealthPackages() {
 					</Toolbar>
 					<Divider />
 					<List component='nav'>{mainListItems}</List>
-				</Drawer>
+				</Drawer> */}
 
 				<Container maxWidth='sm'>
 					<br />
