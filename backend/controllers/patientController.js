@@ -977,6 +977,9 @@ const payHealthPackageWithWallet = async (req, res) => {
                 });
             }
 
+			wallet.balance -= subscribedPackage.price;
+			await wallet.save();
+
             const renewal = new Date();
             renewal.setFullYear(renewal.getFullYear() + 1);
 
