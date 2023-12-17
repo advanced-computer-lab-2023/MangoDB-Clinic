@@ -883,23 +883,32 @@ const cancelHealthPackage = async (req, res) => {
 
 const checkHealthPackageSubscription = async (req, res) => {
 	try {
-		const patient = req.user;
-		console.log(patient);
-
-		if (patient) {
-			
-			if(patient.healthPackage.packageId){
-				const healthPackge = await patient.healthPackage.populate("packageId");
-				return res.status(200).json(healthPackge);
-			}
-			return res.status(200).json(patient.healthPackage);
-			
-			
+	  const patient = req.user;
+  
+	  if (patient) {
+		let result;
+  
+		if (patient.healthPackage.packageId) {
+		  const healthPackage = await patient.healthPackage.populate("packageId")
+		  console.log(healthPackage);
+  
+		  result = {
+			patient: patient,
+			healthPackage: healthPackage,
+		  };
+		} else {
+		  result = {
+			patient: patient,
+			healthPackage: patient.healthPackage,
+		  };
 		}
+		console.log(result);
+		return res.status(200).json(result);
+	  }
 	} catch (err) {
-		res.status(500).json({ error: err.message });
+	  res.status(500).json({ error: err.message });
 	}
-};
+  };
 
 const subscribeToHealthPackage = async (req, res) => {
 	const packageId = req.params.packageId;

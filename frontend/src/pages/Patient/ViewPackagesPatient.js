@@ -12,6 +12,8 @@ import {
     Snackbar,
     Dialog,
     DialogContent,
+    Chip,
+    Avatar
     } from "@mui/material";
 import theme from "../../theme";
 import MuiAlert from "@mui/material/Alert";
@@ -156,6 +158,7 @@ const ViewPackagesPatient = () => {
     const [cancelled, setCancelled] = useState(false);
     const [packageCancelled, setPackageCancelled] = useState({});
     const [packageInfo, setPackageInfo] = useState({});
+    const [patient, setPatient] = useState({});
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [openErrorMessage, setOpenErrorMessage] = useState(false);
@@ -198,19 +201,32 @@ const ViewPackagesPatient = () => {
 
 	useEffect(() => {
 		const checkSubscription = async () => {
-			const data = await subscribedPatient();
-			if (data.status === "Subscribed") {
-				setSubscribed(true);
-				setCancelled(false);
-				setPackageInfo(data);
-			} else if (data.status === "Cancelled") {
-				setCancelled(true);
-				setSubscribed(false);
-				setPackageInfo(data);
-			} else {
-				setSubscribed(false);
-			}
-		};
+            try {
+              const data = await subscribedPatient();
+                console.log("enttt");
+              if (data.healthPackage.status === "Subscribed") {
+                setSubscribed(true);
+                setCancelled(false);
+                setPackageInfo(data.healthPackage);
+                setPatient(data.patient);
+                console.log(data.healthPackage);
+                console.log(data);
+              } else if (data.healthPackage.status === "Cancelled") {
+                setCancelled(true);
+                setSubscribed(false);
+                setPackageInfo(data.healthPackage);
+                setPatient(data.patient);
+              } else {
+                setSubscribed(false);
+                setCancelled(false); 
+                setPackageInfo(null);
+                setPatient(null);
+              }
+            } catch (error) {
+              console.error("Error while checking subscription:", error);
+            }
+          };
+          
 		checkSubscription();
 	}, [cancelled, subscribed]);
 
@@ -348,6 +364,29 @@ const ViewPackagesPatient = () => {
                         <Typography align="left" variant="h6" >
                             Package Renewal: {new Date(packageInfo.renewalDate).toLocaleDateString()}
                         </Typography>
+                        <Grid container spacing={2} style={{ marginTop: '1rem' }}>
+                            <Typography align="center" variant="h4" style={{paddingBottom: "1rem"}}>
+                                Family members enjoying the package:
+                            </Typography>
+                            {patient.family.length > 0 ? (
+                                patient.family.map((familyMember, index) => (
+                                    <Grid item key={index}>
+                                    <Paper elevation={1} style={{ padding: '1rem', textAlign: 'center' }}>
+                                        <Chip
+                                        avatar={<Avatar>{getInitials(familyMember.name)}</Avatar>}
+                                        label={`${familyMember.name}`}
+                                        />
+                                    </Paper>
+                                    </Grid>
+                                ))
+                                ) : (
+                                <Grid item>
+                                    <Paper elevation={1} style={{ padding: '1rem', textAlign: 'center' }}>
+                                    No family members available.
+                                    </Paper>
+                                </Grid>
+                                )}
+                        </Grid>
                         <Button 
                             variant="outlined" 
                             color="secondary"
@@ -371,6 +410,29 @@ const ViewPackagesPatient = () => {
                         <Typography align="left" variant="h6" >
                             Cancellation Date: {new Date(packageInfo.cancellationDate).toLocaleDateString()}
                         </Typography>
+                        <Grid container spacing={2} style={{ marginTop: '1rem' }}>
+                            <Typography align="center" variant="h5" style={{paddingBottom: "1rem"}}>
+                                Canclled packages from your family members:
+                            </Typography>
+                            {patient.family.length > 0 ? (
+                                patient.family.map((familyMember, index) => (
+                                    <Grid item key={index}>
+                                    <Paper elevation={1} style={{ padding: '1rem', textAlign: 'center' }}>
+                                        <Chip
+                                        avatar={<Avatar>{getInitials(familyMember.name)}</Avatar>}
+                                        label={`${familyMember.name}`}
+                                        />
+                                    </Paper>
+                                    </Grid>
+                                ))
+                                ) : (
+                                <Grid item>
+                                    <Paper elevation={1} style={{ padding: '1rem', textAlign: 'center' }}>
+                                    No family members available.
+                                    </Paper>
+                                </Grid>
+                                )}
+                        </Grid>
                     </Paper>
                     }   
                 </Paper>
@@ -422,6 +484,10 @@ const ViewPackagesPatient = () => {
             </Snackbar>
         </ThemeProvider>
      );
+}
+
+function getInitials(firstName) {
+    return `${firstName.charAt(0)}`;
 }
  
 export default ViewPackagesPatient;
