@@ -17,6 +17,7 @@ import {
 
 import PrescriptionsTable from "../../components/GeneralComponents/PrescriptionsTable";
 import theme from "../../theme";
+import DoctorHeader from "../../components/GeneralComponents/doctorHeader";
 
 const ViewPrescriptionsDoctor = () => {
 
@@ -274,6 +275,7 @@ const ViewPrescriptionsDoctor = () => {
 
     return ( 
         <ThemeProvider theme={theme}>
+            <DoctorHeader />
             <Grid container justifyContent='center' style={{ padding: "7rem" }}>
                 <Grid item xs={12}>
                     <Paper elevation={3} style={{ padding: "2rem" }}>

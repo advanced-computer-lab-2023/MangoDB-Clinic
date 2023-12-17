@@ -12,6 +12,7 @@ import { getAllPharmacists, createChat, viewChats } from "../../services/api";
 // import { pharmacistListItems } from '../components/ListItemsPharma';
 import { useNavigate } from 'react-router-dom';
 import AddIcon from "@mui/icons-material/Add";
+import DoctorHeader from "../../components/GeneralComponents/doctorHeader";
 
 const ViewChats = () => {
   const [pharmacists, setPharmacists] = useState([]);
@@ -70,7 +71,9 @@ const ViewChats = () => {
   };
 
   return (
-    <Grid container>
+    <>
+    <DoctorHeader />
+    <Grid container sx={{ marginLeft: "250px", marginTop: "20px" }}>
       {/* Sidebar */}
       {/* <Grid
         item
@@ -170,6 +173,7 @@ const ViewChats = () => {
         ))}
       </Grid>
     </Grid>
+    </>
   );
 };
 

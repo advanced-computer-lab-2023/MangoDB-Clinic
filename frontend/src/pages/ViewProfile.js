@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Typography,Grid,Button } from "@mui/material";
+import PatientHeader from "../components/GeneralComponents/patientHeader";
 
 
 
@@ -18,6 +19,8 @@ const buttonStyle = {
 };
 export default function Profile() {
 	return (
+		<>
+		<PatientHeader />
 		<div style={centerStyle}>
 			<br></br>
 			<Grid item xs={12} style={{ padding: "5px" ,marginTop: "20px"}}>
@@ -55,5 +58,6 @@ export default function Profile() {
 
 			</div>
 		</div>
+		</>
 	);
 }

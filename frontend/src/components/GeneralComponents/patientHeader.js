@@ -20,7 +20,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import Notifications from "./Notifiactions";
 import { useNavigate } from "react-router-dom";
-import { getPatient, viewWallet } from "../../services/api";
+import { getPatient, getPatient2, viewWallet } from "../../services/api";
 
 export default function PatientHeader() {
   const navigate = useNavigate();
@@ -58,7 +58,7 @@ export default function PatientHeader() {
       })
       .catch((err) => console.log(err));
 
-      getPatient()
+      getPatient2()
         .then((result) => {
           setPatient(result.data);
         })
@@ -120,7 +120,7 @@ export default function PatientHeader() {
           <ListItemText primary="Dashboard" />
         </ListItem>
 
-        <ListItem button sx={{ pb: 0 }}>
+        <ListItem button sx={{ pb: 0 }} onClick={ () => handleRedirect('/viewprofile') }>
           <ListItemIcon>
             <img
               src={ProfileIcon}

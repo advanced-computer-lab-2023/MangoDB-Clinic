@@ -13,7 +13,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const fs = require("fs");
 const path = require("path");
-const axios = require("axios");
+// const axios = require("axios");
 // const Pharmacist = require("../models/pharmacistModel");
 
 function generateOTP() {
@@ -1039,25 +1039,40 @@ const addNewSlots = async (req, res) => {
 		// const doctorId = req.params.id;
 		const doctorId = req.user._id;
 		console.log(doctorId);
-		const { weekday, startTime, endTime } = req.body;
+		const dayString = (req.body.weekday).toLowerCase();
+		const convert = {
+			'sunday': 0,
+			'monday': 1,
+			'tuesday': 2,
+			'wednesday': 3,
+			'thursday': 4,
+			'friday': 5,
+			'saturday': 6
+		};
+		const weekday = convert[dayString];
+		const { startTime, endTime } = req.body;
 		const newSlots = { weekday, startTime, endTime };
 		console.log({ weekday, startTime, endTime });
 		console.log("newSlots:", { weekday, startTime, endTime });
-		const doc = await User.findById(doctorId);
+		const doc = await Doctor.findById(doctorId);
+		if (!doc) {
+			return res.status(404).json({ error: "Doctor not found" });
+		}
 		console.log(doc);
 		doc.availableSlots = doc.availableSlots.concat({
 			weekday,
 			startTime,
 			endTime,
 		});
-		await doc.save();
 
-		if (!doc) {
-			return res.status(404).json({ error: "Doctor not found" });
-		}
+		console.log(doc)
+		const result = await doc.save();
 
-		res.json(doc);
+		console.log(result);
+		
+		return res.status(200).json(doc);
 	} catch (error) {
+		console.log(error.message);
 		res.status(400).json({ error: "Failed to update slots" });
 	}
 };
@@ -1571,7 +1586,7 @@ const viewPrescriptionsByDoctor = async (req, res) => {
 // add a patient's prescription
 const addPrescription = async (req, res) => {
 	const doctorId = req.user.id;
-	const { patientName, date, medications } = req.body;
+	const { patientName, date, medications, filled } = req.body;
 
 	if (!patientName || !date) {
 		return res
@@ -1588,6 +1603,7 @@ const addPrescription = async (req, res) => {
 			doctorId: doctorId,
 			medications: medications,
 			date: date,
+			filled: filled
 		});
 		const updatedPrescription = await prescription.populate("patientId");
 		console.log(updatedPrescription);

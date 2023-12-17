@@ -20,9 +20,17 @@ import MuiAlert from "@mui/material/Alert";
 import { useState, useEffect } from "react";
 import { checkout1, checkoutWithWallet } from "../../services/api";
 import PatientHeader from "../../components/GeneralComponents/patientHeader";
+import { useNavigate } from "react-router-dom";
 
 const PackageCard = ({ packages, handleClick, subscribed, packageInfo, payWithWallet }) => {
+    const navigate = useNavigate();
     const [open, setOpen] = useState(false);
+
+    const handleReload = () => {
+        setTimeout(() => {
+            navigate(0);
+        }, 2000)
+    };
     
     const getBackgroundColor = (type) => {
         switch (type) {
@@ -139,10 +147,10 @@ const PackageCard = ({ packages, handleClick, subscribed, packageInfo, payWithWa
                                 fullWidth
                                 variant="contained"
                                 color="primary"
-                                onClick={(e) => { payWithWallet(e); setOpen(false); }}
+                                onClick={(e) => { payWithWallet(e); setOpen(false); handleReload(); }}
                                 name={packages.name}
                             >
-                                Cash
+                                Wallet
                             </Button>
                         </Grid>
                     </Grid>

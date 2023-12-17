@@ -520,7 +520,7 @@ const PrescriptionsTable = ({
 				</Snackbar>
 			)}
 
-			<div
+			{/* <div
 				style={{
 					display: "flex",
 					justifyContent: "center",
@@ -533,7 +533,7 @@ const PrescriptionsTable = ({
 				>
 					Home
 				</Button>
-			</div>
+			</div> */}
 		</ThemeProvider>
 	);
 };

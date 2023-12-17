@@ -108,6 +108,7 @@ const DashboardAdmin = () => {
                   </Typography>
                   <Typography
                     variant="body1"
+                    align="center"
                     color="textSecondary"
                     sx={{ pb: -1 }}
                   >

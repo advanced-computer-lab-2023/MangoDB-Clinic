@@ -1,5 +1,6 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Paper,
   Typography,
@@ -16,6 +17,7 @@ import { getSelectedDoctor } from "../services/api";
 import { format } from "date-fns";
 
 const DoctorDetails = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [doctor, setDoctor] = useState(null);
   const [isPending, setIsPending] = useState(true);
@@ -76,12 +78,26 @@ const DoctorDetails = () => {
 
   const bookAppointment = async (key, nationalID) => {
     try {
-      //  const app=await bookAppointmentApi(key, nationalID);
-      //   fetchAvailableSlots(id, selectedDate);
-      //   console.log(app._id)
+    
+
+      const response = await axios.post(
+                `http://localhost:4000/patient/make_appointment?nationalID=${nationalID}&date=${key}&docid=${id}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`, 
+                    },
+                }
+            );
+      // if (!response.ok) {
+      //   throw new Error(
+      //     `Failed to make appointment. Status: ${response.status}`
+      //   );
+      // }
       const items = [{ id: 1, quantity: 1 }];
       const url = `http://localhost:3000/checkout/${id}`;
-      window.location = url;
+      // window.location = url;
+      navigate(`/checkout/${id}`);
 
       // const response = await axios.post('/api/checkout', { appointmentId: app.data._id, items });
       //  const response=await checkout(app._id,items);

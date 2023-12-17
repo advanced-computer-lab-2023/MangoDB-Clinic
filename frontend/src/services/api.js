@@ -13,6 +13,8 @@ const API = axios.create({
 //API requests
 export const getPatients = () => API.get("/patients");
 
+export const getPatient2 = () => API.get("/patient/getPatient2", { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+
 export const addPatient = (patient) =>
 	API.post("/patientRegistration", patient);
 

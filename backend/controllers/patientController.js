@@ -313,6 +313,24 @@ const getAllPatients = async (req, res) => {
 
 //Get a single patient
 const getPatient = async (req, res) => {
+	const email = req.body.email;
+
+	try {
+		const patient = await Patient.findOne({ email: email });
+		// const patient = await Patient.findById(req.user._id);
+
+		if (!patient) {
+			return res.status(404).json({ error: "No such patient found" });
+		}
+
+		return res.status(200).json(patient);
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
+const getPatient2 = async (req, res) => {
 	// const email = req.body.email;
 
 	try {
@@ -1307,7 +1325,8 @@ const makeAppointment = async (req, res) => {
 	//el patient hyd5al esm el doctor w pass lel function el id bta3 el doctor
 	//el patient hyd5al esm el hy7gezlo 3shan momkn ykon be esmo aw be esm a family member w pass lel function el id bta3 el patient keda keda
 	// let {doctorId,patientId,date,patientName } = req.body;
-	let { nationalID, date, docid, patientid } = req.query;
+	const patientid=req.user._id;
+	let { nationalID, date, docid} = req.query;
 	try {
 		const doctor = await Doctor.findById(docid);
 		if (!doctor) {
@@ -2131,5 +2150,6 @@ module.exports = {
 	createVideoChat,
 	clearNotifs,
 	checkHealthPackageSubscription,
-	seenNotifs
+	seenNotifs,
+	getPatient2
 };
