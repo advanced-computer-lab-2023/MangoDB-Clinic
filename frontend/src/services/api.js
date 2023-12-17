@@ -98,6 +98,8 @@ export const filterAppointments = (query) =>
 
 export const viewWallet = (id) => API.get(`/patient/view_wallet/${id}`);
 
+export const viewWalletDoctor = () => API.get(`/doctor/view_wallet`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+
 export const viewPatientAppointments = () =>
 	API.get(`/patient/get_all_appointments`,{ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -107,13 +109,16 @@ export const upcomingPatientApp = () =>
 export const filterPatientAppointments = (query) =>
 	API.post("/patient/filterapp", query, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
-// payments
 export const checkout = (id, items) =>
 	API.post(`/payments/create-checkout-session/${id}`, { items });
 
 export const checkout1 = (packageName, items) =>
 	API.post(`/payments/create-checkout-session-packages/${packageName}`, { items });
-//payment sprint3
+
+export const checkoutWithWallet = (packageId) =>
+	API.get(`/patient/pay_package_with_wallet/${packageId}`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+);
+
 export const checkout2 = (id, items) =>
 API.post(`/payments/create-checkout-session-daaaaaaa/${id}`, { items });
 

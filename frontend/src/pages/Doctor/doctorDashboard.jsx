@@ -177,10 +177,10 @@ export default function DoctorDashboard() {
 
 	return (
 		<ThemeProvider theme={defaultTheme}>
-			{/* <DoctorHeader /> */}
+			<DoctorHeader onError={setError} />
 			<Box sx={{ display: "flex" }}>
 				<CssBaseline />
-				<AppBar position='absolute' open={open}>
+				{/* <AppBar position='absolute' open={open}>
 					<Toolbar
 						sx={{
 							pr: "24px", // keep right padding when drawer closed
@@ -253,7 +253,7 @@ export default function DoctorDashboard() {
 							</Badge>
 						</IconButton> */}
 
-						<Notifications type="doctor" onError={setError} />
+						{/* <Notifications type="doctor" onError={setError} /> */}
 
 						{/* <div>
 							<Typography
@@ -291,7 +291,7 @@ export default function DoctorDashboard() {
 									<DeleteForeverIcon />
 								</div>
 							</Popover>
-						</div> */}
+						</div> //}
 						<IconButton color='inherit'>
 							<LogoutIcon onClick={handleLogout} />
 						</IconButton>
@@ -315,7 +315,7 @@ export default function DoctorDashboard() {
 						{DoctorListItems}
 						<Divider sx={{ my: 1 }} />
 					</List>
-				</Drawer>
+				</Drawer> */}
 				<Box
 					component='main'
 					sx={{

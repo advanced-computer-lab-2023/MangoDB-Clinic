@@ -159,9 +159,23 @@ export default function LoginUser() {
 								</Button>
 								<Grid container>
 									<Grid item xs>
-										<Link href='/forgot-password' variant='body2'>
+										<Link href='/forgot-password' color='#2fc4b2'>
 											Forgot password?
 										</Link>
+									</Grid>
+
+									<Grid container justifyContent='space-between'>
+										<Grid item>
+											<Link href='/patientform' color='#2fc4b2'>
+												Register As Patient
+											</Link>
+										</Grid>
+
+										<Grid item>
+											<Link href='/doctorform' color='#2fc4b2'>
+												Register As Doctor
+											</Link>
+										</Grid>
 									</Grid>
 								</Grid>
 							</Box>
