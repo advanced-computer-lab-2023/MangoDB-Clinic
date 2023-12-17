@@ -1,6 +1,7 @@
 import React from "react";
 import { Paper, Typography, Grid, Button, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import PatientHeader from "../../components/GeneralComponents/patientHeader";
 
 
 // Import your icons
@@ -65,6 +66,8 @@ const Dashboard = () => {
   };
 
   return (
+	<div>
+		<PatientHeader />
     <Box
       sx={{
         display: "flex",
@@ -120,6 +123,8 @@ const Dashboard = () => {
         </Grid>
       </Paper>
     </Box>
+	</div>
+
   );
 };
 

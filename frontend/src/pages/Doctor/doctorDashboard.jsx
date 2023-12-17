@@ -1,7 +1,7 @@
 import React from "react";
 import { Paper, Typography, Grid, Button, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import DoctorHeader from "../components/GeneralComponents/doctorHeader";
+import DoctorHeader from "../../components/GeneralComponents/doctorHeader";
 
 
 
