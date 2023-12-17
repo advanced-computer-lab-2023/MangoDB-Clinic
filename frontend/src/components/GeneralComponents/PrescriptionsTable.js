@@ -6,6 +6,14 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import { visuallyHidden } from "@mui/utils";
 import { useState, useEffect } from "react";
 import jsPDF from "jspdf";
+import Slide from "@mui/material/Slide";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import TextField from "@mui/material/TextField";
 
 import {
 	ListItemButton,
@@ -101,8 +109,7 @@ const PrescriptionsTable = ({
 	userType,
 	onOpenDialog,
 	onOpenFreqDialog,
-	onOpenEditDialog
-
+	onOpenEditDialog,
 }) => {
 	const navigate = useNavigate();
 
@@ -117,6 +124,30 @@ const PrescriptionsTable = ({
 	const [orderBy, setOrderBy] = useState("date"); // Default sorting by date
 	const [page, setPage] = useState(0);
 	const [rowsPerPage, setRowsPerPage] = useState(5);
+	const [openAddMedicationDialog, setOpenAddMedicationDialog] = useState(false);
+	const [medicationName, setMedicationName] = useState("");
+	const [frequency, setFrequency] = useState("");
+	const [isSuccess, setIsSuccess] = React.useState(false);
+	const [state, setState] = React.useState({
+		open: false,
+		Transition: Slide,
+		message: "",
+	});
+
+	const Alert = React.forwardRef(function Alert(props, ref) {
+		return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
+	});
+
+	function SlideTransition(props) {
+		return <Slide {...props} direction='down' />;
+	}
+
+	const handleClose = () => {
+		setState({
+			...state,
+			open: false,
+		});
+	};
 
 	const handleRequestSort = (property) => {
 		const isAsc = orderBy === property && order === "asc";
@@ -189,6 +220,64 @@ const PrescriptionsTable = ({
 		prescriptionPDF.save(
 			`${prescription.patientId.firstName} ${prescription.patientId.lastName}'s Prescription From Dr. ${prescription.doctorId.lastName}.pdf`
 		);
+	};
+
+	const handleOpenAddMedicationDialog = () => {
+		setOpenAddMedicationDialog(true);
+	};
+
+	const handleCloseAddMedicationDialog = () => {
+		setOpenAddMedicationDialog(false);
+		setMedicationName("");
+		setFrequency("");
+		window.location.reload();
+	};
+
+	const handleAddMedication = async (prescriptionId) => {
+		try {
+			console.log(
+				"Prescription ID:",
+				medicationName,
+				frequency,
+				prescriptionId
+			);
+			const response = await axios.post(
+				`http://localhost:4000/doctor/addMedication/${prescriptionId}`,
+				{
+					medicationName: medicationName,
+					frequency: frequency,
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				}
+			);
+
+			if (response.status === 200) {
+				setIsSuccess(true);
+				setState({
+					open: true,
+					Transition: SlideTransition,
+					message: `${response.data.message}`,
+				});
+				setTimeout(() => {
+					setState({
+						...state,
+						open: false,
+					});
+					handleCloseAddMedicationDialog();
+				}, 1500);
+
+			}
+		} catch (error) {
+			setIsSuccess(false);
+			setState({
+				...state,
+				open: true,
+				message: "Error adding medication!",
+			});
+		}
 	};
 
 	useEffect(() => {
@@ -280,11 +369,44 @@ const PrescriptionsTable = ({
 										))}
 										{userType === "doctor" && (
 											<Tooltip title='Add Medication'>
-												<ListItemButton onClick={() => {}}>
+												<ListItemButton onClick={handleOpenAddMedicationDialog}>
 													<AddCircleOutlineIcon />
 												</ListItemButton>
 											</Tooltip>
 										)}
+										<Dialog
+											open={openAddMedicationDialog}
+											onClose={handleCloseAddMedicationDialog}
+										>
+											<DialogTitle>Add Medication</DialogTitle>
+											<DialogContent>
+												<TextField
+													label='Medication Name'
+													value={medicationName}
+													onChange={(e) => setMedicationName(e.target.value)}
+													fullWidth
+													margin='normal'
+												/>
+												<TextField
+													label='Frequency'
+													value={frequency}
+													onChange={(e) => setFrequency(e.target.value)}
+													fullWidth
+													margin='normal'
+												/>
+											</DialogContent>
+											<DialogActions>
+												<Button onClick={handleCloseAddMedicationDialog}>
+													Cancel
+												</Button>
+												<Button
+													onClick={() => handleAddMedication(prescription._id)}
+													variant='contained'
+												>
+													Add
+												</Button>
+											</DialogActions>
+										</Dialog>
 									</TableCell>
 									<TableCell align='center'>
 										{new Date(prescription.date).toLocaleDateString()}
@@ -296,7 +418,9 @@ const PrescriptionsTable = ({
 										{userType === "doctor" ? (
 											<Tooltip title='Edit Prescription'>
 												<Button
-													onClick={() => {onOpenEditDialog(prescription);}}
+													onClick={() => {
+														onOpenEditDialog(prescription);
+													}}
 													// component={RouterLink}
 													// to={`/prescriptiondetails/${prescription._id}`}
 													variant='outlined'
@@ -370,6 +494,31 @@ const PrescriptionsTable = ({
 					onRowsPerPageChange={handleChangeRowsPerPage}
 				/>
 			</TableContainer>
+			{isSuccess ? (
+				<Snackbar
+					open={state.open}
+					onClose={handleClose}
+					TransitionComponent={state.Transition}
+					key={state.Transition.name}
+					autoHideDuration={2000}
+				>
+					<Alert severity='success' sx={{ width: "100%" }}>
+						{state.message}
+					</Alert>
+				</Snackbar>
+			) : (
+				<Snackbar
+					open={state.open}
+					onClose={handleClose}
+					TransitionComponent={state.Transition}
+					key={state.Transition.name}
+					autoHideDuration={2000}
+				>
+					<Alert severity='error' sx={{ width: "100%" }}>
+						{state.message}
+					</Alert>
+				</Snackbar>
+			)}
 
 			<div
 				style={{
