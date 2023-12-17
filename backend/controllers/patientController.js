@@ -926,20 +926,20 @@ const subscribeToHealthPackage = async (req, res) => {
         cancellationDate: null,
       };
 
-			patient.healthPackage = healthPackageObject;
+		patient.healthPackage = healthPackageObject;
 
-			for (const familyMember of patient.family) {
-				if (familyMember.userId) {
-					const member = await Patient.findById(familyMember.userId);
-					if (member) {
-						member.healthPackage = healthPackageObject;
-						await member.save();
-					}
+		for (const familyMember of patient.family) {
+			if (familyMember.userId) {
+				const member = await Patient.findById(familyMember.userId);
+				if (member) {
+					member.healthPackage = healthPackageObject;
+					await member.save();
 				}
 			}
+		}
 
-			// Save updates
-			await patient.save();
+		// Save updates
+		await patient.save();
 
       res.status(200).json({ message: "Successfully subscribed to health package" });
     }
@@ -949,48 +949,66 @@ const subscribeToHealthPackage = async (req, res) => {
 };
 
 const payHealthPackageWithWallet = async (req, res) => {
-	const packageId = req.params.packageId;
+    const packageName = req.params.packageId;
 
-	try {
-		const patient = req.user;
+    try {
+        const patient = req.user;
 
-		if (patient) {
-			if (patient.healthPackage.status === "Subscribed") {
-				return res.status(404).json({
-					error: "You are already subscribed to a health package. Cancel your subscription first",
-				});
-			}
+        if (patient) {
+            if (patient.healthPackage.status === "Subscribed") {
+                return res.status(403).json({
+                    error: "You are already subscribed to a health package. Cancel your subscription first",
+                });
+            }
 
-			const subscribedPackage = await Packages.findById(packageId);
+            const subscribedPackage = await Packages.findOne({ name: packageName + " Package" });
 
-			const healthPackageObject = {
-				packageId: subscribedPackage._id,
-				status: "Subscribed",
-				renewalDate: new Date(),
-				cancellationDate: null,
-			};
+            if (!subscribedPackage) {
+                return res.status(404).json({
+                    error: "Health package not found",
+                });
+            }
 
-			patient.healthPackage = healthPackageObject;
+            const wallet = await Wallet.findById(patient.wallet);
 
-			for (const familyMember of patient.family) {
-				if (familyMember.userId) {
-					const member = await Patient.findById(familyMember.userId);
-					if (member) {
-						member.healthPackage = healthPackageObject;
-						await member.save();
-					}
-				}
-			}
+            if (wallet.balance < subscribedPackage.price) {
+                return res.status(403).json({
+                    error: "You don't have enough money in your wallet to subscribe to this package",
+                });
+            }
 
-			// Save updates
-			await patient.save();
+            const renewal = new Date();
+            renewal.setFullYear(renewal.getFullYear() + 1);
 
-			res.status(200).json({ message: "Successfully subscribed to health package" });
-		}
-	} catch (err) {
-		res.status(400).json({ error: err.message });
-	}
+            const healthPackageObject = {
+                packageId: subscribedPackage._id,
+                status: "Subscribed",
+                renewalDate: renewal,
+                cancellationDate: null,
+            };
+
+            patient.healthPackage = healthPackageObject;
+
+            for (const familyMember of patient.family) {
+                if (familyMember.userId) {
+                    const member = await Patient.findById(familyMember.userId);
+                    if (member) {
+                        member.healthPackage = healthPackageObject;
+                        await member.save();
+                    }
+                }
+            }
+
+            // Save updates
+            await patient.save();
+
+            res.status(200).json({ message: "Successfully subscribed to health package" });
+        }
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 }
+
 
 const downloadPrescription = asyncHandler(async (req, res) => {
 	const patient = req.user;
@@ -2073,6 +2091,7 @@ module.exports = {
 	viewHealthRecords,
 	viewHealthPackages,
 	viewSubscribedhealthPackage,
+	payHealthPackageWithWallet,
 	cancelHealthPackage,
 	viewWallet,
 	addDocuments,

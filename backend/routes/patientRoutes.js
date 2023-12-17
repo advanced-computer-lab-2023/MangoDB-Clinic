@@ -53,7 +53,8 @@ const {
 	clearNotifs,
 	createVideoChat,
 	checkHealthPackageSubscription,
-	seenNotifs
+	seenNotifs,
+	payHealthPackageWithWallet
 } = require("../controllers/patientController");
 
 router.get("/myInfo", protectPatient, getMyInfo);
@@ -126,6 +127,8 @@ router.get(
 );
 
 router.get("/check_health_package_subscription", protectPatient, checkHealthPackageSubscription);
+
+router.get("/pay_package_with_wallet/:packageId", protectPatient, payHealthPackageWithWallet);
 
 router.put("/cancel_health_package", protectPatient, cancelHealthPackage);
 
