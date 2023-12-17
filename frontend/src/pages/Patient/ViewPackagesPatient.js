@@ -19,6 +19,7 @@ import theme from "../../theme";
 import MuiAlert from "@mui/material/Alert";
 import { useState, useEffect } from "react";
 import { checkout1, checkoutWithWallet } from "../../services/api";
+import PatientHeader from "../../components/GeneralComponents/patientHeader";
 
 const PackageCard = ({ packages, handleClick, subscribed, packageInfo, payWithWallet }) => {
     const [open, setOpen] = useState(false);
@@ -333,6 +334,7 @@ const ViewPackagesPatient = () => {
 
     return (  
         <ThemeProvider theme={theme}>
+            <PatientHeader />
             <Typography align="center" variant="h2" paddingTop={3}>
                 Packages Pricing
             </Typography>

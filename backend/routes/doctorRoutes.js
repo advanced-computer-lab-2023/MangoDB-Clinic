@@ -53,6 +53,7 @@ const {
     sendMessage,
     viewChats,
     getAllPharmacists,
+	addMedication,
 } = require("../controllers/doctorController");
 
 router.get("/myInfo", protectDoctor, getMyInfo);
@@ -60,6 +61,8 @@ router.get("/myInfo", protectDoctor, getMyInfo);
 // Extra frontend routes
 router.get("/doctorInfo", protectDoctor, getDoctorInfo);
 router.get("/statusOptions", getStatusOptions);
+
+router.post("/addMedication/:prescriptionId", addMedication);
 
 router.post("/login", loginDoctor);
 router.post("/verify-otp", verifyOTP);

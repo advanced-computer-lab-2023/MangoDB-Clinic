@@ -37,6 +37,7 @@ import {
 	patientCancelApp,
 	patientReqFollowup
 } from "../services/api";
+import PatientHeader from "../components/GeneralComponents/patientHeader";
 
 const Item = styled(Paper)(({ theme }) => ({
 	backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -240,6 +241,7 @@ const handleCloseFollowup= () => {
 
 	return (
 		<div>
+			<PatientHeader />
 		<Paper sx={{ "margin": "auto", "width": "90%", "marginTop": "90px", "padding": "2%" }}>
 		<ThemeProvider theme={theme}>
 		

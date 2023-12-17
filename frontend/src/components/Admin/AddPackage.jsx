@@ -19,6 +19,7 @@ import MuiAlert from "@mui/material/Alert";
 
 import Spinner from "../GeneralComponents/Spinner";
 import theme from "../../theme";
+import AdminHeader from "../GeneralComponents/adminHeader";
 
 function Copyright(props) {
 	return (
@@ -127,6 +128,7 @@ export default function AddPackage() {
 	};
 	return (
 		<ThemeProvider theme={defaultTheme}>
+			<AdminHeader />
 			<Container component='main' maxWidth='xs'>
 				<CssBaseline />
 				{isLoading ? (
@@ -145,7 +147,7 @@ export default function AddPackage() {
 								<AddIcon />
 							</Avatar>
 							<Typography component='h1' variant='h5'>
-								Sign up
+								Add Package
 							</Typography>
 							<Box
 								component='form'

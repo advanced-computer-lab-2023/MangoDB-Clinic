@@ -414,7 +414,7 @@ const DoctorApps = () => {
 					)}
 					{/* {error && <div>{error}</div>} */}
 					{error && (
-						<Snackbar open={open}>
+						<Snackbar>
 							<Alert severity="error" sx={{ width: '100%' }}>
 								{ error }
 							</Alert>
@@ -597,6 +597,19 @@ const DoctorApps = () => {
 								>
 									Cancel
 								</TableCell>
+
+								<TableCell
+									sx={{ fontWeight: "bold"  }}
+								>
+									Accept Follow Up
+								</TableCell>
+
+								<TableCell
+									sx={{ fontWeight: "bold"  }}
+								>
+									Revoke Follow Up
+								</TableCell>
+								
 							</TableHead>
 							{ appointments.map((appointment) => (
 								<>

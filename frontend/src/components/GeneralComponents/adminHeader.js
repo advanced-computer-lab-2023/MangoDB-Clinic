@@ -57,6 +57,10 @@ const AdminHeader = () => {
 		navigate("/admin/login");
 	};
 
+  const handleRedirect = (path) => {
+    navigate(path);
+  }
+
   const list = () => (
     <Box
       sx={{
@@ -102,7 +106,7 @@ const AdminHeader = () => {
       </Box>
 
       <List sx={{ p: 0 }}>
-        <ListItem button sx={{ pt: 0, pb: 1 }}>
+        <ListItem button sx={{ pt: 0, pb: 1 }} onClick={ () => handleRedirect('/admin') }>
           <ListItemIcon>
             <img
               src={DashboardIcon}
@@ -146,7 +150,7 @@ const AdminHeader = () => {
             sx={{ padding: "0 16px", alignItems: "center", border: 0 }}
           >
             <List sx={{ padding: "0px" }}>
-              <ListItem button sx={{ padding: "0px 16px" }}>
+              <ListItem button sx={{ padding: "0px 16px" }} onClick={ () => handleRedirect('/admin/add-admin') }>
                 <ListItemIcon>
                   <img
                     src={AddIcon}
@@ -156,7 +160,7 @@ const AdminHeader = () => {
                 </ListItemIcon>
                 <ListItemText primary="Add Admin" />
               </ListItem>
-              <ListItem button sx={{ pb: 1 }}>
+              <ListItem button sx={{ pb: 1 }} onClick={ () => handleRedirect('/admin/user-management') }>
                 <ListItemIcon>
                   <img
                     src={RemoveIcon}
@@ -166,7 +170,7 @@ const AdminHeader = () => {
                 </ListItemIcon>
                 <ListItemText primary="Remove User" />
               </ListItem>
-              <ListItem button sx={{ pb: 1 }}>
+              {/* <ListItem button sx={{ pb: 1 }}>
                 <ListItemIcon>
                   <img
                     src={UserInfoIcon}
@@ -175,7 +179,7 @@ const AdminHeader = () => {
                   />
                 </ListItemIcon>
                 <ListItemText sx={{ mb: 0 }} primary="Users Info" />
-              </ListItem>
+              </ListItem> */}
             </List>
           </AccordionDetails>
         </Accordion>
@@ -211,7 +215,7 @@ const AdminHeader = () => {
         </AccordionSummary>
         <AccordionDetails sx={{ padding: "0 16px 0px" }}>
           <List sx={{ padding: "0px" }}>
-            <ListItem button sx={{ pb: 1 }}>
+            <ListItem button sx={{ pb: 1 }} onClick={ () => handleRedirect('/admin/requested-doctors') }>
               <ListItemIcon>
                 <img
                   src={DoctorRegistrationIcon}
@@ -221,7 +225,7 @@ const AdminHeader = () => {
               </ListItemIcon>
               <ListItemText primary="Doctor Registration" />
             </ListItem>
-            <ListItem button sx={{ pb: 0 }}>
+            {/* <ListItem button sx={{ pb: 0 }}>
               <ListItemIcon>
                 <img
                   src={PatientRegistrationIcon}
@@ -230,7 +234,7 @@ const AdminHeader = () => {
                 />
               </ListItemIcon>
               <ListItemText primary="Patient Registration" />
-            </ListItem>
+            </ListItem> */}
           </List>
         </AccordionDetails>
       </Accordion>
@@ -265,7 +269,7 @@ const AdminHeader = () => {
         </AccordionSummary>
         <AccordionDetails sx={{ padding: "0 16px 0px" }}>
           <List sx={{ padding: "0px" }}>
-            <ListItem button sx={{ pb: 1 }}>
+            <ListItem button sx={{ pb: 1 }} onClick={ () => handleRedirect('/admin/add-health-pack') }>
               <ListItemIcon>
                 <img
                   src={AddIcon}
@@ -275,7 +279,7 @@ const AdminHeader = () => {
               </ListItemIcon>
               <ListItemText primary="Add" />
             </ListItem>
-            <ListItem button sx={{ pb: 1 }}>
+            {/* <ListItem button sx={{ pb: 1 }}>
               <ListItemIcon>
                 <img
                   src={RemoveIcon}
@@ -284,8 +288,8 @@ const AdminHeader = () => {
                 />
               </ListItemIcon>
               <ListItemText primary="Delete" />
-            </ListItem>
-            <ListItem button sx={{ pb: 0 }}>
+            </ListItem> */}
+            <ListItem button sx={{ pb: 0 }} onClick={ () => handleRedirect('/admin/health-packs') }>
               <ListItemIcon>
                 <img
                   src={EditIcon}
@@ -293,13 +297,13 @@ const AdminHeader = () => {
                   style={{ width: 30, height: 30 }}
                 />
               </ListItemIcon>
-              <ListItemText primary="Update" />
+              <ListItemText primary="View Health Packages" />
             </ListItem>
           </List>
         </AccordionDetails>
       </Accordion>
 
-      <ListItem button sx={{ pb: 0 }}>
+      <ListItem button sx={{ pb: 0 }} onClick={ () => handleRedirect('/admin/change-password') }>
         <ListItemIcon>
           <img
             src={SettingsIcon}
@@ -307,7 +311,7 @@ const AdminHeader = () => {
             style={{ width: 30, height: 30 }}
           />
         </ListItemIcon>
-        <ListItemText primary="Settings" />
+        <ListItemText primary="Change Password" />
       </ListItem>
 
       <Box
@@ -425,7 +429,7 @@ const AdminHeader = () => {
         <List sx={{ mt: 12 }}>
           {" "}
           {/* Add a top margin to the List */}
-          <ListItem button>
+          {/* <ListItem button>
             <ListItemIcon>
               <img
                 src={ProfileIcon}
@@ -434,7 +438,7 @@ const AdminHeader = () => {
               />
             </ListItemIcon>
             <ListItemText primary="My Profile" />
-          </ListItem>
+          </ListItem> */}
           <ListItem button sx={{ mb: 0 }} onClick={handleLogout}>
             {" "}
             {/* Remove the bottom margin from the last ListItem */}

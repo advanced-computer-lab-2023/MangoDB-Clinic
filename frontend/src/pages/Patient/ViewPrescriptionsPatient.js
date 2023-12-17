@@ -19,6 +19,7 @@ import {
 // import FilterListIcon from "../../../public/icons/filter.svg";
 import theme from "../../theme";
 import PrescriptionsTable from "../../components/GeneralComponents/PrescriptionsTable";
+import PatientHeader from "../../components/GeneralComponents/patientHeader";
 
 const ViewPrescriptionsPatient = () => {
 
@@ -143,6 +144,7 @@ const ViewPrescriptionsPatient = () => {
 
 	return (
 		<ThemeProvider theme={theme}>
+			<PatientHeader />
 			<Grid container justifyContent='center' style={{ padding: "7rem" }}>
 				<Grid item xs={12}>
 					<Paper elevation={3} style={{ padding: "2rem" }}>

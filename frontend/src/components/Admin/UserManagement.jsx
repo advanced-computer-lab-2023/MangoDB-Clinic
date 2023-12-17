@@ -22,6 +22,7 @@ import Button from "@mui/material/Button";
 
 import { mainListItems } from "./listItems";
 import theme from "../../theme";
+import AdminHeader from "../GeneralComponents/adminHeader";
 
 function Copyright(props) {
 	return (
@@ -143,12 +144,13 @@ export default function UserManagement() {
 
 	return (
 		<ThemeProvider theme={defaultTheme}>
+			<AdminHeader />
 			<GlobalStyles
 				styles={{ ul: { margin: 0, padding: 0, listStyle: "none" } }}
 			/>
 			<Box sx={{ display: "flex" }}>
 				<CssBaseline />
-				<AppBar position='absolute' open={open}>
+				{/* <AppBar position='absolute' open={open}>
 					<Toolbar
 						sx={{
 							pr: "24px", // keep right padding when drawer closed
@@ -196,7 +198,7 @@ export default function UserManagement() {
 					</Toolbar>
 					<Divider />
 					<List component='nav'>{mainListItems}</List>
-				</Drawer>
+				</Drawer> */}
 
 				<Main open={open}>
 					<Container

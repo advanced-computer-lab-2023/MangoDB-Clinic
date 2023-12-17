@@ -18,6 +18,7 @@ import MuiAlert from "@mui/material/Alert";
 
 import Spinner from "../GeneralComponents/Spinner.jsx";
 import theme from "../../theme";
+import AdminHeader from "../GeneralComponents/adminHeader.js";
 
 const defaultTheme = theme;
 
@@ -99,6 +100,7 @@ export default function AddAdmin() {
 
 	return (
 		<ThemeProvider theme={defaultTheme}>
+			<AdminHeader />
 			<Container component='main' maxWidth='xs'>
 				<CssBaseline />
 				{isLoading ? (

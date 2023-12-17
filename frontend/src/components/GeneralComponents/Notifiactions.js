@@ -86,7 +86,10 @@ const Notifications = ({ type, onError }) => {
 
     return (
         <IconButton color='inherit' sx={{ marginRight: "20px" }}>
-			<Badge badgeContent={notificationsCount} color='secondary'>
+			<Badge
+                badgeContent={notificationsCount} 
+                color='error'
+            >
 			    {/* <NotificationsIcon onClick={handleClick} sx={{ fill: "white" }} /> */}
                 <img src={notificationsIcon} style={{ maxWidth: "30px" }} onClick={handleClick} />
                 <Popover
