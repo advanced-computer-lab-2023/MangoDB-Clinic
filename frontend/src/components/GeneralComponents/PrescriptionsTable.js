@@ -39,6 +39,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { alpha } from "@mui/system";
 import theme from "../../theme";
 import axios from "axios";
+import Spinner from "../GeneralComponents/Spinner";
 
 function descendingComparator(a, b, orderBy) {
 	if (b[orderBy] < a[orderBy]) {
@@ -128,6 +129,7 @@ const PrescriptionsTable = ({
 	const [medicationName, setMedicationName] = useState("");
 	const [frequency, setFrequency] = useState("");
 	const [isSuccess, setIsSuccess] = React.useState(false);
+	const [isLoading, setIsLoading] = React.useState(false);
 	const [state, setState] = React.useState({
 		open: false,
 		Transition: Slide,
@@ -235,6 +237,7 @@ const PrescriptionsTable = ({
 
 	const handleAddMedication = async (prescriptionId) => {
 		try {
+			setIsLoading(true);
 			console.log(
 				"Prescription ID:",
 				medicationName,
@@ -268,15 +271,17 @@ const PrescriptionsTable = ({
 					});
 					handleCloseAddMedicationDialog();
 				}, 1500);
-
+				
 			}
 		} catch (error) {
 			setIsSuccess(false);
 			setState({
 				...state,
 				open: true,
-				message: "Error adding medication!",
+				message: error.response.data.message,
 			});
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -396,7 +401,10 @@ const PrescriptionsTable = ({
 												/>
 											</DialogContent>
 											<DialogActions>
-												<Button onClick={handleCloseAddMedicationDialog}>
+												<Button
+													variant='outlined'
+													onClick={handleCloseAddMedicationDialog}
+												>
 													Cancel
 												</Button>
 												<Button
@@ -494,6 +502,7 @@ const PrescriptionsTable = ({
 					onRowsPerPageChange={handleChangeRowsPerPage}
 				/>
 			</TableContainer>
+			{isLoading && <Spinner />}
 			{isSuccess ? (
 				<Snackbar
 					open={state.open}

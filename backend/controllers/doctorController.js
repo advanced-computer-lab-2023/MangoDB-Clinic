@@ -524,7 +524,7 @@ const createVideoChat = asyncHandler(async (req, res) => {
 // @route POST /doctor/addMedication/:prescriptionId
 // @access Private
 const addMedication = asyncHandler(async (req, res) => {
-	const { medicationName, frequency } = req.body;
+	let { medicationName, frequency } = req.body;
 	const prescription = await Prescription.findById(req.params.prescriptionId);
 
 	if (!medicationName || !frequency) {
@@ -533,18 +533,36 @@ const addMedication = asyncHandler(async (req, res) => {
 	}
 
 	try {
-		const medication = {
-			medicationName,
-			frequency,
-		};
+		const response = await axios.get("http://localhost:8000/Patient/viewMed");
+		const allMeds = response.data;
+		console.log("RESPONSE ==> ", allMeds);
 
-		prescription.medications.push(medication);
-		await prescription.save();
+		let medFound = false;
+		allMeds.forEach(async (med) => {
+			med.name = med.name.replace(/\s/g, "").toLowerCase();
+			medicationName = medicationName.replace(/\s/g, "").toLowerCase();
 
-		res.status(200).json({ message: "Medication Added Successfully" });
+			if (med.name === medicationName) {
+				const medication = {
+					medicationName,
+					frequency,
+				};
+				medFound = true;
+				prescription.medications.push(medication);
+				await prescription.save();
+				return;
+			}
+		});
+
+		if (!medFound) {
+			res.status(400);
+			throw new Error("Medication Unavailable In Pharmacy");
+		} else {
+			res.status(200).json({ message: "Medication Added Successfully" });
+		}
 	} catch (error) {
 		res.status(500);
-		throw new Error("Error Adding Medication");
+		throw new Error(error.message);
 	}
 });
 
