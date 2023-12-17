@@ -17,8 +17,9 @@ export const addPatient = (patient) =>
 	API.post("/patientRegistration", patient);
 
 export const uploadHealthRecord = (id, files) =>
-	API.put(`/patient/add_documents/${id}`, files, {
-		headers: { "Content-Type": "multipart/form-data" },
+	API.put(`/patient/add_documents`, files, {
+		headers: { "Content-Type": "multipart/form-data" ,
+		Authorization: `Bearer ${localStorage.getItem("token")}` }
 	});
 
 export const getDoctor = () => API.get(`/doctor/doctorInfo`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });

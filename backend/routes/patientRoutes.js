@@ -137,9 +137,8 @@ router.get("/downloadPrescription/", protectPatient, downloadPrescription);
 router.get("/view_wallet", protectPatient, viewWallet);
 
 router.put(
-	"/add_documents/:id",
-
-	upload.array("document"),
+	"/add_documents",
+	upload.array("document"), protectPatient,
 	addDocuments
 );
 

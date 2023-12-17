@@ -1077,7 +1077,7 @@ const viewWallet = async (req, res) => {
 };
 
 const addDocuments = async (req, res) => {
-	const id = req.params.id;
+	const id = req.user.id;
 	try {
 		const patient = await Patient.findById(id);
 

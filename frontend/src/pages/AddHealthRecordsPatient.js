@@ -2,34 +2,18 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import { Button, FormControl, Grid, Paper, Input } from "@mui/material";
+
+import { Button, FormControl, Grid, Paper, Input, FormHelperText } from "@mui/material";
 
 import { uploadHealthRecord } from "../services/api";
 
-const AddHealthRecordsPatient = async () => {
+const AddHealthRecordsPatient = () => {
 	const [documents, setDocuments] = useState();
 	const [isPending, setIsPending] = useState(false);
 	const navigate = useNavigate();
 
-	// const id = '65394ff997fe2d0027faca14'
+	const uploadIcon = `${process.env.PUBLIC_URL}/icons/upload.svg`;
 
-	const getID = async () => {
-		try {
-			const response = await axios.post(
-				"http://localhost:4000/Patient/myInfo",
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`,
-					},
-				}
-			);
-
-			if (response.status === 200) {
-				return response.data._id;
-			}
-		} catch (error) {}
-	};
-	const id = await getID();
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -43,7 +27,7 @@ const AddHealthRecordsPatient = async () => {
 
 		setIsPending(true);
 
-		uploadHealthRecord(id, formData)
+		uploadHealthRecord(formData)
 			.then(() => {
 				setIsPending(false);
 				navigate("/patientdashboard");
@@ -57,7 +41,7 @@ const AddHealthRecordsPatient = async () => {
 	};
 
 	const handleViewHealthRecords = () => {
-		navigate(`/viewhealthrecpat/${id}`); // Adjust the route path as needed
+		navigate(`/viewhealthrecpat}`); // Adjust the route path as needed
 	};
 
 	return (
@@ -68,16 +52,44 @@ const AddHealthRecordsPatient = async () => {
 						<h2>Upload Documents</h2>
 						<form onSubmit={handleSubmit}>
 							<Grid container spacing={2}>
+
+
+
+
 								<Grid item xs={6}>
-									<FormControl fullWidth>
-										<Input
-											type='file'
-											onChange={(e) => setDocuments(Array.from(e.target.files))}
-											style={{ marginBottom: "5rem" }}
-											inputProps={{ multiple: true }}
+								<Button
+									variant="contained"
+									color="secondary"
+									component="label"
+									startIcon={
+										<img
+											src={uploadIcon}
+											alt="Upload Icon"
+											style={{ filter: "invert(1)" }}
+											width="20"
+											height="20"
 										/>
-									</FormControl>
-								</Grid>
+									}
+									onClick={() => document.getElementById("fileInput").click()}
+									fullWidth // This makes the button take up the full width of the Grid item
+								>
+									Upload
+								</Button>
+								<Input
+									id="fileInput"
+									type="file"
+									name="picture"
+									onChange={(e) => setDocuments(Array.from(e.target.files))}
+									style={{ display: "none" }}
+								/>
+								<FormHelperText>
+									Upload PDFs, JPGs or PNGs
+								</FormHelperText>
+							</Grid>
+
+
+
+
 							</Grid>
 
 							{!isPending ? (
