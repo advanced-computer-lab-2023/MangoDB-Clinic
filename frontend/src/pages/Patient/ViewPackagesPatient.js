@@ -297,28 +297,32 @@ const ViewPackagesPatient = () => {
 	};
 
     const payWithWallet = async (e) => {
-        try {
-            const packageId = e.currentTarget.getAttribute("name").split(" ")[0];
+        const confirmed = window.confirm("Are you sure you want to subscribe?");
+        if (confirmed) {
+    
+            try {
+                const packageId = e.currentTarget.getAttribute("name").split(" ")[0];
 
-            const response = await checkoutWithWallet(packageId);
+                const response = await checkoutWithWallet(packageId);
 
-            if (response.status === 200) {
-                setOpenSuccessWalletPayment(true);
-                console.log("Package was paid for successfully");
+                if (response.status === 200) {
+                    setOpenSuccessWalletPayment(true);
+                    console.log("Package was paid for successfully");
 
-            } else {
-                console.error("Error during checkout:", response.data.error);
+                } else {
+                    console.error("Error during checkout:", response.data.error);
+                    setOpenError(true);
+                    console.log("Error Message:", response.data.error);
+                    setOpenErrorMessage(response.data.error || "An unexpected error occurred.");
+
+                }
+            } catch (error) {
+
+                console.error("Error during checkout:", error);
                 setOpenError(true);
-                console.log("Error Message:", response.data.error);
-                setOpenErrorMessage(response.data.error || "An unexpected error occurred.");
+                setOpenErrorMessage("An unexpected error occurred.");
 
             }
-        } catch (error) {
-
-            console.error("Error during checkout:", error);
-            setOpenError(true);
-            setOpenErrorMessage("An unexpected error occurred.");
-
         }
     };
 
@@ -481,7 +485,7 @@ const ViewPackagesPatient = () => {
                     elevation={6}
                     variant="filled"
                 >
-                    {openErrorMessage}
+                    insuffecient balance, please recharge your wallet.
                 </MuiAlert>
             </Snackbar>
         </ThemeProvider>
