@@ -37,7 +37,7 @@
         </li> 
         <li><a href="#screenshots">Screenshots</a></li>
         <li><a href="#built-with">Built With</a></li>
-        <li><a href="build-status">Build Status</a></li>
+        <li><a href="#build-status">Build Status</a></li>
       </ul>
     </li>
     <li>
@@ -186,6 +186,16 @@ MangoDB Virtual Clinic is a comprehensive virtual healthcare platform that bridg
 
 ### Build Status 
 
+<ul>
+   <li>The project is currently in development.</li>
+   <li>Unit Tests needs to be implemented.</li>
+   <li>Some input fields are case senstive.</li>
+   <li>Cookies may be implemented for smoother operations.</li>
+   <li>Files sizes too large due to redundant code and could be more organized.</li>
+   <li>The use of comments may be increased to aid in future maintenance.</li>
+   <li>Ui could be improved.</li>
+   <li>There may bugs that isn't found yet.</li>
+<ul>
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -341,10 +351,23 @@ Enter the token you got from the login in bearer auth in postman
 </details>
 
 <details>
-<summary><strong>Login test:</strong></summary>
+<summary><strong>Get Family Members test:</strong></summary>
 
-You should register first a doctor or a patient to test the Login
-![loginPostman](readme_images/loginPostman.png)
+![getFamilyMembers](readme_images/getFamilyPostman.JPG)
+
+</details>
+
+<details>
+<summary><strong>Add Family Members test:</strong></summary>
+
+![addFamilyMembers](readme_images/addFamilyPostman.JPG)
+
+</details>
+
+<details>
+<summary><strong>Filter Doctors test:</strong></summary>
+
+![filterDoctors](readme_images/filterDoctorPostman.JPG)
 
 </details>
 
@@ -606,8 +629,201 @@ You should register first a doctor or a patient to test the Login
     </ul>
 </details>
 
+## Code Examples:
+
 <details>
-<summary><strong>Code Examples 🧑‍💻: </strong></summary>
+<summary><strong>Get Prescriptions of patient</strong></summary>
+
+```javascript
+
+const getAllPrescriptionsOfPatient = async (req, res) => {
+	const patientId = req.user._id;
+
+	if (!mongoose.Types.ObjectId.isValid(patientId)) {
+		return res.status(404).json({ error: "Id Not Found" });
+	}
+
+	try {
+		const patient = await Patient.findById(patientId);
+
+		if (!patient) {
+			return res.status(404).json({ error: "Patient Not Found" });
+		}
+
+		const prescriptions = await Prescription.find({
+			patientId: patientId,
+		})
+			.populate("doctorId")
+			.populate("patientId");
+		console.log(prescriptions);
+		res.status(200).json(prescriptions);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
+```
+
+</details>
+
+<details>
+<summary><strong>Create Video Chat</strong></summary>
+
+```javascript
+
+// @desc Create a new video chat with selected doctor
+// @route POST /patient/createVideoChat/:doctorId
+// @access Private
+const createVideoChat = asyncHandler(async (req, res) => {
+	const patient = req.user;
+	const doctor = await Doctor.findById(req.params.doctorId);
+
+	if (!doctor) {
+		res.status(400);
+		throw new Error("Doctor Not Found");
+	}
+
+	fetch("https://api.daily.co/v1/rooms", {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization:
+				"Bearer 8f336eeba4331019a6bab843ab49c57d657a2a3f80fdc0bda2c8afe600a9b3e9",
+		},
+		body: JSON.stringify({
+			name: `Meeting-${generateRandomId(10)}`,
+			properties: {
+				enable_screenshare: true,
+				enable_chat: true,
+				enable_knocking: true,
+				start_video_off: true,
+				start_audio_off: false,
+				lang: "en",
+			},
+		}),
+	})
+		.then((res) => res.json())
+		.then((json) => {
+			console.log("json: ", json);
+			const roomUrl = json.url;
+
+			// Send email to doctor
+			const transporter = nodemailer.createTransport({
+				service: "Gmail",
+				auth: {
+					user: "omarelzaher93@gmail.com",
+					pass: "vtzilhuubkdtphww",
+				},
+			});
+
+			const mailOptions = {
+				from: "omarelzaher93@gmail.com",
+				to: doctor.email,
+				subject: `Video Chat Request From ${patient.firstName} ${patient.lastName}`,
+				text: `Hello Dr. ${doctor.lastName},\n\nYou have a video chat scheduled with ${patient.firstName} ${patient.lastName}.\n\nPlease join the video chat using the following URL: ${roomUrl}\n\nBest regards,\nYour Clinic`,
+			};
+
+			transporter.sendMail(mailOptions, (error, info) => {
+				if (error) {
+					console.log("Error sending email:", error);
+				} else {
+					res.status(200).json({
+						message: "Video chat created successfully.",
+						url: roomUrl,
+					});
+					console.log("Email sent:", info.response);
+				}
+			});
+
+			return json;
+		})
+		.catch((err) => console.log("error: ", err));
+});
+
+```
+
+</details>
+
+<details>
+<summary><strong>Add Prescriptions By Doctor</strong></summary>
+
+```javascript
+
+const addPrescription = async (req, res) => {
+	const doctorId = req.user.id;
+	const { patientName, date, medications } = req.body;
+
+	if (!patientName || !date) {
+		return res
+			.status(400)
+			.json({ message: "Please enter patient name and date." });
+	}
+	try {
+		const patient = await Patient.findOne({ username: patientName });
+		if (!patient) {
+			return res.status(400).json({ message: "Patient not found." });
+		}
+		const prescription = await Prescription.create({
+			patientId: patient._id,
+			doctorId: doctorId,
+			medications: medications,
+			date: date,
+		});
+		const updatedPrescription = await prescription.populate("patientId");
+		console.log(updatedPrescription);
+		res.status(201).json(updatedPrescription);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: "Error adding prescription." });
+	}
+};
+
+```
+
+</details>
+
+<details>
+<summary><strong>View Employment Contract By Doctor</strong></summary>
+
+```javascript
+
+const viewEmploymentContract = async (req, res) => {
+	try {
+		const doctorId = req.user._id;
+
+		const doctor = await Doctor.findById(doctorId);
+
+		if (!doctor) {
+			return res.status(404).json({ error: "Doctor not found" });
+		}
+
+		if (!doctor.employmentContract || !doctor.employmentContract.file) {
+			return res.status(404).json({ error: "Employment contract not found" });
+		}
+
+		// Construct the file path to the employment contract
+		const filePath = path.join(
+			__dirname,
+			"../uploads/employment_contracts",
+			doctor.employmentContract.file
+		);
+
+		// Check if the file exists
+		if (fs.existsSync(filePath)) {
+			// Return the file as a response
+			res.download(filePath);
+		} else {
+			res.status(404).json({ error: "Employment contract file not found" });
+		}
+	} catch (error) {
+		console.error("Error viewing employment contract:", error);
+		res.status(500).json({ error: "An error occurred" });
+	}
+};
+
+```
 
 </details>
 

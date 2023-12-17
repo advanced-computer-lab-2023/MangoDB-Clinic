@@ -138,7 +138,7 @@ function App() {
 					<Route path='/viewappointments' element={<ViewAppointments />} />
 					<Route path='/doctorAppointments' element={<DoctorApps />} />
 
-					<Route path='/viewprofile' element={<ProfilePage />} />
+					<Route path='/viewprofile' element={<ViewProfile />} />
 
 					<Route
 						path='/employmentcontract'

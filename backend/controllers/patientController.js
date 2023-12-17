@@ -683,6 +683,7 @@ const filterStatus = async (req, res) => {
 			}
 		}
 	});
+	
 	console.log(filteredAppointments);
 	res.status(200).json(filteredAppointments);
 };
