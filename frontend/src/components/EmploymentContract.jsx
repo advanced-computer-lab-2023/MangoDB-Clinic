@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { ThemeProvider } from "@mui/material";
+import { Paper, ThemeProvider } from "@mui/material";
 import Slide, { SlideProps } from "@mui/material/Slide";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -62,6 +62,10 @@ export default function EmploymentContract() {
 		getDoctorInfo().then((data) => setDoctor(data));
 	}, []);
 
+	const handleReturn = async () => {
+		localStorage.removeItem("token");
+		navigate("/login");
+	}
 	const handleAccept = async () => {
 		try {
 			setIsLoading(true);
@@ -149,10 +153,14 @@ export default function EmploymentContract() {
 				<Spinner />
 			) : (
 				<>
-					<Typography variant='body1' gutterBottom>
+				
+					<Typography variant='h2' gutterBottom>
 						EMPLOYMENT AGREEMENT
 					</Typography>
-					<Typography>
+					<div style={{ display: 'flex', justifyContent: 'center' }}>
+					<Paper sx={{ width: '70%', margin: 'auto', marginBottom: 5 }}>
+	<Paper>
+					<Typography variant="p" > 
 						This Employment Agreement ("Agreement") is entered into on{" "}
 						{new Date().toDateString()} by and between EL7A2NY VIRTUAL CLINIC
 						("Employer"), and {doctor.firstName} {doctor.lastName}, a licensed
@@ -204,14 +212,23 @@ export default function EmploymentContract() {
 					<Typography>
 						IN WITNESS WHEREOF, the parties hereto have executed this Agreement
 						as of the date first above written.
+						<br></br>
 					</Typography>
+					</Paper>
+					</Paper>
+					</div>
 
-					<Button variant='contained' onClick={handleAccept}>
+<div style={{ display: 'flex', justifyContent: 'center' }} >
+					<Button variant='contained' onClick={handleAccept} sx={{ width: '20%', margin: 'auto' }}>
 						Accept
 					</Button>
-					<Button variant='outlined' onClick={handleReject}>
+					<Button variant='contained' onClick={handleReturn} sx={{ width: '20%', margin: 'auto' }}>
+						Return To Login
+					</Button>
+					<Button variant='outlined' onClick={handleReject} sx={{ width: '20%', margin: 'auto' }}>
 						Reject
 					</Button>
+					</div>
 					{isSuccess ? (
 						<Snackbar
 							open={state.open}
