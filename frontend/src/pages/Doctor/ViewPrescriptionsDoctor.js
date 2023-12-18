@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import React from "react";
 import {
 	Dialog,
 	Grid,
@@ -13,11 +14,15 @@ import {
 	Typography,
 	Button,
     ThemeProvider,
+    DialogTitle,
+    DialogActions,
+    Snackbar
 } from "@mui/material";
-
+import axios from "axios";
+import Slide from "@mui/material/Slide";
+import MuiAlert from "@mui/material/Alert";
 import PrescriptionsTable from "../../components/GeneralComponents/PrescriptionsTable";
 import theme from "../../theme";
-import DoctorHeader from "../../components/GeneralComponents/doctorHeader";
 
 const ViewPrescriptionsDoctor = () => {
 
@@ -35,6 +40,33 @@ const ViewPrescriptionsDoctor = () => {
     const [prescriptionToBeUpdated, setPrescriptionToBeUpdated] = useState("");
     const [medicationToBeUpdated, setMedicationToBeUpdated] = useState("");
     const [freqToBeUpdated, setFreqToBeUpdated] = useState("");
+
+    const [openAddMedicationDialog, setOpenAddMedicationDialog] = useState(false);
+    const [prescOfMedicationToBeAdded, setPrescOfMedicationToBeAdded] = useState("");
+    const [medicationToBeAdded, setMedicationToBeAdded] = useState("");
+    const [freqToBeAdded, setFreqToBeAdded] = useState("");
+
+    const [isSuccess, setIsSuccess] = React.useState(false);
+	const [state, setState] = React.useState({
+		open: false,
+		Transition: Slide,
+		message: "",
+	});
+
+	const Alert = React.forwardRef(function Alert(props, ref) {
+		return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
+	});
+
+	function SlideTransition(props) {
+		return <Slide {...props} direction='down' />;
+	}
+
+	const handleClose = () => {
+		setState({
+			...state,
+			open: false,
+		});
+	};
 
     useEffect(() => {
         const fetchData = async () => {
@@ -126,6 +158,59 @@ const ViewPrescriptionsDoctor = () => {
             setMedications(prescriptionToBeUpdated.medications);
         }
     }, [openEditDialog, prescriptionToBeUpdated]);
+
+
+    const handleAddMedication = async () => {
+        setOpenAddMedicationDialog(false);
+        setIsPending(true);
+        setError(null);
+
+		try {
+			console.log(
+				"Prescription ID:",
+				medicationToBeAdded,
+				freqToBeAdded,
+				prescOfMedicationToBeAdded
+			);
+			const response = await axios.post(
+				`http://localhost:4000/doctor/addMedication/${prescOfMedicationToBeAdded._id}`,
+				{
+					medicationName: medicationToBeAdded,
+					frequency: freqToBeAdded,
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				}
+			);
+
+			if (response.status === 200) {
+				setIsSuccess(true);
+				setState({
+					open: true,
+					Transition: SlideTransition,
+					message: `${response.data.message}`,
+				});
+				setTimeout(() => {
+					setState({
+						...state,
+						open: false,
+					});
+                    window.location.reload();
+					setOpenAddMedicationDialog(false);
+				}, 1500);
+
+			}
+		} catch (error) {
+			setIsSuccess(false);
+			setState({
+				...state,
+				open: true,
+				message: "Error adding medication!",
+			});
+		}
+	};
 
 
     const handleEditPrescription = async () => {
@@ -273,9 +358,14 @@ const ViewPrescriptionsDoctor = () => {
         setOpenFreqDialog(true);
     };
 
+    const handleOpenAddMedicationDialog = (prescription) => {
+        console.log("ya rab");
+        setPrescOfMedicationToBeAdded(prescription);
+		setOpenAddMedicationDialog(true);
+	};
+
     return ( 
         <ThemeProvider theme={theme}>
-            <DoctorHeader />
             <Grid container justifyContent='center' style={{ padding: "7rem" }}>
                 <Grid item xs={12}>
                     <Paper elevation={3} style={{ padding: "2rem" }}>
@@ -291,6 +381,7 @@ const ViewPrescriptionsDoctor = () => {
                             onOpenDialog={handleOpenDialog}
                             onOpenFreqDialog={handleOpenFreqDialog}
                             onOpenEditDialog={handleOpenEditDialog}
+                            onOpenAddMedicationDialog={handleOpenAddMedicationDialog}
                         />
                         {isPending && <div>Loading...</div>}
                         {error && <div>{error}</div>}
@@ -466,8 +557,67 @@ const ViewPrescriptionsDoctor = () => {
                             </Card>
                         </DialogContent>
                     </Dialog>
+
+                    <Dialog
+                        open={openAddMedicationDialog}
+                        onClose={() => setOpenAddMedicationDialog(false)}
+                    >
+                        <DialogTitle>Add Medication</DialogTitle>
+                        <DialogContent>
+                            <TextField
+                                label='Medication Name'
+                                value={medicationToBeAdded}
+                                onChange={(e) => setMedicationToBeAdded(e.target.value)}
+                                fullWidth
+                                margin='normal'
+                            />
+                            <TextField
+                                label='Frequency'
+                                value={freqToBeAdded}
+                                onChange={(e) => setFreqToBeAdded(e.target.value)}
+                                fullWidth
+                                margin='normal'
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => setOpenAddMedicationDialog(false)}>
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={handleAddMedication}
+                                variant='contained'
+                            >
+                                Add
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                 </Grid>
             </Grid>
+            {isSuccess ? (
+				<Snackbar
+					open={state.open}
+					onClose={handleClose}
+					TransitionComponent={state.Transition}
+					key={state.Transition.name}
+					autoHideDuration={2000}
+				>
+					<Alert severity='success' sx={{ width: "100%" }}>
+						{state.message}
+					</Alert>
+				</Snackbar>
+			) : (
+				<Snackbar
+					open={state.open}
+					onClose={handleClose}
+					TransitionComponent={state.Transition}
+					key={state.Transition.name}
+					autoHideDuration={2000}
+				>
+					<Alert severity='error' sx={{ width: "100%" }}>
+						{state.message}
+					</Alert>
+				</Snackbar>
+			)}
         </ThemeProvider>
     );
 }
