@@ -2,14 +2,26 @@ import React from "react";
 import { useParams } from "react-router-dom";
 
 import { checkout, wallet } from "../services/api";
-import { Grid, Paper, Typography, TextField ,ThemeProvider,	TableContainer,
+import {
+	Grid,
+	Paper,
+	Typography,
+	TextField,
+	ThemeProvider,
+	TableContainer,
 	TableHead,
 	TableRow,
-Table,
-TableBody,TableCell,Radio, RadioGroup,FormControlLabel} from "@mui/material";
+	Table,
+	TableBody,
+	TableCell,
+	Radio,
+	RadioGroup,
+	FormControlLabel,
+} from "@mui/material";
 import theme from "../theme";
 import { experimentalStyled as styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 
 const Item = styled(Paper)(({ theme }) => ({
 	backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -22,16 +34,9 @@ const Checkout = () => {
 	const { id } = useParams();
 	const WalletIcon = `${process.env.PUBLIC_URL}/icons/wallet.svg`;
 	const creditCardIcon = `${process.env.PUBLIC_URL}/icons/creditcard.svg`;
+	const navigate = useNavigate();
 	const handleCheckoutClick = async () => {
 		try {
-			// Make a request to /create-checkout-session using Axios
-			// const response = await axios.post('http://localhost:4000/create-checkout-session', {
-			//   items: [
-			//     { id: 1, quantity: 3 },
-			//     { id: 2, quantity: 1 },
-			//   ],
-			// });
-
 			const items = [{ id: 1, quantity: 1 }];
 
 			const response = await checkout(id, items);
@@ -40,8 +45,7 @@ const Checkout = () => {
 			if (response.status === 200) {
 				const { url } = response.data;
 				console.log("Checkout Session:", response.data);
-				// Handle the session object as needed (e.g., redirect to the checkout page)
-				window.location = url;
+				window.open(url, "_blank");
 			} else {
 				console.error("Failed to create checkout session");
 				// Handle error as needed
@@ -65,6 +69,7 @@ const Checkout = () => {
 				if (success) {
 					// Handle success as needed
 					alert(message);
+					navigate(-1);
 				} else {
 					// Handle failure as needed
 					// console.error('Wallet payment failed:', message);
@@ -100,61 +105,66 @@ const Checkout = () => {
 	};
 
 	return (
-		<Paper sx={{ "margin": "auto", "width": "90%", "marginTop": "200px", "padding": "2%" }}>
+		<Paper
+			sx={{ margin: "auto", width: "90%", marginTop: "200px", padding: "2%" }}
+		>
 			<ThemeProvider theme={theme}>
-			<Typography variant='h3' marginLeft={"400px"}>Choose a payment method</Typography>
-			{/* <div style={styles.container}>
-			<h1 style={styles.heading}>Choose your payment method</h1>
-			<button style={styles.button} onClick={handleCheckoutClick}>
-				Pay using Credit Card
-			</button>
-			<button style={styles.button} onClick={handleWallet}>
-				Pay using Wallet
-			</button>
-		</div> */}
-		<Grid container spacing={3}>
-									<Grid style={{marginLeft:"470px"}}>
-									<Button
-									variant="contained"
-									color="secondary"
-									component="label"
-									endIcon={
-										<img
-										src={WalletIcon}
-										alt="Upload Icon"
-										style={{ filter: "invert(1)" }}
-										width="20"
-										height="20"
-										/>
-									}
-									onClick={handleWallet}
-									// fullWidth // This makes the button take up the full width of the Grid item
-									>
-									Wallet
-									</Button>
-									</Grid>
-									<Grid style={{marginLeft:"20px"}}>
-									<Button
-									variant="contained"
-									color="secondary"
-									component="label"
-									endIcon={
-										<img
-										src={creditCardIcon}
-										alt="Upload Icon"
-										style={{ filter: "invert(1)" }}
-										width="20"
-										height="20"
-										/>
-									}
-									onClick={handleCheckoutClick}
-									// fullWidth // This makes the button take up the full width of the Grid item
-									>
-									Credit card
-									</Button>
-									</Grid>
-								</Grid>
-		</ThemeProvider>
+				<Typography variant='h3' marginLeft={"450px"} marginBottom={"20px"}>
+					Choose a payment method
+				</Typography>
+				<Grid container spacing={3}>
+					<Grid style={{ marginLeft: "470px" }}>
+						<Button
+							variant='contained'
+							color='secondary'
+							component='label'
+							endIcon={
+								<img
+									src={WalletIcon}
+									alt='Upload Icon'
+									style={{ filter: "invert(1)" }}
+									width='20'
+									height='20'
+								/>
+							}
+							onClick={handleWallet}
+							// fullWidth // This makes the button take up the full width of the Grid item
+						>
+							Wallet
+						</Button>
+					</Grid>
+					<Grid style={{ marginLeft: "20px" }}>
+						<Button
+							variant='contained'
+							color='secondary'
+							component='label'
+							endIcon={
+								<img
+									src={creditCardIcon}
+									alt='Upload Icon'
+									style={{ filter: "invert(1)" }}
+									width='20'
+									height='20'
+								/>
+							}
+							onClick={handleCheckoutClick}
+							// fullWidth // This makes the button take up the full width of the Grid item
+						>
+							Credit card
+						</Button>
+					</Grid>
+					<Grid style={{ marginLeft: "20px" }}>
+						<Button
+							variant='contained'
+							onClick={() => {
+								navigate(-1);
+							}}
+						>
+							Cancel
+						</Button>
+					</Grid>
+				</Grid>
+			</ThemeProvider>
 		</Paper>
 	);
 };
