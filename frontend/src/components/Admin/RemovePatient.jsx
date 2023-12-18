@@ -9,6 +9,9 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Button from "@mui/material/Button";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
+import AdminHeader from "../GeneralComponents/adminHeader";
 import Stack from "@mui/material/Stack";
 import { ThemeProvider } from "@mui/material/styles";
 import Slide, { SlideProps } from "@mui/material/Slide";
@@ -18,6 +21,7 @@ import MuiAlert from "@mui/material/Alert";
 import Title from "./Title";
 import Spinner from "../GeneralComponents/Spinner";
 import theme from "../../theme";
+import BackButton from "../GeneralComponents/BackButton";
 
 const defaultTheme = theme;
 
@@ -129,51 +133,48 @@ export default function RemovePatient() {
 					<Spinner />
 				) : (
 					<>
+						<AdminHeader />
 						<br />
-						<Button
-							variant='outlined'
-							style={{ marginLeft: "10px" }}
-							onClick={() => navigate(-1)}
-						>
-							Back
-						</Button>
-						<br />
-						<br />
-						<Title>Remove Patients</Title>
-						<Table size='small'>
-							<TableHead>
-								<TableRow>
-									<TableCell>ID</TableCell>
-									<TableCell>Name</TableCell>
-									<TableCell>Username</TableCell>
-									<TableCell>Phone</TableCell>
-									<TableCell>Email</TableCell>
-									<TableCell>Actions</TableCell>
-								</TableRow>
-							</TableHead>
-							<TableBody>
-								{rows.map((row) => (
-									<TableRow key={row._id}>
-										<TableCell>{row._id}</TableCell>
-										<TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>
-										<TableCell>{row.username}</TableCell>
-										<TableCell>{row.mobile}</TableCell>
-										<TableCell>{row.email}</TableCell>
-										<TableCell align='center'>
-											<Stack direction='row' spacing={2}>
-												<Button
-													variant='contained'
-													color='error'
-													onClick={() => handleRemove(row._id)}
-												>
-													Remove
-												</Button>
-											</Stack>
-										</TableCell>
-									</TableRow>
-								))}
-							</TableBody>
-						</Table>
+						<Grid item xs={12} style={{ padding: "5px" }}>
+							<Paper sx={{ pb: "10px" }}>
+								<Title>Remove Patients</Title>
+								<Table size='small'>
+									<TableHead>
+										<TableRow>
+											<TableCell>ID</TableCell>
+											<TableCell>Name</TableCell>
+											<TableCell>Username</TableCell>
+											<TableCell>Phone</TableCell>
+											<TableCell>Email</TableCell>
+											<TableCell>Actions</TableCell>
+										</TableRow>
+									</TableHead>
+									<TableBody>
+										{rows.map((row) => (
+											<TableRow key={row._id}>
+												<TableCell>{row._id}</TableCell>
+												<TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>
+												<TableCell>{row.username}</TableCell>
+												<TableCell>{row.mobile}</TableCell>
+												<TableCell>{row.email}</TableCell>
+												<TableCell align='center'>
+													<Stack direction='row' spacing={2}>
+														<Button
+															variant='contained'
+															color='error'
+															onClick={() => handleRemove(row._id)}
+														>
+															Remove
+														</Button>
+													</Stack>
+												</TableCell>
+											</TableRow>
+										))}
+									</TableBody>
+								</Table>
+							</Paper>
+							<BackButton />
+						</Grid>
 
 						{isSuccess ? (
 							<Snackbar
@@ -200,15 +201,6 @@ export default function RemovePatient() {
 								</Alert>
 							</Snackbar>
 						)}
-
-						<br />
-						<Button
-							variant='contained'
-							style={{ margin: "10px" }}
-							onClick={() => navigate("/admin")}
-						>
-							Home
-						</Button>
 					</>
 				)}
 			</ThemeProvider>

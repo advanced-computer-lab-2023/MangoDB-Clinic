@@ -13,7 +13,7 @@ import {
 	Tooltip,
 	Typography,
 	Button,
-	ThemeProvider
+	ThemeProvider,
 } from "@mui/material";
 
 // import FilterListIcon from "../../../public/icons/filter.svg";
@@ -22,7 +22,6 @@ import PrescriptionsTable from "../../components/GeneralComponents/Prescriptions
 import PatientHeader from "../../components/GeneralComponents/patientHeader";
 
 const ViewPrescriptionsPatient = () => {
-
 	const FilterListIcon = `${process.env.PUBLIC_URL}/icons/filter.svg`;
 	const firstColumnName = "Doctor";
 	const [prescriptions, setPrescriptions] = useState([]);
@@ -36,42 +35,42 @@ const ViewPrescriptionsPatient = () => {
 	const filterParams = [];
 
 	useEffect(() => {
-  	const fetchData = async () => {
-		try {
-			setPrescriptions([]);
-			setIsPending(true);
-			setError(null);
-
-			if (!isFilterApplied) {
-				const token = localStorage.getItem("token");
-
-				const response = await fetch(
-				"http://localhost:4000/patient/get_prescriptions_of_patient",
-				{
-					method: "GET",
-					headers: {
-					Authorization: `Bearer ${token}`,
-					"Content-Type": "application/json",
-					},
-				}
-				);
-
-				if (!response.ok) {
-				throw new Error("Could not fetch the data for that resource");
-				}
-
-				const data = await response.json();
-				setPrescriptions(data);
-				setIsPending(false);
+		const fetchData = async () => {
+			try {
+				setPrescriptions([]);
+				setIsPending(true);
 				setError(null);
-			}
-		} catch (err) {
-		setIsPending(false);
-		setError(err.message);
-		}
-	};
 
-	fetchData();
+				if (!isFilterApplied) {
+					const token = localStorage.getItem("token");
+
+					const response = await fetch(
+						"http://localhost:4000/patient/get_prescriptions_of_patient",
+						{
+							method: "GET",
+							headers: {
+								Authorization: `Bearer ${token}`,
+								"Content-Type": "application/json",
+							},
+						}
+					);
+
+					if (!response.ok) {
+						throw new Error("Could not fetch the data for that resource");
+					}
+
+					const data = await response.json();
+					setPrescriptions(data);
+					setIsPending(false);
+					setError(null);
+				}
+			} catch (err) {
+				setIsPending(false);
+				setError(err.message);
+			}
+		};
+
+		fetchData();
 	}, [isFilterApplied]);
 
 	const handleFilter = async () => {
@@ -104,26 +103,25 @@ const ViewPrescriptionsPatient = () => {
 
 		try {
 			const response = await fetch(url, {
-			  method: "GET",
-			  headers: {
-				Authorization: `Bearer ${token}`,
-				"Content-Type": "application/json",
-			  },
+				method: "GET",
+				headers: {
+					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json",
+				},
 			});
-		
+
 			if (!response.ok) {
-			  throw new Error("Could not fetch the data for that resource");
+				throw new Error("Could not fetch the data for that resource");
 			}
-		
+
 			const data = await response.json();
 			setPrescriptions(data);
 			setIsPending(false);
 			setError(null);
-			
-		  } catch (err) {
+		} catch (err) {
 			setIsPending(false);
 			setError(err.message);
-		  }
+		}
 	};
 
 	const handleCheckboxChange = (event) => {
@@ -148,23 +146,30 @@ const ViewPrescriptionsPatient = () => {
 			<Grid container justifyContent='center' style={{ padding: "7rem" }}>
 				<Grid item xs={12}>
 					<Paper elevation={3} style={{ padding: "2rem" }}>
-						<Grid container spacing={2} style={{ display: "flex", justifyContent: "space-between" }}>
+						<Grid
+							container
+							spacing={2}
+							style={{ display: "flex", justifyContent: "space-between" }}
+						>
 							<Typography style={{ margin: "1rem" }} variant='h4' align='left'>
 								Prescriptions
 							</Typography>
 							<Tooltip title='Filter List' style={{ margin: "1rem" }}>
-								<Button variant="outlined" onClick={() => setOpen(true)}>
-									<img 
-										src={FilterListIcon} 
-										alt='Filter List' 
+								<Button variant='outlined' onClick={() => setOpen(true)}>
+									<img
+										src={FilterListIcon}
+										alt='Filter List'
 										// style={{marginLeft: "11rem"}}
 										width={25}
 										height={25}
-										/>
+									/>
 								</Button>
 							</Tooltip>
 						</Grid>
-						<PrescriptionsTable data={prescriptions} firstColumnName={firstColumnName} />
+						<PrescriptionsTable
+							data={prescriptions}
+							firstColumnName={firstColumnName}
+						/>
 						{isPending && <div>Loading...</div>}
 						{error && <div>{error}</div>}
 					</Paper>
@@ -211,7 +216,7 @@ const ViewPrescriptionsPatient = () => {
 									{!isFilterApplied ? (
 										<Button disabled>Clear Filters</Button>
 									) : (
-										<Button variant='text' onClick={handleClearFilter}>
+										<Button variant='outlined' onClick={handleClearFilter}>
 											Clear Filters
 										</Button>
 									)}

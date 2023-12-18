@@ -219,12 +219,6 @@ export default function UserManagement() {
 
 					<Container maxWidth='xs' component='main'>
 						<Grid container spacing={4} alignItems='flex-end'>
-							<Grid item key={"addAdmin"} xs={12} sm={12} md={4}>
-								<Button variant='contained' onClick={handleAddAdmin}>
-									Add Admin
-								</Button>
-							</Grid>
-
 							<Grid item key={"removeAdmin"} xs={12} sm={12} md={4}>
 								<Button variant='contained' onClick={handleRemoveAdmin}>
 									Remove Admin

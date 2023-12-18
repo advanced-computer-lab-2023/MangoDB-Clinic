@@ -6,6 +6,9 @@ import Link from "@mui/material/Link";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import AdminHeader from "../GeneralComponents/adminHeader";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Button from "@mui/material/Button";
@@ -18,6 +21,7 @@ import MuiAlert from "@mui/material/Alert";
 import Title from "./Title";
 import Spinner from "../GeneralComponents/Spinner";
 import theme from "../../theme";
+import BackButton from "../GeneralComponents/BackButton";
 
 const defaultTheme = theme;
 
@@ -136,53 +140,51 @@ export default function RemoveDoctor() {
 					<Spinner />
 				) : (
 					<>
+						<AdminHeader />
 						<br />
-						<Button
-							variant='outlined'
-							style={{ marginLeft: "10px" }}
-							onClick={() => navigate(-1)}
-						>
-							Back
-						</Button>
-						<br />
-						<br />
-						<Title>Remove Doctor</Title>
-						<Table size='small'>
-							<TableHead>
-								<TableRow>
-									<TableCell>Doctor ID</TableCell>
-									<TableCell>Doctor Username</TableCell>
-									<TableCell>Doctor Name</TableCell>
-									<TableCell>Doctor Email</TableCell>
-									<TableCell>Doctor Affiliation</TableCell>
-									<TableCell>Doctor Speciality</TableCell>
-									<TableCell></TableCell>
-								</TableRow>
-							</TableHead>
-							<TableBody>
-								{rows.map((row) => (
-									<TableRow key={row._id}>
-										<TableCell>{row._id}</TableCell>
-										<TableCell>{row.username}</TableCell>
-										<TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>
-										<TableCell>{row.email}</TableCell>
-										<TableCell>{row.affiliation}</TableCell>
-										<TableCell>{row.speciality}</TableCell>
-										<TableCell>
-											<Stack direction='row' spacing={2}>
-												<Button
-													variant='contained'
-													color='error'
-													onClick={() => handleRemove(row._id)}
-												>
-													Remove
-												</Button>
-											</Stack>
-										</TableCell>
-									</TableRow>
-								))}
-							</TableBody>
-						</Table>
+						<Grid item xs={12} style={{ padding: "5px" }}>
+							<Paper sx={{ pb: "10px" }}>
+								<Title>Remove Doctor</Title>
+								<Table size='small'>
+									<TableHead>
+										<TableRow>
+											<TableCell>Doctor ID</TableCell>
+											<TableCell>Doctor Username</TableCell>
+											<TableCell>Doctor Name</TableCell>
+											<TableCell>Doctor Email</TableCell>
+											<TableCell>Doctor Affiliation</TableCell>
+											<TableCell>Doctor Speciality</TableCell>
+											<TableCell></TableCell>
+										</TableRow>
+									</TableHead>
+									<TableBody>
+										{rows.map((row) => (
+											<TableRow key={row._id}>
+												<TableCell>{row._id}</TableCell>
+												<TableCell>{row.username}</TableCell>
+												<TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>
+												<TableCell>{row.email}</TableCell>
+												<TableCell>{row.affiliation}</TableCell>
+												<TableCell>{row.speciality}</TableCell>
+												<TableCell>
+													<Stack direction='row' spacing={2}>
+														<Button
+															variant='contained'
+															color='error'
+															onClick={() => handleRemove(row._id)}
+														>
+															Remove
+														</Button>
+													</Stack>
+												</TableCell>
+											</TableRow>
+										))}
+									</TableBody>
+								</Table>
+							</Paper>
+							<BackButton />
+						</Grid>
+
 						{isSuccess ? (
 							<Snackbar
 								open={state.open}
@@ -208,15 +210,6 @@ export default function RemoveDoctor() {
 								</Alert>
 							</Snackbar>
 						)}
-
-						<br />
-						<Button
-							variant='contained'
-							style={{ margin: "10px" }}
-							onClick={() => navigate("/admin")}
-						>
-							Home
-						</Button>
 					</>
 				)}
 			</ThemeProvider>

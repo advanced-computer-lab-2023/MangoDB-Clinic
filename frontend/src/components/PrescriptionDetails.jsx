@@ -14,10 +14,12 @@ import { SvgIcon } from "@mui/material";
 import WalletIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import Box from "@mui/material/Box";
+import BackButton from "./GeneralComponents/BackButton";
 
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import theme from "../theme";
+import PatientHeader from "./GeneralComponents/patientHeader";
 
 const defaultTheme = theme;
 
@@ -161,12 +163,13 @@ export default function PrescriptionDetails() {
 				<Spinner />
 			) : (
 				<>
+					<PatientHeader />
 					<Box
 						sx={{
 							display: "flex",
 							justifyContent: "center",
 							alignItems: "center",
-							height: "100vh", // Adjust as needed
+							height: "80vh", // Adjust as needed
 						}}
 					>
 						{console.log("Data: " + JSON.stringify(data))}
@@ -244,6 +247,9 @@ export default function PrescriptionDetails() {
 														Credit card
 													</Button>
 												</Grid>
+												<Grid container spacing={-30} sx={{pl: "10px"}}>
+													<BackButton />
+												</Grid>
 											</Grid>
 
 											{/* </ButtonGroup> */}
@@ -269,17 +275,6 @@ export default function PrescriptionDetails() {
 							<div>No data available</div>
 						)}
 					</Box>
-					<div
-						style={{
-							display: "flex",
-							justifyContent: "center",
-							marginTop: "10px", // Adjust as needed
-						}}
-					>
-						<Button variant='outlined' onClick={handleGoBack}>
-							Go Back
-						</Button>
-					</div>
 				</>
 			)}
 		</>

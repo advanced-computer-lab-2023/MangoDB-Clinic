@@ -1,5 +1,6 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Paper,
   Typography,
@@ -14,8 +15,11 @@ import {
 } from "@mui/material";
 import { getSelectedDoctor } from "../services/api";
 import { format } from "date-fns";
+import BackButton from "./GeneralComponents/BackButton";
+import PatientHeader from "./GeneralComponents/patientHeader";
 
 const DoctorDetails = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [doctor, setDoctor] = useState(null);
   const [isPending, setIsPending] = useState(true);
@@ -76,12 +80,26 @@ const DoctorDetails = () => {
 
   const bookAppointment = async (key, nationalID) => {
     try {
-      //  const app=await bookAppointmentApi(key, nationalID);
-      //   fetchAvailableSlots(id, selectedDate);
-      //   console.log(app._id)
+    
+
+      const response = await axios.post(
+                `http://localhost:4000/patient/make_appointment?nationalID=${nationalID}&date=${key}&docid=${id}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`, 
+                    },
+                }
+            );
+      // if (!response.ok) {
+      //   throw new Error(
+      //     `Failed to make appointment. Status: ${response.status}`
+      //   );
+      // }
       const items = [{ id: 1, quantity: 1 }];
-      const url = `http://localhost:3000/checkout/${id}`;
-      window.location = url;
+      const url = `http://localhost:3000/checkout/${response.data._id}`;
+      // window.location = url;
+      navigate(`/checkout/${response.data._id}`);
 
       // const response = await axios.post('/api/checkout', { appointmentId: app.data._id, items });
       //  const response=await checkout(app._id,items);
@@ -135,121 +153,125 @@ const DoctorDetails = () => {
   );
 
   const renderPrompt = () => (
-    <Typography variant="h4" marginTop={"20px"}>
-      Please pick a date and type the national ID number of the patient
-    </Typography>
+    <h3>
+      Please pick a date to see available appointments on that day. <br></br>Type the national ID number of the patient to book an appointment.
+    </h3>
   );
 
   return (
-    <div style={{ marginTop: "60px" }}>
-      <Paper
-        elevation={3}
-        style={{
-          padding: "20px",
-          borderRadius: "10px",
-          margin: "0 60px",
-        }}
-      >
-        {isPending && <Typography>Loading...</Typography>}
-        {error && <Typography color="error">{error}</Typography>}
-        {doctor && (
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Typography variant="h4">
-                {doctor.firstName} {doctor.lastName}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography>Email: {doctor.email}</Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography>Speciality: {doctor.speciality}</Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography>
-                Educational Background: {doctor.educationalBackground}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography>Affiliation: {doctor.affiliation}</Typography>
-            </Grid>
-          </Grid>
-        )}
-      </Paper>
+		<>
+    <PatientHeader/>
+			<div style={{ marginTop: "60px" }}>
+				<Paper
+					elevation={3}
+					style={{
+						padding: "20px",
+						borderRadius: "10px",
+						margin: "0 60px",
+					}}
+				>
+					{isPending && <Typography>Loading...</Typography>}
+					{error && <Typography color='error'>{error}</Typography>}
+					{doctor && (
+						<Grid container spacing={3}>
+							<Grid item xs={12}>
+								<Typography variant='h4'>
+									{doctor.firstName} {doctor.lastName}
+								</Typography>
+							</Grid>
+							<Grid item xs={12} md={6}>
+								<Typography>Email: {doctor.email}</Typography>
+							</Grid>
+							<Grid item xs={12} md={6}>
+								<Typography>Speciality: {doctor.speciality}</Typography>
+							</Grid>
+							<Grid item xs={12} md={6}>
+								<Typography>
+									Educational Background: {doctor.educationalBackground}
+								</Typography>
+							</Grid>
+							<Grid item xs={12} md={6}>
+								<Typography>Affiliation: {doctor.affiliation}</Typography>
+							</Grid>
+						</Grid>
+					)}
+				</Paper>
 
-      <Paper
-        elevation={3}
-        style={{
-          padding: "20px",
-          borderRadius: "10px",
-          margin: "20px 60px",
-        }}
-      >
-        <Grid item xs={12} marginBottom={"20px"}>
-          {renderPrompt()}
-        </Grid>
+				<Paper
+					elevation={3}
+					style={{
+						padding: "20px",
+						borderRadius: "10px",
+						margin: "20px 60px",
+					}}
+				>
+					<Grid item xs={12} marginBottom={"20px"}>
+						{renderPrompt()}
+					</Grid>
 
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={4}>
-            <TextField
-              label="Select Date"
-              type="date"
-              InputLabelProps={{ shrink: true }}
-              value={selectedDate}
-              onChange={(e) => handleDateChange(e)}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <TextField
-              label="National ID"
-              value={nationalID}
-              onChange={handleNationalIdChange}
-              fullWidth
-            />
-          </Grid>
-          {selectedDate && availableSlots.length === 0 && (
-            <Grid item xs={12}>
-              {renderNoSlotsMessage()}
-            </Grid>
-          )}
-        </Grid>
-        {selectedDate && availableSlots.length > 0 && (
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={4}>
-              <div>
-                <Typography variant="h5">Available Slots</Typography>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Start Time</TableCell>
-                      <TableCell>Actions</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {availableSlots.map(({ key, slot }, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{format(key, "HH:mm")}</TableCell>
-                        <TableCell>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => bookAppointment(key, nationalID)}
-                          >
-                            Book Appointment
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </Grid>
-          </Grid>
-        )}
-      </Paper>
-    </div>
-  );
+					<Grid container spacing={2}>
+						<Grid item xs={12} md={4}>
+							<TextField
+								label='Select Date'
+								type='date'
+								InputLabelProps={{ shrink: true }}
+								value={selectedDate}
+								onChange={(e) => handleDateChange(e)}
+								fullWidth
+							/>
+						</Grid>
+						<Grid item xs={12} md={4}>
+							<TextField
+								label='National ID'
+								value={nationalID}
+								onChange={handleNationalIdChange}
+								fullWidth
+							/>
+						</Grid>
+						{selectedDate && availableSlots.length === 0 && (
+							<Grid item xs={12}>
+								{renderNoSlotsMessage()}
+							</Grid>
+						)}
+					</Grid>
+					{selectedDate && availableSlots.length > 0 && (
+						<Grid container spacing={3}>
+							<Grid item xs={12} md={4}>
+								<div>
+									<Typography variant='h5'>Available Slots</Typography>
+									<Table>
+										<TableHead>
+											<TableRow>
+												<TableCell>Start Time</TableCell>
+												<TableCell>Actions</TableCell>
+											</TableRow>
+										</TableHead>
+										<TableBody>
+											{availableSlots.map(({ key, slot }, index) => (
+												<TableRow key={index}>
+													<TableCell>{format(key, "HH:mm")}</TableCell>
+													<TableCell>
+														<Button
+															variant='contained'
+															color='primary'
+															onClick={() => bookAppointment(key, nationalID)}
+														>
+															Book Appointment
+														</Button>
+													</TableCell>
+												</TableRow>
+											))}
+										</TableBody>
+									</Table>
+								</div>
+							</Grid>
+						</Grid>
+					)}
+					<BackButton />
+				</Paper>
+			</div>
+		</>
+	);
 };
 
 

@@ -8,16 +8,20 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import { ThemeProvider } from "@mui/material/styles";
 import Slide, { SlideProps } from "@mui/material/Slide";
 import Snackbar from "@mui/material/Snackbar";
+import Grid from "@mui/material/Grid";
 import MuiAlert from "@mui/material/Alert";
 
 import Title from "./Title";
 import Spinner from "../GeneralComponents/Spinner";
 import theme from "../../theme";
+import AdminHeader from "../GeneralComponents/adminHeader";
+import BackButton from "../GeneralComponents/BackButton";
 
 const defaultTheme = theme;
 
@@ -142,54 +146,51 @@ export default function RemoveAdmin() {
 					<Spinner />
 				) : (
 					<>
+						<AdminHeader />
 						<br />
-						<Button
-							variant='outlined'
-							style={{ marginLeft: "10px" }}
-							onClick={() => navigate(-1)}
-						>
-							Back
-						</Button>
-						<br />
-						<br />
-						<Title>Remove Admins</Title>
-						<Table size='small' style={{ margin: "10px" }}>
-							<TableHead>
-								<TableRow>
-									<TableCell>ID</TableCell>
-									<TableCell>Name</TableCell>
-									<TableCell>Username</TableCell>
-									<TableCell>Email</TableCell>
-									<TableCell>Created At</TableCell>
-									<TableCell></TableCell>
-								</TableRow>
-							</TableHead>
-							<TableBody>
-								{rows.map(
-									(row) =>
-										row._id !== adminID && (
-											<TableRow key={row._id}>
-												<TableCell>{row._id}</TableCell>
-												<TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>
-												<TableCell>{row.username}</TableCell>
-												<TableCell>{row.email}</TableCell>
-												<TableCell>{row.createdAt}</TableCell>
-												<TableCell>
-													<Stack direction='row' spacing={2}>
-														<Button
-															variant='contained'
-															color='error'
-															onClick={() => handleRemove(row._id)}
-														>
-															Remove
-														</Button>
-													</Stack>
-												</TableCell>
-											</TableRow>
-										)
-								)}
-							</TableBody>
-						</Table>
+						<Grid item xs={12} style={{ padding: "5px" }}>
+							<Paper sx={{ pb: "10px" }}>
+								<Title>Remove Admins</Title>
+								<Table size='small' style={{ margin: "10px" }}>
+									<TableHead>
+										<TableRow>
+											<TableCell>ID</TableCell>
+											<TableCell>Name</TableCell>
+											<TableCell>Username</TableCell>
+											<TableCell>Email</TableCell>
+											<TableCell>Created At</TableCell>
+											<TableCell></TableCell>
+										</TableRow>
+									</TableHead>
+									<TableBody>
+										{rows.map(
+											(row) =>
+												row._id !== adminID && (
+													<TableRow key={row._id}>
+														<TableCell>{row._id}</TableCell>
+														<TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>
+														<TableCell>{row.username}</TableCell>
+														<TableCell>{row.email}</TableCell>
+														<TableCell>{row.createdAt}</TableCell>
+														<TableCell>
+															<Stack direction='row' spacing={2}>
+																<Button
+																	variant='contained'
+																	color='error'
+																	onClick={() => handleRemove(row._id)}
+																>
+																	Remove
+																</Button>
+															</Stack>
+														</TableCell>
+													</TableRow>
+												)
+										)}
+									</TableBody>
+								</Table>
+							</Paper>
+							<BackButton />
+						</Grid>
 						<Snackbar
 							open={state.open}
 							onClose={handleClose}
@@ -201,14 +202,6 @@ export default function RemoveAdmin() {
 								{state.message}
 							</Alert>
 						</Snackbar>
-						<br />
-						<Button
-							variant='contained'
-							style={{ margin: "10px" }}
-							onClick={() => navigate("/admin")}
-						>
-							Home
-						</Button>
 					</>
 				)}
 			</ThemeProvider>

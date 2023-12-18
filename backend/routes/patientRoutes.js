@@ -54,7 +54,8 @@ const {
 	createVideoChat,
 	checkHealthPackageSubscription,
 	seenNotifs,
-	payHealthPackageWithWallet
+	payHealthPackageWithWallet,
+	getPatient2
 } = require("../controllers/patientController");
 
 router.get("/myInfo", protectPatient, getMyInfo);
@@ -75,7 +76,8 @@ router.get(
 );
 
 //GET a single patient
-router.get("/get_patient", protectPatient, getPatient);
+router.post("/get_patient", getPatient);
+router.get("/getPatient2", protectPatient, getPatient2);
 
 //POST a single patient
 router.post("/add_patient", addPatient);
@@ -180,7 +182,7 @@ router.get(
 	getAvailableAppointments
 );
 
-router.post("/make_appointment/:id", makeAppointment);
+router.post("/make_appointment", protectPatient, makeAppointment);
 
 router.post("/upcoming", protectPatient, upcoming);
 

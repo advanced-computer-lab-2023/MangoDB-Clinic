@@ -15,8 +15,8 @@ export default function DateCard() {
 
 	return (
 		<React.Fragment>
-			<Title>Date</Title>
-			<Typography component='p' variant='h4'>
+			<Typography variant="h2">Date</Typography>
+			<Typography variant='h6' sx={{fontSize: "32px"}}>
 				{formattedDate}
 			</Typography>
 			<Typography color='text.secondary' sx={{ flex: 1 }}></Typography>

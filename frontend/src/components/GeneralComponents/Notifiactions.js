@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { Badge, IconButton, Popover } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { clearNotifsDoctor, clearNotifsPatient, getDoctor, getPatient, seenNotifsDoctor, seenNotifsPatient } from "../../services/api";
+import { clearNotifsDoctor, clearNotifsPatient, getDoctor, getPatient2, seenNotifsDoctor, seenNotifsPatient } from "../../services/api";
 
-const Notifications = ({ type, onError }) => {
+const Notifications = ({ type }) => {
     const [notifications, setNotifications] = useState([]);
     const [notificationsCount, setNotificationsCount] = useState(0);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -23,15 +23,15 @@ const Notifications = ({ type, onError }) => {
                     setNotifications(result.data.notifications);
                     console.log(result.data.notifications);
                 })
-                .catch((err) => onError(err.message));
+                .catch((err) => console.log(err.message));
         } else if (type === 'patient') {
-            getPatient()
+            getPatient2()
                 .then((result) => {
                     countNewNotifications(result.data.notifications);
                     setNotifications(result.data.notifications);
                     console.log(result.data.notifications);
                 })
-                .catch((err) => onError(err.message));
+                .catch((err) => console.log(err.message));
         }
 	}, [reload]);
 
@@ -40,11 +40,11 @@ const Notifications = ({ type, onError }) => {
             if (type === 'doctor') {
                 seenNotifsDoctor()
                     .then((result) => console.log(result))
-                    .catch((err) => onError(err.message));
+                    .catch((err) => console.log(err.message));
             } else if (type === 'patient') {
                 seenNotifsPatient()
                     .then((result) => console.log(result))
-                    .catch((err) => onError(err.message));
+                    .catch((err) => console.log(err.message));
             }
         }
 	}, [seen]);
