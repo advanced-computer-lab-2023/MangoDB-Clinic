@@ -266,48 +266,12 @@ export default function HealthPackages() {
 					<List component='nav'>{mainListItems}</List>
 				</Drawer> */}
 
-				<Container maxWidth='sm'>
-					<br />
-					<br />
-					<br />
-					<br />
-
-					<Typography
-						component='h1'
-						variant='h2'
-						align='center'
-						color='text.primary'
-						gutterBottom
-					>
-						Health Packages
-					</Typography>
-					<Typography
-						variant='h5'
-						align='center'
-						color='text.secondary'
-						paragraph
-					>
-						Add, Edit, or Delete Packages
-					</Typography>
-					<Stack
-						sx={{ pt: 4 }}
-						direction='row'
-						spacing={2}
-						justifyContent='center'
-					>
-						<Button variant='contained' href='/admin/add-health-pack'>
-							Add Package
-						</Button>
-					</Stack>
-				</Container>
-
 				<Container sx={{ py: 8 }} maxWidth='md'>
 					<br />
 					<br />
 					<Typography
-						variant='h5'
+						variant='h2'
 						align='center'
-						color='text.secondary'
 						paragraph
 					>
 						Existing Packages
@@ -322,7 +286,7 @@ export default function HealthPackages() {
 										flexDirection: "column",
 									}}
 								>
-									<CardContent sx={{ flexGrow: 1 }}>
+									<CardContent sx={{ flexGrow: 1}}>
 										<Typography gutterBottom variant='h5' component='h2'>
 											{pack.name}
 										</Typography>

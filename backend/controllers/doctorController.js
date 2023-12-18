@@ -13,7 +13,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const fs = require("fs");
 const path = require("path");
-// const axios = require("axios");
+const axios = require("axios");
 // const Pharmacist = require("../models/pharmacistModel");
 
 function generateOTP() {

@@ -15,6 +15,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import Slide from "@mui/material/Slide";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import AdminHeader from "../GeneralComponents/adminHeader";
 
 import Spinner from "../GeneralComponents/Spinner";
 import theme from "../../theme";
@@ -143,6 +144,7 @@ export default function EditHealthPackage() {
 			) : (
 				<>
 					<ThemeProvider theme={defaultTheme}>
+						<AdminHeader/>
 						<Container component='main' maxWidth='xs'>
 							<CssBaseline />
 							<Box

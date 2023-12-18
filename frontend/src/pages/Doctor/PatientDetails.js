@@ -22,6 +22,8 @@ import { uploadHealthRecord, selectPatient } from "../../services/api";
 import Spinner from '../../components/GeneralComponents/Spinner'
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import BackButton from "../../components/GeneralComponents/BackButton";
+import DoctorHeader from "../../components/GeneralComponents/doctorHeader";
 
 /**
  * TODO: 1-Get the patient using the id param (Done)
@@ -103,6 +105,7 @@ const PatientDetails = () => {
 
 	return (
 		<div>
+			<DoctorHeader/>
 				{/* {isPending && <div>Loading...</div>} */}
 				{isPending && (
 					// <Box sx={{ display: 'flex', alignContent: 'center', justifyContent: 'center' }}>
@@ -118,7 +121,7 @@ const PatientDetails = () => {
 						</Alert>
 					</Snackbar>
 				)}
-				<Paper sx={{ "margin": "auto", "width": "fit-content", "marginTop": "90px" }}>
+				<Paper sx={{ "margin": "auto", width: "fit-content", "marginTop": "90px", p: "10px" }}>
 					{patient && (
 						<div>
 							<Typography
@@ -172,7 +175,7 @@ const PatientDetails = () => {
 										>
 											Health Records:{" "}
 										</Typography>
-										<TableContainer component={Paper}>
+										<TableContainer component={Paper} sx={{p:"2px"}}>
 											<TableBody
 												style={{
 													display: "flex",
@@ -225,6 +228,7 @@ const PatientDetails = () => {
 											</Card>
 										</DialogContent>
 									</Dialog>
+									<BackButton/>
 								</Grid>
 							</Grid>
 						</div>

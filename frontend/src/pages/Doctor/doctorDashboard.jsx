@@ -19,14 +19,14 @@ const DashboardAdmin = () => {
     {
       icon: Profile,
       title: "Profile",
-      description: "View/Edit Profile",
+      description: "View / Edit Profile",
       cta: "View",
       route: "/editDoctor",
     },
     {
       icon: Prescription,
       title: "Prescription",
-      description: "Add,Edit,Update patient's prescriptions",
+      description: "Add, edit, or update a patient's prescriptions",
       cta: "View",
       route: "/viewPrescriptionsByDoctor",
     },
@@ -40,8 +40,8 @@ const DashboardAdmin = () => {
     {
       icon: Appointments,
       title: "Appointments",
-      description: "View past, upcoming appointments",
-      cta: "Add",
+      description: "View past or upcoming appointments",
+      cta: "View",
       route: "/doctorAppointments",
     },
     {

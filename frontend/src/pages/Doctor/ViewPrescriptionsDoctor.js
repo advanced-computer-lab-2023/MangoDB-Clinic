@@ -23,6 +23,7 @@ import Slide from "@mui/material/Slide";
 import MuiAlert from "@mui/material/Alert";
 import PrescriptionsTable from "../../components/GeneralComponents/PrescriptionsTable";
 import theme from "../../theme";
+import DoctorHeader from "../../components/GeneralComponents/doctorHeader";
 
 const ViewPrescriptionsDoctor = () => {
 
@@ -207,7 +208,7 @@ const ViewPrescriptionsDoctor = () => {
 			setState({
 				...state,
 				open: true,
-				message: "Error adding medication!",
+				message: error.response.data.message,
 			});
 		}
 	};
@@ -366,7 +367,8 @@ const ViewPrescriptionsDoctor = () => {
 
     return ( 
         <ThemeProvider theme={theme}>
-            <Grid container justifyContent='center' style={{ padding: "7rem" }}>
+            <DoctorHeader/>
+            <Grid container justifyContent='center' style={{ padding: "3rem" }}>
                 <Grid item xs={12}>
                     <Paper elevation={3} style={{ padding: "2rem" }}>
                         <Grid container spacing={2}>

@@ -55,6 +55,13 @@ export default function Profile() {
 			<br></br>
 
 				</Link>
+				<Link to='/changePasswordPatient'>
+				<Button variant='contained' >
+					Change Password
+			</Button>
+			<br></br>
+
+				</Link>
 
 			</div>
 		</div>

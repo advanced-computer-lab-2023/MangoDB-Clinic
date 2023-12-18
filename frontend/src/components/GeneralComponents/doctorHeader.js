@@ -30,7 +30,7 @@ export default function DoctorHeader({ onError }) {
 
 	const [openProfileDrawer, setOpenProfileDrawer] = React.useState(false);
 
-	const [open, setOpen] = React.useState(true);
+	const [open, setOpen] = React.useState(false);
 	const MenuIcon = `${process.env.PUBLIC_URL}/icons/menu.svg`;
 	const Logo = `${process.env.PUBLIC_URL}/icons/clinicLogo2.svg`;
 	const Close = `${process.env.PUBLIC_URL}/icons/reject.svg`;
@@ -98,23 +98,6 @@ export default function DoctorHeader({ onError }) {
 				onClick={handleDrawerClose} // This will make the text do the same function as the icon
 			>
 				<IconButton sx={{ mr: 1, ml: 0, mt: 2 }}>
-					<img
-						src={Close}
-						alt='Close'
-						sx={{ mr: 3, ml: 0 }}
-						style={{ width: 15, height: 15, color: "grey" }}
-					/>
-					<Typography
-						variant='body2'
-						sx={{
-							ml: 0.5,
-							mr: 1,
-							color: "grey",
-							fontWeight: "bold",
-						}}
-					>
-						Hide menu
-					</Typography>
 				</IconButton>
 			</Box>
 			<List sx={{ p: 0 }}>
@@ -361,7 +344,11 @@ export default function DoctorHeader({ onError }) {
 	);
 
 	const handleDrawerOpen = () => {
-		setOpen(true);
+		if (open) {
+			setOpen(false);
+		} else {
+			setOpen(true);
+		}
 	};
 
 	const handleDrawerClose = () => {

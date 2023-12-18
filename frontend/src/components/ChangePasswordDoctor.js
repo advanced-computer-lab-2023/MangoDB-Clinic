@@ -14,6 +14,10 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import Spinner from "./GeneralComponents/Spinner";
+import BackButton from "./GeneralComponents/BackButton";
+import DoctorHeader from "./GeneralComponents/doctorHeader";
+
+import theme from "../theme";
 
 function Copyright(props) {
 	return (
@@ -33,7 +37,7 @@ function Copyright(props) {
 	);
 }
 
-const defaultTheme = createTheme();
+const defaultTheme = theme;
 
 export default function ChangePassword() {
 	const navigate = useNavigate();
@@ -43,7 +47,6 @@ export default function ChangePassword() {
 		confirmPassword: "",
 	});
 	const [error, setError] = React.useState(null);
-	
 
 	const [isLoading, setIsLoading] = React.useState(false);
 
@@ -103,6 +106,7 @@ export default function ChangePassword() {
 
 	return (
 		<ThemeProvider theme={defaultTheme}>
+			<DoctorHeader />
 			<Container component='main' maxWidth='xs'>
 				<CssBaseline />
 				{isLoading ? (
@@ -183,6 +187,7 @@ export default function ChangePassword() {
 								>
 									Change Password
 								</Button>
+								<BackButton />
 							</Box>
 						</Box>
 					</>

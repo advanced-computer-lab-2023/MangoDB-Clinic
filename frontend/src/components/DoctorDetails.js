@@ -15,6 +15,8 @@ import {
 } from "@mui/material";
 import { getSelectedDoctor } from "../services/api";
 import { format } from "date-fns";
+import BackButton from "./GeneralComponents/BackButton";
+import PatientHeader from "./GeneralComponents/patientHeader";
 
 const DoctorDetails = () => {
   const navigate = useNavigate();
@@ -157,115 +159,119 @@ const DoctorDetails = () => {
   );
 
   return (
-    <div style={{ marginTop: "60px" }}>
-      <Paper
-        elevation={3}
-        style={{
-          padding: "20px",
-          borderRadius: "10px",
-          margin: "0 60px",
-        }}
-      >
-        {isPending && <Typography>Loading...</Typography>}
-        {error && <Typography color="error">{error}</Typography>}
-        {doctor && (
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Typography variant="h4">
-                {doctor.firstName} {doctor.lastName}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography>Email: {doctor.email}</Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography>Speciality: {doctor.speciality}</Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography>
-                Educational Background: {doctor.educationalBackground}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography>Affiliation: {doctor.affiliation}</Typography>
-            </Grid>
-          </Grid>
-        )}
-      </Paper>
+		<>
+    <PatientHeader/>
+			<div style={{ marginTop: "60px" }}>
+				<Paper
+					elevation={3}
+					style={{
+						padding: "20px",
+						borderRadius: "10px",
+						margin: "0 60px",
+					}}
+				>
+					{isPending && <Typography>Loading...</Typography>}
+					{error && <Typography color='error'>{error}</Typography>}
+					{doctor && (
+						<Grid container spacing={3}>
+							<Grid item xs={12}>
+								<Typography variant='h4'>
+									{doctor.firstName} {doctor.lastName}
+								</Typography>
+							</Grid>
+							<Grid item xs={12} md={6}>
+								<Typography>Email: {doctor.email}</Typography>
+							</Grid>
+							<Grid item xs={12} md={6}>
+								<Typography>Speciality: {doctor.speciality}</Typography>
+							</Grid>
+							<Grid item xs={12} md={6}>
+								<Typography>
+									Educational Background: {doctor.educationalBackground}
+								</Typography>
+							</Grid>
+							<Grid item xs={12} md={6}>
+								<Typography>Affiliation: {doctor.affiliation}</Typography>
+							</Grid>
+						</Grid>
+					)}
+				</Paper>
 
-      <Paper
-        elevation={3}
-        style={{
-          padding: "20px",
-          borderRadius: "10px",
-          margin: "20px 60px",
-        }}
-      >
-        <Grid item xs={12} marginBottom={"20px"}>
-          {renderPrompt()}
-        </Grid>
+				<Paper
+					elevation={3}
+					style={{
+						padding: "20px",
+						borderRadius: "10px",
+						margin: "20px 60px",
+					}}
+				>
+					<Grid item xs={12} marginBottom={"20px"}>
+						{renderPrompt()}
+					</Grid>
 
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={4}>
-            <TextField
-              label="Select Date"
-              type="date"
-              InputLabelProps={{ shrink: true }}
-              value={selectedDate}
-              onChange={(e) => handleDateChange(e)}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <TextField
-              label="National ID"
-              value={nationalID}
-              onChange={handleNationalIdChange}
-              fullWidth
-            />
-          </Grid>
-          {selectedDate && availableSlots.length === 0 && (
-            <Grid item xs={12}>
-              {renderNoSlotsMessage()}
-            </Grid>
-          )}
-        </Grid>
-        {selectedDate && availableSlots.length > 0 && (
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={4}>
-              <div>
-                <Typography variant="h5">Available Slots</Typography>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Start Time</TableCell>
-                      <TableCell>Actions</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {availableSlots.map(({ key, slot }, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{format(key, "HH:mm")}</TableCell>
-                        <TableCell>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => bookAppointment(key, nationalID)}
-                          >
-                            Book Appointment
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </Grid>
-          </Grid>
-        )}
-      </Paper>
-    </div>
-  );
+					<Grid container spacing={2}>
+						<Grid item xs={12} md={4}>
+							<TextField
+								label='Select Date'
+								type='date'
+								InputLabelProps={{ shrink: true }}
+								value={selectedDate}
+								onChange={(e) => handleDateChange(e)}
+								fullWidth
+							/>
+						</Grid>
+						<Grid item xs={12} md={4}>
+							<TextField
+								label='National ID'
+								value={nationalID}
+								onChange={handleNationalIdChange}
+								fullWidth
+							/>
+						</Grid>
+						{selectedDate && availableSlots.length === 0 && (
+							<Grid item xs={12}>
+								{renderNoSlotsMessage()}
+							</Grid>
+						)}
+					</Grid>
+					{selectedDate && availableSlots.length > 0 && (
+						<Grid container spacing={3}>
+							<Grid item xs={12} md={4}>
+								<div>
+									<Typography variant='h5'>Available Slots</Typography>
+									<Table>
+										<TableHead>
+											<TableRow>
+												<TableCell>Start Time</TableCell>
+												<TableCell>Actions</TableCell>
+											</TableRow>
+										</TableHead>
+										<TableBody>
+											{availableSlots.map(({ key, slot }, index) => (
+												<TableRow key={index}>
+													<TableCell>{format(key, "HH:mm")}</TableCell>
+													<TableCell>
+														<Button
+															variant='contained'
+															color='primary'
+															onClick={() => bookAppointment(key, nationalID)}
+														>
+															Book Appointment
+														</Button>
+													</TableCell>
+												</TableRow>
+											))}
+										</TableBody>
+									</Table>
+								</div>
+							</Grid>
+						</Grid>
+					)}
+					<BackButton />
+				</Paper>
+			</div>
+		</>
+	);
 };
 
 

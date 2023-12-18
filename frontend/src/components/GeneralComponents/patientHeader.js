@@ -23,115 +23,106 @@ import { useNavigate } from "react-router-dom";
 import { getPatient, getPatient2, viewWallet } from "../../services/api";
 
 export default function PatientHeader() {
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
-  const [ patient, setPatient ] = React.useState("");
-  const [ balance, setBalance ] = React.useState(null);
+	const [patient, setPatient] = React.useState("");
+	const [balance, setBalance] = React.useState(null);
 
-  const [openProfileDrawer, setOpenProfileDrawer] = React.useState(false);
+	const [openProfileDrawer, setOpenProfileDrawer] = React.useState(false);
 
-  const [open, setOpen] = React.useState(true);
-  const MenuIcon = `${process.env.PUBLIC_URL}/icons/menu.svg`;
-  const Logo = `${process.env.PUBLIC_URL}/icons/clinicLogo2.svg`;
-  const Close = `${process.env.PUBLIC_URL}/icons/reject.svg`;
-  const DashboardIcon = `${process.env.PUBLIC_URL}/icons/dashboard.svg`;
-  const ProfileIcon = `${process.env.PUBLIC_URL}/icons/profile.svg`;
-  const AppointmentsIcon = `${process.env.PUBLIC_URL}/icons/appointment.svg`;
-  const DoctorsIcon = `${process.env.PUBLIC_URL}/icons/doctor.svg`;
-  const HealthPackageIcon = `${process.env.PUBLIC_URL}/icons/healthPackage.svg`;
-  const PrescriptionsIcon = `${process.env.PUBLIC_URL}/icons/prescription.svg`;
-  const AddIcon = `${process.env.PUBLIC_URL}/icons/add.svg`;
-  const DateIcon = `${process.env.PUBLIC_URL}/icons/date.svg`;
-  const ViewIcon = `${process.env.PUBLIC_URL}/icons/date.svg`;
-  const ChatIcon = `${process.env.PUBLIC_URL}/icons/chat.svg`;
-  const VideoIcon = `${process.env.PUBLIC_URL}/icons/video.svg`;
-  const AcceptIcon = `${process.env.PUBLIC_URL}/icons/accept.svg`;
-  const LogoutIcon = `${process.env.PUBLIC_URL}/icons/logout.svg`;
-  const NotificationsIcon = `${process.env.PUBLIC_URL}/icons/notifications.svg`;
-  const WalletIcon = `${process.env.PUBLIC_URL}/icons/wallet.svg`;
+	const [open, setOpen] = React.useState(false);
+	const MenuIcon = `${process.env.PUBLIC_URL}/icons/menu.svg`;
+	const Logo = `${process.env.PUBLIC_URL}/icons/clinicLogo2.svg`;
+	const Close = `${process.env.PUBLIC_URL}/icons/reject.svg`;
+	const DashboardIcon = `${process.env.PUBLIC_URL}/icons/dashboard.svg`;
+	const ProfileIcon = `${process.env.PUBLIC_URL}/icons/profile.svg`;
+	const AppointmentsIcon = `${process.env.PUBLIC_URL}/icons/appointment.svg`;
+	const DoctorsIcon = `${process.env.PUBLIC_URL}/icons/doctor.svg`;
+	const HealthPackageIcon = `${process.env.PUBLIC_URL}/icons/healthPackage.svg`;
+	const PrescriptionsIcon = `${process.env.PUBLIC_URL}/icons/prescription.svg`;
+	const AddIcon = `${process.env.PUBLIC_URL}/icons/add.svg`;
+	const DateIcon = `${process.env.PUBLIC_URL}/icons/date.svg`;
+	const ViewIcon = `${process.env.PUBLIC_URL}/icons/date.svg`;
+	const ChatIcon = `${process.env.PUBLIC_URL}/icons/chat.svg`;
+	const VideoIcon = `${process.env.PUBLIC_URL}/icons/video.svg`;
+	const AcceptIcon = `${process.env.PUBLIC_URL}/icons/accept.svg`;
+	const LogoutIcon = `${process.env.PUBLIC_URL}/icons/logout.svg`;
+	const NotificationsIcon = `${process.env.PUBLIC_URL}/icons/notifications.svg`;
+	const WalletIcon = `${process.env.PUBLIC_URL}/icons/wallet.svg`;
 
-  React.useEffect(() => {
-    viewWallet()
-      .then((result) => {
-        console.log(result.data.wallet);
-        setBalance(result.data.wallet.balance);
-      })
-      .catch((err) => console.log(err));
+	React.useEffect(() => {
+		viewWallet()
+			.then((result) => {
+				console.log(result.data.wallet);
+				setBalance(result.data.wallet.balance);
+			})
+			.catch((err) => console.log(err));
 
-      getPatient2()
-        .then((result) => {
-          setPatient(result.data);
-        })
-        .catch((err) => console.log(err));
-  }, []);
+		getPatient2()
+			.then((result) => {
+				setPatient(result.data);
+			})
+			.catch((err) => console.log(err));
+	}, []);
 
-  const list = () => (
-    <Box
-      sx={{
-        width: "250px",
-        p: 2,
-        mt: 3,
-        display: "flex",
-        flexDirection: "column",
-        position: "relative",
-        height: "100%",
-      }}
-    >
-      <Box
-        sx={{
-          mt: 6, // Adjust this value to position the button below the AppBar
-          mb: 3,
-          display: "flex",
-          alignItems: "center", // This will align the items vertically
-          cursor: "pointer", // This will change the cursor to a pointer when hovering over the text and icon
-          justifyContent: "flex-end", // This will move the button to the right
-        }}
-        onClick={handleDrawerClose} // This will make the text do the same function as the icon
-      >
-        <IconButton sx={{ mr: 1, ml: 0, mt: 2 }}>
-          <img
-            src={Close}
-            alt="Close"
-            sx={{ mr: 3, ml: 0 }}
-            style={{ width: 15, height: 15, color: "grey" }}
-          />
-          <Typography
-            variant="body2"
-            sx={{
-              ml: 0.5,
-              mr: 1,
-              color: "grey",
-              fontWeight: "bold",
-            }}
-          >
-            Hide menu
-          </Typography>
-        </IconButton>
-      </Box>
-      <List sx={{ p: 0 }}>
-        <ListItem button sx={{ pt: 0, pb: 1 }} onClick={ () => handleRedirect('/patientdashboard') }>
-          <ListItemIcon>
-            <img
-              src={DashboardIcon}
-              style={{ width: 30, height: 30 }}
-              alt="Dashboard"
-            />
-          </ListItemIcon>
-          <ListItemText primary="Dashboard" />
-        </ListItem>
+	const list = () => (
+		<Box
+			sx={{
+				width: "250px",
+				p: 2,
+				mt: 3,
+				display: "flex",
+				flexDirection: "column",
+				position: "relative",
+				height: "100%",
+			}}
+		>
+			<Box
+				sx={{
+					mt: 6, // Adjust this value to position the button below the AppBar
+					mb: 3,
+					display: "flex",
+					alignItems: "center", // This will align the items vertically
+					cursor: "pointer", // This will change the cursor to a pointer when hovering over the text and icon
+					justifyContent: "flex-end", // This will move the button to the right
+				}}
+				onClick={handleDrawerClose} // This will make the text do the same function as the icon
+			>
+				<IconButton sx={{ mr: 1, ml: 0, mt: 2 }}>
+				</IconButton>
+			</Box>
+			<List sx={{ p: 0 }}>
+				<ListItem
+					button
+					sx={{ pt: 0, pb: 1 }}
+					onClick={() => handleRedirect("/patientdashboard")}
+				>
+					<ListItemIcon>
+						<img
+							src={DashboardIcon}
+							style={{ width: 30, height: 30 }}
+							alt='Dashboard'
+						/>
+					</ListItemIcon>
+					<ListItemText primary='Dashboard' />
+				</ListItem>
 
-        <ListItem button sx={{ pb: 0 }} onClick={ () => handleRedirect('/viewprofile') }>
-          <ListItemIcon>
-            <img
-              src={ProfileIcon}
-              style={{ width: 30, height: 30 }}
-              alt="Profile"
-            />
-          </ListItemIcon>
-          <ListItemText primary="Profile" />
-        </ListItem>
-        
-        {/* <ListItem button sx={{ pb: 1 }}>
+				<ListItem
+					button
+					sx={{ pb: 0 }}
+					onClick={() => handleRedirect("/viewprofile")}
+				>
+					<ListItemIcon>
+						<img
+							src={ProfileIcon}
+							style={{ width: 30, height: 30 }}
+							alt='Profile'
+						/>
+					</ListItemIcon>
+					<ListItemText primary='Profile' />
+				</ListItem>
+
+				{/* <ListItem button sx={{ pb: 1 }}>
           <ListItemIcon>
             <img
               src={NotificationsIcon}
@@ -142,40 +133,52 @@ export default function PatientHeader() {
           <ListItemText primary="Notifications" />
         </ListItem> */}
 
-        <ListItem button sx={{ pb: 1 }} onClick={ () => handleRedirect('/search-doctors') }>
-          <ListItemIcon>
-            <img
-              src={DoctorsIcon}
-              alt="Doctors"
-              style={{ width: 30, height: 30 }}
-            />
-          </ListItemIcon>
-          <ListItemText primary="Doctors" />
-        </ListItem>
+				<ListItem
+					button
+					sx={{ pb: 1 }}
+					onClick={() => handleRedirect("/search-doctors")}
+				>
+					<ListItemIcon>
+						<img
+							src={DoctorsIcon}
+							alt='Doctors'
+							style={{ width: 30, height: 30 }}
+						/>
+					</ListItemIcon>
+					<ListItemText primary='Doctors' />
+				</ListItem>
 
-        <ListItem button sx={{ pb: 1 }} onClick={ () => handleRedirect('/viewappointments') }>
-          <ListItemIcon>
-            <img
-              src={ViewIcon}
-              style={{ width: 25, height: 25 }}
-              alt="View All Appointments"
-            />
-          </ListItemIcon>
-          <ListItemText primary="Appointments" />
-        </ListItem>
+				<ListItem
+					button
+					sx={{ pb: 1 }}
+					onClick={() => handleRedirect("/viewappointments")}
+				>
+					<ListItemIcon>
+						<img
+							src={ViewIcon}
+							style={{ width: 25, height: 25 }}
+							alt='View All Appointments'
+						/>
+					</ListItemIcon>
+					<ListItemText primary='Appointments' />
+				</ListItem>
 
-        <ListItem button sx={{ pb: 1 }} onClick={ () => handleRedirect('/viewpackages') }>
-          <ListItemIcon>
-            <img
-              src={HealthPackageIcon}
-              alt="Health Packages"
-              style={{ width: 26, height: 26 }}
-            />
-          </ListItemIcon>
-          <ListItemText primary="View Packages" />
-        </ListItem>
+				<ListItem
+					button
+					sx={{ pb: 1 }}
+					onClick={() => handleRedirect("/viewpackages")}
+				>
+					<ListItemIcon>
+						<img
+							src={HealthPackageIcon}
+							alt='Health Packages'
+							style={{ width: 26, height: 26 }}
+						/>
+					</ListItemIcon>
+					<ListItemText primary='View Packages' />
+				</ListItem>
 
-        {/* <Accordion
+				{/* <Accordion
           sx={{
             boxShadow: "none",
             "&.Mui-expanded": { margin: 0 },
@@ -231,7 +234,7 @@ export default function PatientHeader() {
           </AccordionDetails>
         </Accordion> */}
 
-        {/* <Accordion
+				{/* <Accordion
           sx={{
             boxShadow: "none",
             "&.Mui-expanded": { margin: 0 },
@@ -285,257 +288,274 @@ export default function PatientHeader() {
           </AccordionDetails>
         </Accordion> */}
 
-        <ListItem button sx={{ pb: 0 }} onClick={ () => handleRedirect('/viewPrescriptionsOfPatient') }>
-          <ListItemIcon>
-            <img
-              src={PrescriptionsIcon}
-              alt="Prescriptions"
-              style={{ width: 30, height: 30 }}
-            />
-          </ListItemIcon>
-          <ListItemText primary="Prescriptions" />
-        </ListItem>
-      </List>
-      <Box
-        sx={{
-          position: "absolute", // This will take your logout button out of the normal flow
-          bottom: 0, // This will position your logout button at the bottom of the box
-          width: "100%", // This will make your logout button take up the full width of the box
-        }}
-      >
-        <ListItem button sx={{ mb: 5, padding: "5px 16px" }} onClick={handleLogout}>
-          <ListItemIcon>
-            <img
-              src={LogoutIcon}
-              alt="Logout"
-              style={{ width: 25, height: 25 }}
-              sx={{ pr: -2, mr: -2 }}
-            />
-          </ListItemIcon>
-          <ListItemText primary="Logout" />
-        </ListItem>
-      </Box>
-    </Box>
-  );
+				<ListItem
+					button
+					sx={{ pb: 0 }}
+					onClick={() => handleRedirect("/viewPrescriptionsOfPatient")}
+				>
+					<ListItemIcon>
+						<img
+							src={PrescriptionsIcon}
+							alt='Prescriptions'
+							style={{ width: 30, height: 30 }}
+						/>
+					</ListItemIcon>
+					<ListItemText primary='Prescriptions' />
+				</ListItem>
+			</List>
+			<Box
+				sx={{
+					position: "absolute", // This will take your logout button out of the normal flow
+					bottom: 0, // This will position your logout button at the bottom of the box
+					width: "100%", // This will make your logout button take up the full width of the box
+				}}
+			>
+				<ListItem
+					button
+					sx={{ mb: 5, padding: "5px 16px" }}
+					onClick={handleLogout}
+				>
+					<ListItemIcon>
+						<img
+							src={LogoutIcon}
+							alt='Logout'
+							style={{ width: 25, height: 25 }}
+							sx={{ pr: -2, mr: -2 }}
+						/>
+					</ListItemIcon>
+					<ListItemText primary='Logout' />
+				</ListItem>
+			</Box>
+		</Box>
+	);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+	const handleDrawerOpen = () => {
+		if (open) {
+			setOpen(false);
+		} else {
+			setOpen(true);
+		}
+	};
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+	const handleDrawerClose = () => {
+		setOpen(false);
+	};
 
-  const handleLogout = () => {
+	const handleLogout = () => {
 		localStorage.clear();
 		navigate("/");
 	};
 
-  const handleRedirect = (path) => {
-    navigate(path);
-  }
+	const handleRedirect = (path) => {
+		navigate(path);
+	};
 
-  return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar
-        position="relative"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, background: "#2fc4b2" }}
-      >
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2, ml: 3 }}
-            onClick={handleDrawerOpen}
-          >
-            <img
-              src={MenuIcon}
-              alt="Menu"
-              style={{ width: 30, height: 30, filter: "invert(1)" }}
-            />
-            <Typography
-              variant="h6"
-              sx={{
-                color: "#fff",
-                ml: 2,
-                fontWeight: "bold",
-                scale: "110%",
-                marginTop: "3px",
-              }}
-            >
-              Menu
-            </Typography>
-          </IconButton>
-          <Box sx={{ flexGrow: 1 }} />
-          <img
-            src={Logo}
-            alt="Logo"
-            style={{
-              height: 50,
-              position: "absolute",
-              left: "50%",
-              transform: "translateX(-50%)",
-            }}
-          />
+	return (
+		<Box sx={{ flexGrow: 1 }}>
+			<AppBar
+				position='relative'
+				sx={{
+					zIndex: (theme) => theme.zIndex.drawer + 1,
+					background: "#2fc4b2",
+				}}
+			>
+				<Toolbar>
+					<IconButton
+						size='large'
+						edge='start'
+						color='inherit'
+						aria-label='menu'
+						sx={{ mr: 2, ml: 3 }}
+						onClick={handleDrawerOpen}
+					>
+						<img
+							src={MenuIcon}
+							alt='Menu'
+							style={{ width: 30, height: 30, filter: "invert(1)" }}
+						/>
+						<Typography
+							variant='h6'
+							sx={{
+								color: "#fff",
+								ml: 2,
+								fontWeight: "bold",
+								scale: "110%",
+								marginTop: "3px",
+							}}
+						>
+							Menu
+						</Typography>
+					</IconButton>
+					<Box sx={{ flexGrow: 1 }} />
+					<img
+						src={Logo}
+						alt='Logo'
+						style={{
+							height: 50,
+							position: "absolute",
+							left: "50%",
+							transform: "translateX(-50%)",
+						}}
+					/>
 
-          { 
-            /* HANDLE NOTIFS HERE */
-            <Notifications type="patient" onError={null} />
-          }
+					{
+						/* HANDLE NOTIFS HERE */
+						<Notifications type='patient' onError={null} />
+					}
 
-          {/* <Avatar sx={{ marginRight: 2 }}>User's initials</Avatar> */}
-          <Avatar sx={{ marginRight: 2 }}>{  patient ? `${patient.firstName[0]}${patient.lastName[0]}` : '' }</Avatar>
-          <Typography
-            variant="body1"
-            sx={{ fontWeight: "bold", marginRight: -2, color: "#333" }}
-          >
-            {/* {"First Name"} */}
-            { patient ? patient.firstName : '' }
-          </Typography>
-          <IconButton
-            onClick={() => setOpenProfileDrawer(!openProfileDrawer)}
-            sx={{ mr: "12px" }}
-          >
-            {openProfileDrawer ? (
-              <ArrowDropUpIcon fontSize="large" />
-            ) : (
-              <ArrowDropDownIcon fontSize="large" />
-            )}
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+					{/* <Avatar sx={{ marginRight: 2 }}>User's initials</Avatar> */}
+					<Avatar sx={{ marginRight: 2 }}>
+						{patient ? `${patient.firstName[0]}${patient.lastName[0]}` : ""}
+					</Avatar>
+					<Typography
+						variant='body1'
+						sx={{ fontWeight: "bold", marginRight: -2, color: "#333" }}
+					>
+						{/* {"First Name"} */}
+						{patient ? patient.firstName : ""}
+					</Typography>
+					<IconButton
+						onClick={() => setOpenProfileDrawer(!openProfileDrawer)}
+						sx={{ mr: "12px" }}
+					>
+						{openProfileDrawer ? (
+							<ArrowDropUpIcon fontSize='large' />
+						) : (
+							<ArrowDropDownIcon fontSize='large' />
+						)}
+					</IconButton>
+				</Toolbar>
+			</AppBar>
 
-      <SwipeableDrawer
-        open={openProfileDrawer}
-        onClose={() => setOpenProfileDrawer(false)}
-        onOpen={() => setOpenProfileDrawer(true)}
-        anchor="right" // This makes the drawer appear on the right
-        sx={{
-          "& .MuiDrawer-paper": {
-            borderTopRightRadius: 8,
-            borderBottomRightRadius: 8,
-            zIndex: (theme) => theme.zIndex.drawer - 1, // Decrease the z-index of the Drawer
-            height: "33%", // Adjust this value to change the height of the drawer
-            width: "15%",
-          },
-        }}
-        variant="persistent" // This makes the drawer persistent
-      >
-        <List sx={{ mt: 12 }}>
-          <ListItem button>
-            <ListItemIcon>
-              <img
-                src={ProfileIcon}
-                alt="Profile"
-                style={{ width: 30, height: 30 }}
-              />
-            </ListItemIcon>
-            <ListItemText primary="My Profile" />
-          </ListItem>
+			<SwipeableDrawer
+				open={openProfileDrawer}
+				onClose={() => setOpenProfileDrawer(false)}
+				onOpen={() => setOpenProfileDrawer(true)}
+				anchor='right' // This makes the drawer appear on the right
+				sx={{
+					"& .MuiDrawer-paper": {
+						borderTopRightRadius: 8,
+						borderBottomRightRadius: 8,
+						zIndex: (theme) => theme.zIndex.drawer - 1, // Decrease the z-index of the Drawer
+						height: "33%", // Adjust this value to change the height of the drawer
+						width: "15%",
+					},
+				}}
+				variant='persistent' // This makes the drawer persistent
+			>
+				<List sx={{ mt: 12 }}>
+					<ListItem button>
+						<ListItemIcon>
+							<img
+								src={ProfileIcon}
+								alt='Profile'
+								style={{ width: 30, height: 30 }}
+							/>
+						</ListItemIcon>
+						<ListItemText primary='My Profile' />
+					</ListItem>
 
-          <ListItem button>
-            <ListItemIcon>
-              <img
-                src={WalletIcon}
-                alt="Wallet"
-                style={{ width: 30, height: 30 }}
-              />
-            </ListItemIcon>
-            <ListItemText primary="Wallet" />
-            <Typography
-              variant="body1"
-              sx={{ fontWeight: "bold", marginRight: 2, color: "#333" }}
-            >
-              {/* {"$100"} Replace with actual wallet balance */}
-              { `${balance} EGP` }
-            </Typography>
-          </ListItem>
+					<ListItem button>
+						<ListItemIcon>
+							<img
+								src={WalletIcon}
+								alt='Wallet'
+								style={{ width: 30, height: 30 }}
+							/>
+						</ListItemIcon>
+						<ListItemText primary='Wallet' />
+						<Typography
+							variant='body1'
+							sx={{ fontWeight: "bold", marginRight: 2, color: "#333" }}
+						>
+							{/* {"$100"} Replace with actual wallet balance */}
+							{`${balance} EGP`}
+						</Typography>
+					</ListItem>
 
-          <ListItem button onClick={handleLogout}>
-            <ListItemIcon>
-              <img
-                src={LogoutIcon}
-                alt="Logout"
-                style={{ width: 30, height: 30 }}
-              />
-            </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItem>
-        </List>
-      </SwipeableDrawer>
+					<ListItem button onClick={handleLogout}>
+						<ListItemIcon>
+							<img
+								src={LogoutIcon}
+								alt='Logout'
+								style={{ width: 30, height: 30 }}
+							/>
+						</ListItemIcon>
+						<ListItemText primary='Logout' />
+					</ListItem>
+				</List>
+			</SwipeableDrawer>
 
-      <SwipeableDrawer
-        open={open}
-        onClose={handleDrawerClose}
-        onOpen={handleDrawerOpen}
-        sx={{
-          "& .MuiDrawer-paper": {
-            borderTopRightRadius: 16,
-            borderBottomRightRadius: 16,
-            zIndex: (theme) => theme.zIndex.drawer - 1,
-          },
-        }}
-        variant="persistent"
-      >
-        <List sx={{ mt: 12 }}>
-          <ListItem button>
-            <ListItemIcon>
-              <img
-                src={ProfileIcon}
-                alt="Profile"
-                style={{ width: 30, height: 30 }}
-              />
-            </ListItemIcon>
-            <ListItemText primary="My Profile" />
-          </ListItem>
+			<SwipeableDrawer
+				open={open}
+				onClose={handleDrawerClose}
+				onOpen={handleDrawerOpen}
+				sx={{
+					"& .MuiDrawer-paper": {
+						borderTopRightRadius: 16,
+						borderBottomRightRadius: 16,
+						zIndex: (theme) => theme.zIndex.drawer - 1,
+					},
+				}}
+				variant='persistent'
+			>
+				<List sx={{ mt: 12 }}>
+					<ListItem button>
+						<ListItemIcon>
+							<img
+								src={ProfileIcon}
+								alt='Profile'
+								style={{ width: 30, height: 30 }}
+							/>
+						</ListItemIcon>
+						<ListItemText primary='My Profile' />
+					</ListItem>
 
-          <ListItem button>
-            <ListItemIcon>
-              <img
-                src={WalletIcon}
-                alt="Wallet"
-                style={{ width: 30, height: 30 }}
-              />
-            </ListItemIcon>
-            <ListItemText primary="Wallet" />
-            <Typography
-              variant="body1"
-              sx={{ fontWeight: "bold", marginRight: 2, color: "#333" }}
-            >
-              {"$100"} {/* Replace with actual wallet balance */}
-            </Typography>
-          </ListItem>
+					<ListItem button>
+						<ListItemIcon>
+							<img
+								src={WalletIcon}
+								alt='Wallet'
+								style={{ width: 30, height: 30 }}
+							/>
+						</ListItemIcon>
+						<ListItemText primary='Wallet' />
+						<Typography
+							variant='body1'
+							sx={{ fontWeight: "bold", marginRight: 2, color: "#333" }}
+						>
+							{"$100"} {/* Replace with actual wallet balance */}
+						</Typography>
+					</ListItem>
 
-          <ListItem button onClick={handleLogout}>
-            <ListItemIcon>
-              <img
-                src={LogoutIcon}
-                alt="Logout"
-                style={{ width: 30, height: 30 }}
-              />
-            </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItem>
-        </List>
-      </SwipeableDrawer>
+					<ListItem button onClick={handleLogout}>
+						<ListItemIcon>
+							<img
+								src={LogoutIcon}
+								alt='Logout'
+								style={{ width: 30, height: 30 }}
+							/>
+						</ListItemIcon>
+						<ListItemText primary='Logout' />
+					</ListItem>
+				</List>
+			</SwipeableDrawer>
 
-      <SwipeableDrawer
-        open={open}
-        onClose={handleDrawerClose}
-        onOpen={handleDrawerOpen}
-        sx={{
-          "& .MuiDrawer-paper": {
-            borderTopRightRadius: 16,
-            borderBottomRightRadius: 16,
-            zIndex: (theme) => theme.zIndex.drawer - 1, // Increase the z-index of the Drawer
-          },
-        }}
-        variant="persistent" // This makes the drawer persistent
-      >
-        {list()}
-      </SwipeableDrawer>
-    </Box>
-  );
+			<SwipeableDrawer
+				open={open}
+				onClose={handleDrawerClose}
+				onOpen={handleDrawerOpen}
+				sx={{
+					"& .MuiDrawer-paper": {
+						borderTopRightRadius: 16,
+						borderBottomRightRadius: 16,
+						zIndex: (theme) => theme.zIndex.drawer - 1, // Increase the z-index of the Drawer
+					},
+				}}
+				variant='persistent' // This makes the drawer persistent
+			>
+				{list()}
+			</SwipeableDrawer>
+		</Box>
+	);
 }
