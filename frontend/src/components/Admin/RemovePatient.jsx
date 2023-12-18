@@ -21,6 +21,7 @@ import MuiAlert from "@mui/material/Alert";
 import Title from "./Title";
 import Spinner from "../GeneralComponents/Spinner";
 import theme from "../../theme";
+import BackButton from "../GeneralComponents/BackButton";
 
 const defaultTheme = theme;
 
@@ -172,6 +173,7 @@ export default function RemovePatient() {
 									</TableBody>
 								</Table>
 							</Paper>
+							<BackButton />
 						</Grid>
 
 						{isSuccess ? (

@@ -21,6 +21,7 @@ import Title from "./Title";
 import Spinner from "../GeneralComponents/Spinner";
 import theme from "../../theme";
 import AdminHeader from "../GeneralComponents/adminHeader";
+import BackButton from "../GeneralComponents/BackButton";
 
 const defaultTheme = theme;
 
@@ -148,7 +149,7 @@ export default function RemoveAdmin() {
 						<AdminHeader />
 						<br />
 						<Grid item xs={12} style={{ padding: "5px" }}>
-							<Paper sx={{pb: "10px"}}>
+							<Paper sx={{ pb: "10px" }}>
 								<Title>Remove Admins</Title>
 								<Table size='small' style={{ margin: "10px" }}>
 									<TableHead>
@@ -188,6 +189,7 @@ export default function RemoveAdmin() {
 									</TableBody>
 								</Table>
 							</Paper>
+							<BackButton />
 						</Grid>
 						<Snackbar
 							open={state.open}

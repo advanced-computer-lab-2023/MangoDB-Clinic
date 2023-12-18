@@ -285,22 +285,6 @@ export default function DoctorHeader({ onError }) {
 						</List>
 					</AccordionDetails>
 				</Accordion>
-
-				<ListItem
-					button
-					sx={{ pb: 0 }}
-					onClick={() => handleRedirect("/viewchats")}
-				>
-					<ListItemIcon>
-						<img
-							src={chatIcon}
-							style={{ width: 25, height: 25 }}
-							alt='View All Patients'
-						/>
-					</ListItemIcon>
-					<ListItemText primary='View Chats' />
-				</ListItem>
-
 				<ListItem
 					button
 					sx={{ pb: 0 }}
