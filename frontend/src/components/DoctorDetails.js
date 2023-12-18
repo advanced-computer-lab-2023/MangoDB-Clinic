@@ -151,9 +151,9 @@ const DoctorDetails = () => {
   );
 
   const renderPrompt = () => (
-    <Typography variant="h4" marginTop={"20px"}>
-      Please pick a date and type the national ID number of the patient
-    </Typography>
+    <h3>
+      Please pick a date to see available appointments on that day. <br></br>Type the national ID number of the patient to book an appointment.
+    </h3>
   );
 
   return (

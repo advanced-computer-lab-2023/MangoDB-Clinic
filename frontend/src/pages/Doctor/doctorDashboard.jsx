@@ -21,7 +21,7 @@ const DashboardAdmin = () => {
       title: "Profile",
       description: "View/Edit Profile",
       cta: "View",
-      route: "/viewprofile",
+      route: "/editDoctor",
     },
     {
       icon: Prescription,
