@@ -1,7 +1,9 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Home from "./pages/Home";
+import Home from "./pages/Home/Blog";
+//import Home from "./pages/Home";
+import Register from "./pages/register";
 import PatientDashboard from "./pages/Patient/PatientDashboard";
 import DoctorsTable from "./components/DoctorsTable";
 import PatientForm from "./components/Patient/PatientForm";
@@ -73,170 +75,170 @@ import ViewChats from "./pages/Doctor/viewChats";
 import Chat from "./pages/Doctor/chat";
 
 function App() {
-	return (
-		<ThemeProvider theme={theme}>
-			<Router>
-				<Routes>
-					{/* =====================Routes for the HomePage========================== */}
-					<Route path='/' element={<Home />} />
-					<Route path='/patientform' element={<PatientForm />} />
-					<Route path='/doctorform' element={<DoctorForm />} />
-					<Route path='/doctorsTable' element={<DoctorsTable />} />
+  return (
+    <ThemeProvider theme={theme}>
+      <Router>
+        <Routes>
+          {/* =====================Routes for the HomePage========================== */}
+          <Route path="/" element={<Home />} />
+          <Route path="/patientform" element={<PatientForm />} />
+          <Route path="/doctorform" element={<DoctorForm />} />
+          <Route path="/doctorsTable" element={<DoctorsTable />} />
+          <Route path="/register" element={<Register />} />
+          {/* =====================Routes for the Patient========================== */}
+          <Route path="/patientdashboard" element={<PatientDashboard />} />
+          <Route path="/viewfammembers" element={<ViewFamilyMembers />} />
+          <Route path="/linkfammember" element={<LinkFamMember />} />
+          <Route
+            path="/addhealthrecords"
+            element={<AddHealthRecordsPatient />}
+          />
+          <Route
+            path="/viewPrescriptionsOfPatient"
+            element={<ViewPrescriptionsPatient />}
+          />
+          <Route
+            path="/prescriptiondetails/:id"
+            element={<PrescriptionDetials />}
+          />
+          <Route path="/search-doctors" element={<DoctorSearch />} />
+          <Route path="/viewpackages" element={<ViewPackagesPatient />} />
+          <Route
+            path="/successfulPackagePayment"
+            element={<SuccessfulPackagePayment />}
+          />
+          <Route
+            path="/cancelHealthPackageSubscription"
+            element={<CancelHealthPackageSubscription />}
+          />
+          <Route
+            path="/viewHealthPackageSubscription"
+            element={<ViewHealthPackageSubscription />}
+          />
+          <Route
+            path="/changePasswordPatient"
+            element={<ChangePasswordPatientPage />}
+          />
 
-					{/* =====================Routes for the Patient========================== */}
-					<Route path='/patientdashboard' element={<PatientDashboard />} />
-					<Route path='/viewfammembers' element={<ViewFamilyMembers />} />
-					<Route path='/linkfammember' element={<LinkFamMember />} />
-					<Route
-						path='/addhealthrecords'
-						element={<AddHealthRecordsPatient />}
-					/>
-					<Route
-						path='/viewPrescriptionsOfPatient'
-						element={<ViewPrescriptionsPatient />}
-					/>
-					<Route
-						path='/prescriptiondetails/:id'
-						element={<PrescriptionDetials />}
-					/>
-					<Route path='/search-doctors' element={<DoctorSearch />} />
-					<Route path='/viewpackages' element={<ViewPackagesPatient />} />
-					<Route
-						path='/successfulPackagePayment'
-						element={<SuccessfulPackagePayment />}
-					/>
-					<Route
-						path='/cancelHealthPackageSubscription'
-						element={<CancelHealthPackageSubscription />}
-					/>
-					<Route
-						path='/viewHealthPackageSubscription'
-						element={<ViewHealthPackageSubscription />}
-					/>
-					<Route
-						path='/changePasswordPatient'
-						element={<ChangePasswordPatientPage />}
-					/>
+          {/* =====================Routes for the Doctor========================== */}
+          <Route path="/doctordashboard" element={<DoctorDashboard />} />
+          <Route path="/viewAllPatients" element={<PatientList />} />
+          <Route path="/selectedPatient/:id" element={<PatientDetails />} />
+          <Route path="/viewdoctors" element={<ViewDoctors />} />
+          <Route path="/editDoctor" element={<EditDoctor />} />
+          <Route
+            path="/changePasswordDoctor"
+            element={<ChangePasswordDoctorPage />}
+          />
+          <Route
+            path="/viewPrescriptionsByDoctor"
+            element={<ViewPrescriptionsDoctor />}
+          />
 
-					{/* =====================Routes for the Doctor========================== */}
-					<Route path='/doctordashboard' element={<DoctorDashboard />} />
-					<Route path='/viewAllPatients' element={<PatientList />} />
-					<Route path='/selectedPatient/:id' element={<PatientDetails />} />
-					<Route path='/viewdoctors' element={<ViewDoctors />} />
-					<Route path='/editDoctor' element={<EditDoctor />} />
-					<Route
-						path='/changePasswordDoctor'
-						element={<ChangePasswordDoctorPage />}
-					/>
-					<Route
-						path='/viewPrescriptionsByDoctor'
-						element={<ViewPrescriptionsDoctor />}
-					/>
+          {/* add the rest in the right place */}
 
-					{/* add the rest in the right place */}
+          <Route path="/viewappointments" element={<ViewAppointments />} />
+          <Route path="/doctorAppointments" element={<DoctorApps />} />
 
-					<Route path='/viewappointments' element={<ViewAppointments />} />
-					<Route path='/doctorAppointments' element={<DoctorApps />} />
+          <Route path="/viewprofile" element={<ViewProfile />} />
 
-					<Route path='/viewprofile' element={<ViewProfile />} />
+          <Route
+            path="/employmentcontract"
+            element={<EmploymentContractPage />}
+          />
 
-					<Route
-						path='/employmentcontract'
-						element={<EmploymentContractPage />}
-					/>
+          <Route path="/checkout/:id" element={<Checkout />} />
+          <Route path="/view_wallet" element={<ViewWallet />} />
+          <Route path="/doctor-details/:id" element={<DoctorDetails />} />
 
-					<Route path='/checkout/:id' element={<Checkout />} />
-					<Route path='/view_wallet' element={<ViewWallet />} />
-					<Route path='/doctor-details/:id' element={<DoctorDetails />} />
+          <Route path="/filter" element={<Filter />} />
+          <Route path="/viewhealthrecpat" element={<ViewHealthRecordsPat />} />
+          <Route path="/linkpatasfam" element={<LinkPatientAsFam />} />
+          <Route path="/addslots" element={<AddSlotsPage />} />
+          <Route
+            path="/viewemploymentcontract"
+            element={<ViewEmploymentContract />}
+          />
 
-					<Route path='/filter' element={<Filter />} />
-					<Route path='/viewhealthrecpat' element={<ViewHealthRecordsPat />} />
-					<Route path='/linkpatasfam' element={<LinkPatientAsFam />} />
-					<Route path='/addslots' element={<AddSlotsPage />} />
-					<Route
-						path='/viewemploymentcontract'
-						element={<ViewEmploymentContract />}
-					/>
+          {/* =====================Routes for the Doctor========================== */}
+          <Route path="/doctordashboard" element={<DoctorDashboard />} />
+          <Route path="/viewAllPatients/:id" element={<PatientList />} />
+          <Route path="/selectedPatient/:id" element={<PatientDetails />} />
+          <Route path="/viewdoctors" element={<ViewDoctors />} />
+          <Route path="/editDoctor/:id" element={<EditDoctor />} />
 
-					{/* =====================Routes for the Doctor========================== */}
-					<Route path='/doctordashboard' element={<DoctorDashboard />} />
-					<Route path='/viewAllPatients/:id' element={<PatientList />} />
-					<Route path='/selectedPatient/:id' element={<PatientDetails />} />
-					<Route path='/viewdoctors' element={<ViewDoctors />} />
-					<Route path='/editDoctor/:id' element={<EditDoctor />} />
+          {/* add the rest in the right place */}
 
-					{/* add the rest in the right place */}
+          <Route path="/viewappointments" element={<ViewAppointments />} />
+          <Route path="/doctorAppointments" element={<DoctorApps />} />
 
-					<Route path='/viewappointments' element={<ViewAppointments />} />
-					<Route path='/doctorAppointments' element={<DoctorApps />} />
+          <Route path="/viewprofile" element={<ViewProfile />} />
 
-					<Route path='/viewprofile' element={<ViewProfile />} />
+          <Route path="/checkout/:id" element={<Checkout />} />
+          <Route path="/view_wallet/:id" element={<ViewWallet />} />
+          <Route path="/doctor-details/:id" element={<DoctorDetails />} />
+          <Route path="/success" element={<Success />} />
+          <Route path="/cancel" element={<Cancel />} />
 
-					<Route path='/checkout/:id' element={<Checkout />} />
-					<Route path='/view_wallet/:id' element={<ViewWallet />} />
-					<Route path='/doctor-details/:id' element={<DoctorDetails />} />
-					<Route path='/success' element={<Success />} />
-					<Route path='/cancel' element={<Cancel />} />
+          <Route path="/filter" element={<Filter />} />
+          <Route path="/viewpackages" element={<ViewPackages />} />
+          <Route
+            path="/viewhealthrecpat/:id"
+            element={<ViewHealthRecordsPat />}
+          />
+          <Route path="/linkpatasfam/:id" element={<LinkPatientAsFam />} />
+          <Route path="/addslots" element={<AddSlotsPage />} />
+          <Route
+            path="/viewemploymentcontract/:id"
+            element={<ViewEmploymentContract />}
+          />
+          <Route
+            path="/addhealthrecords/:id"
+            element={<AddHealthRecordsPatient />}
+          />
+          <Route path="/forgot-password" element={<ForgotPasswordUserPage />} />
+          <Route path="/login" element={<LoginUserPage />} />
 
-					<Route path='/filter' element={<Filter />} />
-					<Route path='/viewpackages' element={<ViewPackages />} />
-					<Route
-						path='/viewhealthrecpat/:id'
-						element={<ViewHealthRecordsPat />}
-					/>
-					<Route path='/linkpatasfam/:id' element={<LinkPatientAsFam />} />
-					<Route path='/addslots' element={<AddSlotsPage />} />
-					<Route
-						path='/viewemploymentcontract/:id'
-						element={<ViewEmploymentContract />}
-					/>
-					<Route
-						path='/addhealthrecords/:id'
-						element={<AddHealthRecordsPatient />}
-					/>
-					<Route path='/forgot-password' element={<ForgotPasswordUserPage />} />
-					<Route path='/login' element={<LoginUserPage />} />
+          <Route path="/admin" element={<DashboardPage />} />
+          <Route path="/admin/login" element={<LoginAdminPage />} />
+          <Route
+            path="/admin/forgot-password"
+            element={<ForgotPasswordAdminPage />}
+          />
 
-					<Route path='/admin' element={<DashboardPage />} />
-					<Route path='/admin/login' element={<LoginAdminPage />} />
-					<Route
-						path='/admin/forgot-password'
-						element={<ForgotPasswordAdminPage />}
-					/>
+          <Route path="/admin/add-admin" element={<AddAdminPage />} />
+          <Route path="/admin/remove-admin" element={<RemoveAdminPage />} />
+          <Route path="/admin/remove-patient" element={<RemovePatientPage />} />
+          <Route path="/admin/remove-doctor" element={<RemoveDoctorPage />} />
 
-					<Route path='/admin/add-admin' element={<AddAdminPage />} />
-					<Route path='/admin/remove-admin' element={<RemoveAdminPage />} />
-					<Route path='/admin/remove-patient' element={<RemovePatientPage />} />
-					<Route path='/admin/remove-doctor' element={<RemoveDoctorPage />} />
+          <Route
+            path="/admin/requested-doctors"
+            element={<RequestedDoctorsPage />}
+          />
+          <Route
+            path="/admin/user-management"
+            element={<UserManagementPage />}
+          />
+          <Route path="/admin/health-packs" element={<HealthPackagesPage />} />
+          <Route path="/admin/add-health-pack" element={<AddPackagePage />} />
+          <Route
+            path="/admin/edit-health-package/:id"
+            element={<EditHealthPackagePage />}
+          />
+          <Route
+            path="/admin/change-password"
+            element={<ChangePasswordPage />}
+          />
+          <Route path="/checkout" element={<Checkout />} />
 
-					<Route
-						path='/admin/requested-doctors'
-						element={<RequestedDoctorsPage />}
-					/>
-					<Route
-						path='/admin/user-management'
-						element={<UserManagementPage />}
-					/>
-					<Route path='/admin/health-packs' element={<HealthPackagesPage />} />
-					<Route path='/admin/add-health-pack' element={<AddPackagePage />} />
-					<Route
-						path='/admin/edit-health-package/:id'
-						element={<EditHealthPackagePage />}
-					/>
-					<Route
-						path='/admin/change-password'
-						element={<ChangePasswordPage />}
-					/>
-					<Route path='/checkout' element={<Checkout />} />
+          <Route path="/viewchats" element={<ViewChats />} />
+          <Route path="/chat/:id" element={<Chat />} />
 
-					<Route path='/viewchats' element={<ViewChats />} />
-                    <Route path="/chat/:id" element={<Chat />} />
-
-					<Route path='*' element={<NotFound />} />
-				</Routes>
-			</Router>
-		</ThemeProvider>
-	);
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
+  );
 }
 
 export default App;
